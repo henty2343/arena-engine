@@ -37,6 +37,37 @@ git rev-parse --abbrev-ref HEAD     # expect: spinclash-item-three-triage-80aa6
 git status                          # expect: nothing to commit, working tree clean
 ```
 
+### STEP 0a — IF IT SAYS `main` (or any other branch)
+
+**Do not push from `main`.** The work belongs on `spinclash-item-three-triage-80aa6`, and the
+push command below names that branch explicitly — but the merge, the patch and the commit must
+happen **on that branch**, so switch to it first.
+
+```bash
+git branch -a                 # what exists locally?
+git status                    # clean? (a dirty tree can block the switch)
+```
+
+**If `spinclash-item-three-triage-80aa6` is listed** (it usually is, with your local tip
+`64f2ef7` on it):
+
+```bash
+git checkout spinclash-item-three-triage-80aa6
+git log --oneline -1          # expect: 64f2ef7 ... (the handoff-name correction)
+```
+
+**If it is NOT listed** (you never had the branch locally):
+
+```bash
+git fetch origin
+git checkout -b spinclash-item-three-triage-80aa6 origin/spinclash-item-three-triage-80aa6
+```
+
+That is SAFE even though it skips your local `64f2ef7`: the remote's lineage already carries the
+same handoff-name correction (the App's own commit for it), so nothing is lost.
+
+Either way you end on the right branch with a clean tree — then continue at **STEP 1**.
+
 If `git status` shows edits you want to keep, park them first:
 
 ```bash
