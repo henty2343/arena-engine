@@ -102,7 +102,7 @@ ok('every growing weapon has ITS mechanism: rigid growers a ladder row, chain gr
   GROWERS.every(id => WEAPONS[id].chain ? chainExtOk(id) : !!LEN_LADDER[id]) &&
   WEAPON_IDS.filter(id => LEN_LADDER[id]).length === RIGID_GROWERS.length &&
   WEAPON_IDS.filter(id => WEAPONS[id].chain && WEAPONS[id].chain.ext).length === CHAIN_GROWERS.length,
-  `rigid: ${RIGID_GROWERS.join(',') || '(none)'} · chain: ${CHAIN_GROWERS.map(id => id + '(ext ' + WEAPONS[id].chain.ext.every + '/' + WEAPONS[id].chain.ext.max + ')').join(',') || '(none)'}`);
+  `rigid: ${RIGID_GROWERS.join(',') || '(none)'} · chain: ${CHAIN_GROWERS.map(id => id + '(ext ' + (WEAPONS[id].chain.ext ? WEAPONS[id].chain.ext.every + '/' + WEAPONS[id].chain.ext.max : 'MISSING') + ')').join(',') || '(none)'}`);
 ok('ladder has LEN_STEPS+1 entries', L.circles.length === LEN_STEPS + 1 && L.polys.length === LEN_STEPS + 1,
   `${L.circles.length} circle sets, ${L.polys.length} poly sets`);
 ok('step 0 IS the shipped data by identity', L.circles[0] === baseC && L.polys[0] === baseP);
