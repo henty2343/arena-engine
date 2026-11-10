@@ -1,6 +1,1 @@
-node_modules/
-output/
-.arena-tmp/
-
-# the owner's retired local working folder — previews/ is the ONE canonical (owner ruling 2026-11-10)
-uploads/
+scratch/
