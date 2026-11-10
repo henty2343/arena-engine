@@ -88,7 +88,21 @@ const tip0 = tipOf(baseP), J = L.J;
 
 /* ---------- A: ladder shape ---------- */
 console.log('A  ladder shape');
-ok('every growing weapon has a ladder, and no other does', GROWERS.every(id => LEN_LADDER[id]) && WEAPON_IDS.filter(id => LEN_LADDER[id]).length === GROWERS.length, GROWERS.join(',') || '(none)');
+/* RE-SEEDED 2026-11-11 (session 5, menu item 4): SUPERSEDED assertion kept visible —
+   *   ok('every growing weapon has a ladder, and no other does', GROWERS.every(id => LEN_LADDER[id]) && ...)
+   * It FAILed on CORRECT code since links-r87: the flail declares trait.len but is a LINK-ADDER —
+   * boot (canonical :1810) skips chain rows before the ladder loop and requires chain.ext instead.
+   * Re-seed keeps BOTH halves of the original catch alive: RIGID growers must have a ladder row
+   * ("new trait.len row forgot its mechanism"), CHAIN growers must carry a well-formed chain.ext
+   * whose unit cap covers every step (the same law boot gates, canonical :1812-1814). */
+const RIGID_GROWERS = GROWERS.filter(id => !WEAPONS[id].chain);
+const CHAIN_GROWERS = GROWERS.filter(id => WEAPONS[id].chain);
+const chainExtOk = (id) => { const ex = WEAPONS[id].chain.ext; return !!ex && ex.every >= 1 && ex.max >= 1 && ex.unit > 0 && ex.max >= Math.floor(LEN_STEPS / ex.every); };
+ok('every growing weapon has ITS mechanism: rigid growers a ladder row, chain growers a covering chain.ext — and no other row grows',
+  GROWERS.every(id => WEAPONS[id].chain ? chainExtOk(id) : !!LEN_LADDER[id]) &&
+  WEAPON_IDS.filter(id => LEN_LADDER[id]).length === RIGID_GROWERS.length &&
+  WEAPON_IDS.filter(id => WEAPONS[id].chain && WEAPONS[id].chain.ext).length === CHAIN_GROWERS.length,
+  `rigid: ${RIGID_GROWERS.join(',') || '(none)'} · chain: ${CHAIN_GROWERS.map(id => id + '(ext ' + WEAPONS[id].chain.ext.every + '/' + WEAPONS[id].chain.ext.max + ')').join(',') || '(none)'}`);
 ok('ladder has LEN_STEPS+1 entries', L.circles.length === LEN_STEPS + 1 && L.polys.length === LEN_STEPS + 1,
   `${L.circles.length} circle sets, ${L.polys.length} poly sets`);
 ok('step 0 IS the shipped data by identity', L.circles[0] === baseC && L.polys[0] === baseP);
