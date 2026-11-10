@@ -48,6 +48,9 @@ const A = html.indexOf('<script>'), B = html.indexOf('</script>', A);
 const base = html.slice(A + 8, B);
 const op = '(function () {';
 const core = base.slice(base.indexOf(op) + op.length, base.lastIndexOf('})();'));
+/* harness stub (r88 era, 2026-11-10): Path2D recorder for the renderer-driven sections (parry FX
+ * builds rings/rays on Path2D) — same as chromecheck. */
+globalThis.Path2D ??= class { arc() { } moveTo() { } lineTo() { } closePath() { } rect() { } };
 const fake = () => new Proxy(function () { }, { get(x, p) { if (p === Symbol.toPrimitive) return () => 0; if (!(p in x)) x[p] = fake(); return x[p]; }, set(x, p, v) { x[p] = v; return true; }, apply() { return fake(); } });
 const ARGS = { getElementById: () => fake(), createElement: () => fake(), querySelectorAll: () => [], addEventListener: () => { }, activeElement: null };
 const WIN = { devicePixelRatio: 1, innerWidth: 1200, innerHeight: 900, addEventListener: () => { } };
@@ -68,6 +71,8 @@ function recCtx(sink) {
       if (p === 'fillText') return (txt, xx, yy) => { sink.push({ fs: String(x.fillStyle), t: String(txt), x: xx, y: yy }); };
       if (p === 'strokeText') return () => { };
       if (p === 'measureText') return () => ({ width: 100 });
+      // r88 era stub: medal/reveal art calls gradient builders — a bare no-op would return undefined
+      if (p === 'createLinearGradient' || p === 'createRadialGradient' || p === 'createConicGradient') return () => ({ addColorStop() { } });
       if (p in x) return x[p];
       return () => { };
     },

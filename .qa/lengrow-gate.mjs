@@ -108,7 +108,7 @@ console.log(`  l and r held, so the spear never thickens · ladder ${STEPS} step
 console.log('');
 console.log('     k   stretch%    n   minR    poke      miss     verdict');
 
-let firstFail = null, firstPoke = null, firstMiss = null;
+let firstFail = null, firstPoke = null, firstMiss = null, bootFails = 0;
 for (const k of ks) {
   tempFor(k);
   let out = '';
@@ -117,7 +117,7 @@ for (const k of ks) {
       { encoding: 'utf8', maxBuffer: 1 << 24, cwd: root });
   } catch (e) { out = (e.stdout || '') + (e.stderr || ''); }
   const m = out.split('\n').find(l => /^spear\s/.test(l));
-  if (!m) { console.log(` ${k.toFixed(4)}   BOOT/RUN FAILURE\n${out.split('\n').slice(0, 6).join('\n')}`); continue; }
+  if (!m) { bootFails++; console.log(` ${k.toFixed(4)}   BOOT/RUN FAILURE\n${out.split('\n').slice(0, 6).join('\n')}`); continue; }
   const num = (re) => { const x = re.exec(m); return x ? +x[1] : NaN; };
   const n = num(/n=\s*(\d+)/), minR = num(/minR=\s*([\d.]+)/);
   const poke = num(/poke=([+-]?[\d.]+)/), miss = num(/miss=([\d.]+)/);
@@ -134,14 +134,21 @@ for (const k of ks) {
 }
 
 console.log('');
-if (firstFail === null) {
+/* NON-VACUITY (r88 era fix, 2026-11-10): a ladder whose cells never measured cannot claim PASS —
+ * the pair-proof doctrine. Boot failures are counted; all-boot-fail is a hard FAIL. */
+if (firstFail === null && bootFails === ks.length) {
+  console.log('  [FAIL] VACUOUS — every cell BOOT/RUN FAILURE; the ladder was never exercised.');
+  process.exitCode = 1;
+} else if (firstFail === null) {
   console.log('  [PASS] this stretch stays inside the house gate across the whole ladder.');
-  console.log(`         Option (${MODE}) needs no bake pipeline and no extra circle rows.`);
+  console.log(`         Option (${MODE}) needs no bake pipeline and no extra circle rows.` +
+    (bootFails ? ` NOTE: ${bootFails}/${ks.length} cells BOOT/RUN FAILURE — verdict rests on ${ks.length - bootFails} measured cells.` : ''));
 } else {
   console.log(`  [FAIL] the ${MODE} stretch first breaks the gate at k=${firstFail.toFixed(4)} (+${((firstFail - 1) * 100).toFixed(1)}%).`);
   if (firstPoke !== null) console.log(`         POKE binds from k=${firstPoke.toFixed(4)}: circles escape the drawn ink.`);
   if (firstMiss !== null) console.log(`         MISS binds from k=${firstMiss.toFixed(4)}: ink left outside every circle.`);
   console.log('         A pre-baked ladder (re-pack each step with inscribe.mjs --regen) is required.');
+  process.exitCode = 1;
 }
 console.log('');
 console.log('Scratch temp left at scratch/.lengrow-gate-temp.html (safe to delete).');

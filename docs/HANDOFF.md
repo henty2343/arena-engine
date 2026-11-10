@@ -105,3 +105,13 @@ from git history; this paragraph is the record of the rehearsal.]**
   README stays root. SPEC.md's `## Repo` tree is the layout authority — realigned to the
   actual tree 2026-11-10 (engine dirs marked as Phase-0 placeholders; the live SpinClash
   harness — root tools, `.qa/`, `scratch/` — now listed).
+- **2026-11-10 (late) — repair sessions landed as #722** (owner push pending): the bare-Node
+  harness contract RESTORED (location guard + Path2D/gradient stubs + lengrow-gate non-vacuity —
+  commits after `d928bed`), `bake-rows` flail bake FIXED (broken since r86) and the flail
+  `CIRCLES_V2` row RE-BAKED → `inscribe` GATE: PASS. Canonical md5 now `e431d344347a55da51e1f4604cbeb4ed`,
+  5,392 lines, stamp stays `links-r87` (browser-behaviour-neutral); live README slots re-recorded —
+  the `afc301…` above is kept as the dated amendment record. **NEW AGENT: read
+  `scratch/handoff-repair-brief.md` after this file** — it holds the full repair record, the suite's
+  known-red cells, and the ONLY outstanding item: Item 3 stale-proof triage (re-seed vs retire —
+  owner policy calls; every listed cell was already red on the r86 build). Verify-green before
+  touching anything: `node .qa/inscribe.mjs` → GATE: PASS; `node chromecheck.mjs` → 2× PASS.

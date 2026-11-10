@@ -63,6 +63,10 @@ let rafFn = null;
 const rafStub = (fn) => { rafFn = fn; return 1; };
 const perfStub = { now: () => 0 };
 
+/* harness stub (r88 era, 2026-11-10): the canonical draw code builds Path2D rings/rays for the
+ * parry FX (drawParryFx) — Node has no canvas globals. No-op recorder: every assertion reads the
+ * ctx calls, and ctx.fill/stroke swallow the path object untouched. */
+globalThis.Path2D ??= class { arc() { } moveTo() { } lineTo() { } closePath() { } rect() { } };
 const f1 = new Function('document', 'window', 'performance', 'requestAnimationFrame', 'console', blocks[0]);
 f1(documentStub, windowStub, perfStub, rafStub, console);
 const f2 = new Function('document', 'window', 'performance', 'requestAnimationFrame', 'setInterval', 'setTimeout', 'console', blocks[1]);

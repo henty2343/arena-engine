@@ -31,6 +31,9 @@ const blocks = [];
 
 let fail = 0;
 const chk = (ok, msg) => { console.log((ok ? 'ok  ' : 'FAIL') + '  ' + msg); if (!ok) fail = 1; };
+/* harness stub (r88 era, 2026-11-10): same Path2D recorder as chromecheck — the T4 episode drive
+ * runs the real renderer, whose parry FX builds Path2D rings/rays. */
+globalThis.Path2D ??= class { arc() { } moveTo() { } lineTo() { } closePath() { } rect() { } };
 
 /* ---------- Part A: sim scan (non-vacuity + the first flagged parry) ---------- */
 function fakeEl2() {

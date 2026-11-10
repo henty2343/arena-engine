@@ -65,7 +65,12 @@ function tempWith(ids, id, subsetLines) {
     /* per-segment temps drop the chain ref (batch-4 trick): regen then bakes the
        trimmed shapes as an ordinary weapon; the merged row re-ties at boot. */
     const ri = lines.findIndex(l => l.trim().startsWith(id + ': {') && l.includes('chain:'));
-    if (ri >= 0) lines[ri] = lines[ri].replace(/chain: \w+, /, '');
+    if (ri >= 0) lines[ri] = lines[ri].replace(/chain: \w+, /, '')
+      /* r88-era fix (2026-11-10): the chain-less twin must ALSO zero trait.len. Since longchain-r86
+       * the flail carries trait.len, so a chain-less trait.len weapon falls into the SPEAR lenJ boot
+       * gate and throws — the flail per-segment bake has been broken since r86 (verified on both the
+       * r86 and r87 builds). With len zeroed the trimmed shapes bake as an ordinary weapon again. */
+      .replace(/trait:\s*\{([^}]*)\}/, (m, t) => 'trait: {' + t.replace(/,\s*len:\s*[\d.]+/, '') + '}');
   }
   const p = join(here, '..', 'scratch', '.bake-temp.html');
   writeFileSync(p, lines.join('\n'));
