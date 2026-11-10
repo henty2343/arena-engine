@@ -119,9 +119,12 @@ the handoffs and the battery logs — **and not the #723–#727 entries**.
 
 **THE OWNER'S RECONCILIATION — merge, NEVER force-push:**
 `git fetch origin && git merge --no-ff origin/spinclash-item-three-triage-80aa6` — the two trees
-differ in exactly ONE file (`docs/GAMES.md`), the merge resolves it to the local (complete)
+differ in exactly ONE file's CONTENT (`docs/GAMES.md`), the merge resolves it to the local (complete)
 version, and the local branch then fast-forwards the remote. (`git push --force` is FORBIDDEN by
-house rule and is unnecessary here.)
+house rule and is unnecessary here.) The only other delta is the mode bit on the two runner
+scripts — the contents API cannot carry the exec bit (remote 644, local 755); the merge restores
+it. **DONE, not pending: that merge is local commit `e57baf7` — the local branch ALREADY
+descends from the remote tip, so the owner's next push is a plain fast-forward.**
 
 ## NON-NEGOTIABLES (unchanged — restated for continuity)
 
