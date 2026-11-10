@@ -267,21 +267,24 @@ Excluded from the production build of `apps/studio`.
 ```
 arena-engine/
 ├─ README.md               # the entry point — GitHub renders only this one at the root
-├─ docs/                   # SPEC.md CONTRACT.md BUILD.md GAMES.md CHRONICLE-archive.md
-├─ previews/               # spinclash-preview.html
-├─ .vscode/                  # tasks.json, launch.json, settings.json, extensions.json
-├─ assets/fonts/                # Inter, JetBrains Mono (OFL), committed
-├─ packages/
-│  ├─ core/                  # PURE TS: contract, runtime, timeline, services, registry
-│  ├─ render/                # Node only: canvas surface, frame loop, encoder, audio, targets.ts
-│  └─ server/                # Fastify loopback host, single job slot
-├─ apps/studio/              # Vite + React
-├─ games/
-│  ├─ _probe/                # throwaway contract fixtures (not content)
-│  └─ _template/             # commented scaffold for a new game
-├─ scripts/                  # doctor.mjs, generate.mjs, inspect.mjs
-└─ output/                   # gitignored; one folder per render; also the stats source
+├─ .gitignore              # node_modules/ · output/ · .arena-tmp/ · uploads/ (the owner's retired local folder)
+├─ docs/                   # SPEC.md CONTRACT.md BUILD.md GAMES.md CHRONICLE-archive.md HANDOFF.md
+├─ previews/               # spinclash-preview.html — THE canonical game (single file, dependency-free)
+├─ chromecheck.mjs         # fast boot + pairing check (~4s) — runs today on bare Node
+├─ measure.mjs             # the sanctioned law matrix — OWNER-GATED, never runs without his explicit go
+├─ ingest.mjs              # weapon-art merge gate + combat gauntlet (DORMANT since roster-r12)
+├─ .qa/                    # proof probes: inscribe · fingerprint · leadproof · flipproof · pair-proof · seam-proof · the lengrow-* suite · bake-rows + the fp-*.json baselines
+├─ scratch/                # LIVE doc tools (navgen · docreflow) + the SIM loader (loader-r54); per-build smokes live here until the next purge
+├─ .vscode/                # Phase-0 placeholder (.gitkeep) — tasks/launch/settings/extensions land with the engine
+├─ assets/fonts/           # Phase-0 placeholder (.gitkeep) — Inter + JetBrains Mono (OFL) arrive with `npm install` at Phase 0 (NOT committed; README's Requirements line is the authority)
+├─ packages/               # Phase-0 placeholders (.gitkeep): core (pure TS sim) · render (node-canvas + ffmpeg) · server (Fastify loopback, single job slot)
+├─ apps/studio/            # Phase-0 placeholder (.gitkeep) — Vite + React
+├─ games/                  # Phase-0 placeholders (.gitkeep) — _probe (contract fixtures) · _template (commented scaffold)
+├─ scripts/                # Phase-0 placeholder (.gitkeep) — doctor.mjs, generate.mjs, inspect.mjs
+└─ output/                 # gitignored, created at runtime; one folder per render; also the stats source
 ```
+
+The engine dirs are Phase-0 placeholders (`.gitkeep` only) until the matching `BUILD.md` phase lands; the LIVE tree today is the SpinClash harness — the root `.mjs` tools, `.qa/`, `scratch/` and `previews/spinclash-preview.html` (the one canonical) — which runs on bare Node with no `package.json`. Realigned to the actual tree 2026-11-10.
 
 Run IDs: `<game>-<YYYY-MM-DD>-<HHMMSS>`. Sortable, readable, no library.
 

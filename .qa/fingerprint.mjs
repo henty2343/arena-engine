@@ -8,7 +8,7 @@
  * the laws audit). If the hash set is identical before and after a change,
  * the change did not touch sim behaviour — fingerprints stable.
  *
- * Usage: node .qa/fingerprint.mjs <out.json> [file=uploads/spinclash-preview.html]
+ * Usage: node .qa/fingerprint.mjs <out.json> [file=previews/spinclash-preview.html]
  * Compares nothing itself — run it before and after, diff the JSONs.
  *
  * ARG-ORDER GUARD (2026-10-28, owner go): arg 2 is the OUTPUT and arg 3 is the FILE. A
@@ -38,7 +38,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 const here = dirname(fileURLToPath(import.meta.url));
 const OUT = resolve(process.argv[2] || '.qa/fingerprint.json');
-const FILE = resolve(process.argv[3] ? join(here, '..', process.argv[3]) : join(here, '..', 'uploads', 'spinclash-preview.html'));
+const FILE = resolve(process.argv[3] ? join(here, '..', process.argv[3]) : join(here, '..', 'previews', 'spinclash-preview.html'));
 const USAGE = 'usage: node .qa/fingerprint.mjs <out.json> [file.html]   (arg 2 = OUTPUT json, arg 3 = the build)';
 if (/\.html?$/i.test(OUT)) {
   console.error('refusing: OUT is an HTML path (' + OUT + ') — this tool writes JSON only.\n' + USAGE);

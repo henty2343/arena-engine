@@ -50,7 +50,7 @@ import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const argv = process.argv.slice(2);
-let FILE = resolve(join(here, '..', 'uploads', 'spinclash-preview.html'));
+let FILE = resolve(join(here, '..', 'previews', 'spinclash-preview.html'));
 let WID = 'spear';
 let ks = null, steps = 12, rate = 0.0253;   // default tracks the shipped spear trait (was 0.012)
 const pos = [];

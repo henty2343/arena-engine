@@ -50,7 +50,7 @@ import { dirname, join, resolve } from 'node:path';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
-const CANON = join(root, 'uploads', 'spinclash-preview.html');
+const CANON = join(root, 'previews', 'spinclash-preview.html');
 const WRITE = process.argv.includes('--write');
 const _ei = process.argv.indexOf('--emit');
 const EMIT = _ei >= 0 ? process.argv[_ei + 1] : null;   /* write the block to a file, touch nothing */

@@ -1,7 +1,7 @@
 // scratch/loader-r54.mjs — rebuild of the working SIM loader recipe (tmp-volatile; /tmp harnesses die between sessions)
 import fs from 'node:fs';
 
-export function loadAPI(htmlPath = 'uploads/spinclash-preview.html') {
+export function loadAPI(htmlPath = 'previews/spinclash-preview.html') {
   const html = fs.readFileSync(htmlPath, 'utf8');
   // the SIM block is the script that defines newGame (the boot/UI block comes later)
   let at = 0, tag = -1;

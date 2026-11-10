@@ -39,10 +39,10 @@
  * the seeds they use, these FAIL rather than passing on zero observations.
  *
  * Read-only: writes nothing, runs no measure.mjs. Tier 0 (~25s).
- * Usage: node .qa/pair-proof.mjs [file=uploads/spinclash-preview.html]
+ * Usage: node .qa/pair-proof.mjs [file=previews/spinclash-preview.html]
  */
 import { readFileSync } from 'node:fs';
-const FILE = process.argv[2] || 'uploads/spinclash-preview.html';
+const FILE = process.argv[2] || 'previews/spinclash-preview.html';
 const html = readFileSync(FILE, 'utf8');
 const A = html.indexOf('<script>'), B = html.indexOf('</script>', A);
 const base = html.slice(A + 8, B);

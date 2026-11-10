@@ -44,7 +44,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const FILE = resolve(process.argv[2] ? join(here, '..', process.argv[2]) : join(here, '..', 'uploads', 'spinclash-preview.html'));
+const FILE = resolve(process.argv[2] ? join(here, '..', process.argv[2]) : join(here, '..', 'previews', 'spinclash-preview.html'));
 
 function fakeEl() {
   const t = function () {};

@@ -40,7 +40,7 @@ const argv = process.argv.slice(2);
 const flag = (n, d) => { const i = argv.indexOf('--' + n); return i >= 0 ? argv[i + 1] : d; };
 const MODE = flag('mode', 'uniform');
 const STEPS = +flag('steps', 12), RATE = +flag('rate', 0.0253);   // default tracks the shipped spear trait (was 0.012 until the owner's "more ridiculous" raise, 2026-10-28)
-const CANON = join(root, 'uploads', 'spinclash-preview.html');
+const CANON = join(root, 'previews', 'spinclash-preview.html');
 const TEMP = join(root, 'scratch', '.lengrow-gate-temp.html');
 
 /* the shaft/head junction as a fraction of the authored tip — invariant under :452-455's

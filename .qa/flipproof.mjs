@@ -24,7 +24,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 const here = dirname(fileURLToPath(import.meta.url));
-const FILE = resolve(process.argv[2] ? join(here, '..', process.argv[2]) : join(here, '..', 'uploads', 'spinclash-preview.html'));
+const FILE = resolve(process.argv[2] ? join(here, '..', process.argv[2]) : join(here, '..', 'previews', 'spinclash-preview.html'));
 const html = readFileSync(FILE, 'utf8');
 const blocks = [];
 { let i = 0; while (true) { const a = html.indexOf('<script>', i); if (a < 0) break; const b = html.indexOf('</script>', a); blocks.push(html.slice(a + 8, b)); i = b; } }

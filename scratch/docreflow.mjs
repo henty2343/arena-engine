@@ -16,7 +16,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
 const args = process.argv.slice(2);
-const FILE = args.find(a => !a.startsWith('--')) || 'uploads/GAMES.md';
+const FILE = args.find(a => !a.startsWith('--')) || 'docs/GAMES.md';
 const CHECK = args.includes('--check');
 const mi = args.indexOf('--max');
 const MAX = mi >= 0 ? +args[mi + 1] : 1100;      // target paragraph length, chars

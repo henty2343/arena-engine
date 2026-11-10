@@ -56,7 +56,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
 const REGEN = args[0] === '--regen';
 if (REGEN) args.shift();
-const FILE = resolve(join(here, '..', args[0] || 'uploads/spinclash-preview.html'));   // default follows the workspace layout (canonical in uploads/); an explicit arg still resolves from the repo root, so .qa/bake-rows.mjs's 'scratch/.bake-temp.html' is unchanged
+const FILE = resolve(join(here, '..', args[0] || 'previews/spinclash-preview.html'));   // default follows the workspace layout (canonical in previews/); an explicit arg still resolves from the repo root, so .qa/bake-rows.mjs's 'scratch/.bake-temp.html' is unchanged
 const html = readFileSync(FILE, 'utf8');
 
 /* ---------- boot the sim block with DOM stubs (house pattern) ---------- */
