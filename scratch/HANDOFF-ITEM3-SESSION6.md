@@ -126,6 +126,30 @@ scripts — the contents API cannot carry the exec bit (remote 644, local 755); 
 it. **DONE, not pending: that merge is local commit `e57baf7` — the local branch ALREADY
 descends from the remote tip, so the owner's next push is a plain fast-forward.**
 
+### THE OWNER'S PUSH — EXACT COMMANDS (the GAMES delta travels as a PATCH)
+
+The whole file is too big for the App (690KB > 512KiB) but its **DELTA is only 38.8KB** — and it
+travels as `scratch/triage/games-entries.patch` (on the branch, pushed by the App). It is a
+`git diff` of `docs/GAMES.md` from the remote's version to the complete one, and it is **verified
+to apply cleanly** to the remote's `docs/GAMES.md` (`git apply --check` → clean).
+
+```
+git fetch origin
+git merge --no-ff origin/spinclash-item-three-triage-80aa6     # brings the App's lineage in
+git apply scratch/triage/games-entries.patch                   # lands the #723-#727 entries
+git add -A && git commit -m "item-3: land the GAMES entries (#723-#727)"
+git push origin spinclash-item-three-triage-80aa6             # plain fast-forward
+```
+
+**NEVER `git push --force` here.** The owner's local tip `64f2ef7` carries only the handoff-name
+correction — it does NOT contain items 4–7's code — so a force-push would silently REVERT the
+session's work on the branch. The merge above is what puts the work back; the push after it is a
+fast-forward.
+
+**IF THE MERGE REPORTS an add/add conflict on `scratch/HANDOFF-ITEM3-SESSION5.md`:** both sides
+carry the SAME bytes (the handoff-name correction), so `git checkout --ours` (or `--theirs`) is
+correct — then `git add -f scratch/HANDOFF-ITEM3-SESSION5.md && git commit`.
+
 ## NON-NEGOTIABLES (unchanged — restated for continuity)
 
 Asserted-patch method only (exact-match + expected count, loud on mismatch, write nothing on
