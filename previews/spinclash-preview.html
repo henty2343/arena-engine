@@ -4,14 +4,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>spinclash preview — build longchain-r86</title>
+<title>spinclash preview — build links-r87</title>
 <style>
 /* ---------------------------------------------------------------
    Design tokens — sumo-war UI language (light/dark page chrome).
    --------------------------------------------------------------- */
 :root {
   --font-sans: "anthropic-sans", sans-serif;
-  --surface-1: #bab09b;
   --surface-2: #ede7d6;
   --text-primary: #2e2b22;
   --text-secondary: #4a4436;
@@ -53,7 +52,6 @@ body {
 #tw #win { position: absolute; inset: 0; display: grid; place-items: center; background: var(--scrim); border-radius: 6px; }
 #tw #win[hidden] { display: none; }
 #tw #win div { color: #f2ecdc; font-size: 26px; font-weight: 800; text-align: center; }
-#tw #win div b { color: #f2ecdc; }
 #tw #lg { margin: 14px auto 0; max-width: 720px; }
 /* --- legend shared vocabulary — applies to every element of the locked
        Columns card (de-scoped to #lg after an earlier scoping bug) --- */
@@ -80,7 +78,7 @@ body {
 <body>
 <h2 class="sr-only">Two weaponized bots bounce inside a ring of shot, best of three rounds; a dice roll picks each bot's weapon every round, every damaging hit makes the attacker stronger, and a round ends only on a knockout.</h2>
 <div id="tw">
-<p class="sub">Best of 3 · first to 2 round wins · <b id="build">build longchain-r86</b></p>
+<p class="sub">Best of 3 · first to 2 round wins · <b id="build">build links-r87</b></p>
 <button class="chip" id="pz">Pause</button><button class="chip" id="sl">Slow motion</button><button class="chip" id="ff">Fast forward</button><button class="chip" id="rs">Restart</button><button class="chip" id="ns">New seed</button><button class="chip" id="hb">Hitboxes</button>
 <div class="seed"><label for="sd">Seed</label><input id="sd" type="text" inputmode="numeric" autocomplete="off" spellcheck="false"><button class="chip" id="ld">Load seed</button></div>
 <p class="sub" id="st"></p>
@@ -125,7 +123,6 @@ body {
     roundsToWin: 2,        // best of 3
     revealTicks: 285,      // dice-roll reveal length (~2.4s — was 165/~1.4s; owner +1s tune 2026-10-19: the extra second splits between a slower roll cadence and a longer end hold, see the VS dials)
     koTicks: 105,          // K.O. pause (~0.9s)
-    hitStopMs: 60,         // DORMANT since slowmo-r63 (owner 2026-11-02: "i want to change hitstop to do a brief slowmotion instead, hitstop seems laggy sometimes, when quick multiple hits occur") — was trigger policy 1 (owner decision 2026-10-19: "implement it, and do 1 trigger policy"): every damage hit froze the world briefly (~7 ticks). The freeze could not survive dense exchanges: the sim cannot tick during it, so every queued contact re-froze it the instant it lifted — a slideshow, and allcut-r62's spine chips made the density worse. One branch in consumeEvents returns it. Frame-loop layer only, then as now — the sim sequence and every fingerprint stay untouched.
     hitSlowMs: 150,        // slowmo-r63: the non-kill hit beat — a brief SLOW-MOTION window, ~150ms wall at 1× playback. Wall-clock-anchored like the freeze was: 4× fast-forward shortens it, the ¼× 's' mode stretches it. Windows MAX-merge, never stack (the freeze's own merge semantics): a hit inside slow REFRESHES the window, so a dense exchange reads as one sustained intensity slow instead of N stutters. Dial PROVISIONAL — the owner's eye judges.
     hitSlowRate: 0.25,     // slowmo-r63: the sim rate inside the window — ¼×, deliberately the proven 's'-mode number: v0.8.2's render interpolation was built to make exactly this rate buttery ("make the slow mo nice and smooth" — owner). The kill beat keeps its HARD FREEZE (koStopMs) by the same ruling ("keep ko hard freeze").
     koStopMs: 400,         // the killing blow's dramatic beat (~48 ticks) — freezes on the impact pose, THEN the K.O. card runs its koTicks
@@ -320,13 +317,18 @@ body {
     [KS, [[[46,-6.2],[47.58,-5.92],[49.04,-5.26],[50.28,-4.28],[51.28,-3.05],[51.96,-1.6],[52.23,0],[52.03,1.62],[51.37,3.1],[50.34,4.34],[49.04,5.26],[47.57,5.85],[46,6.11],[32,6.11],[30.4,5.96],[28.88,5.4],[27.58,4.42],[26.63,3.1],[26.08,1.58],[25.92,0],[26.15,-1.57],[26.72,-3.05],[27.64,-4.36],[28.88,-5.4],[30.38,-6.03],[32,-6.2]],[[46,-3.54],[46.92,-3.42],[47.77,-3.06],[48.5,-2.5],[49.06,-1.77],[49.42,-0.92],[49.54,0],[49.42,0.92],[49.06,1.77],[48.5,2.5],[47.77,3.06],[46.92,3.42],[46,3.54],[32,3.54],[31.08,3.42],[30.23,3.06],[29.5,2.5],[28.94,1.77],[28.58,0.92],[28.46,0],[28.58,-0.92],[28.94,-1.77],[29.5,-2.5],[30.23,-3.06],[31.08,-3.42],[32,-3.54]]]],
     [KS, [[60,-2.46],[61.23,-2.13],[62.13,-1.23],[62.46,0],[62.13,1.23],[61.23,2.13],[60,2.46],[46,2.46],[44.77,2.13],[43.87,1.23],[43.54,0],[43.87,-1.23],[44.77,-2.13],[46,-2.46]]],
     [KS, [[[65.91,0],[65.72,1.53],[65.1,2.95],[64.12,4.12],[62.89,5.01],[61.49,5.58],[60,5.81],[58.48,5.66],[57.05,5.12],[55.82,4.18],[54.9,2.95],[54.37,1.51],[54.22,0],[54.42,-1.49],[54.97,-2.9],[55.85,-4.15],[57.05,-5.12],[58.47,-5.72],[60,-5.88],[61.51,-5.63],[62.89,-5.01],[64.08,-4.08],[65.03,-2.9],[65.66,-1.52]],[[63.69,0],[63.22,1.77],[61.92,3.06],[60.15,3.54],[58.38,3.06],[57.09,1.77],[56.62,0],[57.09,-1.77],[58.38,-3.06],[60.15,-3.54],[61.92,-3.06],[63.22,-1.77]]]],
-    [KS, [[67.95,-9.93],[66.55,-16.42],[73.76,-16.14],[76.55,-17.62],[79.55,-18.58],[84.28,-24.77],[88.08,-18.34],[91.01,-17.29],[93.72,-15.81],[101.8,-18.59],[99.71,-9.91],[101.22,-7.2],[102.28,-4.25],[110.38,0],[102.43,4.29],[101.43,7.28],[99.92,10.04],[101.52,18.43],[93.74,15.83],[90.97,17.2],[88.04,18.15],[84.28,25.08],[79.6,18.38],[76.58,17.53],[73.75,16.15],[66.32,16.62],[67.74,10.06],[66.44,7.34],[65.6,4.45],[65.22,1.49],[65.28,-1.48],[65.76,-4.42],[66.65,-7.25]]],
+    [KS, [[65.0,-0.0],[65.18,-2.64],[61.82,-8.07],[67.89,-10.07],[67.89,-10.07],[69.45,-12.21],[71.29,-14.12],[71.3,-22.0],[78.13,-18.07],[78.13,-18.07],[80.7,-18.71],[83.34,-18.99],[88.41,-25.01],[91.12,-17.62],[91.12,-17.62],[93.5,-16.45],[95.7,-14.97],[103.46,-16.33],[100.78,-8.92],[100.78,-8.92],[101.85,-6.5],[102.58,-3.95],[110.4,0.0],[102.58,3.95],[102.58,3.95],[101.85,6.5],[100.78,8.92],[103.46,16.33],[95.7,14.97],[95.7,14.97],[93.5,16.45],[91.12,17.62],[88.41,25.01],[83.34,18.99],[83.34,18.99],[80.7,18.71],[78.13,18.07],[71.3,22.0],[71.29,14.12],[71.29,14.12],[69.45,12.21],[67.89,10.07],[61.82,8.07],[65.18,2.64],[65.18,2.64]]],
     [KS, [[63.85,-3.69],[66.15,-4.15],[69.23,-4.77],[70.77,-5.23],[70.77,5.31],[69.23,4.85],[66.15,4.23],[63.85,3.77]]],
     [KD, [[65.85,-5.54],[68.77,-6.62],[68.77,6.62],[65.85,5.46]]],
     [KC, [[91.98,0],[91.35,3.11],[89.34,5.49],[86.72,6.93],[83.85,7.66],[80.77,7.43],[78.06,5.78],[76.54,3.02],[76.29,0],[76.86,-2.89],[78.25,-5.6],[80.72,-7.56],[83.85,-8.03],[86.78,-7.07],[89.15,-5.31],[91.04,-2.98]]],
   ]);
-  const FLAIL_CH = { segs: [[0,2],[3,3],[4,4],[5,9]], j: [32, 46, 60, 84], growMax: 1.39 };   // shape-index range per segment · joint d J0, J1, J2, ball centre (px after the boot block below)
-  /* growMax (longchain-r86): the art-connectivity ceiling for pitch growth. S1's open ring
+  const FLAIL_CH = { segs: [[0,2],[3,3],[4,4],[5,9]], j: [32, 46, 60, 84], ext: { pitch: 1, unit: 28, every: 4, max: 3, ring: 3, bar: 4 } };   // shape-index range per segment · joint d J0, J1, J2, ball centre (px after the boot block below)
+  /* ext (links-r87, replaces the pitch stretch + growMax): the chain grows by ADDING LINKS, never by stretching art.
+   * One growth unit = a ring + bar pair (shapes `ring` 3 and `bar` 4, copied `unit` = 28u further out in S2's frame — the
+   * same ring/bar thread overlap as the base links), so S2 (J1..J2) lengthens by 28u per unit and every later joint rides
+   * outward with it. The head segment S3 is untouched (pitch 24u, art unscaled — nothing stretches). One unit per `every`
+   * hits (lenStep), at most `max` units (LEN_STEPS 12 / 4 = 3). Hitbox: the S1+S2 baked circles are cloned per unit.
+   * --- historical note, superseded: growMax (longchain-r86): the art-connectivity ceiling for pitch growth. S1's open ring
    * ends at e = 51.5 − 32 = 19.5 (unscaled) while J1 rides at 14·mul — the ring carries the
    * joint only up to mul ≤ 19.5/14 = 1.3929 (the bar→ball-eye thread tolerates more; the ring
    * is the binding link). trait.len 0.025 tops at 1 + 0.025×LEN_STEPS = 1.30 — inside, with
@@ -453,7 +455,7 @@ body {
     [KB, [[[52.62,-8.31],[53.77,-6],[52.62,-3.69],[51.46,-6]],[[34,3.77],[35.04,5.85],[34,7.92],[32.96,5.85]],[[57.38,3.96],[58.25,5.69],[57.38,7.42],[56.52,5.69]]]],
     [KD, [[[3.08,-8.77],[1.85,-8.15],[0.92,-5.38],[0.35,-2.69],[0.35,2.69],[0.92,5.38],[1.85,8.15],[3.08,8.77],[3.85,8.08],[3.85,-8.08]],[[84.15,-8.08],[84.15,8.08],[84.92,8.77],[86.15,8.15],[87.08,5.38],[87.65,2.69],[87.65,-2.69],[87.08,-5.38],[86.15,-8.15],[84.92,-8.77]]]],
   ]);
-  for (const pl of INGR_SCROLL.polys) for (const pts of pl.subs) for (const q of pts) { q[0] *= 88 / 76; q[1] *= 88 / 76; }   // owner 2026-10-23 "a bit bigger": the whole held art scaled ×88/76 about the spine origin (authored coords above stay at 76 — the grip centre lands on d 44 = len/2)
+  for (const pl of INGR_SCROLL.polys) for (const pts of pl.subs) for (const q of pts) { q[0] = 44 + (q[0] - 44) * (88 / 76); q[1] *= 88 / 76; }   // scaled about the grip centre d 44 (was about the origin, which pushed the art centre to d ~51 and left the scroll off-centre on its rim grip — owner 2026-11-09)   // owner 2026-10-23 "a bit bigger": the whole held art scaled ×88/76 about the spine origin (authored coords above stay at 76 — the grip centre lands on d 44 = len/2)
   /* MAGIC ORB (2026-10-23) — spine-local, pre-weaponScale, radial hold, NO SHAFT: the orb alone at (len, 0), the true-sentinel design (owner 2026-10-22). Three shapes, nothing else: a KB sphere (14-vertex polygon circle, r 16, centre exactly (54, 0)); one flat KG rune band across the equator (d 38.6–69.4, |l| 2.6 = 5.2u wide so it bakes, corners inside the sphere); a small KP specular dot (vis paint, upper-left of the sphere, clear of the band). No shaft, cord, chain, glow, trail or motes — the empty space between body disc and orb IS the design. observed: base current (CFG.flipMs present, WEAPON_IDS ended 'scroll', KT '#ecd5a3' present); owner playtest words 2026-10-23: "too far out, make it closer to the body and just a bit larger", then again "make it closer to the body and increase the size of the orb", then "make it closer to the body" twice more ("a bit more closer", "bit closer", "make it closer") — row `len` 100 → 80 → 72 → 68 → 64 → 60 → 54 (BELOW the brief's 90–110 band by the owner's word; orbit radius, not art length; ≤ LT ≈ 113.4, far edge d 70 also ≤ LT; at weaponScale 1.3 the orb centre orbits ≈ 70px out, its inner edge ≈ 49px vs bodyR 64, so the orb now overlaps the disc by ≈ 15px and draws over it — the owner's call, raise `len` to ≈ 65 for a just-touching look  [AMENDED 2026-10-28, authoring-scale pass — that arithmetic omitted the radial MOUNT OFFSET CFG.bodyR * SPINE_R0 = 61.44px that every radial weapon's art is drawn from (the grip tucks 2.56px under the rim; same constant for all 13 radial weapons, so overlap is not per-weapon data). Measured: the orb centre orbits 61.44 + 70.2 = 131.6px from the body centre, inner edge 110.8 vs rim 64 → 46.8px CLEAR — no overlap, nothing draws over the disc, and `tuck: false` is a no-op for it today. "raise `len` to ≈ 65" was therefore the wrong lever pointing the wrong way: +1 len = +1.3px of orbit, so 65 widens the gap to ≈ 61px. `len` is also floored now (LEN_MIN 54, boot-gated 2026-10-28) and 54 IS the orb's value, so the orb cannot come closer via len at all. Bringing it in needs a MOUNT rule for handle-less art (a per-weapon mount radius, or mounting detached art from the rim instead of from the grip) — owner decision, not a len tweak.]) and sphere r 12 → 13 → 16 (ABOVE the brief's 11–13 band by the owner's word; the shape count is unchanged); INGR_ORB is built before `LT` is declared (centre 54 + r 16 = 70 < 113.44); no `lead`/`headLead` — a sphere has no facing (taxonomy's third case, like the tome's symmetry note); the shaft doctrine, butt rule and grip-binding language do not apply (named exception); no CIRCLES_V2 row on purpose — ghost until baked (watermark ART PREVIEW — HITBOXES UNBAKED: orb, gate n=0 MISS-FAIL expected) [AMENDED 2026-10-28, pre-skills truth-up: BAKED since — CIRCLES_V2 now carries all 22 WEAPON_IDS (verified by count: 22 rows, UNBAKED empty, no ART PREVIEW watermark draws). The sentence it amends records the delivery moment, not the shipped file.]. */
   const INGR_ORB = build([
     [KB, [[70,0],[69.7,3.12],[68.78,6.12],[67.31,8.89],[65.32,11.32],[62.89,13.31],[60.12,14.78],[57.12,15.7],[54,16],[50.88,15.7],[47.88,14.78],[45.11,13.31],[42.68,11.32],[40.69,8.89],[39.22,6.12],[38.3,3.12],[38,0],[38.3,-3.12],[39.22,-6.12],[40.69,-8.89],[42.68,-11.32],[45.11,-13.31],[47.88,-14.78],[50.88,-15.7],[54,-16],[57.12,-15.7],[60.12,-14.78],[62.89,-13.31],[65.32,-11.32],[67.31,-8.89],[68.78,-6.12],[69.7,-3.12]]],
@@ -539,12 +541,12 @@ body {
    *                  owner's eye: *"i dont see any difference between wand and tome… it reminds too
    *                  much of tome and other spellcasters"* — the drag read as just another lingering
    *                  spell, so it failed the only test that matters). The axis name stays RESERVED
-   *                  (the GRUDGE_REVERTED marker); THE WAND'S TRAIT SLOT IS OPEN again and the
+   *                  (grudge-r70); THE WAND'S TRAIT SLOT IS OPEN again and the
    *                  discussion continues at #704 with a visual-first menu
    *     trait.flick  THE WHIP-CRACK FLICK — REVERTED (flick-r72 landed, bloom-r73 reverted whole at
    *                  the owner's eye: *"it reminds too much about the other spells"* — the second
    *                  projectile-tuning veto; the wand cannot win by tuning its comet, the comet IS
-   *                  the resemblance). Name reserved (FLICK_REVERTED).
+   *                  the resemblance). Name reserved.
    *     trait.fig    THE TRANSFIGURATION / THE BLOOM (bloom-r73, owner go after the elaboration:
    *                  "yes option 1, it should do nothing at all" + "go, your leans") — bloom seconds
    *                  added per damaging hit (wand 3.0; FIG.steps 1 lands exactly on FIG.cap 6.0 —
@@ -596,7 +598,7 @@ body {
    *                  visual/spectacular. something which can also snowball"* — the fire line written
    *                  AFTER the spell's death and its whisper-quiet manuscript strokes read too faint
    *                  and too retrospective; the scroll's SECOND revert scar after the called fall).
-   *                  Name reserved (the GRUDGE_REVERTED / FLICK_REVERTED precedent); the machinery
+   *                  Name reserved (the grudge / flick precedent); the machinery
    *                  retired WHOLE — segDist/polyDist/spawnLane/laneStep, the st.lp flight sampling,
    *                  drawLanes/strokePoly, G.lanes/G.strokes and stats.lanes/singes all removed
    *     trait.ember  KINDLING — THE EMBER SPILL (kindling-r82, owner: *"the metoer/projectile as it
@@ -678,7 +680,7 @@ body {
    *                  not: an enemy projectile dies on the loop's drawn arc while the loop flies
    *                  on (snapfix-r57), and loop meets loop both are destroyed (catchghost-r58);
    *                  the catch = retirement + the cycle-only
-   *                  growth step + the banked-spin INSTANT rethrow (RETHROW_WAIT 0 since
+   *                  growth step + the banked-spin INSTANT rethrow (no hand-rest since
    *                  instantthrow-r59 — the r54 hand-rest is dormant in the constant), and
    *                  it arms on the drawn ARC as well as the disc (the departure-tick self-catch
    *                  fix); pierces bodies (one hit per passage on a deep-clearance latch, and the
@@ -1113,7 +1115,7 @@ body {
        * loop), and the defender's game becomes swatting (~1,000 swats per 8-battle cell). */
       trait: { spin: 0.70, dmg: 0.0 }, line: 'a star per rev · ricochets forever — only the foe, their blade or shot ends it',
       shot: { r: 9, speed: 640, ricochet: true, kind: 'star', what: 'star', copy: true }, poly: INGR_SHUR },
-    flail: { ...WDEF, name: 'Flail', len: 110.4, trait: { spin: 0.0, dmg: 0.7, len: 0.025 }, brief: '+DMG +LEN / Hit', line: 'a loose chained ball · gains damage per hit · the chain LENGTHENS — the ball flies further out', chain: FLAIL_CH, poly: INGR_FLAIL },   // 2026-10-21: melee class (axe trait); the chain is simulated (flailStep) — longchain-r86 (owner go 2026-10-31, THE LONG CHAIN): trait.len grows the PITCHES only — rigid segment assemblies ride outward, coverage stays bake-frozen (see chainFrames); boot-gated by FLAIL_CH.growMax
+    flail: { ...WDEF, name: 'Flail', len: 110.4, trait: { spin: 0.0, dmg: 0.7, len: 0.025 }, brief: '+DMG +LEN / Hit', line: 'a loose chained ball · gains damage per hit · a new chain link every 4 hits — the ball flies further out', chain: FLAIL_CH, poly: INGR_FLAIL },   // 2026-10-21: melee class (axe trait); the chain is simulated (flailStep) — longchain-r86 (owner go 2026-10-31, THE LONG CHAIN): trait.len grows the PITCHES only — rigid segment assemblies ride outward, coverage stays bake-frozen (see chainFrames); boot-gated by FLAIL_CH.growMax
     nunchaku: { ...WDEF, name: 'Nunchaku', len: 112, trait: { spin: 0.0, dmg: 0.7 }, line: 'a hinged stick · gains damage per hit', chain: NUNCHAKU_CH, poly: INGR_NUNCHAKU },
     scythe: { ...WDEF, name: 'Scythe', len: 112.8, trait: { spin: 0.0, dmg: 0.7 }, line: 'a long inward hook · gains damage per hit', lead: -1, poly: INGR_SCYTHE },   // lead: the business-contour side that must FACE THE MOTION — the placement layer mirrors art+hitbox together on spin sign (owner decision 2026-10-22). For a HOOK the business contour is the BEAK, not the edge strip: shipped at +1 (mouth-forward), the owner's playtest read it "spinning the wrong way from the beginning" — the beak at −l must lead, mouth scooping behind (−1, owner verdict same day)
     katana: { ...WDEF, name: 'Katana', len: 112, trait: { spin: 0.0, dmg: 0.7 }, line: 'a curved folded blade · gains damage per hit', lead: -1, poly: INGR_KATANA },   // the katana's edge strip runs along its -l boundary — edge-leading keeps the chisel side cutting into the motion at both spin signs
@@ -1233,14 +1235,14 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     crossbow: [{"d":75.7,"l":-45.4,"r":10.6},{"d":75.4,"l":-11.1,"r":10.2},{"d":64.3,"l":-45.2,"r":8.6},{"d":86.4,"l":-45.2,"r":8.6},{"d":55.8,"l":-43.4,"r":8.2},{"d":95,"l":-43.4,"r":8.2},{"d":75.5,"l":-21.6,"r":8},{"d":47,"l":-40.6,"r":7.5},{"d":103,"l":-40.9,"r":7.5},{"d":75.7,"l":-33.8,"r":7.2},{"d":110,"l":-38,"r":6.9},{"d":40.1,"l":-37.8,"r":6.7},{"d":8.1,"l":-15.3,"r":6.2},{"d":116.3,"l":-35.1,"r":6.2},{"d":33.5,"l":-34.6,"r":6.1},{"d":142.1,"l":-16.9,"r":6.1},{"d":122,"l":-31.9,"r":5.5},{"d":27.9,"l":-31.4,"r":5.4},{"d":23.1,"l":-28.3,"r":4.9},{"d":126.8,"l":-28.8,"r":4.9},{"d":18.9,"l":-25.6,"r":4.5},{"d":131.3,"l":-25.9,"r":4.5},{"d":14.2,"l":-21.3,"r":4.3},{"d":136.3,"l":-21.3,"r":4.3},{"d":83.4,"l":-4.7,"r":3.8},{"d":67.2,"l":-4.5,"r":3.6},{"d":75.3,"l":-59,"r":3.5},{"d":18.2,"l":-19.5,"r":2.6},{"d":21,"l":-19.6,"r":2.6},{"d":23.7,"l":-19.6,"r":2.6},{"d":26.5,"l":-19.6,"r":2.6},{"d":29.2,"l":-19.6,"r":2.6},{"d":32,"l":-19.6,"r":2.6},{"d":34.8,"l":-19.6,"r":2.6},{"d":37.5,"l":-19.6,"r":2.6},{"d":40.3,"l":-19.6,"r":2.6},{"d":43.1,"l":-19.6,"r":2.6},{"d":45.8,"l":-19.6,"r":2.6},{"d":48.6,"l":-19.6,"r":2.6},{"d":51.3,"l":-19.6,"r":2.6},{"d":54.1,"l":-19.6,"r":2.6},{"d":56.9,"l":-19.6,"r":2.6},{"d":59.6,"l":-19.6,"r":2.6},{"d":62.4,"l":-19.6,"r":2.6},{"d":65.1,"l":-19.6,"r":2.6},{"d":75.4,"l":-62.6,"r":2.6},{"d":80.5,"l":-28.2,"r":2.6},{"d":83.5,"l":-19.6,"r":2.6},{"d":86.3,"l":-19.6,"r":2.6},{"d":89.1,"l":-19.6,"r":2.6},{"d":91.8,"l":-19.6,"r":2.6},{"d":94.6,"l":-19.6,"r":2.6},{"d":97.3,"l":-19.6,"r":2.6},{"d":100.1,"l":-19.6,"r":2.6},{"d":102.9,"l":-19.6,"r":2.6},{"d":105.6,"l":-19.6,"r":2.6},{"d":108.4,"l":-19.6,"r":2.6},{"d":111.2,"l":-19.6,"r":2.6},{"d":113.9,"l":-19.6,"r":2.6},{"d":116.7,"l":-19.6,"r":2.6},{"d":119.4,"l":-19.6,"r":2.6},{"d":122.2,"l":-19.6,"r":2.6},{"d":125,"l":-19.6,"r":2.6},{"d":127.7,"l":-19.6,"r":2.6},{"d":130.5,"l":-19.5,"r":2.6},{"d":147,"l":-13.1,"r":2.6},{"d":69,"l":-53.8,"r":2.1}],
     boomerang: [{"d":54.7,"l":-18,"r":10.1},{"d":63.7,"l":-12.9,"r":10},{"d":45.8,"l":-25.4,"r":9.9},{"d":73.5,"l":-9.4,"r":9.9},{"d":83.4,"l":-7.9,"r":9.5},{"d":38.1,"l":-35.1,"r":9.4},{"d":93.5,"l":-7.8,"r":9},{"d":33.2,"l":-44.4,"r":8.8},{"d":103.6,"l":-8.4,"r":8.4},{"d":29.2,"l":-53.1,"r":8.2},{"d":112.1,"l":-10.3,"r":7.7},{"d":26.6,"l":-61.3,"r":7.6},{"d":120,"l":-9.5,"r":4.8},{"d":118.7,"l":-14.3,"r":4.7},{"d":21.1,"l":-66.8,"r":3.5},{"d":28.3,"l":-68.9,"r":3.1},{"d":24.9,"l":-68.9,"r":2.3}],
     shuriken: [{"d":58.5,"l":-21,"r":12.8},{"d":67.6,"l":-30.2,"r":7.6},{"d":49.3,"l":-30.3,"r":7.5},{"d":49.3,"l":-11.9,"r":7.5},{"d":67.7,"l":-11.9,"r":7.5},{"d":43.9,"l":-6.5,"r":5.2},{"d":73.1,"l":-35.7,"r":5.2},{"d":43.8,"l":-35.8,"r":5.1},{"d":73.4,"l":-6.1,"r":5},{"d":40.1,"l":-39.5,"r":3.5},{"d":76.8,"l":-39.5,"r":3.5},{"d":77,"l":-2.6,"r":3.4},{"d":39.8,"l":-2.3,"r":3.3},{"d":37.5,"l":-42.1,"r":2.4},{"d":37.4,"l":0,"r":2.3},{"d":79.6,"l":0,"r":2.3},{"d":79.7,"l":-42.3,"r":2.3}],
-    flail: [{"d":26.9,"l":0,"r":10.7},{"d":15.4,"l":0,"r":8.5},{"d":6.9,"l":-0.1,"r":8},{"d":38.4,"l":-0.1,"r":4.3},{"d":42.9,"l":-0.1,"r":2.9},{"d":0.9,"l":-5.8,"r":2},{"d":0.9,"l":5.8,"r":2},{"d":36.8,"l":4.1,"r":2.9},{"d":39.6,"l":-6,"r":2.9},{"d":66,"l":1.1,"r":2.9},{"d":35.5,"l":1.4,"r":2.8},{"d":36,"l":-2.7,"r":2.8},{"d":39.2,"l":5.8,"r":2.8},{"d":42.4,"l":6.3,"r":2.8},{"d":42.5,"l":-6.3,"r":2.8},{"d":46,"l":6.3,"r":2.8},{"d":46.1,"l":-6.3,"r":2.8},{"d":49.6,"l":6.3,"r":2.8},{"d":49.7,"l":-6.3,"r":2.8},{"d":53.2,"l":6.3,"r":2.8},{"d":53.3,"l":-6.3,"r":2.8},{"d":56.8,"l":6.3,"r":2.8},{"d":56.9,"l":-6.3,"r":2.8},{"d":59.8,"l":-6.3,"r":2.8},{"d":59.8,"l":6.2,"r":2.8},{"d":64.7,"l":3.8,"r":2.8},{"d":65.5,"l":-2.6,"r":2.8},{"d":63.2,"l":-5.2,"r":2.7},{"d":60.4,"l":0,"r":4.3},{"d":65.3,"l":-0.1,"r":4.3},{"d":69.8,"l":-0.1,"r":4.3},{"d":74.3,"l":-0.1,"r":4.3},{"d":78.8,"l":-0.1,"r":3.4},{"d":108.9,"l":-0.1,"r":25.2},{"d":134.2,"l":0,"r":5.5},{"d":126.7,"l":17.9,"r":5.1},{"d":109.1,"l":25.1,"r":5},{"d":126.6,"l":-18.2,"r":5},{"d":109.1,"l":-25.3,"r":4.9},{"d":90.8,"l":17.6,"r":4.8},{"d":90.8,"l":-17.7,"r":4.6},{"d":83.7,"l":3.2,"r":2.9},{"d":72.3,"l":1.7,"r":2.8},{"d":73.7,"l":4.2,"r":2.8},{"d":72.3,"l":-1.6,"r":2.7},{"d":73.9,"l":-4.3,"r":2.7},{"d":76.2,"l":-5.8,"r":2.7},{"d":76.3,"l":5.7,"r":2.7},{"d":83.4,"l":-3.3,"r":2.7},{"d":139.9,"l":0,"r":2.7},{"d":79.3,"l":-5.9,"r":2.6},{"d":79.6,"l":5.7,"r":2.6},{"d":130.2,"l":-21.9,"r":2.6},{"d":130,"l":21.8,"r":2.5},{"d":109.4,"l":30.3,"r":2.3},{"d":109.4,"l":-30.6,"r":2}],
+    flail: [{"d":26.9,"l":0,"r":10.7},{"d":15.4,"l":0,"r":8.5},{"d":6.9,"l":-0.1,"r":8},{"d":38.4,"l":-0.1,"r":4.3},{"d":42.9,"l":-0.1,"r":2.9},{"d":0.9,"l":-5.8,"r":2},{"d":0.9,"l":5.8,"r":2},{"d":36.8,"l":4.1,"r":2.9},{"d":39.6,"l":-6,"r":2.9},{"d":66,"l":1.1,"r":2.9},{"d":35.5,"l":1.4,"r":2.8},{"d":36,"l":-2.7,"r":2.8},{"d":39.2,"l":5.8,"r":2.8},{"d":42.4,"l":6.3,"r":2.8},{"d":42.5,"l":-6.3,"r":2.8},{"d":46,"l":6.3,"r":2.8},{"d":46.1,"l":-6.3,"r":2.8},{"d":49.6,"l":6.3,"r":2.8},{"d":49.7,"l":-6.3,"r":2.8},{"d":53.2,"l":6.3,"r":2.8},{"d":53.3,"l":-6.3,"r":2.8},{"d":56.8,"l":6.3,"r":2.8},{"d":56.9,"l":-6.3,"r":2.8},{"d":59.8,"l":-6.3,"r":2.8},{"d":59.8,"l":6.2,"r":2.8},{"d":64.7,"l":3.8,"r":2.8},{"d":65.5,"l":-2.6,"r":2.8},{"d":63.2,"l":-5.2,"r":2.7},{"d":60.4,"l":0,"r":4.3},{"d":65.3,"l":-0.1,"r":4.3},{"d":69.8,"l":-0.1,"r":4.3},{"d":74.3,"l":-0.1,"r":4.3},{"d":78.8,"l":-0.1,"r":3.4},{"d":83.7,"l":3.2,"r":2.9},{"d":72.3,"l":1.7,"r":2.8},{"d":73.7,"l":4.2,"r":2.8},{"d":72.3,"l":-1.6,"r":2.7},{"d":73.9,"l":-4.3,"r":2.7},{"d":76.2,"l":-5.8,"r":2.7},{"d":76.3,"l":5.7,"r":2.7},{"d":83.4,"l":-3.3,"r":2.7},{"d":79.3,"l":-5.9,"r":2.6},{"d":79.6,"l":5.7,"r":2.6},{"d":81.9,"l":0.0,"r":2.4},{"d":83.0,"l":-7.7,"r":2.4},{"d":80.3,"l":-8.5,"r":1.9},{"d":83.0,"l":7.7,"r":2.4},{"d":80.3,"l":8.5,"r":1.9},{"d":109.2,"l":0,"r":24.2},{"d":83.5,"l":-9.3,"r":2.4},{"d":95.5,"l":-23.6,"r":2.4},{"d":94.1,"l":-26.1,"r":1.9},{"d":113.9,"l":-26.9,"r":2.4},{"d":114.4,"l":-29.7,"r":1.9},{"d":130.1,"l":-17.5,"r":2.4},{"d":132.3,"l":-19.4,"r":1.9},{"d":136.5,"l":0.0,"r":2.4},{"d":139.4,"l":0.0,"r":1.9},{"d":130.1,"l":17.5,"r":2.4},{"d":132.3,"l":19.4,"r":1.9},{"d":113.9,"l":26.9,"r":2.4},{"d":114.4,"l":29.7,"r":1.9},{"d":95.5,"l":23.6,"r":2.4},{"d":94.1,"l":26.1,"r":1.9},{"d":83.5,"l":9.3,"r":2.4}],
     nunchaku: [{"d":43,"l":0,"r":11.1},{"d":31.6,"l":0,"r":10.4},{"d":18.4,"l":0,"r":10},{"d":8.4,"l":0.1,"r":9.5},{"d":1.5,"l":6.8,"r":2.7},{"d":1.6,"l":-6.7,"r":2.7},{"d":83.6,"l":0,"r":11.3},{"d":107.9,"l":0,"r":11.2},{"d":94.9,"l":0.1,"r":10.5},{"d":119.6,"l":-0.1,"r":10},{"d":130,"l":0,"r":9.8},{"d":67.9,"l":-0.1,"r":6.9},{"d":140,"l":6.7,"r":5.2},{"d":140.4,"l":-6.9,"r":5.2},{"d":56.8,"l":7.6,"r":4.6},{"d":56.7,"l":-7.7,"r":4.5},{"d":49.3,"l":-1.1,"r":4.3},{"d":49.6,"l":3.2,"r":4.1},{"d":51.3,"l":-5.8,"r":4.1},{"d":52.2,"l":6.5,"r":4},{"d":61.8,"l":-6.8,"r":4},{"d":62.8,"l":5.9,"r":4},{"d":144.1,"l":2.9,"r":2.6},{"d":144.3,"l":-2.1,"r":2.4}],
     scythe: [{"d":135,"l":-0.4,"r":11},{"d":119.7,"l":0,"r":10.2},{"d":132.3,"l":-14.3,"r":10.2},{"d":131.2,"l":-25.7,"r":9.1},{"d":73.9,"l":0.2,"r":9},{"d":129.6,"l":-36,"r":8.7},{"d":127.2,"l":-46.6,"r":8.4},{"d":124.7,"l":-55.2,"r":8.2},{"d":13.8,"l":0,"r":7.9},{"d":121.9,"l":-63.3,"r":7.9},{"d":22.3,"l":0,"r":7.8},{"d":30.4,"l":0,"r":7.7},{"d":38.5,"l":0,"r":7.5},{"d":118.4,"l":-71.7,"r":7.5},{"d":46.6,"l":0,"r":7.4},{"d":54.6,"l":0.1,"r":7.3},{"d":61.9,"l":0,"r":7.2},{"d":107.4,"l":0,"r":7.1},{"d":83.4,"l":0.1,"r":7},{"d":90.7,"l":0,"r":7},{"d":98.7,"l":0.1,"r":7},{"d":114.4,"l":-79.5,"r":7},{"d":5.6,"l":-0.9,"r":6.8},{"d":109.9,"l":-86.3,"r":6.4},{"d":105.7,"l":-91.3,"r":5.6},{"d":73.8,"l":9.8,"r":5},{"d":100.8,"l":-95.6,"r":4.8},{"d":96.6,"l":-98.5,"r":3.9},{"d":73.8,"l":15.1,"r":3.2},{"d":93.1,"l":-100.4,"r":2.9},{"d":1.6,"l":4.9,"r":2.8},{"d":141.9,"l":-9.4,"r":2.5},{"d":114.2,"l":-8.7,"r":2.4},{"d":114.8,"l":9,"r":2.4},{"d":125.1,"l":8.7,"r":2.4}],
     katana: [{"d":29.1,"l":0,"r":9.5},{"d":14.7,"l":0,"r":8.5},{"d":39.4,"l":0.1,"r":7.8},{"d":47.2,"l":0.4,"r":7.7},{"d":55.7,"l":0.7,"r":7.7},{"d":63.9,"l":1.2,"r":7.5},{"d":71.6,"l":1.8,"r":7.4},{"d":6.2,"l":0.9,"r":7.3},{"d":79.3,"l":2.5,"r":7.3},{"d":87.1,"l":3.3,"r":7.2},{"d":94.9,"l":4.2,"r":7.1},{"d":102.1,"l":5.2,"r":6.9},{"d":109.6,"l":6.3,"r":6.8},{"d":116.8,"l":7.4,"r":6.7},{"d":123.6,"l":8.6,"r":6.6},{"d":130.4,"l":10.1,"r":6.2},{"d":136.4,"l":12.7,"r":4.9},{"d":28.4,"l":-12.1,"r":4.7},{"d":28.4,"l":10.2,"r":4.7},{"d":140.8,"l":15,"r":3.5},{"d":28.5,"l":15.2,"r":3},{"d":1.7,"l":-5,"r":2.8},{"d":21.3,"l":-5.8,"r":2.6},{"d":8.3,"l":-6.1,"r":2.2}],
     knives: [{"d":29,"l":-33,"r":7.6},{"d":50.7,"l":-35.7,"r":7.6},{"d":72,"l":-32,"r":7.6},{"d":50.7,"l":-43.8,"r":6.9},{"d":75,"l":-39.4,"r":6.6},{"d":26.1,"l":-40.1,"r":6.4},{"d":50.6,"l":-50.9,"r":5.7},{"d":32.7,"l":-23.6,"r":5.5},{"d":36.8,"l":-13.6,"r":5.5},{"d":50.6,"l":-14.9,"r":5.5},{"d":50.7,"l":-24.9,"r":5.5},{"d":64,"l":-12.2,"r":5.5},{"d":68.6,"l":-23.6,"r":5.5},{"d":77.7,"l":-46.2,"r":5},{"d":23.5,"l":-46.6,"r":4.9},{"d":50.7,"l":-8.4,"r":4.7},{"d":66.2,"l":-17.8,"r":4.7},{"d":39,"l":-8.1,"r":4.6},{"d":50.7,"l":-56.6,"r":4.6},{"d":61.9,"l":-7,"r":4.6},{"d":21.6,"l":-51.2,"r":3.7},{"d":50.7,"l":-61.2,"r":3.7},{"d":79.8,"l":-51.3,"r":3.7},{"d":38.1,"l":-24.8,"r":2.9},{"d":20.1,"l":-54.9,"r":2.8},{"d":45.2,"l":-24.8,"r":2.8},{"d":50.6,"l":-65.5,"r":2.8},{"d":81.2,"l":-54.9,"r":2.8},{"d":56.3,"l":-24.8,"r":2.7},{"d":63,"l":-24.6,"r":2.6},{"d":27.9,"l":-20.2,"r":2.5},{"d":32.6,"l":-18.1,"r":2.5},{"d":74,"l":-21.4,"r":2.5},{"d":42.6,"l":-5.1,"r":2.4},{"d":38.5,"l":-3.2,"r":2.3},{"d":50.7,"l":-68.4,"r":2.2},{"d":53,"l":-4.1,"r":2.2},{"d":35.4,"l":-28.8,"r":2.1},{"d":19,"l":-57.7,"r":2},{"d":82.4,"l":-57.8,"r":2}],
     javelin: [{"d":63,"l":0,"r":8.5},{"d":71.7,"l":0,"r":8.5},{"d":80.7,"l":0,"r":8.5},{"d":113.9,"l":-0.1,"r":7.3},{"d":50.1,"l":0,"r":7.2},{"d":94.2,"l":0,"r":7.2},{"d":7.9,"l":0,"r":7},{"d":40.2,"l":0,"r":7},{"d":30.1,"l":0,"r":6.7},{"d":121.9,"l":-0.1,"r":6.6},{"d":22.2,"l":0,"r":6.5},{"d":106.6,"l":-0.1,"r":6.5},{"d":15,"l":0,"r":6.3},{"d":128.6,"l":-0.1,"r":5.7},{"d":134.5,"l":-0.1,"r":4.7},{"d":139.2,"l":0,"r":3.5},{"d":88.2,"l":4.1,"r":3.1},{"d":1.5,"l":-3.5,"r":2.7},{"d":1.5,"l":3.6,"r":2.7},{"d":142.7,"l":-0.1,"r":2.6},{"d":55.9,"l":-4.8,"r":2.5},{"d":87.2,"l":-5.9,"r":2.3}],
     tome: [{"d":17,"l":-8.2,"r":10.4},{"d":82.8,"l":-8,"r":10.4},{"d":27.6,"l":-6.7,"r":10},{"d":71.8,"l":-6.4,"r":9.9},{"d":37.5,"l":-5.1,"r":9.3},{"d":50.3,"l":-0.4,"r":9.3},{"d":62,"l":-4.2,"r":8.6},{"d":92.7,"l":-4.1,"r":6},{"d":7.9,"l":-2.7,"r":5.2},{"d":94.3,"l":-10.2,"r":4.3},{"d":6.8,"l":-10.5,"r":4},{"d":89.8,"l":-15.9,"r":3.5},{"d":10.8,"l":-16.6,"r":2.9}],
-    scroll: [{"d":23.5,"l":0,"r":13.7},{"d":108.1,"l":0,"r":13.7},{"d":37.2,"l":-0.4,"r":11.5},{"d":121.8,"l":-1.9,"r":11.2},{"d":93.5,"l":0.4,"r":10.9},{"d":9.9,"l":-2.6,"r":10.5},{"d":67.1,"l":1.5,"r":10.3},{"d":48.8,"l":-1.2,"r":9.5},{"d":82.1,"l":1.4,"r":9.5},{"d":5.7,"l":7.2,"r":5.5},{"d":11.5,"l":8,"r":5.1},{"d":59.4,"l":-5.5,"r":4.8},{"d":127.3,"l":8.1,"r":4.7},{"d":117.8,"l":9.7,"r":3.7},{"d":121.5,"l":9.7,"r":3.4},{"d":63.2,"l":-8.7,"r":3.1},{"d":98.1,"l":-10,"r":3.1},{"d":56.7,"l":4.3,"r":3},{"d":32.2,"l":10.7,"r":2.7},{"d":67.1,"l":-9,"r":2.7},{"d":128.1,"l":-11.3,"r":2.7},{"d":79.2,"l":-9.2,"r":2.6},{"d":4.4,"l":-11.6,"r":2.5},{"d":51.1,"l":8.8,"r":2.5},{"d":60.2,"l":9.2,"r":2.4},{"d":97.6,"l":10.6,"r":2.4},{"d":63.1,"l":11.1,"r":2.1},{"d":73.2,"l":10.3,"r":1.9},{"d":69.4,"l":11.8,"r":1.7},{"d":58.6,"l":11.4,"r":1.6},{"d":86.3,"l":10,"r":1.6}],
+    scroll: [{"d":14.5,"l":0,"r":13.7},{"d":99.1,"l":0,"r":13.7},{"d":28.2,"l":-0.4,"r":11.5},{"d":112.8,"l":-1.9,"r":11.2},{"d":84.5,"l":0.4,"r":10.9},{"d":0.9,"l":-2.6,"r":10.5},{"d":58.1,"l":1.5,"r":10.3},{"d":39.8,"l":-1.2,"r":9.5},{"d":73.1,"l":1.4,"r":9.5},{"d":-3.3,"l":7.2,"r":5.5},{"d":2.5,"l":8,"r":5.1},{"d":50.4,"l":-5.5,"r":4.8},{"d":118.3,"l":8.1,"r":4.7},{"d":108.8,"l":9.7,"r":3.7},{"d":112.5,"l":9.7,"r":3.4},{"d":54.2,"l":-8.7,"r":3.1},{"d":89.1,"l":-10,"r":3.1},{"d":47.7,"l":4.3,"r":3},{"d":23.2,"l":10.7,"r":2.7},{"d":58.1,"l":-9,"r":2.7},{"d":119.1,"l":-11.3,"r":2.7},{"d":70.2,"l":-9.2,"r":2.6},{"d":-4.6,"l":-11.6,"r":2.5},{"d":42.1,"l":8.8,"r":2.5},{"d":51.2,"l":9.2,"r":2.4},{"d":88.6,"l":10.6,"r":2.4},{"d":54.1,"l":11.1,"r":2.1},{"d":64.2,"l":10.3,"r":1.9},{"d":60.4,"l":11.8,"r":1.7},{"d":49.6,"l":11.4,"r":1.6},{"d":77.3,"l":10,"r":1.6}],
     orb: [{"d":70.2,"l":0,"r":21.8}],
   };
   for (const id of WEAPON_IDS) WEAPONS[id].poly.circles = CIRCLES_V2[id] || [];
@@ -1259,16 +1261,18 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     if (!ch) continue;
     for (let i = 0; i < ch.j.length; i++) ch.j[i] *= CFG.weaponScale;
     ch.np = ch.j.length - 1;                                      // CHAIN-GENERIC (2026-10-22): simulated particles — the eye j[0] is fixed to the weapon, particles hang at j[1..]; segments = np + 1 (flail 3/4, nunchaku 1/2). Cap 3: the f.fl state and the FL/CF scratch are fixed-size (loud throw, never a silent truncation)
-    if (ch.np < 1 || ch.np > 3) throw new Error(`${id} chain: np ${ch.np} outside 1..3 (fixed-size chain-state cap)`);
+    if (ch.np < 1 || ch.np > 3) throw new Error(`${id} chain: np ${ch.np} outside 1..3 (base chain cap)`);
+    if (ch.ext && ch.np + 2 * ch.ext.max > 9) throw new Error(`${id} chain: np ${ch.np} + 2 x ext.max ${ch.ext.max} exceeds the 9-particle state cap`);
     if (ch.segs.length !== ch.j.length) throw new Error(`${id} chain: segs ${ch.segs.length} vs joints ${ch.j.length} (segments must equal j.length = np + 1)`);
     ch.dj = [0];                                                  // spine-local d of each segment's hinge (S0: the spine origin; S_k>0: the eye/particle j[k-1])
     for (let k = 0; k < ch.np; k++) ch.dj.push(ch.j[k]);
     ch.len = [];                                                  // hinge-to-hinge pitch: eye-J1, ..., J(n-1)-head centre
     for (let k = 0; k < ch.np; k++) ch.len.push(ch.j[k + 1] - ch.j[k]);
-    ch.iw = [];                                                   // inverse masses: light links, heavy head (flail: 1/0.3, 1/0.3, 1/1.4 — unchanged)
-    for (let k = 0; k < ch.np; k++) ch.iw.push(1 / (k === ch.np - 1 ? 1.4 : 0.3));
+    ch.iwTab = [];                                                // inverse masses by particle count (links-r87: the grown chain has 3 + 2n particles): light links 1/0.3, heavy head 1/1.4
+    for (let n = 1; n <= 9; n++) { const a = []; for (let k = 0; k < n; k++) a.push(1 / (k === n - 1 ? 1.4 : 0.3)); ch.iwTab.push(a); }
     ch.segOfShape = [];
     for (let k = 0; k < ch.segs.length; k++) for (let i = ch.segs[k][0]; i <= ch.segs[k][1]; i++) ch.segOfShape[i] = k;
+    if (ch.ext) ch.ext.px = ch.ext.unit * CFG.weaponScale;        // links-r87: one added ring+bar pair, in px (REACH only)
     // Segment tie v2 (2026-10-22, owner bug seed 52071): v1 demanded whole-
     // circle containment in one segment's solid ink (centre + 12 rim samples,
     // holes counted as outside). Open-ring links and the spiked ball can never
@@ -1311,6 +1315,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       c.s = k;
     }
     W.chainTie = { tally: (() => { const t = new Array(ch.segs.length).fill(0); for (const c of W.poly.circles) t[c.s]++; return t; })(), worst: Math.round(worstTie * 10) / 10, worstI: worstTieI };   // worstI = the worst circle's index; no reader today (inscribe prints .tally/.worst) — kept as the diagnostic a red chain-tie gate needs
+    ch.circBySeg = ch.segs.map((_, b) => W.poly.circles.filter(c => c.s === b));   // links-r87: the baked coverings per BASE segment — every added link re-uses its type's list in its own frame
   }
   /* Art-preview bootstrap (2026-10-21, owner: raw Claude deliveries must be
    * previewable, not crash): a weapon id with no CIRCLES_V2 entry boots with
@@ -1403,6 +1408,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       if (!k) continue;
       for (const pts of W.poly.polys[i].subs) for (const pt of pts) reach = Math.max(reach, CFG.bodyR * SPINE_R0 + ch.dj[k] + Math.hypot(pt[0] - ch.dj[k], pt[1]) + 1.5);
     }
+    if (ch.ext) reach += ch.ext.max * ch.ext.px;   // links-r87: the grown chain reaches `max` units further
     REACH[id] = reach;
   }
 
@@ -1633,8 +1639,6 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     fireSwell: 0,      // spellform-r69 (owner's eye on the trio: "should be same shape except their color... vortex is bigger than the others"): the FIRE SIZE axis is DORMANT — his shape grammar (one design, colour = which — the ring law extended to shot art) outranks the provisional swell; flip to 1 to wake it (nocatch-r55 dormant-block pattern). Fire keeps COLOUR only until his generic status design gives it a lane (a fire DoT would collide with poison's DoT slot by the replace law — HIS call)
     fireGrow: 0.18,    // the dormant swell's rate — moved here from the tome row's trait.shotR so the row carries no dead field (the staff's shotR stays ITS live axis); only read when fireSwell is on
   };
-  const GRUDGE_REVERTED = 'grudge-r70';   // chillfix-r71: THE LONG GRUDGE reverted whole at the owner's eye (read as tome-like linger); the constant block it owned is gone — this marker keeps the name reserved so no future axis silently reuses it
-  const FLICK_REVERTED = 'flick-r72';   // bloom-r73: THE WHIP-CRACK FLICK reverted whole at the owner's eye (*"it reminds too much about the other spells"*) — a tuned projectile still reads as a caster's dot; the name stays reserved like the grudge's
 
   // ═══════════════════════ BLOOM-R73 — THE WAND TRAIT: TRANSFIGURATION ═══════════════════════
   // A wand hit (comet OR spine — allcut) blooms the struck bot's WEAPON into a joke object for
@@ -1764,14 +1768,16 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
    * through with no effect at all (the swat test skips returning shots).
    * After the catch the banked spin rethrows INSTANTLY (instantthrow-r59, owner: "just instantly
    * throw it" — reversing his own chaosorbit-r54 eye, "wait 1 sec or something before throwing
-   * again, it looks bad when its instant throwing after catch"; the beat is dormant at
-   * RETHROW_WAIT 0, one constant from returning). */
+   * again, it looks bad when its instant throwing after catch"; the beat was removed
+   * with its dormant machinery). */
+  const BIND_UNWIND = true;    // bindfix-r36: latched-bind nudge retreats along the entry arc (true) vs r35's spin-aligned forward sweep (false)
   const LATCH_CLEAR = 60;      // px of peak clearance past the hit window that re-arms a pierced hit (the blade deep-gate idiom)
   const CATCH_ARM = 20;        // px past the catch window the throw must clear before the catch arms — the throw has to leave the hand first; catchonly-r56: the margin is read on BOTH the pivot disc AND the drawn arc (boomGap), which is what killed the departure-tick self-catch
-  const CATCH_PAD = 0;         // touchorbit-r53 PURE-TOUCH ruling (owner: "implement it best possible to fit out project with pure touch"): the catch window is the BARE body touch (bodyR + r) — the halo-era 20 existed to make the geometric return a guaranteed catch; the world orbit has no guaranteed return, and the touch IS the law
-  const RETHROW_WAIT = 0;    // instantthrow-r59 (owner, reversing his own r54 eye: "i want the bot to instantly cast throw the boomerang on catch again. so remove the 1 sec delay, just instantly throw it"): ZERO hand-rest — killShot still banks the rethrow revolution at the catch, so the next substep's fireShots releases it at once (fireShots runs before shotStep; the catch's compaction drops the loop in the same pass). The r54 beat (chaosorbit-r54, owner's eye then: "when the wielder catches the boomerang, wait 1 sec or something before throwing again, it looks bad when its instant throwing after catch") is DORMANT in this constant — the catchWait field, its countdown and the launch gate all still exist; set it back to 1.0 and the beat returns exactly as it was
-  const CATCH_GROW = true;     // owner rulings 2026-10-31 + 2026-11-01: "each catch and throw makes it faster" — the catch-cycle is the growth trigger, and it feeds ONLY the cycle counter (not the full grow(): the spin/dmg axes stay on the damaging-hit trigger)
-  const HIT_GROW = false;      // hits damage but do NOT grow (owner pick over hit-grow and both-grow)
+  /* Catch / growth rulings (owner 2026-10-31 + 2026-11-01), formerly four constants (CATCH_PAD 0, RETHROW_WAIT 0,
+   * CATCH_GROW true, HIT_GROW false) that only ever held one value: "each catch and throw makes it faster" — a catch
+   * advances ONLY the cycle counter (own.shotStep), never the full grow(); a returning shot's hits damage but do not
+   * grow; the catch window is the BARE body touch (bodyR + r, touchorbit-r53 pure-touch ruling); the rethrow is
+   * instant (instantthrow-r59 — the r54 hand-rest beat and its f.catchWait gate were removed with the constant). */
   /* touchorbit-r53 — the halo's ANCHOR is retired (the owner's solo prototype supersedes the
    * parked halo at his word: "i really like this pattern for bomerang… with pure touch"). The
    * orbit is arena-centred and world-anchored, so the owner's motion no longer rides along with
@@ -1801,11 +1807,11 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     const W = WEAPONS[id];
     const rate = W.trait ? W.trait.len : 0;
     if (!rate) continue;
-    if (W.chain) {   // longchain-r86: chain growth is the PITCH factor (chainGrow) — rigid segment assemblies, no ladder row exists or is needed. Gate instead: the factor at the uniform cap must stay under the row's art-connectivity ceiling, or the links disconnect at the joints — loud boot failure, never a silent broken chain.
-      if (!(Number.isFinite(rate) && rate > 0)) throw new Error(`${id}: chain trait.len ${rate} is not a positive finite growth rate`);
-      if (!W.chain.growMax) throw new Error(`${id}: chain weapon declares trait.len without a growMax ceiling — derive it from the link art overlap`);
-      const mulMax = 1 + rate * LEN_STEPS;
-      if (mulMax > W.chain.growMax) throw new Error(`${id}: trait.len ${rate} tops the chain at ${mulMax.toFixed(3)} > growMax ${W.chain.growMax} — the link art would disconnect at the joints`);
+    if (W.chain) {   // links-r87: chain growth ADDS LINKS (chain.ext) — no stretch, no ladder row. Gate: the declared unit cap must cover every step the trait can reach, or the chain would silently stop growing.
+      const ex = W.chain.ext;
+      if (!ex) throw new Error(`${id}: chain weapon declares trait.len without a chain.ext (link growth) block`);
+      if (!(ex.every >= 1 && ex.max >= 1 && ex.unit > 0)) throw new Error(`${id}: chain.ext needs positive every/max/unit`);
+      if (ex.max < Math.floor(LEN_STEPS / ex.every)) throw new Error(`${id}: chain.ext.max ${ex.max} < LEN_STEPS/every ${Math.floor(LEN_STEPS / ex.every)} — the chain would stop growing before the step cap`);
       continue;
     }
     const P = W.poly, tang = W.hold === 'tangential';
@@ -1889,7 +1895,6 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
    * whenever a body is moved (resolver, nudge) and the pose is stored in events as a plain 6-array. chainFrames fills
    * the np + 1 segment frames (origin, cos, sin, hinge d); with the rest pose [1,0,1,0,1,0] every frame collapses to
    * the spine frame, so drawing and hitbox of the straight chain equal the authored silhouette. */
-  const CF_X = [0, 0, 0, 0], CF_Y = [0, 0, 0, 0], CF_C = [1, 1, 1, 1], CF_S = [0, 0, 0, 0];   // sized for the cap: np + 1 <= 4 frames
   /* mul (longchain-r86, owner go 2026-10-31 — THE LONG CHAIN): the chain-growth pitch
    * factor 1 + trait.len·min(lenStep, LEN_STEPS). ONLY the hinge-to-hinge pitches stretch;
    * every segment carries its art AND its baked covering circles RIGIDLY (both read these
@@ -1897,20 +1902,28 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
    * The eye offset (ch.j[0], part of the rigid haft) never scales. Chain weapons take no
    * LEN_LADDER row — the ladder is the rigid-weapon mechanism; the boot skips chain rows
    * and gates the factor against ch.growMax instead (past it the link art disconnects). */
+  /* links-r87 — THE CHAIN BENDS AT EVERY LINK. A grown flail has np = 3 + 2n particles (n = added ring+bar pairs): S1 ring,
+   * S2 bar, then n x (ring, bar), then the head — every link is its own hinged segment with its own frame, art and
+   * covering circles (a link re-uses the baked list of its TYPE, ring = base S1, bar = base S2). Pitches are all the base
+   * link pitch (14u) except the head's (24u, unchanged — the head never stretches). */
+  function chainNp(ch, n) { return ch.np + (ch.ext && n ? 2 * n : 0); }
+  function chainSegBase(ch, k, np) { return !ch.ext ? k : k === 0 ? 0 : k === np ? ch.np : (k & 1) ? 1 : 2; }   // which authored segment (art + coverings) frame k wears
+  function chainPitch(ch, i, np) { return i === np - 1 ? ch.len[ch.np - 1] : i < ch.np - 1 ? ch.len[i] : ch.len[ch.np - 2]; }   // hinge-to-hinge pitch of link i (0-based) in a chain of np particles
+  const CF_X = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], CF_Y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], CF_C = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], CF_S = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];   // np + 1 <= 10 frames
   function chainFrames(fr, ch, u, mul) {
-    const m = mul || 1;
+    const np = chainNp(ch, mul);   // mul = added link units (integer)
     CF_X[0] = fr.ox; CF_Y[0] = fr.oy; CF_C[0] = fr.dx; CF_S[0] = fr.dy;
     let px = fr.ox + fr.dx * ch.j[0], py = fr.oy + fr.dy * ch.j[0];
-    for (let k = 1; k <= ch.np; k++) {
+    for (let k = 1; k <= np; k++) {
       const ud = u[2 * k - 2], ul = u[2 * k - 1];
       const dx = ud * fr.dx - ul * fr.dy, dy = ud * fr.dy + ul * fr.dx;
       CF_X[k] = px; CF_Y[k] = py; CF_C[k] = dx; CF_S[k] = dy;
-      if (k < ch.np) { px += dx * ch.len[k - 1] * m; py += dy * ch.len[k - 1] * m; }
+      if (k < np) { const L = chainPitch(ch, k - 1, np); px += dx * L; py += dy * L; }
     }
   }
   function chainGrow(wId, ls) {   // the ONE growth factor — sim (flailPose/flailStep), hitbox (bladeCircles) and art (drawWeaponChain) all read it, so the three can never disagree
-    const t = WEAPONS[wId].trait;
-    return t && t.len ? 1 + t.len * Math.min(ls || 0, LEN_STEPS) : 1;
+    const W = WEAPONS[wId], t = W.trait, ex = W.chain && W.chain.ext;   // links-r87: returns the number of ADDED LINK UNITS (0 = the shipped chain)
+    return t && t.len && ex ? Math.min(ex.max, Math.floor(Math.min(ls || 0, LEN_STEPS) / ex.every)) : 0;
   }
   /* Edge-leading flip (owner decision 2026-10-22 — the katana "spins backwards"
    * observation; extended to headLead the same day at the owner's javelin
@@ -1945,10 +1958,19 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     out.length = 0;
     const W = WEAPONS[wId];
     if (W.chain && fl) {
-      chainFrames(fr, W.chain, fl, chainGrow(wId, ls));
-      for (const c of W.poly.circles) {
-        const k = c.s, e = c.d - W.chain.dj[k];
-        out.push(CF_X[k] + CF_C[k] * e - CF_S[k] * c.l, CF_Y[k] + CF_S[k] * e + CF_C[k] * c.l, c.r);
+      const n = chainGrow(wId, ls), ch = W.chain, np = chainNp(ch, n);
+      chainFrames(fr, ch, fl, n);
+      if (!ch.ext) {
+        for (const c of W.poly.circles) {
+          const k = c.s, e = c.d - ch.dj[k];
+          out.push(CF_X[k] + CF_C[k] * e - CF_S[k] * c.l, CF_Y[k] + CF_S[k] * e + CF_C[k] * c.l, c.r);
+        }
+      } else for (let k = 0; k <= np; k++) {   // links-r87: every segment k wears its type's baked list in its own frame
+        const bs = chainSegBase(ch, k, np);
+        for (const c of ch.circBySeg[bs]) {
+          const e = c.d - ch.dj[bs];
+          out.push(CF_X[k] + CF_C[k] * e - CF_S[k] * c.l, CF_Y[k] + CF_S[k] * e + CF_C[k] * c.l, c.r);
+        }
       }
       return out;
     }
@@ -2044,7 +2066,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       t = Math.imul(t, 0x21f0aaad);
       t = t ^ (t >>> 15);
       t = Math.imul(t, 0x735a2d97);
-      return ((t = t ^ (t >>> 15)) >>> 0) / 4294967296;
+      return ((t ^ (t >>> 15)) >>> 0) / 4294967296;
     };
   }
   function makeRng(seed) {
@@ -2053,7 +2075,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
         c = (sm() * 4294967296) >>> 0, d = (sm() * 4294967296) >>> 0;
     const sfc = function () {
       a |= 0; b |= 0; c |= 0; d |= 0;
-      let t = (((a + b) | 0) + d) | 0;
+      const t = (((a + b) | 0) + d) | 0;
       d = (d + 1) | 0;
       a = b ^ (b >>> 9);
       b = (c + (c << 3)) | 0;
@@ -2097,7 +2119,6 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       nudgeTick: -1,                         // last tick a pin-escape nudge was added to THIS fighter — one add per tick per fighter (the nudge's smoothness gate, owner 2026-10-21; per-fighter state — it once sat misfiled on newGame's G)
       deathSeq: 0,                         // death-order stamp — only read on a same-tick double K.O.
       fireAcc: 0,                          // projectile launcher: accumulated radians toward the next release (one shot per revolution)
-      catchWait: 0,                        // chaosorbit-r54: seconds of hand-rest left after the returns flight ends (catchonly-r56: the catch is the only returns end) — the launch gate holds while it counts down; reset per round like every per-round state
       cycleIdx: 0,
       figT: 0, figWait: 0, figPoof: 0, figObj: null, figLive: 0,   // bloom-r73 — transfiguration state (the bloom, the immunity, the poof ring, the rotation pick; bloomfix-r76: figLive the arrival grace)                         // shot-kind cycle position (the row's `cycle`; strict rotation — the tome trio today, phase 3, 2026-10-25; renamed off spellIdx at the 2026-10-28 launcher consolidation, which made the cycle row data)
       skew: null,                          // SKEWER state (skewer-r46): null, or { phase 'carry'|'pin', t, dur, sx/sy, dx/dy, spinBase, bleedAcc, nx/ny, cutArm, anchor } — the javelin's impalement; reset every round (the LAW)
@@ -2107,7 +2128,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
        * 2*np stay at rest and are never read; pu feeds render blending),
        * x,y,vx,vy = world position + velocity of the np chain particles (flail: joint J1, joint J2, ball centre),
        * qx,qy = per-substep scratch, vmax = fastest particle at tick start (substep budget). */
-      fl: { u: [1, 0, 1, 0, 1, 0], pu: [1, 0, 1, 0, 1, 0], x: [0, 0, 0], y: [0, 0, 0], vx: [0, 0, 0], vy: [0, 0, 0], qx: [0, 0, 0], qy: [0, 0, 0], vmax: 0 },
+      fl: { u: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], pu: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], x: [0, 0, 0, 0, 0, 0, 0, 0, 0], y: [0, 0, 0, 0, 0, 0, 0, 0, 0], vx: [0, 0, 0, 0, 0, 0, 0, 0, 0], vy: [0, 0, 0, 0, 0, 0, 0, 0, 0], qx: [0, 0, 0, 0, 0, 0, 0, 0, 0], qy: [0, 0, 0, 0, 0, 0, 0, 0, 0], vmax: 0 },   // links-r87: sized for the grown flail (np <= CH_MAXNP 9 particles, 18 pose slots)
     };
   }
 
@@ -2205,7 +2226,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       f.wAngle = 0; f.spin = 0; f.dmg = W.dmg;
       f.lenStep = 0;                       // growth resets with the round — the round IS the cap (no lenCap constant)
       f.shotStep = 0;                      // shot-radius / cycle / rain growth resets with the round — same LAW, same place (the shared counter; the ricochet-budget feed retired with bouncegrow-r40)
-      f.bladeStuck = false; f.wallCd = 0; f.fireAcc = 0; f.catchWait = 0; f.deathSeq = 0; f.cycleIdx = 0;
+      f.bladeStuck = false; f.wallCd = 0; f.fireAcc = 0; f.deathSeq = 0; f.cycleIdx = 0;
       f.bladeLatchTick = 0; f.bladeClearPeak = 0;   // teleport: the deep-disengage gate starts the new round fresh
       f.nudgeTick = -1;                    // teleport: no carried nudge gate into the new round
       f.skew = null;                       // skewer-r46: no impalement carried into the new round (the round-reset LAW) — anchors die with the roll's shot-clear
@@ -2274,8 +2295,8 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     for (const f of fs) {
       f.prev.x = f.pos.x; f.prev.y = f.pos.y; f.pwAngle = f.wAngle;
       if (WEAPONS[f.weapon].chain) {                       // chain: pose base for render blending + the fastest particle for the substep budget
-        const F = f.fl, np = WEAPONS[f.weapon].chain.np;
-        for (let i = 0; i < 6; i++) F.pu[i] = F.u[i];
+        const F = f.fl, np = chainNp(WEAPONS[f.weapon].chain, chainGrow(f.weapon, f.lenStep));
+        for (let i = 0; i < 18; i++) F.pu[i] = F.u[i];
         F.vmax = 0;
         for (let k = 0; k < np; k++) F.vmax = Math.max(F.vmax, Math.hypot(F.vx[k], F.vy[k]));
       }
@@ -2358,7 +2379,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
         if (f.wallCd > 0) f.wallCd = Math.max(0, f.wallCd - sdt);
       }
       for (const f of fs) if (f.alive && WEAPONS[f.weapon].chain) flailStep(f, sdt);   // FLAIL: the chain swings under the same pose the contact tests below see
-      if (G.audit) { G.auditSub = s; snapAudit(G, fs, s); G.auditFl.push(s, ...fs[0].fl.u, ...fs[1].fl.u); }   // the exact poses the contact tests below see (+ chain poses, stride 13: sub, 6 + 6)
+      if (G.audit) { G.auditSub = s; snapAudit(G, fs, s); G.auditFl.push(s, ...fs[0].fl.u, ...fs[1].fl.u); }   // the exact poses the contact tests below see (+ chain poses, stride 37: sub, 18 + 18 — links-r87 widened from 13)
       for (const f of fs) bladeVsBody(G, f);
       bladeVsBlade(G);
       for (const f of fs) if (f.alive && f.skew) skewStep(G, f, sdt);   // skewer-r46 + impale-r48 order law: the impaled foe's position lock is the LAST fighter-pos writer in the substep — after integrate, boundary, bodyCollide's resolver AND bladeVsBlade's parry shove (the smoke caught each in turn nudging the pinned victim off the wall while the spear held its rim point): the skewer owns the body absolutely until it is cut free
@@ -2421,20 +2442,21 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     const mul = chainGrow(f.weapon, f.lenStep);   // longchain-r86: the SAME factor chainFrames reads — the sim pose can never disagree with the drawn/hitbox frames
     const fr = spineFrame(f.pos.x, f.pos.y, f.wAngle, f.weapon);
     let px = fr.ox + fr.dx * ch.j[0], py = fr.oy + fr.dy * ch.j[0];
-    for (let k = 0; k < ch.np; k++) {
+    const np = chainNp(ch, mul);
+    for (let k = 0; k < np; k++) {
       const ud = F.u[2 * k], ul = F.u[2 * k + 1];
-      const L = ch.len[k] * mul;
+      const L = chainPitch(ch, k, np);
       px += (ud * fr.dx - ul * fr.dy) * L; py += (ud * fr.dy + ul * fr.dx) * L;
       F.x[k] = px; F.y[k] = py;
     }
   }
   function flailInit(f) {                     // straight chain at the current pose, carried at the weapon's own velocity (rigid) — no history
     const F = f.fl;
-    F.u[0] = 1; F.u[1] = 0; F.u[2] = 1; F.u[3] = 0; F.u[4] = 1; F.u[5] = 0;   // all 6 slots to rest (fixed-size state; slots past 2*np are never read)
-    for (let i = 0; i < 6; i++) F.pu[i] = F.u[i];
+    for (let i = 0; i < 18; i += 2) { F.u[i] = 1; F.u[i + 1] = 0; }   // all 18 slots to rest (fixed-size state; slots past 2*np are never read)
+    for (let i = 0; i < 18; i++) F.pu[i] = F.u[i];
     F.vmax = 0;
     if (!f.weapon || !WEAPONS[f.weapon].chain) return;
-    const np = WEAPONS[f.weapon].chain.np;
+    const np = chainNp(WEAPONS[f.weapon].chain, chainGrow(f.weapon, f.lenStep));
     flailPose(f);
     for (let k = 0; k < np; k++) {
       F.vx[k] = f.vel.x - f.spin * (F.y[k] - f.pos.y);
@@ -2442,12 +2464,28 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       F.vmax = Math.max(F.vmax, Math.hypot(F.vx[k], F.vy[k]));
     }
   }
+  /* links-r87: the chain just gained n1 - n0 ring+bar pairs (a hit crossed an `every` boundary). Old link directions keep
+   * their slots, the new links start straight along the last old link, the head's slot (and the head's velocity) move to
+   * the new end, and the particles are re-seated on the new pose. pu follows so the render blend never mixes layouts. */
+  function chainRemap(f, n0, n1) {
+    const ch = WEAPONS[f.weapon].chain, F = f.fl, np0 = chainNp(ch, n0), np1 = chainNp(ch, n1);
+    if (np1 === np0) return;
+    for (const U of [F.u, F.pu]) {
+      const hd = U[2 * np0 - 2], hl = U[2 * np0 - 1], ld = U[2 * np0 - 4], ll = U[2 * np0 - 3];
+      for (let k = np0 - 1; k < np1 - 1; k++) { U[2 * k] = ld; U[2 * k + 1] = ll; }
+      U[2 * np1 - 2] = hd; U[2 * np1 - 1] = hl;
+    }
+    const hvx = F.vx[np0 - 1], hvy = F.vy[np0 - 1], lvx = F.vx[np0 - 2], lvy = F.vy[np0 - 2];
+    for (let k = np0 - 1; k < np1 - 1; k++) { F.vx[k] = lvx; F.vy[k] = lvy; }
+    F.vx[np1 - 1] = hvx; F.vy[np1 - 1] = hvy;
+    flailPose(f);
+  }
   function flailSync(f) {                     // after the resolver: particles re-seated on the (possibly moved) pose, velocities untouched
     flailPose(f);
   }
-  function flailRod(X, Y, a, b, L, iw) {      // keep particles a,b exactly L apart (a = -1: the fixed eye is passed via X[3],Y[3]; iw = the chain's inverse masses)
-    const ax = a < 0 ? X[3] : X[a], ay = a < 0 ? Y[3] : Y[a];
-    let dx = X[b] - ax, dy = Y[b] - ay;
+  function flailRod(X, Y, a, b, L, iw) {      // keep particles a,b exactly L apart (a = -1: the fixed eye is passed via X[FL_EYE],Y[FL_EYE]; iw = the chain's inverse masses)
+    const ax = a < 0 ? X[FL_EYE] : X[a], ay = a < 0 ? Y[FL_EYE] : Y[a];
+    const dx = X[b] - ax, dy = Y[b] - ay;
     const d = Math.sqrt(dx * dx + dy * dy);
     if (d < 1e-9) return;
     const k = (d - L) / d;
@@ -2456,10 +2494,10 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     X[a] += dx * k * wa / sw; Y[a] += dy * k * wa / sw;
     X[b] -= dx * k * wb / sw; Y[b] -= dy * k * wb / sw;
   }
-  const FL_X = [0, 0, 0, 0], FL_Y = [0, 0, 0, 0];   // solver scratch: particles 0..np-1, then the FIXED EYE at slot 3 (the cap np <= 3 keeps the eye clear of every particle slot)
+  const FL_X = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], FL_Y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], FL_EYE = 9;   // solver scratch: particles 0..np-1 (np <= 9), then the FIXED EYE at slot 9
   function flailClear(f, a, b, margin) {      // push the chord a->b out of the own disc (a = -1: the fixed eye)
     const cx = f.pos.x, cy = f.pos.y;
-    const ax = a < 0 ? FL_X[3] : FL_X[a], ay = a < 0 ? FL_Y[3] : FL_Y[a];
+    const ax = a < 0 ? FL_X[FL_EYE] : FL_X[a], ay = a < 0 ? FL_Y[FL_EYE] : FL_Y[a];
     const ex = FL_X[b] - ax, ey = FL_Y[b] - ay, e2 = ex * ex + ey * ey;
     let t = e2 > 1e-9 ? ((cx - ax) * ex + (cy - ay) * ey) / e2 : 0;
     t = t < 0 ? 0 : t > 1 ? 1 : t;
@@ -2476,10 +2514,9 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     FL_X[b] += nx * deficit * t / s2; FL_Y[b] += ny * deficit * t / s2;
   }
   function flailStep(f, sdt) {
-    const W = WEAPONS[f.weapon], ch = W.chain, F = f.fl, np = ch.np;
-    const mul = chainGrow(f.weapon, f.lenStep);   // longchain-r86: grown pitches — the rods solve to exactly what the pose and the frames read
+    const W = WEAPONS[f.weapon], ch = W.chain, F = f.fl, mul = chainGrow(f.weapon, f.lenStep), np = chainNp(ch, mul), iw = ch.iwTab[np - 1];   // longchain-r86: grown pitches — the rods solve to exactly what the pose and the frames read
     const fr = spineFrame(f.pos.x, f.pos.y, f.wAngle, f.weapon);
-    FL_X[3] = fr.ox + fr.dx * ch.j[0]; FL_Y[3] = fr.oy + fr.dy * ch.j[0];            // the eye, on the current pose
+    FL_X[FL_EYE] = fr.ox + fr.dx * ch.j[0]; FL_Y[FL_EYE] = fr.oy + fr.dy * ch.j[0];            // the eye, on the current pose
     const g = CFG.gravity * sdt, damp = Math.max(0, 1 - CFG.flailDrag * sdt);
     for (let i = 0; i < np; i++) {
       F.qx[i] = F.x[i]; F.qy[i] = F.y[i];
@@ -2487,11 +2524,11 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       FL_X[i] = F.x[i] + F.vx[i] * sdt; FL_Y[i] = F.y[i] + F.vy[i] * sdt;
     }
     const rB = 19;                                                                   // the head keeps its own radius clear of the disc (margin on the centre distance; the old `CFG.bodyR + 19 - CFG.bodyR` self-cancelled — written as the plain margin it is)
-    for (let it = 0; it < 8; it++) {
-      for (let k = 0; k < np; k++) flailRod(FL_X, FL_Y, k - 1, k, ch.len[k] * mul, ch.iw);
+    for (let it = 0, its = 8 + 2 * (np - 3); it < its; it++) {   // more relaxation passes for the longer chain
+      for (let k = 0; k < np; k++) flailRod(FL_X, FL_Y, k - 1, k, chainPitch(ch, k, np), iw);
       for (let k = 0; k < np; k++) flailClear(f, k - 1, k, k === np - 1 ? rB : 12);  // the head chord keeps the fat margin, inner chords 12
     }
-    for (let k = 0; k < np; k++) flailRod(FL_X, FL_Y, k - 1, k, ch.len[k] * mul, ch.iw);   // final exact pass: every pitch is rigid on the drawn frame (at the grown length)
+    for (let k = 0; k < np; k++) flailRod(FL_X, FL_Y, k - 1, k, chainPitch(ch, k, np), iw);   // final exact pass: every pitch is rigid on the drawn frame (at the grown length)
     const jd = Math.max(0, 1 - CFG.flailJoint * sdt);
     for (let i = 0; i < np; i++) {
       F.x[i] = FL_X[i]; F.y[i] = FL_Y[i];
@@ -2501,7 +2538,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       F.vy[i] = (ry + (vy - ry) * jd) * damp;                  // … air drag on top: the small steady trailing lean
     }
     // chain pose in SPINE-LOCAL unit directions: what bladeCircles, the renderer and the events carry
-    let ax = FL_X[3], ay = FL_Y[3];
+    let ax = FL_X[FL_EYE], ay = FL_Y[FL_EYE];
     for (let k = 0; k < np; k++) {
       const dx = F.x[k] - ax, dy = F.y[k] - ay, d = Math.sqrt(dx * dx + dy * dy) || 1;
       const wx = dx / d, wy = dy / d;
@@ -2572,7 +2609,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
      * owner's no-combos ruling — a skill may add on a shared axis, never reach into a trait's
      * mechanics. Clamped at the ladder top because past it there is no baked geometry, and the
      * inscription-gate proof only covers the ladder's range. */
-    if (ab.len && f.lenStep < LEN_STEPS) f.lenStep++;
+    if (ab.len && f.lenStep < LEN_STEPS) { const n0 = WEAPONS[f.weapon].chain ? chainGrow(f.weapon, f.lenStep) : 0; f.lenStep++; if (n0 !== undefined && WEAPONS[f.weapon].chain) chainRemap(f, n0, chainGrow(f.weapon, f.lenStep)); }
     /* shot-radius growth (the staff's trait, shotgrow-r33, owner pick 2026-10-31). UNCAPPED by
      * design: growth-uncapped is the doctrine, the arena rim is the physical wall (rim death
      * reads dr + st.r) and the per-round reset in rollWeapons is the balance bound — the same
@@ -2816,9 +2853,10 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
             // the cross rotates open at up to twice the orbit rate. Unlatched
             // deep wedges (transient pins; the knock-only class retired
             // at allcut-r62) keep the physical torque sign.
-            let sa = tqA !== 0 ? Math.sign(tqA) : (a.spin > 0 ? 1 : -1);
-            let sb = tqB !== 0 ? Math.sign(tqB) : (b.spin > 0 ? 1 : -1);
-            if (G.clash) { sa = a.spin > 0 ? 1 : -1; sb = b.spin > 0 ? 1 : -1; }
+            // latched: spin-opposed (r36 unwind, see BIND_UNWIND); otherwise the physical torque sign, spin sign as the tie-break
+            const spinSign = f => (f.spin > 0 ? 1 : -1), k = BIND_UNWIND ? -1 : 1;
+            const sa = G.clash ? spinSign(a) * k : tqA !== 0 ? Math.sign(tqA) : spinSign(a);
+            const sb = G.clash ? spinSign(b) * k : tqB !== 0 ? Math.sign(tqB) : spinSign(b);
             // depth-scaled: a 25px burial needs a bigger rotational kick than a
             // 2px one; capped in px-at-the-head (nudgePx / REACH) and gated to
             // ONE add per tick per fighter (owner 2026-10-21): the old uncapped
@@ -2925,8 +2963,8 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
    *     is what killed the departure-tick self-catch the owner caught by eye
    *     ("the boomerang was immediately consumed when it was thrown"). The
    *     cycle-growth step rides the catch again; the banked spin rethrows
-   *     instantly after it (RETHROW_WAIT 0, instantthrow-r59 — the r54
-   *     hand-rest dormant in the constant);
+   *     instantly after it (instantthrow-r59 — the r54
+   *     hand-rest beat was removed);
    *   - no friendly fire: a shot is never tested against its owner's body,
    *     blade or SHOTS (owner-blindness, the last extended by multgrow-r42),
    *     so it can never self-destruct, self-swat or self-cross —
@@ -3078,7 +3116,6 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     if (AFFINITY[kind] !== 'fire' || !TRIO.fireSwell) return W.shot.r;   // spellform-r69: the FIRE swell sleeps at the owner's shape grammar — all three pages are born the SAME size, colour = which; the rate waits in TRIO.fireGrow behind the fireSwell switch
     return W.shot.r * (1 + TRIO.fireGrow * Math.min(f.shotStep, TRIO.steps));
   }
-  function grudgeBirth() { return {}; }   // chillfix-r71: THE LONG GRUDGE reverted whole at the owner's eye (read as tome-like linger); the birth-state helper stays as an empty spread so both spawn sites keep their shape and the revert stays surgical
   function grownVolley(W, f) {
     const rate = W.trait && W.trait.fan;
     if (!rate) return W.shot.volley;
@@ -3136,6 +3173,38 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
    * these are the row's OWN covering circles, transformed exactly as drawPolySet's copy path
    * transforms the art (offset by -copyCtr, rotated by the velocity heading). Body, blade, cross
    * and catch tests all read them — what the eye sees is what touches. */
+  /* ---- the copy rule's shared geometry — the flying copy of a thrown weapon (boomerang/star/javelin) is pivoted at the art
+   * centroid and tumbles at COPYSPIN. The sim spawns, sweeps and catches with these and the renderer draws with the same
+   * numbers, so they live HERE, in the sim section (they used to sit in the renderer, which made the "pure" sim
+   * un-extractable: it threw ReferenceError the first time a copy-rule shot fired). ---- */
+  const COPYSPIN = { star: 0.06, boom: 0.05, javelin: 0 };   // owner word 2026-10-25: the shipped ~10 rev/s aliased; slowed to a countable tumble
+  const COPYCTR = {};
+  function copyCtr(w) {
+    if (!COPYCTR[w]) {
+      const ps = WEAPONS[w].poly.polys; let A = 0, ax = 0, ay = 0;
+      for (const pl of ps) {
+        const ring = pl.subs[0]; let sa = 0, sx = 0, sy = 0;
+        for (let i = 0; i < ring.length; i++) { const p = ring[i], q = ring[(i + 1) % ring.length]; const cr = p[0] * q[1] - q[0] * p[1]; sa += cr; sx += (p[0] + q[0]) * cr; sy += (p[1] + q[1]) * cr; }
+        if (sa) { ax += sx / (3 * sa) * Math.abs(sa); ay += sy / (3 * sa) * Math.abs(sa); A += Math.abs(sa); }
+      }
+      let cx = A ? ax / A : 0, cy = A ? ay / A : 0, inside = false;
+      for (const pl of ps) {
+        const ring = pl.subs[0];
+        for (let i = 0, j = ring.length - 1; i < ring.length && !inside; j = i++) {
+          const pi = ring[i], pj = ring[j];
+          if ((pi[1] > cy) !== (pj[1] > cy) && cx < (pj[0] - pi[0]) * (cy - pi[1]) / (pj[1] - pi[1]) + pi[0]) inside = true;
+        }
+        if (inside) break;
+      }
+      if (!inside) {   // hollow-centred arc (boomerang): pivot mid-meAT, not in the hole
+        let ring = ps[0].subs[0]; for (const pl of ps) if (pl.subs[0].length > ring.length) ring = pl.subs[0];
+        const m1 = ring[Math.floor(ring.length * 0.25)], m2 = ring[Math.floor(ring.length * 0.75)];
+        cx = (m1[0] + m2[0]) / 2; cy = (m1[1] + m2[1]) / 2;
+      }
+      COPYCTR[w] = [cx, cy];
+    }
+    return COPYCTR[w];
+  }
   const BOOM_CS = [];
   const BOOM_CS2 = [];   // second scratch bank (catchghost-r58): the loop-pair cross tests arc against arc
   function boomCircles(G, st, out) {
@@ -3173,7 +3242,6 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       if (!f.alive) continue;
       const W = WEAPONS[f.weapon];
       if (!W.shot) continue;
-      if (f.catchWait > 0) f.catchWait = Math.max(0, f.catchWait - sdt);   // chaosorbit-r54: the hand-rest countdown (seconds, substep-stepped like every clock) — the accumulator KEEPS BANKING under it, so the rethrow leaves exactly when the wait expires
       f.fireAcc += Math.abs(f.spin) * chillMul(f) * bloomMul(f) * sdt;   // affinity-r66 → chillfix-r71: fireAcc counts the ACTUAL swung revolutions — bloomfix-r77: a bloomed swing is a slow swing, the bank follows honestlyUAL swept angle (wAngle advances by spin×chill), so the cast cadence slows only as the swing slows — per-rev honesty, not a second slow on the body
       /* SHOT-CADENCE MULTIPLIER SEAM (seam-r30, owner-authorized hook target). The weapon row and
        * the fighter's skill BOTH contribute and they ADD (owner ruling: stacking adds); the result
@@ -3200,12 +3268,12 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     /* r38 SINGLETON (owner: "only 1 boomerang flying" — REAFFIRMED 2026-11-01, r59: "i know there
      * is only one boomerang at a time from the same bot, but maybe when balancing we introduce
      * more"): one returning shot per owner at a time — while it is out the gate holds and the
-     * accumulator KEEPS BANKING. The chaosorbit-r54 hand-rest gate (f.catchWait) is DORMANT since
-     * instantthrow-r59 (RETHROW_WAIT 0 — the owner reversed his r54 eye: "just instantly throw
-     * it"); the gate stays wired so the beat is one constant away.
+     * accumulator KEEPS BANKING. The chaosorbit-r54 hand-rest gate was removed at
+     * instantthrow-r59 (the owner reversed his r54 eye: "just instantly throw
+     * it").
      * Non-returns rows short-circuit on the falsy flag — bit-identical. */
       if (f.figT > 0 && f.weapon === 'wand') f.fireAcc = Math.min(f.fireAcc, need);   // bloom-r73 — the bloomed wand banks exactly ONE comet; the poof instant answers with a single honest throw
-      while (f.figT <= 0 && f.fireAcc >= need && !(W.shot.returns && (f.catchWait > 0 || G.shots.some(s => s.o === f.slot && s.returns)))) {   // the singleton gate plus the (dormant, RETHROW_WAIT 0) hand-rest gate — instantthrow-r59: the banked revolution fires on the substep after the catch
+      while (f.figT <= 0 && f.fireAcc >= need && !(W.shot.returns && G.shots.some(s => s.o === f.slot && s.returns))) {   // the singleton gate — instantthrow-r59: the banked revolution fires on the substep after the catch
         f.fireAcc -= need;
         const c = Math.cos(f.wAngle), s = Math.sin(f.wAngle);
         const fr = spineFrame(f.pos.x, f.pos.y, f.wAngle, f.weapon);
@@ -3279,10 +3347,9 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   function killShot(G, st, reason, foe, gap) {
     if (st.returns && G.fighters[st.o]) {
       const ow = G.fighters[st.o];
-      ow.catchWait = RETHROW_WAIT;   // instantthrow-r59: RETHROW_WAIT is 0 — the gate never holds, the rethrow leaves on the next substep. The line stays (dormant machinery, cheap revert): at r54 this was the hand-rest beat (owner's eye then: "it looks bad when its instant throwing after catch"; reversed at r59: "just instantly throw it")
       const Wr = WEAPONS[ow.weapon];
       const sm = 1 + (Wr.shot.mult || 0) + ((FIGHTERS[ow.idx].skill && FIGHTERS[ow.idx].skill.shotMult) || 0) + ((Wr.trait && Wr.trait.mult) || 0) * Math.min(ow.shotStep, MULT_STEPS);   // the fireShots cadence seam, mirrored: the top-up is exactly one volley's `need`
-      ow.fireAcc = Math.max(ow.fireAcc, TAU * (Wr.shot.revs || 1) / (sm > 0 ? sm : 1));   // the rethrow revolution is BANKED AT THE END of the flight — instantthrow-r59: with RETHROW_WAIT 0 that makes the hurl INSTANT (the owner's word), no cadence wait; under the r54 beat it made the throw leave exactly when the hand-rest expired
+      ow.fireAcc = Math.max(ow.fireAcc, TAU * (Wr.shot.revs || 1) / (sm > 0 ? sm : 1));   // the rethrow revolution is BANKED AT THE END of the flight — instantthrow-r59: that makes the hurl INSTANT (the owner's word), no cadence wait; under the r54 beat it made the throw leave exactly when the hand-rest expired
     }
     if (st.skewVictim) releaseSkew(G, st.skewVictim, reason === 'swat' ? 'cut' : reason, st.sid);   // skewer-r46: destroying the anchored spear frees the impaled foe — the CUT (their own blade), a cross (any enemy shot — the victim's own shot shooting it out is an emergent escape), any destruction at all
     if (reason === 'swat') {
@@ -3314,7 +3381,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     foe.vel.x += kx * CFG.hitKnock;
     foe.vel.y += ky * CFG.hitKnock;
     G.stats.landed++;
-    if (!st.returns || HIT_GROW) grow(G, owner);
+    if (!st.returns) grow(G, owner);
     /* affinity-r66 — THE TRIO'S VICTIM-SIDE PAYLOADS: the page's KIND carries its element (AFFINITY's
      * keys are tome-only art kinds), applied on the damaging hit — the ONE trigger. Fire needs no
      * status: its payload was the birth size (trioRadius). Kills apply too — the round ends anyway. */
@@ -3334,7 +3401,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       G.stats.pools++;
       emit(G, 'pool', { by: owner.slot, sid: st.sid, x: foe.pos.x, y: foe.pos.y });
     }
-    // growth: exactly as blade hits — freeloop-r38: HIT_GROW is FALSE (owner ruling 2026-10-31, "each catch and throw makes it faster" — hits damage only), so a returning shot's pass-through hit never grows; the catch cycle is the trigger
+    // growth: exactly as blade hits — freeloop-r38: a returning shot's hits never grow (owner ruling 2026-10-31, "each catch and throw makes it faster" — hits damage only), so a returning shot's pass-through hit never grows; the catch cycle is the trigger
     const kill = foe.hp <= 0;
     if (kill) { foe.alive = false; foe.deathSeq = ++G.deathSeq; }
     emit(G, 'hit', {
@@ -3601,9 +3668,9 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
         const dOwn = Math.hypot(own.pos.x - st.x, own.pos.y - st.y);
         if (!st.armed) {
           if (dOwn > CFG.bodyR + st.r + CATCH_ARM && boomGap(G, st, own.pos.x, own.pos.y, CFG.bodyR) > CATCH_ARM) st.armed = 1;   // catchonly-r56 THE ARC-AWARE ARM (owner heads-up: "the boomerang was immediately consumed when it was thrown"): the r54 arc catch window (~124px of reach) outgrew the disc-era arm margin (94px), so a throw could arm while its OWN drawn arc still overlapped the wielder and be caught on its departure tick. The throw must now clear the body with the ARC, by the same 20px margin, before the hand can catch it
-        } else if (own.alive && own.figT <= 0 && Math.min(dOwn - (CFG.bodyR + st.r + CATCH_PAD), boomGap(G, st, own.pos.x, own.pos.y, CFG.bodyR + CATCH_PAD)) < 0) {   // bloom-r73: a bloomed hand catches nothing — the loop keeps its pure-touch orbit until the poof · chaosorbit-r54: PURE TOUCH reads the DRAWN ARC (boomCircles) — the loop is caught when what the eye sees touches the wielder's body, not when the invisible pivot disc does
-          if (CATCH_GROW) own.shotStep++;                  // "each catch and throw makes it faster" (owner rulings 2026-10-31 + 2026-11-01): CYCLE-ONLY — the catch advances just the loop counter, deliberately NOT the full grow(); the cap still applies at READ time via CYCLE_STEPS
-          killShot(G, st, 'catch', null, 0); continue;     // the rethrow revolution is banked inside killShot — RETHROW_WAIT 0 (instantthrow-r59): it leaves on the next substep; the continue drops the caught loop in this pass's compaction, so the singleton gate is already clear
+        } else if (own.alive && own.figT <= 0 && Math.min(dOwn - (CFG.bodyR + st.r), boomGap(G, st, own.pos.x, own.pos.y, CFG.bodyR)) < 0) {   // bloom-r73: a bloomed hand catches nothing — the loop keeps its pure-touch orbit until the poof · chaosorbit-r54: PURE TOUCH reads the DRAWN ARC (boomCircles) — the loop is caught when what the eye sees touches the wielder's body, not when the invisible pivot disc does
+          own.shotStep++;                  // "each catch and throw makes it faster" (owner rulings 2026-10-31 + 2026-11-01): CYCLE-ONLY — the catch advances just the loop counter, deliberately NOT the full grow(); the cap still applies at READ time via CYCLE_STEPS
+          killShot(G, st, 'catch', null, 0); continue;     // the rethrow revolution is banked inside killShot — instantthrow-r59: it leaves on the next substep; the continue drops the caught loop in this pass's compaction, so the singleton gate is already clear
         }
       }
       shots[w++] = st;
@@ -3745,20 +3812,25 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   /* FLAIL (2026-10-22): the articulated draw — same ink-then-fill passes as drawWeapon, but every shape rides the
    * frame of ITS segment (chainFrames, the one placement the hitbox also uses); fl = the chain pose to draw. */
   function drawWeaponChain(g, W, fr, fl, fillOverride, acc, mul) {
-    const ch = W.chain;
+    const ch = W.chain, np = chainNp(ch, mul);   // links-r87: mul = added link units; every link is a hinged segment wearing its type's art
     chainFrames(fr, ch, fl, mul);
     g.lineJoin = 'round';
     g.lineWidth = 3;
     g.strokeStyle = fillOverride || TH.botInk;
-    for (let i = 0; i < W.poly.polys.length; i++) {
-      const k = ch.segOfShape[i], c = CF_C[k], s = CF_S[k];
-      polyPath(g, W.poly.polys[i], CF_X[k] - c * ch.dj[k], CF_Y[k] - s * ch.dj[k], c, s); g.stroke();
-    }
-    for (let i = 0; i < W.poly.polys.length; i++) {
-      const k = ch.segOfShape[i], c = CF_C[k], s = CF_S[k];
-      polyPath(g, W.poly.polys[i], CF_X[k] - c * ch.dj[k], CF_Y[k] - s * ch.dj[k], c, s);
-      g.fillStyle = sigilFill(W.poly.polys[i].fill, acc, fillOverride);
-      g.fill('evenodd');
+    const seg = (k, fill) => {
+      const b = chainSegBase(ch, k, np), c = CF_C[k], s = CF_S[k];
+      for (let i = ch.segs[b][0]; i <= ch.segs[b][1]; i++) {
+        const pl = W.poly.polys[i];
+        polyPath(g, pl, CF_X[k] - c * ch.dj[b], CF_Y[k] - s * ch.dj[b], c, s);
+        if (fill) { g.fillStyle = sigilFill(pl.fill, acc, fillOverride); g.fill('evenodd'); } else g.stroke();
+      }
+    };
+    for (const fill of [false, true]) {   // paint order = the authored shape order: haft, every ring, every bar (each bar crosses over its rings), head
+      seg(0, fill);
+      if (!ch.ext) { for (let k = 1; k <= np; k++) seg(k, fill); continue; }
+      for (let k = 1; k < np; k += 2) seg(k, fill);
+      for (let k = 2; k < np; k += 2) seg(k, fill);
+      seg(np, fill);
     }
   }
   function drawWeaponOn(g, wId, x, y, ang, fillOverride, fl, fp, acc, ls) {
@@ -3807,6 +3879,127 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     ctx.restore();
   }
 
+  /* MEDALLION FIT (reveal redesign preview): every weapon sits on the same fixed-size plate, so size
+   * consistency no longer depends on the art's aspect ratio. Three rules replace contain-fit:
+   *   1. DIAGONAL: the long axis runs along the plate's diagonal (pointing at the VS centre), so
+   *      spears/katanas get the room a horizontal box never gave them.
+   *   2. EQUAL MASS: scale by ext = 0.5*max(w,h) + 0.5*sqrt(w*h) — a blend of length and area — so
+   *      a round shuriken and a long spear carry about the same ink. Pure contain-fit made long art
+   *      thin and compact art huge.
+   *   3. CLAMP: the bounding circle of the rotated art never exceeds the plate radius minus MEDAL.ring,
+   *      so no future weapon (very long, very small, odd-shaped) can break out of the plate.
+   * Renderer-only, like drawFitWeapon. Add `?classic` to the URL to get the old box fit back. */
+  const MEDAL = { r: 108, ring: 16, rot: Math.PI / 4 };   // r = the invisible plate radius every weapon is fitted to; ring = how far the art's farthest points stop short of that edge; rot = the diagonal the long axis runs along
+  /* Per-weapon pose on the poster (renderer-only). Default: the spine (d) aims up at the VS and the art's
+   * smallest enclosing circle touches the plate's inner ring, whatever the shape.
+   *   aim   — which LOCAL direction is the weapon's "front" (radians; 0 = +d the spine, -π/2 = -l, the side the
+   *           bow/crossbow/knives/shield open toward); that front is what aims at the opponent
+   *   flipL — mirror the art across its spine (scythe: blade tip down; katana: curve the other way)
+   *   rot   — absolute rotation for the left half (radians), replacing the aim rule
+   *   keepScale — size by the unmodified outline (for poster-only art edits that should change the drawn size)
+   *   fit   — fraction of the full touch-the-ring size (round compact art would be huge at 1) */
+  const MEDAL_POSE = {
+    bow: { aim: -Math.PI / 2 }, crossbow: { aim: -Math.PI / 2 }, knives: { rot: 0, fit: 0.82 }, shield: { aim: -Math.PI / 2 },
+    scythe: { flipL: true }, katana: { flipL: true }, dagger: { flipL: true, fit: 0.82, keepScale: true }, wand: { fit: 0.82 },
+    tome: { rot: 0 },   // pages (-l) open straight up; rot = the LEFT half's rotation, the right half mirrors it
+    orb: { fit: 0.62 }, shuriken: { fit: 0.74 },
+  };
+  const REVEAL_CLASSIC = /[?&]classic\b/.test(location.search);
+  /* poster-only art tweak: the wand's handle (shapes 0-2: shaft + its two grain stripes) drawn 38% thinner on the
+   * roll screen. Built once, never touches WEAPONS.wand, so the in-fight wand and its hitbox are unchanged. */
+  const squashL = (pl, f) => ({ ...pl, subs: pl.subs.map(ring => ring.map(q => [q[0], q[1] * f])) });
+  const POSTER_POLYS = {
+    wand: WEAPONS.wand.poly.polys.map((pl, i) => i > 2 ? pl : squashL(pl, 0.62)),
+    dagger: (() => {   // blade + its highlight: 26% slimmer and 14% shorter (the handle and the guard stay)
+      const P = WEAPONS.dagger.poly.polys, base = Math.min(...P[2].subs.flat().map(q => q[0]));
+      return P.map((pl, i) => i < 2 ? pl : { ...pl, subs: pl.subs.map(ring => ring.map(q => [base + (q[0] - base) * 0.86, q[1] * 0.74])) });
+    })(),
+    axe: (() => {   // the rounded handle butt becomes a flat square end like the hammer's (same length and width, read from the live boot-scaled art)
+      const P = WEAPONS.axe.poly.polys, pts = P[0].subs.flat(), d0 = Math.min(...pts.map(q => q[0])), d1 = Math.max(...pts.map(q => q[0])), w = Math.max(...pts.map(q => Math.abs(q[1])));
+      return [{ ...P[0], subs: [[[d0, -w], [d1, -w], [d1, w], [d0, w]]] }, ...P.slice(1)];
+    })(),
+    nunchaku: (() => {   // the near stick was plain brown; it now wears the far stick's dressing — body, ringed end cap and grip band mirrored about the collar pair's axis (the A/B collars already mirror each other) — and the plain stick 0 is dropped
+      const P = WEAPONS.nunchaku.poly.polys, ext = (pl, f) => f(...pl.subs.flat().map(q => q[0])), c = (ext(P[1], Math.min) + ext(P[5], Math.max)) / 2;   // axis read from the live (boot-scaled) art: the A collar's outer edge and the B collar's outer edge mirror each other
+      const mir = pl => ({ ...pl, subs: pl.subs.map(ring => ring.map(q => [2 * c - q[0], q[1]])) });
+      return [mir(P[4]), P[1], P[2], P[3], P[4], P[5], P[6], P[7], mir(P[6]), mir(P[7])];
+    })(),
+  };
+  /* smallest enclosing circle of the art's vertices (randomised incremental, deterministic shuffle) — the weapon is
+   * centred on it and scaled so it touches the plate edge, so hammer, spear and sword all reach the rim */
+  const MECB = {};
+  function mecOf(polys) {
+    const P = [];
+    for (const pl of polys) for (const ring of pl.subs) for (const q of ring) P.push(q);
+    for (let i = P.length - 1, z = 12345; i > 0; i--) { z = (z * 1103515245 + 12345) & 0x7fffffff; const j = z % (i + 1); [P[i], P[j]] = [P[j], P[i]]; }
+    const inC = (c, q) => Math.hypot(q[0] - c.x, q[1] - c.y) <= c.r + 1e-7;
+    const two = (a, b) => ({ x: (a[0] + b[0]) / 2, y: (a[1] + b[1]) / 2, r: Math.hypot(a[0] - b[0], a[1] - b[1]) / 2 });
+    const three = (a, b, c) => {
+      const ax = b[0] - a[0], ay = b[1] - a[1], bx = c[0] - a[0], by = c[1] - a[1], dd = 2 * (ax * by - ay * bx);
+      if (Math.abs(dd) < 1e-9) { const cs = [two(a, b), two(a, c), two(b, c)]; return cs.reduce((m, q) => q.r > m.r ? q : m); }
+      const ux = (by * (ax * ax + ay * ay) - ay * (bx * bx + by * by)) / dd, uy = (ax * (bx * bx + by * by) - bx * (ax * ax + ay * ay)) / dd;
+      return { x: a[0] + ux, y: a[1] + uy, r: Math.hypot(ux, uy) };
+    };
+    let c = { x: P[0][0], y: P[0][1], r: 0 };
+    for (let i = 1; i < P.length; i++) if (!inC(c, P[i])) {
+      c = { x: P[i][0], y: P[i][1], r: 0 };
+      for (let j = 0; j < i; j++) if (!inC(c, P[j])) {
+        c = two(P[i], P[j]);
+        for (let k = 0; k < j; k++) if (!inC(c, P[k])) c = three(P[i], P[j], P[k]);
+      }
+    }
+    return { x: c.x, y: c.y, r: c.r || 1 };
+  }
+  function medalFit(id) {
+    if (MECB[id]) return MECB[id];
+    const polys = POSTER_POLYS[id] || WEAPONS[id].poly.polys, m = mecOf(polys);
+    m.polys = polys;
+    m.ref = MEDAL_POSE[id] && MEDAL_POSE[id].keepScale ? mecOf(WEAPONS[id].poly.polys).r : m.r;   // keepScale: size the art by its UNMODIFIED outline, so a poster-only shortening really shortens it instead of being re-fitted back up to the ring
+    return MECB[id] = m;
+  }
+  function drawMedalWeapon(id, cx, cy, side, sc, alpha, tint, acc, g = ctx) {
+    const m = medalFit(id), pose = MEDAL_POSE[id] || {};
+    const k = (MEDAL.r - MEDAL.ring) * (pose.fit || 1) / m.ref, aim = pose.aim || 0;
+    g.save();
+    g.globalAlpha *= alpha;
+    g.translate(cx, cy);
+    const thL = pose.rot !== undefined ? pose.rot : -MEDAL.rot - aim;
+    g.rotate(side ? -thL : thL);   // FACING RULE: the weapon's front aims up at the VS — left half up-right, right half (mirrored) up-left
+    g.scale((side ? -1 : 1) * k * sc, (pose.flipL ? -1 : 1) * k * sc);
+    drawWeapon(g, WEAPONS[id], -m.x, -m.y, 0, tint || undefined, undefined, acc, m.polys);
+    g.restore();
+  }
+  /* ---- reveal background: soft white petal glow (borderless — light only, no outlines) ----
+   * Drawn only once the weapon has LANDED (see drawReveal), blooming open over the first ~22 ticks:
+   * e = 0..1 is the progress since landing and op = ease-out(e) opens the petals. ---- */
+  /* the soft glow is one radial falloff (1 -> .45 -> 0), rendered once and stamped with drawImage — the bloom
+   * draws 8 glows per half per frame, and a cached sprite replaces 8 gradient builds + arc fills each time */
+  const GLOW_PX = 256;
+  const GLOW_SPRITE = (() => {
+    const c = document.createElement('canvas'), h = GLOW_PX / 2; c.width = c.height = GLOW_PX;
+    const x = c.getContext('2d'), gr = x.createRadialGradient(h, h, 0, h, h, h);
+    gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.45, 'rgba(255,255,255,0.45)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = gr; x.fillRect(0, 0, GLOW_PX, GLOW_PX);
+    return c;
+  })();
+  /* white glow of peak alpha a, centred on x,y with radius r */
+  const glow = (g, x, y, r, a) => {
+    if (r < 0.5) return;   // the bloom starts at radius 0 (the frame the weapon lands) — nothing to stamp
+    const ga = g.globalAlpha; g.globalAlpha = ga * a; g.drawImage(GLOW_SPRITE, x - r, y - r, 2 * r, 2 * r); g.globalAlpha = ga;
+  };
+  /* one soft petal: a glow stretched along the radial direction `ang`, centred `dist` from the middle (rx long axis, ry short axis) */
+  const lobe = (g, cx, cy, ang, dist, rx, ry, a) => {
+    if (rx < 0.5) return;   // also keeps the ry / rx squash finite
+    g.save(); g.translate(cx, cy); g.rotate(ang); g.translate(dist, 0); g.scale(1, ry / rx); glow(g, 0, 0, rx, a); g.restore();
+  };
+  function drawMedalBg(cx, cy, side, pulse, tk, e = 1, g = ctx) {   // six soft lobes around a bright core, slowly turning and breathing (owner 2026-11-09: the 50%-softer blend of the original look)
+    const R = MEDAL.r, op = 1 - Math.pow(1 - e, 3), dir = side ? -1 : 1, br = 1 + 0.055 * Math.sin(tk * 0.06), n = 6;
+    g.save(); g.translate(cx, cy); g.scale(pulse, pulse); g.translate(-cx, -cy);
+    glow(g, cx, cy, R * 1.075 * op, 0.19);
+    for (let k = 0; k < n; k++) lobe(g, cx, cy, k * TAU / n + tk * 0.0035 * dir, R * 0.41 * br * op, R * 0.68 * op, R * 0.34 * op, k % 2 ? 0.315 : 0.225);
+    glow(g, cx, cy, R * 0.68 * op, 0.43);
+    g.restore();
+  }
+
   /* ---- fx: white flash only (renderer-side). The struck body's white flash
    * is the frame's only hit punctuation — all contact-pose ghosts (hit,
    * parry, swat) were retired by owner decision 2026-10-18; proof-of-contact
@@ -3820,7 +4013,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
    * read by the sim or the laws. */
   const flipAnim = [{ cur: 1, from: 1, t: 0, snap: true }, { cur: 1, from: 1, t: 0, snap: true }];
   let flipPhase = null;   // phase-change tracker: every phase ENTRY re-snaps both flips (the bell materialises blades in their true orientation; only mid-fight parry recoils animate)
-  const VIEW = [{ x: 0, y: 0, ang: 0, flip: 1, fpSim: 1, fl: [1, 0, 1, 0, 1, 0] }, { x: 0, y: 0, ang: 0, flip: 1, fpSim: 1, fl: [1, 0, 1, 0, 1, 0] }];   // per-frame blended-pose scratch (draw) — filled in place, no per-frame allocation; flip = the DISPLAYED edge-leading factor (continuous during a transition), fpSim = the binary sim truth the hitbox overlay draws
+  const VIEW = Array.from({ length: 2 }, () => ({ x: 0, y: 0, ang: 0, flip: 1, fpSim: 1, fl: Array.from({ length: 18 }, (_, k) => (k & 1) ^ 1) }));   // per-frame blended-pose scratch (draw) — filled in place, no per-frame allocation; flip = the DISPLAYED edge-leading factor (continuous during a transition), fpSim = the binary sim truth the hitbox overlay draws
   let banner = null;   // { text, t } — round banner (phase announcement)
   /* K.O. kill still (owner decision 2026-10-19, option 1): the killing blow's
    * 400 ms freeze + K.O. card used to show the TICK-END pose — detection fires
@@ -3857,10 +4050,24 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
    * the wielder's grip over CGHOST_T ticks (ease-in: pulled into the hand). Renderer sugar only;
    * slot-keyed, idempotent per event (consumeEvents may re-run per frame). */
   const catchFx = [null, null];
+  /* Parry glint (parryfx-r1, owner 2026-11-09: "a subtle parry effect, just to let the viewer visually know a parry happened"):
+   * a white core flash + ring + six sparks at the true contact point (r2 gold read 'too loud', r1 'way too subtle': white shades, mid-strength), fading over PARRY_FX_T wall-frames (60/s). Renderer-only:
+   * fed by the 'parry' event, aged on the fxRate'd wall clock, never read by the sim. Zero rng — the position seeds the spark phase. */
+  const parryFx = [];
+  const PARRY_FX_T = 21;
+  const addGlint = (x, y, s) => { if (parryFx.length < 8) parryFx.push({ x, y, age: 0, s }); };
   const CGHOST_T = Math.round(0.25 * CFG.tickHz);
-  function resetFx() { flashV[0] = 0; flashV[1] = 0; poisonPulse[0] = 0; poisonPulse[1] = 0; flipAnim[0].t = 0; flipAnim[0].cur = 1; flipAnim[0].snap = true; flipAnim[1].t = 0; flipAnim[1].cur = 1; flipAnim[1].snap = true; banner = null; koStill = null; lastShots.clear(); sparkTrail.clear(); catchFx[0] = null; catchFx[1] = null; }   // flip transitions snap at round rolls — a new weapon materialises in its canonical orientation, it never flips in
+  function resetFx() {
+    for (let i = 0; i < 2; i++) {
+      flashV[i] = 0; poisonPulse[i] = 0; catchFx[i] = null;
+      const fa = flipAnim[i]; fa.t = 0; fa.cur = 1; fa.snap = true;   // flip transitions snap at round rolls — a new weapon materialises in its canonical orientation, it never flips in
+    }
+    banner = null; koStill = null; lastShots.clear(); sparkTrail.clear(); parryFx.length = 0;
+  }
   function consumeEvents(G) {
     for (const e of G.events) {
+      if (e.kind === 'parry') { addGlint(e.x, e.y, 1); continue; }
+      if (e.kind === 'swat' || e.kind === 'shotCross' || e.kind === 'shotRim') { addGlint(e.x, e.y, 0.8); continue; }   // parryfx-r3 (owner 2026-11-09): a smaller glint where a projectile meets a weapon (swat) or another projectile (shotCross). parryfx-r4 (owner 2026-11-09): shotRim now glints too — every projectile destroyed by a weapon, another projectile or the rim. Still silent: wall bounce, shotBounce, catch (a return, not a destruction)   // parryfx-r1: glint only — no hitstop, no slow-mo (parries never stop time)
       if (e.kind === 'bleedTick') { flashV[e.to] = 1; continue; }
       if (e.kind === 'poisonTick') { poisonPulse[e.to] = 1; continue; }
       if (e.kind === 'emberPop') {   // emberfix-r85 — THE POP GETS THE HIT'S OWN PUNCTUATION (owner: *"i think we should have the slowmo effect, i forgot to write that it wasnt present"*): the bite flashes its victim and opens the ¼× window on the hit's own merge semantics (refresh, never stack); a pop KILL takes the KO hard freeze
@@ -4358,36 +4565,8 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     ]),
   };
   const COPYKIND = { star: 1, boom: 1, javelin: 1 };   // the copy rule: the throw IS the weapon
-  const COPYSPIN = { star: 0.06, boom: 0.05, javelin: 0 };   // owner word 2026-10-25: the shipped ~10 rev/s aliased; slowed to a countable tumble
   const SHOT_SPIN = { spark: 0.12 };   // symmetric darts may spin; the spell family ORIENTS (owner word: "like the arrow, going in a straight line")
   const SPELLFAM = { spell: 1, halo: 1, nova: 1, vortex: 1 };
-  const COPYCTR = {};
-  function copyCtr(w) {
-    if (!COPYCTR[w]) {
-      const ps = WEAPONS[w].poly.polys; let A = 0, ax = 0, ay = 0;
-      for (const pl of ps) {
-        const ring = pl.subs[0]; let sa = 0, sx = 0, sy = 0;
-        for (let i = 0; i < ring.length; i++) { const p = ring[i], q = ring[(i + 1) % ring.length]; const cr = p[0] * q[1] - q[0] * p[1]; sa += cr; sx += (p[0] + q[0]) * cr; sy += (p[1] + q[1]) * cr; }
-        if (sa) { ax += sx / (3 * sa) * Math.abs(sa); ay += sy / (3 * sa) * Math.abs(sa); A += Math.abs(sa); }
-      }
-      let cx = A ? ax / A : 0, cy = A ? ay / A : 0, inside = false;
-      for (const pl of ps) {
-        const ring = pl.subs[0];
-        for (let i = 0, j = ring.length - 1; i < ring.length && !inside; j = i++) {
-          const pi = ring[i], pj = ring[j];
-          if ((pi[1] > cy) !== (pj[1] > cy) && cx < (pj[0] - pi[0]) * (cy - pi[1]) / (pj[1] - pi[1]) + pi[0]) inside = true;
-        }
-        if (inside) break;
-      }
-      if (!inside) {   // hollow-centred arc (boomerang): pivot mid-meAT, not in the hole
-        let ring = ps[0].subs[0]; for (const pl of ps) if (pl.subs[0].length > ring.length) ring = pl.subs[0];
-        const m1 = ring[Math.floor(ring.length * 0.25)], m2 = ring[Math.floor(ring.length * 0.75)];
-        cx = (m1[0] + m2[0]) / 2; cy = (m1[1] + m2[1]) / 2;
-      }
-      COPYCTR[w] = [cx, cy];
-    }
-    return COPYCTR[w];
-  }
   function drawPolySet(g, polys, sx, sy, ang, acc, age, ox, oy, dials, meta, ks) {
     const c = Math.cos(ang), s = Math.sin(ang);
     const parity = ((age || 0) >> 2) & 1;
@@ -4644,6 +4823,38 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     g.restore();
   }
 
+  function drawParryFx(g, dtFrames) {
+    for (let i = parryFx.length - 1; i >= 0; i--) {
+      const fx = parryFx[i];
+      const q = fx.age / PARRY_FX_T;
+      if (q >= 1) { parryFx.splice(i, 1); continue; }
+      const e = 1 - (1 - q) * (1 - q);   // ease-out: quick pop, soft settle
+      const sd = fx.x * 0.17 + fx.y * 0.31, sc = fx.s;
+      const fade = 1 - q * q;
+      g.save();
+      g.lineCap = 'round';
+      // core flash
+      g.globalAlpha = 0.7 * (1 - q) * (1 - q); g.fillStyle = '#ffffff';
+      g.beginPath(); g.arc(fx.x, fx.y, sc * (5 + 10 * (1 - q)), 0, TAU); g.fill();
+      // each white stroke rides on a faint warm-grey underlay (wide + dim) so it reads on the cream arena
+      const stroke = (path, under, over, w) => {
+        g.globalAlpha = under * fade; g.strokeStyle = '#4a3c2c'; g.lineWidth = sc * (w + 1.6) * (1 - 0.5 * q); g.stroke(path);
+        g.globalAlpha = over * fade; g.strokeStyle = '#ffffff'; g.lineWidth = sc * w * (1 - 0.5 * q); g.stroke(path);
+      };
+      const ring = new Path2D(); ring.arc(fx.x, fx.y, sc * (7 + 27 * e), 0, TAU);
+      stroke(ring, 0.4, 0.95, 2.4);
+      const rays = new Path2D();
+      for (let k = 0; k < 6; k++) {
+        const an = sd + k * TAU / 6, r0 = sc * (9 + 22 * e), r1 = r0 + sc * (k % 2 ? 5 : 10) * (1 - 0.5 * q);
+        rays.moveTo(fx.x + Math.cos(an) * r0, fx.y + Math.sin(an) * r0);
+        rays.lineTo(fx.x + Math.cos(an) * r1, fx.y + Math.sin(an) * r1);
+      }
+      stroke(rays, 0.38, 1, 2.1);
+      g.restore();
+      fx.age += dtFrames * fxRate;   // wall clock, slowed with the world, frozen in the KO hold
+    }
+  }
+
   function revealFrame(p) { return clamp01((1 - p) / 0.06); }   // owner-approved tail fade: full through the poster's life, dissolves into the arena over the last ~17 ticks (the wipe-in belongs to the poster itself)
 
   /* Poster dials: cadence (cy/xs/land/pre/shuffle/stride/t0) + layout — label
@@ -4670,6 +4881,12 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     ctx.lineWidth = 4; ctx.strokeStyle = TH.botInk;                   // centre divider
     ctx.beginPath(); ctx.moveTo(500, 0); ctx.lineTo(500, 1000); ctx.stroke();
     ctx.restore();
+  }
+
+  /* one poster weapon on half i: the medallion fit, or the old box fit under ?classic */
+  function drawPosterWeapon(i, id, x, y, sc, alpha, tint, acc) {
+    if (REVEAL_CLASSIC) drawFitWeapon(id, x, y, -0.22, VS.box[0], VS.box[1], sc, alpha, tint, i === 1, acc);
+    else drawMedalWeapon(id, x, y, i === 1, sc, alpha, tint, acc);
   }
 
   function drawReveal() {
@@ -4703,7 +4920,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
        * (caught by the r32 review; invisible to fingerprints, to chromecheck's default section and
        * to pair-proof's sim-level sweep, which is why pair-proof now records the poster's text). */
       const ci = G.cast[i];
-      const cx = VS.xs[i], cy = VS.cy;
+      const cx = VS.xs[i], cy = VS.cy, wy = cy - 10;   // wy = the weapon's centre line (a little above the VS centre)
       const resultId = roll ? roll.w[i] : WEAPON_IDS[0];
       const M = VS.shuffle[i], stride = VS.stride[i];
       const off = (((WEAPON_IDS.indexOf(resultId) - M * stride) % N) + N) % N;
@@ -4719,20 +4936,21 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       ctx.save();
       ctx.globalAlpha = appear * wipe;
       if (shake) ctx.translate(shx, shy);
+      if (!REVEAL_CLASSIC && landed) drawMedalBg(cx, wy, i, 1 + 0.07 * Math.exp(-since / 5) * Math.cos(since * 0.9), tk, clamp01(since / 22));   // the effect shows only AFTER the weapon is revealed (landed), blooming open from the moment of impact
       if (!landed) {
         const jit = ((n * 37) % 7 - 3) * 2.4 * (1 - x);
-        drawFitWeapon(sid, cx + jit, cy - 10, -0.22, VS.box[0], VS.box[1], 1, 0.34 * clamp01((tk - tStart) / 6), TINTS[ci], i === 1);
+        drawPosterWeapon(i, sid, cx + jit, wy, 1, 0.34 * clamp01((tk - tStart) / 6), TINTS[ci]);
       }
       const sp = (tk - tShEnd) / VS.pre;
       if (sp > 0) {
         const e = clamp01(sp), ease = e * e;
         const sc = landed ? 1 + Math.max(0, 0.1 * Math.exp(-since / 4) * Math.cos(since * 0.9)) : 1.9 - 0.9 * ease;
-        drawFitWeapon(resultId, cx, cy - 10, -0.22, VS.box[0], VS.box[1], sc, ease, null, i === 1, COLS[ci]);
+        drawPosterWeapon(i, resultId, cx, wy, sc, ease, null, COLS[ci]);
       }
       if (landed && since < 20) {                                   // shockwave + speed lines at the weapon
         const f = since / 20;
-        ctx.save(); ctx.translate(cx, cy - 10);
-        ctx.beginPath(); ctx.rect(-(cx + shx) - OV_MARGIN, 10 - cy - shy - OV_MARGIN, 1000 + 2 * OV_MARGIN, 1000 + 2 * OV_MARGIN); ctx.clip();   // the burst ends at the canvas edge — square plus band, no overhang (owner fix 2026-10-19, band 2026-10-21)
+        ctx.save(); ctx.translate(cx, wy);
+        ctx.beginPath(); ctx.rect(-(cx + shx) - OV_MARGIN, -wy - shy - OV_MARGIN, 1000 + 2 * OV_MARGIN, 1000 + 2 * OV_MARGIN); ctx.clip();   // the burst ends at the canvas edge — square plus band, no overhang (owner fix 2026-10-19, band 2026-10-21)
         ctx.globalAlpha = appear * (1 - f) * 0.9;
         ctx.strokeStyle = '#fff'; ctx.lineWidth = 8 * (1 - f) + 1;
         ctx.beginPath(); ctx.arc(0, 0, 70 + f * 190, 0, TAU); ctx.stroke();
@@ -4871,7 +5089,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       }
       view[i].flip = fa.cur;
       if (f.weapon && WEAPONS[f.weapon].chain) {           // flail chain pose: blend tick-start -> now, link by link (unit vectors, renormalised)
-        for (let k = 0; k < 6; k += 2) {
+        for (let k = 0; k < 18; k += 2) {
           const ud = f.fl.pu[k] + (f.fl.u[k] - f.fl.pu[k]) * viewA, ul = f.fl.pu[k + 1] + (f.fl.u[k + 1] - f.fl.pu[k + 1]) * viewA;
           const n = Math.sqrt(ud * ud + ul * ul) || 1;
           view[i].fl[k] = ud / n; view[i].fl[k + 1] = ul / n;
@@ -4939,6 +5157,8 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       // freeze + the faded disc + the scorebug tick, then the next reveal.
       // The ko-phase beat (koTicks) itself stays — it is pacing, not announcement.
     }
+    if (G.phase !== 'reveal') drawParryFx(ctx, dtFrames);   // parryfx-r1: on top of weapons, under the debug overlay
+    else parryFx.length = 0;
     if (showHitbox && G.phase !== 'reveal') drawHitboxes(ctx, view);
     drawBanner(dtFrames);
     if (UNBAKED.length) {   // art-preview watermark: raw deliveries boot as ghosts
@@ -5043,31 +5263,33 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
      * hit-slow window (slowmo-r63) the alpha KEEPS MOVING — fractional
      * tickAcc at ¼× is exactly the 's'-mode case the interpolation was built
      * for, so the slow motion renders as a blend, never as a stutter. */
-    viewA = (!paused && !G.over && G.phase === 'fight') ? Math.max(0, Math.min(1, tickAcc)) : 1;
+    viewA = (!paused && !G.over && G.phase === 'fight') ? clamp01(tickAcc) : 1;
     draw(dtFrames * fxRate);   // wall-time FX (flash decay, banner): held in the KO freeze (fxRate 0 — the impact frame holds, pause-r20), SLOWED with the world inside a hit-slow window (the flash lives in the same slow motion — no frozen-frame read), full-rate otherwise
   }
   requestAnimationFrame(frame);
 
   /* ---- input ---- */
+  // ONE implementation of each toggle: the keyboard and window.APP (hence the chrome chips) both call these.
+  const actions = {
+    togglePause() { paused = !paused; },
+    toggleSlow() { slow = !slow; if (slow) fast = false; },    // slow and fast are mutually exclusive
+    toggleFF() { fast = !fast; if (fast) slow = false; },
+    toggleHitbox() { showHitbox = !showHitbox; },
+    nextSeed() { restart(seed + 1); },
+  };
+  const KEY_ACTION = { p: 'togglePause', ' ': 'togglePause', s: 'toggleSlow', f: 'toggleFF', h: 'toggleHitbox', n: 'nextSeed' };
   window.addEventListener('keydown', function (e) {
     if (e.target && e.target.tagName === 'INPUT') return;
+    if (e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;   // Ctrl/Cmd+F, +S, +R … belong to the browser; a held key must not machine-gun a toggle
     const k = e.key.toLowerCase();
-    if (k === 'p' || k === ' ') { paused = !paused; }
-    else if (k === 's') { slow = !slow; if (slow) fast = false; }
-    else if (k === 'f') { fast = !fast; if (fast) slow = false; }
-    else if (k === 'r') restart();
-    else if (k === 'n') restart(seed + 1);
-    else if (k === 'h') { showHitbox = !showHitbox; }
+    if (k === 'r') restart();
+    else if (KEY_ACTION[k]) { actions[KEY_ACTION[k]](); if (k === ' ') e.preventDefault(); }   // Space would also scroll the page
   });
 
   window.APP = {
-    restart: function (s) { restart(s); },
-    nextSeed: function () { restart(seed + 1); },
+    restart: restart,
     setSeed: function (v) { restart(v | 0); },
-    togglePause: function () { paused = !paused; },
-    toggleSlow: function () { slow = !slow; if (slow) fast = false; },
-    toggleFF: function () { fast = !fast; if (fast) slow = false; },
-    toggleHitbox: function () { showHitbox = !showHitbox; },
+    nextSeed: actions.nextSeed, togglePause: actions.togglePause, toggleSlow: actions.toggleSlow, toggleFF: actions.toggleFF, toggleHitbox: actions.toggleHitbox,
     setShotArt: function (kind, polys) { if (polys) SHOTS_ART[kind] = { polys: polys }; else delete SHOTS_ART[kind]; },   // arena review feeds the ship draw path
     setAccent: function (v) { ACC_OVERRIDE = v || null; },
     setCast: function (c) { CAST_OVERRIDE = c ? checkCast(c.slice()) : null; restart(); },   // pairing: pick 2 of the cast for the next battle; null restores the shipped default. Console lever for the owner's own eyes — no UI chip yet (the cast is still two)
@@ -5090,56 +5312,50 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
 <script>
   // Chrome — sumo-war style. Additive only; drives the app through window.APP.
   (function () {
-    var el = {};
-    ['pz', 'sl', 'ff', 'rs', 'ns', 'hb', 'sd', 'ld', 'pa', 'wn', 'wsc', 'win', 'bug', 'lg', 'st'].forEach(function (id) {
-      el[id] = document.getElementById(id);
-    });
-    var api = window.APP;
-    var lgHtml = '', bugHtml = '', stHtml = '';
+    const api = window.APP;
+    const el = Object.fromEntries(['pz', 'sl', 'ff', 'rs', 'ns', 'hb', 'sd', 'ld', 'pa', 'wn', 'wsc', 'win', 'bug', 'lg', 'st']
+      .map(id => [id, document.getElementById(id)]));
+    let lgHtml = '', bugHtml = '', stText = '';
 
-    el.pz.onclick = function (e) { api.togglePause(); e.currentTarget.blur(); };
-    el.sl.onclick = function (e) { api.toggleSlow(); e.currentTarget.blur(); };
-    el.ff.onclick = function (e) { api.toggleFF(); e.currentTarget.blur(); };
-    el.rs.onclick = function (e) { api.restart(); e.currentTarget.blur(); };
-    el.ns.onclick = function (e) { api.nextSeed(); e.currentTarget.blur(); };
-    el.hb.onclick = function (e) { api.toggleHitbox(); e.currentTarget.blur(); };
-    el.pa.onclick = function (e) { api.nextSeed(); e.currentTarget.blur(); };
-    el.ld.onclick = function (e) { var v = parseInt(el.sd.value, 10); if (v >= 1) api.setSeed(v); e.currentTarget.blur(); };
-    el.sd.onkeydown = function (e) { if (e.key === 'Enter') { var v = parseInt(el.sd.value, 10); if (v >= 1) api.setSeed(v); el.sd.blur(); } };
+    // chips run their API call, then drop focus so the keyboard shortcuts keep working
+    const onClick = (id, fn) => { el[id].onclick = (e) => { fn(); e.currentTarget.blur(); }; };
+    onClick('pz', () => api.togglePause());
+    onClick('sl', () => api.toggleSlow());
+    onClick('ff', () => api.toggleFF());
+    onClick('rs', () => api.restart());
+    onClick('ns', () => api.nextSeed());
+    onClick('pa', () => api.nextSeed());
+    onClick('hb', () => api.toggleHitbox());
+    const loadSeed = () => { const v = parseInt(el.sd.value, 10); if (v >= 1) api.setSeed(v); };
+    onClick('ld', loadSeed);
+    el.sd.onkeydown = (e) => { if (e.key === 'Enter') { loadSeed(); el.sd.blur(); } };
 
     function scorebugHtml(G, meta) {
-      var a = meta.fighters[G.cast[0]], b = meta.fighters[G.cast[1]];   // scorebug is SLOT-ordered: each name sits over its own side's wins, whatever cast fills it
-      return '<span class="side"><i style="background:' + a.col + '"></i>' +
-        '<b style="color:' + a.tint + '">' + a.name + '</b></span>' +
-        '<span class="mid">' + G.wins[0] + ' – ' + G.wins[1] + '</span>' +
-        '<span class="side"><b style="color:' + b.tint + '">' + b.name + '</b>' +
-        '<i style="background:' + b.col + '"></i></span>';
+      const a = meta.fighters[G.cast[0]], b = meta.fighters[G.cast[1]];   // scorebug is SLOT-ordered: each name sits over its own side's wins, whatever cast fills it
+      return `<span class="side"><i style="background:${a.col}"></i><b style="color:${a.tint}">${a.name}</b></span>` +
+        `<span class="mid">${G.wins[0]} – ${G.wins[1]}</span>` +
+        `<span class="side"><b style="color:${b.tint}">${b.name}</b><i style="background:${b.col}"></i></span>`;
     }
-    function rowStats(f, meta) {
-      var spin = f.weapon ? Math.abs(f.spin) : 0;
-      return {
-        m: meta.fighters[f.idx],   // UNCHANGED and now load-bearing: meta.fighters is the ROSTER (idx-keyed), so the legend row reads its actor's own name/colour/skill on either side
-        spd: f.weapon ? (spin < 10 ? spin.toFixed(1) : String(Math.round(spin))) : '—',
-        dmg: f.weapon ? String(Math.round(f.dmg)) : '—',
-      };
+    function rowHtml(f, meta) {
+      const m = meta.fighters[f.idx];   // meta.fighters is the ROSTER (idx-keyed), so the legend row reads its actor's own name/colour/skill on either side
+      const w = f.weapon ? meta.weapons[f.weapon] : null;
+      const spin = f.weapon ? Math.abs(f.spin) : 0;
+      const spd = f.weapon ? (spin < 10 ? spin.toFixed(1) : String(Math.round(spin))) : '—';
+      const dmg = f.weapon ? String(Math.round(f.dmg)) : '—';
+      return `<tr${f.alive ? '' : ' class="out"'}>` +
+        `<td><span class="who"><i class="sw" style="background:${m.col}"></i><span class="qn" style="color:${m.tint}">${m.name}</span></span></td>` +
+        `<td class="ex">${m.skill}</td>` +
+        '<td class="air"></td>' +
+        `<td>${w ? `<span class="wp">${w.name}</span>` : '<span class="wp idle">rolling…</span>'}</td>` +
+        `<td class="ex">${w ? w.brief : ''}</td>` +
+        '<td class="air"></td>' +
+        `<td class="st"><span class="nums"><span>SPD <b>${spd}</b></span><span>DMG <b>${dmg}</b></span></span></td></tr>`;
     }
-    function legendHtml(G, meta) {
-      return '<div class="ccard"><table class="lg">' + G.fighters.map(function (f) {
-        var s = rowStats(f, meta);
-        var w = f.weapon ? meta.weapons[f.weapon] : null;
-        return '<tr' + (f.alive ? '' : ' class="out"') + '>' +
-          '<td><span class="who"><i class="sw" style="background:' + s.m.col + '"></i>' +
-          '<span class="qn" style="color:' + s.m.tint + '">' + s.m.name + '</span></span></td>' +
-          '<td class="ex">' + s.m.skill + '</td>' +
-          '<td class="air"></td>' +
-          '<td>' + (w ? '<span class="wp">' + w.name + '</span>' : '<span class="wp idle">rolling…</span>') + '</td>' +
-          '<td class="ex">' + (w ? w.brief : '') + '</td>' +
-          '<td class="air"></td>' +
-          '<td class="st"><span class="nums"><span>SPD <b>' + s.spd + '</b></span><span>DMG <b>' + s.dmg + '</b></span></span></td></tr>';
-      }).join('') + '</table></div>';
-    }
+    const legendHtml = (G, meta) => `<div class="ccard"><table class="lg">${G.fighters.map(f => rowHtml(f, meta)).join('')}</table></div>`;
+
+    // innerHTML/textContent are written only when the string actually changed
     function poll() {
-      var G = api.state(), info = api.info(), meta = api.meta;
+      const G = api.state(), info = api.info(), meta = api.meta;
 
       // chip states
       el.pz.textContent = info.paused ? 'Resume' : 'Pause';
@@ -5149,23 +5365,23 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       el.hb.classList.toggle('on', info.showHitbox);
       if (document.activeElement !== el.sd) el.sd.value = String(info.seed);
 
-      // winner overlay + battle stats line (written only on change)
+      // winner overlay + battle stats line
       if (G.over) {
         el.wn.textContent = meta.fighters[G.cast[G.winner]].name;   // G.winner is a SLOT (it is read off the slot-keyed wins); meta.fighters is the cast roster
         el.wsc.textContent = G.wins[0] + '–' + G.wins[1];
         el.win.hidden = false;
-        var line = (G.t / meta.hz).toFixed(1) + 's · ' + G.stats.hits + ' hits · ' + G.stats.parries +
+        const line = (G.t / meta.hz).toFixed(1) + 's · ' + G.stats.hits + ' hits · ' + G.stats.parries +
           ' parries · max spin ' + G.maxSpin.toFixed(1) + ' · max dmg ' + Math.round(G.maxDmg) +
           (G.stats.thrown ? ' · shots ' + G.stats.thrown + ' thrown / ' + G.stats.landed + ' landed / ' + G.stats.swatted + ' swatted' : '');
-        if (line !== stHtml) el.st.textContent = stHtml = line;
+        if (line !== stText) el.st.textContent = stText = line;
       } else {
         el.win.hidden = true;
-        if (stHtml) { el.st.textContent = ''; stHtml = ''; }
+        if (stText) { el.st.textContent = ''; stText = ''; }
       }
 
-      var bug = scorebugHtml(G, meta);
+      const bug = scorebugHtml(G, meta);
       if (bug !== bugHtml) el.bug.innerHTML = bugHtml = bug;
-      var html = legendHtml(G, meta);
+      const html = legendHtml(G, meta);
       if (html !== lgHtml) el.lg.innerHTML = lgHtml = html;
     }
     setInterval(poll, 100);
