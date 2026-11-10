@@ -94,6 +94,35 @@ by construction.
   copies (`scratch/triage/lengrow-build-proof.mjs.orig`, `scratch/triage/pair-proof.mjs.orig`) —
   house convention keeps them, but they are noise in a diff.
 
+## THE PUSH — WHAT WENT WHERE, AND THE ONE FILE THAT DID NOT GO
+
+The sandbox has **no git credentials** (`git push` → *"could not read Username for
+'https://github.com'"*), so the work reached the branch through the **connected GitHub App's
+`push_files`** instead. Each menu commit crossed as its OWN App commit:
+
+| local commit | App commit on the remote | content |
+|---|---|---|
+| `1ff647d` | `a23ee819` | the session-5 handoff-name correction |
+| `8857dd6` | `a6dc…` | menu#4 — lengrow re-seed + LG2 hardening |
+| `01317c4` | `726f…` | menu#5 — flipproof seeds + the T4 ledger |
+| `aba587c` | `a883…` | menu#6 — leadproof's two swat classes |
+| `f2e6723` (part 1) | `a11d6b7` | README, `docs/HANDOFF.md`, this handoff, the runner + the ten battery logs |
+
+**Consequence: the remote SHAs are NOT the local SHAs.** The trees are identical, the commit
+objects are not (different committer/timestamps) — so the remote branch is a **parallel lineage**
+off `556e34c`, not a fast-forward of the local one.
+
+**`docs/GAMES.md` DID NOT GO.** The file is ~690KB; the App's tool-call payload cap is **512KiB**
+(measured: 523,102 bytes accepted, 524,302 rejected with `connector_payload_too_large`), and a
+file must be written whole. The remote therefore carries the code, the README, `docs/HANDOFF.md`,
+the handoffs and the battery logs — **and not the #723–#727 entries**.
+
+**THE OWNER'S RECONCILIATION — merge, NEVER force-push:**
+`git fetch origin && git merge --no-ff origin/spinclash-item-three-triage-80aa6` — the two trees
+differ in exactly ONE file (`docs/GAMES.md`), the merge resolves it to the local (complete)
+version, and the local branch then fast-forwards the remote. (`git push --force` is FORBIDDEN by
+house rule and is unnecessary here.)
+
 ## NON-NEGOTIABLES (unchanged — restated for continuity)
 
 Asserted-patch method only (exact-match + expected count, loud on mismatch, write nothing on
