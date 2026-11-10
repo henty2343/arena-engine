@@ -65,6 +65,32 @@ next agent. Everything below was VERIFIED in this session, not assumed from logs
      at session-5 stop (this snapshot). This menu never touches canonical; STOP if changed.
 
 ## GIT STATE AT HANDOFF
+> **DATED CORRECTION (2026-11-11, session 6) — the branch/push facts below were WRONG when session 5
+> wrote them; the corrected record is in the block UNDERNEATH, the superseded text is KEPT VISIBLE
+> above (house rule: dated corrections, superseded claims stay visible, history is never rewritten).**
+>
+> - CORRECTED: the owner pushed the session-5 work to GitHub himself. The continuation branch is
+>   **`spinclash-item-three-triage-80aa6`** (NOT `item-three-stale-proof-triage-237df`), pushed at
+>   **556e34c** (the "item-3 session5 STOP checkpoint" commit). The owner's LOCAL tip is **64f2ef7**,
+>   which adds ONLY this handoff-name correction — i.e. the content of this correction IS 64f2ef7's
+>   whole diff. 64f2ef7 is not reachable from the remote (it is a local-only commit): a session-6
+>   clone could not fetch it by SHA, so session 6 fast-forwarded from 556e34c and applied this
+>   correction as its own commit (same content, different SHA). **If the owner later pushes 64f2ef7,
+>   the two lineages carry the SAME tree change — reconcile by keeping whichever commit, do not
+>   force-push.**
+> - CORRECTED: the session-6 environment DOES have a remote (`origin` →
+>   `https://github.com/henty2343/arena-engine.git`), so the session-5 "IMPOSSIBLE from here without
+>   a remote" verdict no longer holds. The push target stays
+>   `spinclash-item-three-triage-80aa6`.
+>
+> SUPERSEDED (session 5's original text, kept verbatim): "Branch: qwen-code-... (session workspace).
+> The working branch for this task is **item-three-stale-proof-triage-237df** (was at e038de9 when
+> session 5 branched; session-5 commits live on the workspace branch — next agent: ensure they land
+> on / are merged into the owner-facing branch WITHOUT rewriting history; no force-pushes)." /
+> "NO remotes configured in this environment and NO gh CLI installed (verified session 4 AND 5:
+> `git remote -v` empty). Owner said 'push it to github' — IMPOSSIBLE from here without a remote;
+> next agent/owner must add the remote and push. Do not fabricate a push."
+
 - Branch: qwen-code-... (session workspace). The working branch for this task is
   **item-three-stale-proof-triage-237df** (was at e038de9 when session 5 branched; session-5
   commits live on the workspace branch — next agent: ensure they land on / are merged into the
