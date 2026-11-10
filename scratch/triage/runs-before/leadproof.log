@@ -1,0 +1,32 @@
+  katana   lead     − → contour faces motion: 256/256
+  scythe   lead     − → contour faces motion: 256/256
+  javelin  headLead + → contour faces motion: 256/256
+  dagger   lead     − → contour faces motion: 256/256
+  staff    lead     − → contour faces motion: 256/256
+  katana   fp +1: 178/178 drawn points on the mirrored mapping
+  katana   fp −1: 178/178 drawn points on the mirrored mapping
+  scythe   fp +1: 286/286 drawn points on the mirrored mapping
+  scythe   fp −1: 286/286 drawn points on the mirrored mapping
+  javelin  fp +1: 182/182 drawn points on the mirrored mapping
+  javelin  fp −1: 182/182 drawn points on the mirrored mapping
+  dagger   fp +1: 86/86 drawn points on the mirrored mapping
+  dagger   fp −1: 86/86 drawn points on the mirrored mapping
+  staff    fp +1: 232/232 drawn points on the mirrored mapping
+  staff    fp −1: 232/232 drawn points on the mirrored mapping
+  FAIL javelin+javelin s7 t2190: swat touch gap 6.70e+0 <= 0
+  FAIL javelin+javelin s7 t2746: swat touch gap 6.34e+0 <= 0
+  FAIL javelin+javelin s7 t4700: swat touch gap 6.39e+0 <= 0
+  FAIL javelin+javelin s7 t5058: swat touch gap 7.17e+0 <= 0
+  FAIL javelin+javelin s7 t6703: swat touch gap 4.98e+0 <= 0
+  FAIL javelin+javelin s7 t7681: swat touch gap 3.66e+0 <= 0
+  FAIL javelin+javelin s7 t7730: swat touch gap 4.97e+0 <= 0
+  FAIL javelin+javelin s7 t7924: swat touch gap 7.24e+0 <= 0
+  FAIL javelin+javelin s7 t8207: swat touch gap 7.18e+0 <= 0
+  FAIL javelin+bow s5 t1514: swat touch gap 1.04e+1 <= 0
+  FAIL javelin+bow s5 t2605: swat touch gap 1.05e+1 <= 0
+  FAIL javelin+bow s5 t8033: swat touch gap 6.38e+0 <= 0
+  FAIL javelin+bow s5 t8536: swat touch gap 1.16e+1 <= 0
+  FAIL javelin+bow s5 t10207: swat touch gap 1.09e+1 <= 0
+  FAIL javelin+bow s5 t10707: swat touch gap 1.09e+1 <= 0
+  Part B: hits 442 (flagged 316), parries 311 (flagged sides 425), swats 154 (flagged 91) — every one recomputed from stored fields
+LEADPROOF: 15 FAILURES

@@ -1,0 +1,48 @@
+seam probe — the seam-r30 hooks (authored brief + shot-cadence multiplier)
+  ok   the spear row carries an AUTHORED brief  — "+DMG +LEN / Hit"
+  ok   every row with a non-derivable trait axis has an authored brief  — bow="+SPD +RAIN / Hit" spear="+DMG +LEN / Hit" staff="+SPD +SIZE +HEX / Hit" wand="+SPD +FIG +HEX / Hit" crossbow="+SPD +NAILS / Hit" boomerang="+SPD +LOOP / Catch" flail="+DMG +LEN / Hit" knives="+SPD +FAN / Hit" scroll="+SPD +EMBER +HEX / Hit"
+  ok   plain spin/dmg rows still fall back to the derivation (no churn)  — sword has no authored brief, so meta derives it
+  ok   NO row declares the STATIC shot.mult and no fighter declares skill.shotMult (the seam's static side ships inert)  — since multgrow-r42 the bow feeds the same smul through its trait.mult growth term instead
+  FAIL the BOW is the sole rain-axis holder: trait.mult 0.5, an authored brief, and MULT_STEPS caps the read at smul ceiling 6  — bow trait {"spin":0.7,"dmg":0,"mult":0.5}, brief "+SPD +RAIN / Hit", MULT_STEPS 10
+  ok   shot.mult scales the volley rate (cadence seam is live, not dead code)  — thrown in 3000 ticks on the growth-OFF twin: mult 0 -> 28, mult 1 (2x) -> 71, mult 3 (4x) -> 144
+  FAIL the scaling is close to the declared factor  — ratio 2.54 for a declared 2x (drift is the rim clamp and round resets)
+  ok   GUARD FIRES: a new trait axis with no authored brief is a boot error  — sword: trait carries bogusAxis, which the derived brief cannot express — author a `brief` on the
+  ok   GUARD FIRES: a non-positive effective multiplier is a boot error  — bow + Speedy: effective shot multiplier 0 is not positive — the launch loop divides by it
+  ok   GUARD FIRES: a non-positive rain rate is a boot error (trait.mult)  — bow: trait.mult -0.5 is not a positive finite growth rate — the rain would thin toward still or 
+  ok   GUARD FIRES: a NaN rain rate is a boot error (NaN would poison `need` and silently stall the release loop)  — bow: trait.mult NaN is not a positive finite growth rate — the rain would thin toward still or N
+shotgrow-r33 — the staff's orb-growth axis (trait.shotR)
+  FAIL the staff row declares the growth RATE and an authored brief  — trait.shotR 0.2, brief "+SPD +SIZE +HEX / Hit"
+  ok   NO other row declares shotR (the axis is staff-only)  — every other launcher's birth radius is bit-identical
+  ok   every born orb carries base*(1+rate)^step (birth-snapshot law, exact)  — 56 births checked, 0 mismatches; first radii 14.04 → 14.04 → 14.04
+  ok   growth is PER-FIGHTER: the hammer side never grows an orb  — hammer-side shotStep max 0
+  ok   the escalation is real: late orbs dwarf the base radius  — top step 18 = 26.6× base (r 311.5 vs bodyR 64)
+  ok   traits reset every round (the LAW): shotStep is 0 at each round-2+ roll  — 2 rolls observed, all reset
+  ok   a non-shotR launcher is untouched: every wand spark is born at the row radius  — 42 sparks checked, 0 off-row
+  ok   GUARD FIRES: a non-positive shotR is a boot error  — staff: trait.shotR -0.5 is not a positive finite growth rate — orbs would shrink or NaN would po
+  ok   GUARD FIRES: a NaN shotR is a boot error  — staff: trait.shotR NaN is not a positive finite growth rate — orbs would shrink or NaN would poi
+F — spingrow-r36: the dagger's spin-growth trait (trait.spin 2.0 PROVISIONAL)
+  ok   F0 the dagger row declares a positive finite spin rate  — trait.spin 2 rad/s per damaging hit
+  ok   F0b no OTHER melee row carries the axis (the launchers' 0.70 is fire-rate class data)  — hammer axe sword spear mace shield flail nunchaku scythe katana orb — all spin 0
+  ok   F1 every damaging hit grows the holder's |spin| by exactly skill.spin + trait.spin (per fighter; Speedy stacks to 2.3)  — 327 hits checked across 9 battles, 0 off-law
+  ok   F2 traits reset every round (the LAW): |spin| is back at the weapon omega at every roundStart  — 18 round starts, 0 off-omega
+  ok   F3 the escalation is real: a dagger holder passes 4× its base omega  — observed max |spin| 42.6 rad/s = 6.8 rev/s vs base 3.5
+G — halo-r39: the boomerang's Loyal Halo + cycle-only catch growth (trait.cycle, cap CYCLE_STEPS)
+  FAIL G0 the boomerang row declares the full halo set and an authored brief — and no lap budget or refund survives  — cycle 0.2, orbit.elong undefined, turn undefined, brief "+SPD +LOOP / Catch"
+  ok   G0b NO other row declares cycle or returns (both axes are boomerang-only)  — every other launcher is born at its row speed, flies straight, and dies on the rim
+  FAIL G1 every born boomerang carries row×(1+rate)^min(step,CAP) on speed AND turn together (birth-snapshot law, exact within the same-tick growth ambiguity)  — 239 births checked, 239 off-law
+  ok   G1b the oval's SCALE stays locked (the identity law: speed/turn === the row ratio on every in-flight tick — growth shrinks the PERIOD, never the shape)  — 42788 in-flight checks, 0 off-scale
+  ok   G2 the cap SATURATES and is the bound: top birth factor is exactly (1+rate)^CAP while the raw step runs past it  — raw step reached 82 > CAP 10; top factor 6.192 = 1.2^10
+  FAIL G3 THE HALO FLIGHT CONTRACT: every retired loop flew at most ONE orbit (the hand-on-path guarantee), the rim never kills a loop, no timer death exists, pass-through hits land, and the singleton gate never leaks  — 231 catches, worst retired flight 1698t ≤ 400t (birth orbit ≈188t), 0 rim deaths, 0 singleton violations, 228 pass-through hits
+  ok   G5 traits reset every round (the LAW): shotStep is 0 at every roundStart  — 8 round starts, 0 off-zero
+file:///tmp/arena/tenants/5ff54f60-3a78-4428-b2e8-a040621f4a33/sessions/4846902a-9553-4a34-8eef-745a7eeec7ea/workspace/.qa/seam-proof.mjs:96
+const loadR=(from,to)=>{ if(!core.includes(from)) throw new Error(`seam-proof: replace target missing — ${JSON.stringify(from)}`);
+                                                        ^
+
+Error: seam-proof: replace target missing — "const CATCH_GROW = true;"
+    at loadR (file:///tmp/arena/tenants/5ff54f60-3a78-4428-b2e8-a040621f4a33/sessions/4846902a-9553-4a34-8eef-745a7eeec7ea/workspace/.qa/seam-proof.mjs:96:57)
+    at file:///tmp/arena/tenants/5ff54f60-3a78-4428-b2e8-a040621f4a33/sessions/4846902a-9553-4a34-8eef-745a7eeec7ea/workspace/.qa/seam-proof.mjs:288:15
+    at ModuleJob.run (node:internal/modules/esm/module_job:325:25)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v20.20.2

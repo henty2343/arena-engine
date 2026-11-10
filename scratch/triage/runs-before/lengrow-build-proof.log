@@ -1,0 +1,75 @@
+lengrow-build-proof — spinclash-preview.html
+  LEN_STEPS 12 (uniform cap, nocombo-r34) · growing weapons: spear, flail
+
+A  ladder shape
+  FAIL every growing weapon has a ladder, and no other does  — spear,flail
+  ok   ladder has LEN_STEPS+1 entries  — 13 circle sets, 13 poly sets
+  ok   step 0 IS the shipped data by identity
+  ok   the baked row set is complete (one per grown step)  — 12 rows for 12 steps
+  ok   every grown step IS its baked row by identity  — 19/22/24/26/28/31/33/36/38/40/45/48/50 circles per step (step 0 = the shipped 19)
+  ok   circle counts never shrink as the spear lengthens  — 19/22/24/26/28/31/33/36/38/40/45/48/50 — a longer shaft needs at least as many circles
+  ok   junction strictly inside the tip  — J 90.047 of tip 147.472 (61.1%)
+B  never thickens (the owner's stated fear) — the ART invariant
+  ok   drawn lateral envelope identical at EVERY step  — |l|max 12.8118 at all 13 steps
+  ok   no poly point's lateral coordinate ever moves  — 828 l values compared across 12 steps, 0 drift — only d is remapped
+  ok   every covering circle respects the packer's RMIN floor (2.0)  — 440 circles across the ladder, min r 2.00, max r 12.40
+  ok   no covering circle is wider than the shipped row's widest  — ladder max r 12.40 vs shipped max r 12.40
+C  observable growth rate
+  ok   tip grows exactly (1+rate)^s at every step  — worst deviation 8.88e-16
+  ok   top step matches the authored rate over 12 steps  — rate 9.59%/hit -> tip 147.472 -> 442.548px (+200.09%)
+  ok   top step is under the d-remap ceiling OR carries baked rows  — +200.09% vs the +39.5% d-remap ceiling — 12 re-baked rows carry it
+  ok   shaft factor exceeds the tip factor (derived, not authored)  — shaft k 4.2769 vs tip 3.0009
+D/E/F  piecewise map: rigid head, scaling shaft, no gap
+  ok   every point past the junction translates by ONE delta  — the head cluster is a rigid body
+  ok   every point at/behind the junction scales by ONE factor  — the shaft stays a rectangle
+  ok   no gap opens between shaft and head  — shaft end 393.12 >= head rear 372.27 at the top step
+G/H  REACH raised, MINR is the ladder-wide minimum
+  ok   REACH equals the TOP step, not the base  — REACH 505.488 vs top-step 505.488
+  ok   REACH grew by the tip growth  — +295.08px of prune-bound headroom
+  ok   MINR is the LADDER-WIDE minimum, not the base row's  — MINR 2.00 = min(base 2.20, ladder 2.00) — a re-baked step can pack thinner, and MINR sizes the substep delta
+I  the shared WEAPONS row is never mutated
+  ok   W.len is still the shipped ceiling  — len 147.4720
+  ok   base polys still hold the shipped tip  — tip 147.4720
+  ok   base circles still hold the shipped outermost d  — outermost d 141.8
+J/K  grow() advances, the round resets
+  ok   the roll armed the spear fighter  — f.weapon spear
+  ok   lenStep starts at 0
+  ok   5 damaging hits -> step 5  — lenStep 5
+  ok   clamped at the UNIFORM cap, never past it  — 45 hits total -> lenStep 12 of the uniform cap 12 (per-fighter caps retired at nocombo-r34)
+  ok   further hits do not overrun the baked geometry  — lenStep stays 12
+       (debug) round -> 2 at t=8762: lenStep [12, 0] pre-roll -> [0, 0] post-roll, phase reveal phaseT 1
+  ok   the round transition resets lenStep to 0  — round -> 2 at t=8762: [12, 0] -> [0, 0]
+  ok   a real spear battle actually grows  — reached step 12 in round 1
+  ok   the reset is not vacuous (a step was actually carried in)  — max carried-in step 12
+L  collision follows the step
+  ok   step 7 emits further-out circles than step 0  — outermost circle x 703.24 -> 835.74
+  ok   step 7 emits EXACTLY the ladder's step-7 row  — 36 circles emitted = LEN_LADDER.circles[7].length 36, all radii matched (step 0 emits 19)
+  ok   the top step matches the ladder table exactly  — outermost x 998.440
+M  non-growing weapons are unaffected
+  ok   no ladder entry for any other weapon
+  ok   a bogus step on a non-grower changes nothing  — 25 sword circles identical at step 0 and step 9
+  ok   the sword has no trait.len
+N  the build really changes battles (the 8-cell suite structurally cannot show it)
+  ok   REACH is raised above its own base value  — base 210.412 -> built 505.488
+  ok   spear+hammer s9: growth changes the battle  — first divergence at t=286 of 16671 rows · growth wins 2-0 (top step 12) vs control wins 0-2
+  ok   spear+sword s21: growth changes the battle  — first divergence at t=286 of 15107 rows · growth wins 2-0 (top step 12) vs control undecided at t=18000
+  ok   spear+scythe s33: growth changes the battle  — first divergence at t=286 of 13586 rows · growth wins 2-0 (top step 12) vs control wins 0-2
+  ok   the control is genuinely growth-free  — max lenStep in the control across 3 cells: 0
+  ok   the growth side really grows in real battles  — top step reached 12 of 12
+  ok   every forced-spear cell diverges  — 3/3
+  ok   the shared row is restored after the control  — trait.len 0.0959, REACH 505.488
+O  the cap is UNIFORM — no skill reaches into the trait
+  ok   no fighter carries lenSteps: the retired hook is GONE from every skill object  — Speedy: spin+dmg · Heavy: spin+dmg
+  ok   the ladder is exactly LEN_STEPS+1 rows — the 18-step era (steps 13-18) is PURGED  — 13 circle sets, 12 baked rows, tipK 13 entries
+  ok   the top step is the owner-approved +200% look, not the retired +420%  — step 12 = +200.1% (tipK 3.0009)
+  ok   grow() clamps EVERY fighter at the SAME uniform cap after 60 damaging hits  — Speedy 12/12 · Heavy 12/12
+  ok   every fighter reads the SAME top-step ladder row (one bot's spear is never different)  — 50 circles at step 12, identical for all
+  ok   every ladder row is still the shipped/baked row BY IDENTITY (the purge removed rows, not remapped them)  — steps 0..12: step 0 shipped, the rest baked
+  ok   legend labels are AUTHORED per row, never derived  — Speedy="+SPD / Hit" · Heavy="+DMG / Hit"
+  ok   Speedy's label no longer advertises the retired length gift  — "+SPD / Hit" (the lenSteps era read "+SPD +LEN / Hit")
+  ok   real spear battles SATURATE the uniform top and never pass it  — top step 12 of 12 across 5 cells (both slots), saturated in 4/5
+  ok   REACH is the step-12 reach for EVERY holder (per-weapon table, uniform cap)  — REACH 505.488 = the step-12 reach (505.488; the 18-step era's 829.571 is history)
+  ok   REACH is disclosed against the arena  — REACH 505.5px from the body centre vs a 500px half-arena — a fully grown spear overhangs 5.5px from mid-arena (was ~330px in the 18-step era)
+
+LENGROW-BUILD-PROOF: 1 FAILED — 56 passed, 1 failed
+Read-only: nothing written, measure.mjs untouched.

@@ -1,0 +1,28 @@
+SEED SCAN  seed | parries | rollsFlagged | hasFlaggedParry | rolls
+  s 1     38    true     true  [["spear","flail"],["scythe","shield"]]
+  s 2     19    true     true  [["scythe","tome"],["hammer","javelin"]]
+  s 3     15    true     true  [["shuriken","javelin"],["shuriken","knives"]]
+  s 4     12    true     true  [["boomerang","crossbow"],["tome","staff"]]
+  s 5     19    true     true  [["katana","shuriken"],["axe","scythe"]]
+  s 6     28    true     true  [["flail","dagger"],["javelin","nunchaku"]]
+  s 7     13   false    false  [["orb","orb"],["bow","boomerang"]]
+PICKED: FLAG_SEED 1 (was hardcoded 2) · CTRL_SEED 7 (was hardcoded 4 — now rolls a flagged weapon)
+
+T4 DRIVE on s1 (side 0) — flipMs 180, hitSlowRate 0.25, per-sweep frame budget 13
+  ep1: frames 16 (full 8, slow 8, frozen 0) sweeps 1 resets 1 | clock consumed 163.05ms vs expected 180ms (dev 17) | OLD law 16 <= 13 → FAIL | NEW law → FAIL
+  ep2: frames 10 (full 9, slow 1, frozen 0) sweeps 1 resets 1 | clock consumed 150.3ms vs expected 180ms (dev 29.7) | OLD law 10 <= 13 → ok | NEW law → FAIL
+  ep3: frames 10 (full 9, slow 1, frozen 0) sweeps 1 resets 1 | clock consumed 150.3ms vs expected 180ms (dev 29.7) | OLD law 10 <= 13 → ok | NEW law → FAIL
+  ep4: frames 10 (full 9, slow 1, frozen 0) sweeps 1 resets 1 | clock consumed 150.3ms vs expected 180ms (dev 29.7) | OLD law 10 <= 13 → ok | NEW law → FAIL
+  ep5: frames 10 (full 9, slow 1, frozen 0) sweeps 1 resets 1 | clock consumed 150.3ms vs expected 180ms (dev 29.7) | OLD law 10 <= 13 → ok | NEW law → FAIL
+  ep6: frames 17 (full 7, slow 10, frozen 0) sweeps 1 resets 1 | clock consumed 154.7ms vs expected 180ms (dev 25.3) | OLD law 17 <= 13 → FAIL | NEW law → FAIL
+  ep7: frames 10 (full 9, slow 1, frozen 0) sweeps 1 resets 1 | clock consumed 150.3ms vs expected 180ms (dev 29.7) | OLD law 10 <= 13 → ok | NEW law → FAIL
+  ep8: frames 10 (full 9, slow 1, frozen 0) sweeps 1 resets 1 | clock consumed 150.3ms vs expected 180ms (dev 29.7) | OLD law 10 <= 13 → ok | NEW law → FAIL
+  ep9: frames 17 (full 7, slow 10, frozen 0) sweeps 1 resets 1 | clock consumed 154.7ms vs expected 180ms (dev 25.3) | OLD law 17 <= 13 → FAIL | NEW law → FAIL
+  ep10: frames 10 (full 9, slow 1, frozen 0) sweeps 1 resets 1 | clock consumed 150.3ms vs expected 180ms (dev 29.7) | OLD law 10 <= 13 → ok | NEW law → FAIL
+  ep11: frames 17 (full 7, slow 10, frozen 0) sweeps 1 resets 1 | clock consumed 154.7ms vs expected 180ms (dev 25.3) | OLD law 17 <= 13 → FAIL | NEW law → FAIL
+  ep12: frames 10 (full 9, slow 1, frozen 0) sweeps 1 resets 1 | clock consumed 150.3ms vs expected 180ms (dev 29.7) | OLD law 10 <= 13 → ok | NEW law → FAIL
+  ep13: frames 10 (full 9, slow 1, frozen 0) sweeps 1 resets 1 | clock consumed 150.3ms vs expected 180ms (dev 29.7) | OLD law 10 <= 13 → ok | NEW law → FAIL
+  ep14: frames 10 (full 9, slow 1, frozen 0) sweeps 1 resets 1 | clock consumed 150.3ms vs expected 180ms (dev 29.7) | OLD law 10 <= 13 → ok | NEW law → FAIL
+
+SUMMARY: 14 episodes · worst ledger deviation 2.97e+1ms (bound 1 frame = 16.7ms) · worst full-rate frame count 9 (bound 13/sweep)
+EPISODE 2 VERDICT: old frame-count law PASS → new ledger law FAIL; the 1 non-full-rate frames were 1 slow-mo + 0 frozen
