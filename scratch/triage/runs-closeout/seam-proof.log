@@ -1,0 +1,68 @@
+=== seam-proof :: node .qa/seam-proof.mjs ===
+=== started 2026-11-10T23:22:34Z ===
+seam probe — the seam-r30 hooks (authored brief + shot-cadence multiplier)
+  ok   the spear row carries an AUTHORED brief  — "+DMG +LEN / Hit"
+  ok   every row with a non-derivable trait axis has an authored brief  — bow="+SPD +RAIN / Hit" spear="+DMG +LEN / Hit" staff="+SPD +SIZE +HEX / Hit" wand="+SPD +FIG +HEX / Hit" crossbow="+SPD +NAILS / Hit" boomerang="+SPD +LOOP / Catch" flail="+DMG +LEN / Hit" knives="+SPD +FAN / Hit" scroll="+SPD +EMBER +HEX / Hit"
+  ok   plain spin/dmg rows still fall back to the derivation (no churn)  — sword has no authored brief, so meta derives it
+  ok   NO row declares the STATIC shot.mult and no fighter declares skill.shotMult (the seam's static side ships inert)  — since multgrow-r42 the bow feeds the same smul through its trait.mult growth term instead
+  ok   the rain axis has EXACTLY the two authored holders (bow + crossbow since pinlaw-r44): trait.mult 0.5 each, an authored brief each, and MULT_STEPS caps the read at smul ceiling 6  — holders bow=0.5 "+SPD +RAIN / Hit", crossbow=0.5 "+SPD +NAILS / Hit", MULT_STEPS 10, ceiling 6.0
+  ok   shot.mult scales the volley rate (cadence seam is live, not dead code)  — thrown in 3000 ticks on the growth-OFF twin: mult 0 -> 28, mult 1 (2x) -> 71, mult 3 (4x) -> 144
+  ok   the scaling is close to the declared factor  — ratio 2.54 for a declared 2x, band ±0.6 re-measured 2026-11-10 (drift is the rim clamp and round resets)
+  ok   GUARD FIRES: a new trait axis with no authored brief is a boot error  — sword: trait carries bogusAxis, which the derived brief cannot express — author a `brief` on the
+  ok   GUARD FIRES: a non-positive effective multiplier is a boot error  — bow + Speedy: effective shot multiplier 0 is not positive — the launch loop divides by it
+  ok   GUARD FIRES: a non-positive rain rate is a boot error (trait.mult)  — bow: trait.mult -0.5 is not a positive finite growth rate — the rain would thin toward still or 
+  ok   GUARD FIRES: a NaN rain rate is a boot error (NaN would poison `need` and silently stall the release loop)  — bow: trait.mult NaN is not a positive finite growth rate — the rain would thin toward still or N
+shotgrow-r33 — the staff's orb-growth axis (trait.shotR)
+  ok   the staff row declares the growth RATE and an authored brief  — trait.shotR 0.2, brief "+SPD +SIZE +HEX / Hit" (+HEX since hexfam-r68)
+  ok   NO other row declares shotR (the axis is staff-only)  — every other launcher's birth radius is bit-identical
+  ok   every born orb carries base*(1+rate)^step (birth-snapshot law, exact)  — 56 births checked, 0 mismatches; first radii 14.04 → 14.04 → 14.04
+  ok   growth is PER-FIGHTER: the hammer side never grows an orb  — hammer-side shotStep max 0
+  ok   the escalation is real: late orbs dwarf the base radius  — top step 18 = 26.6× base (r 311.5 vs bodyR 64)
+  ok   traits reset every round (the LAW): shotStep is 0 at each round-2+ roll  — 2 rolls observed, all reset
+  ok   a non-shotR launcher is untouched: every wand spark is born at the row radius  — 42 sparks checked, 0 off-row
+  ok   GUARD FIRES: a non-positive shotR is a boot error  — staff: trait.shotR -0.5 is not a positive finite growth rate — orbs would shrink or NaN would po
+  ok   GUARD FIRES: a NaN shotR is a boot error  — staff: trait.shotR NaN is not a positive finite growth rate — orbs would shrink or NaN would poi
+F — spingrow-r36: the dagger's spin-growth trait (trait.spin 2.0 PROVISIONAL)
+  ok   F0 the dagger row declares a positive finite spin rate  — trait.spin 2 rad/s per damaging hit
+  ok   F0b no OTHER melee row carries the axis (the launchers' 0.70 is fire-rate class data)  — hammer axe sword spear mace shield flail nunchaku scythe katana orb — all spin 0
+  ok   F1 every damaging hit grows the holder's |spin| by exactly skill.spin + trait.spin (per fighter; Speedy stacks to 2.3)  — 327 hits checked across 9 battles, 0 off-law
+  ok   F2 traits reset every round (the LAW): |spin| is back at the weapon omega at every roundStart  — 18 round starts, 0 off-omega
+  ok   F3 the escalation is real: a dagger holder passes 4× its base omega  — observed max |spin| 42.6 rad/s = 6.8 rev/s vs base 3.5
+G — halo-r39: the boomerang's Loyal Halo + cycle-only catch growth (trait.cycle, cap CYCLE_STEPS)
+  RETIRED G0 the boomerang row declares the full halo set (orbit.elong / turn / laps / refund) (halo-r39)  — shot.orbit.elong died at touchorbit-r53 (live row: orbit {a, b, peak}); shot.turn retired at hexfam-r68. Live coverage kept: G0b axis exclusivity, g8 world-orbit guard.
+  ok   G0b NO other row declares cycle or returns (both axes are boomerang-only)  — every other launcher is born at its row speed, flies straight, and dies on the rim
+  RETIRED G1 birth snapshot on speed AND turn together (halo-r39)  — 239 births checked, 239 off-law — ALL of them only because shot.turn is undefined since hexfam-r68; the speed-side birth law stays covered by G2 (cap saturation, live).
+  RETIRED G1b the oval's SCALE stays locked — speed/turn identity vs the row ratio (halo-r39)  — VACUOUS, proved by diag-g1b-vacuity.mjs: row shot.turn undefined ⇒ predicate is NaN>1e-9 ⇒ unfireable (speed ×1e6 injected: 0 hits over 21,077 checks). It was printing PASS while measuring nothing — retired, not kept green.
+  ok   G2 the cap SATURATES and is the bound: top birth factor is exactly (1+rate)^CAP while the raw step runs past it  — raw step reached 82 > CAP 10; top factor 6.192 = 1.2^10
+  RETIRED G3 the halo flight contract — one-orbit departure bound, rim immunity, singleton gate (halo-r39)  — the one-orbit bound died with the anchored oval at touchorbit-r53 (loops orbit until caught; measured worst flight 1698t vs the dead 400t bound). Witnesses at last run: 231 catches, 0 rim deaths, 0 singleton violations, 228 pass-through hits — rim immunity + singleton gate held; the DEPARTURE BOUND is given up (no successor contract; the world orbit itself is the deferred r54-r60 rewrite item).
+  ok   G5 traits reset every round (the LAW): shotStep is 0 at every roundStart  — 8 round starts, 0 off-zero
+  RETIRED G4 the catch-growth differential vs a CATCH_GROW=false twin (halo-r39)  — CATCH_GROW retired at touchorbit-r53 and folded into prose at canonical :1776-1781; the replace-loader threw and silenced sections H and I. Given up: the differential proof that a catch feeds shotStep. Still live: G2 cap saturation, G5 round reset.
+  RETIRED G4b the growth is CYCLE-ONLY (owner ruling 2026-11-01) — reported, no longer asserted as a halo cell  — the witness is still measured over the G1-G3/G5 window: 0 unpaired spin rises across 231 catches (102 paired rises, 102 blade hits)
+  ok   G6 a non-cycle launcher is untouched: every wand spark is born at the row speed with NO return state  — 42 sparks checked, 0 off-row or carrying return state
+  ok   GUARD FIRES: a non-positive cycle rate is a boot error  — boomerang: trait.cycle -0.5 is not a positive finite growth rate — loops would slow toward froze
+  RETIRED GUARD FIRES: a returning straight throw (turn 0) is a boot error (halo-r39)  — shot.turn is a RETIRED axis since hexfam-r68 — the injection now throws that retirement error instead of the halo validator's /never comes home/. Given up: the halo straight-return guard.
+  RETIRED GUARD FIRES: an elongation outside [0, 0.95) is a boot error (halo-r39)  — shot.orbit.elong no longer exists (touchorbit-r53 replaced the anchored oval with the world orbit { a, b, peak }) — the injection does not throw. Given up: the halo elongation-bound guard.
+  ok   GUARD FIRES: a returning row with no orbit data is a boot error (the touchorbit-r53 world orbit { a, b, peak })  — boomerang: shot.returns needs shot.orbit { a, b, peak } — finite positive semiaxes (b < a, an el
+H — ricolaw-r41: the star ricochet LAW (the rim never kills a star; own stars pass through; the foe's body/blade/shot do)
+  ok   H0 the shuriken row carries the ricochet LAW gate — and the retired budget axis is fully gone (no shot.bounce, no trait.bounce, no authored brief: the derivation is back)  — ricochet true, shot.bounce undefined, trait {"spin":0.7,"dmg":0}, brief undefined
+  ok   H0b NO other row declares ricochet, and NO row anywhere still carries a bounce budget (the axis retired with bouncegrow-r40)  — every other launcher still dies at the rim on first touch
+  ok   H1 THE RIM NEVER KILLS A STAR: 0 rim deaths across 4 forced battles while the ricochets are counted (the law is live, not dead code)  — 4235 ricochets logged, 0 star rim deaths
+  ok   H2 the SPEED LOCK (the owner picked the constant-speed law over the measured accel ladder): every star flies at exactly the row speed on every in-flight tick  — 577247 in-flight checks, 0 off-speed
+  ok   H3 DEPARTURE ACCOUNTING: every born star has exactly one proven departure (body hit / swat / enemy cross / roll-clear) or is still in flight — immortality must not leak  — 1630 stars born, 0 silent vanishings
+  ok   H4 immortality is not invincibility: the foe's body and blade still end stars (and rounds still start)  — 679 body hits, 618 swats, 8 round starts
+  ok   H5 ENEMY shots still cancel both (the default cross rule is alive): the mirror produces mutual annihilation  — 282 cross departures across 4 mirror battles
+  ok   H6 the SAME-OWNER PASS-THROUGH is LIVE: own stars are observed overlapping with no cross departing either — pre-ruling these pairs annihilated (the bug-look the owner cut)  — 4736 overlap ticks (16309 pair-ticks), 0 own-pair crosses
+  ok   H7 law-1 isolation: a non-ricochet launcher is untouched — wand sparks still die at the rim and carry no ricochet state  — 38 spark rim deaths, 2117 in-flight checks, 0 carrying the flag
+I — multgrow-r42: the bow's RAIN (trait.mult 0.5, cap MULT_STEPS 10) + the generalized owner-blind cross law
+  ok   I1 SOURCE LAW: every same-owner shot pair skips the cross test (the generalized line is in place; the star-only exemption is subsumed and gone)  — friendly fire is eliminated game-wide; the r41 star exemption lives on as an instance
+  ok   I2 CADENCE BAND LAW: every bow fire consumed a rotation inside the smul band — TAU/6 at the ceiling, TAU/1 at the floor (accumulator conservation, per tick; ledger tolerance BAND 1e-3 re-measured 2026-11-10, worst observed drift 6.41e-4)  — 5165 fires checked, 0 off-band, 145 flip-ticks and 9 nudge-ticks exempted (both documented wAngle-vs-ledger divergences, not cadence breaches), maxStep 100, max fires in one tick 1
+  ok   I3 CAP SATURATION: once shotStep passes MULT_STEPS the cadence is locked at EXACTLY TAU/6 per fire — the rain thickens no further (the CYCLE_STEPS pattern)  — 3982 saturated fires, 0 off-ceiling
+  ok   I4 GROWTH IS REAL: the live rain out-fires and out-lands the growth-OFF twin (same seeds, same cells)  — fires 8551 vs 1514 (5.65x), hits 599 vs 122, per-seed strict wins 4/4, weak 4/4
+  ok   I5 FRIENDLY FIRE IS GONE: 0 same-owner crosses across bow mirror, bow-vs-melee and the star mirror (every shot class); enemy crosses still cancel both  — 3780 fires, 59 cross pairs: 0 same-owner (LAW: 0), 59 enemy, 0 unpaired leftovers
+  ok   I6 the rain obeys the ROUND-RESET LAW: bow holders' shotStep is 0 at every roundStart — the ladder re-climbs each round (maxStep proves it climbed)  — 2 round starts, 0 off-zero, in-round maxStep 15
+  ok   I7 the FAN IDENTITY is untouched: the knives keep their 3-anchor static volley — the rain is an accelerating STREAM, not a fan  — knives anchors [[50.7,-73.8,0],[17.69,-60.95,-22],[83.71,-60.95,22]]
+
+47/55 passed, 8 retired, 0 failed (a retired cell is printed and counted, never silent)
+=== exit=0 ===
+=== seconds: 233 ===
+=== canonical md5 after: e431d344347a55da51e1f4604cbeb4ed / 5392 lines ===

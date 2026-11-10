@@ -1,0 +1,65 @@
+=== pair-proof :: node .qa/pair-proof.mjs ===
+=== started 2026-11-10T23:21:34Z ===
+pair-r31 probe — the pairing step
+
+A  the shipped default is inert
+  ok   DEFAULT_CAST is [0, 1] — the pairing every battle so far has played  — DEFAULT_CAST [0,1]
+  ok   newGame(seed) and newGame(seed, {cast:[0,1]}) replay identically (2500 ticks, exact float)  — no difference in pos/spin/dmg/hp/weapon/lenStep/over through tick 2500
+  ok   G.cast is present, slot-ordered, and G.cast[slot] is the only slot->idx map  — cast [0,1] vs fighters idx 0,1
+  ok   newGame snapshots the cast, so a caller mutating its own array cannot reach into the game  — cast is copied at construction
+  ok   an omitted / undefined / null cast all mean "the default" (APP.setCast(null) relies on this)  — all three resolve to DEFAULT_CAST rather than throwing
+
+B  the slot/idx split is real (cast [1, 0])
+  ok   fighters[0] = { idx: 1, slot: 0 } — the second cast member playing the LEFT side  — idx 1 slot 0 (Heavy)
+  ok   fighters[1] = { idx: 0, slot: 1 }  — idx 0 slot 1 (Speedy)
+  ok   fighters[] stays SLOT-ordered, so fs[0]/fs[1] and `1 - f.slot` still mean left/right  — slots 0,1
+  ok   SPAWN follows the SLOT: each fighter starts on its own side whatever cast fills it  — slot 0 at (280,380) = SPAWN[0]; slot 1 at (720,380) = SPAWN[1]
+
+C  skills and colours travel with the ACTOR, not the side
+  ok   no skill reaches into a trait: lenSteps is GONE from every skill object (nocombo-r34)  — Speedy: spin+dmg · Heavy: spin+dmg — the cap is uniform at LEN_STEPS, so there is no per-actor cap left to travel
+  ok   COLS follows f.idx: identity colour is permanent, so the left body now wears the other colour  — slot 0 wears #ff6b4a (Heavy); slot 1 wears #a8892f (Speedy)
+  ok   SKILL_SHORT follows f.idx: the legend row reads its own actor's label on either side  — slot 0 "+DMG / Hit"; slot 1 "+SPD / Hit"
+  ok   G.cast[slot] resolves back to the actor that side is playing  — cast [1,0] -> heavy / speedy
+
+D+E  swept invariants (the foe lookup, the roll order, and every event actor ref)
+  ok   fs[f.slot] === f and fs[1 - f.slot] is the OTHER fighter, every tick of every battle  — 93154 ticks swept (10 natural battles + 4 finishing), 0 violations
+  ok   every event actor ref (hit/swat/shotFire/wall/shotRim .by, hit.to, ko.winner/loser) is a SLOT  — 366 hits, 10 kos across both sweeps — 0 out-of-range refs
+  ok   the victim is always the other side: hit.to === 1 - hit.by, ko.loser === 1 - ko.winner  — 0 violations — the invariant flashV[e.to] and koStill.pose[e.to] rely on
+  ok   every in-flight shot's owner st.o indexes fs (fs[st.o] and fs[1 - st.o] are live reads)  — 0 bad owners
+  ok   each fighter wears the weapon the roll gave its SLOT (w0 -> slot 0, w1 -> slot 1)  — 0 mismatches across round rolls
+  ok   rule 6 holds per SIDE under every pairing: slot 0 and slot 1 open counter-rotating  — 0 same-sign openings
+  ok   SAMPLE IS REAL: the finishing sweep produced K.O.s, so the ko/winner checks above are not vacuous  — 9 kos in 4 battles, 4/4 reached a decision (53154 ticks)
+  ok   G.winner is a slot, G.cast[G.winner] resolves, and it really holds the round wins  — 0 bad winners of 4 finished battles
+
+F  the pairing bites (measured, not assumed)
+  ok   both pairings land hits on BOTH sides, so a per-hit rate is measurable (not 0/0)  — default hits 34/14, swapped hits 20/34
+  ok   damage-per-hit = the weapon trait + the ACTOR's skill.dmg, exactly, on the default pairing  — slot 0 (Speedy) 0.70/hit, slot 1 (Heavy) 1.60/hit; hammer trait.dmg 0.7
+  ok   and the rates EXCHANGE SIDES under the swap — the skill travels with the actor  — swapped: slot 0 (now Heavy) 1.60/hit, slot 1 (now Speedy) 0.70/hit
+  ok   a swapped pairing is a genuinely different battle on the same seed (the cast is not dead weight)  — default ran 14196 ticks, wins 2-0, winner slot 0; swapped ran 13360 ticks, wins 0-2, winner slot 1
+
+G  GUARDS FIRE (a guard that never throws reads as coverage and is worse than none)
+  ok   all 9 malformed casts are construction errors  — 9/9 threw
+       · one entry: cast must be an array of exactly 2 FIGHTERS indices (a pairing
+       · three entries: cast must be an array of exactly 2 FIGHTERS indices (a pairing
+       · empty: cast must be an array of exactly 2 FIGHTERS indices (a pairing
+  ok   checkCast rejects an out-of-range pairing on its own (boot validates DEFAULT_CAST with it)  — checkCast([9,9]) throws — DEFAULT_CAST is validated at load, not on first use
+  ok   the shipped DEFAULT_CAST passes its own guard  — DEFAULT_CAST [0,1]
+
+H  a mirror pairing is legal (the same cast member on both sides)
+  ok   cast [0, 0] constructs: one actor on both sides  — Speedy vs Speedy
+  ok   it fights to a decision, and the foe invariant holds when both idx are EQUAL (nothing keys the foe off idx)  — 17651 ticks, over=true, 0 violations, wins 0-2, winner slot 1
+  ok   the mirror winner resolves to the same cast member either way (G.cast[G.winner] is well defined)  — cast [0,0], winner slot 1 -> speedy
+
+I  the RENDERER names and colours the ACTOR, not the side
+  ok   SAMPLE IS REAL: the recording canvas actually captured the poster's two name labels per half  — default 120/120 draws, swapped 120/120 draws
+  ok   the default pairing posters Speedy left / Heavy right  — left "SPEEDY", right "HEAVY"
+  ok   under cast [1, 0] the poster EXCHANGES: Heavy left / Speedy right — it names the actor, not the half  — left "HEAVY", right "SPEEDY" (cast [1,0])
+  ok   the skill prose under each name travels with the same actor  — default left "Spins faster each hit…"; swapped left "Stronger each hit…"
+  ok   both posters agree with G.cast[slot] for their own half  — the poster reads the pairing, not a hard-coded order
+  ok   every cast-keyed table read is indexed by an IDENTITY (33 code reads audited, comments stripped)  — all 33 index by f.idx / ci / G.cast[…] / the roster map — a slot-keyed read is what this catches
+
+37/37 passed
+Read-only: nothing written, measure.mjs untouched.
+=== exit=0 ===
+=== seconds: 21 ===
+=== canonical md5 after: e431d344347a55da51e1f4604cbeb4ed / 5392 lines ===

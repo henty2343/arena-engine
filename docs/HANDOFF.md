@@ -115,3 +115,17 @@ from git history; this paragraph is the record of the rehearsal.]**
   known-red cells, and the ONLY outstanding item: Item 3 stale-proof triage (re-seed vs retire —
   owner policy calls; every listed cell was already red on the r86 build). Verify-green before
   touching anything: `node .qa/inscribe.mjs` → GATE: PASS; `node chromecheck.mjs` → 2× PASS.
+- **2026-11-11 — Item 3 stale-proof triage is CLOSED (GAMES.md #723–#727; the line above is the
+  dated record of it being OPEN — it stays visible per the house rule).** Every menu item is done
+  and proven: lengrow's re-seed falsifiable **6/6** (and its DETAIL string hardened — the case it
+  exists to catch was CRASHING the proof instead of reporting red); flipproof's seeds re-pinned
+  (FLAG **s1** / CTRL **s7**, the one-side criterion added, a stale seed now fails loudly) and T4
+  replaced by the flip clock's own LEDGER (armed ≡ 180ms, lands on exactly 0, raw spend inside one
+  frame, arms === sweeps); leadproof's swat cell split into the touch / cut-window classes — both
+  audited, nothing unauditable. Full battery green on the final bytes: seam-proof **47/55 + 8
+  retired + 0 failed** · lengrow-build-proof **57/0** · pair-proof **37/37** · flipproof **ALL
+  PASS** · leadproof **ALL PASS** · `.qa/inscribe.mjs` **GATE: PASS** · `chromecheck.mjs` **2× PASS**.
+  **The canonical was never touched** — md5 `e431d344347a55da51e1f4604cbeb4ed`, 5,392 lines,
+  verified before and after every run. The non-vacuity number is the honest **9/9, NOT 10/10**
+  (session 3's false claim is superseded, and stays visible in GAMES.md #724). The handoff chain
+  for the next agent is `scratch/HANDOFF-ITEM3-SESSION6.md`.
