@@ -35,3 +35,13 @@ was too broad; no chain logic was missing.
    in every live slot. Cosmetic. Owner call.
 2. Unchanged from SESSION6: runner exec bits, PR #3's base, the .orig backups (now three), 64f2ef7/1ff647d.
 Never force-push this branch; push via merge / the App's push_files (GAMES.md travels as a patch).
+
+## ADDENDUM (2026-11-11, later in session 7) — supersedes the "NOT DONE" battery line above
+The "seam-proof, pair-proof, flipproof, leadproof, chromecheck were NOT re-run" line above is
+SUPERSEDED (left visible, per house rule). They were re-run on the committed bytes, plus lengrow-gate;
+every verdict matched the NEXT-AGENT-PROMPT table (seam 47/55+8 retired, pair 37/37, flipproof and
+leadproof ALL PASS, chromecheck 2x PASS, lengrow-gate exit 1 by design at k=1.0778), md5 e431d344...
+/ 5,392 lines after every run. Logs: scratch/triage/runs-session7/battery-*.log; recorded as GAMES
+#729. A first attempt was killed (backgrounded without setsid) and is kept as
+battery-seam-proof.KILLED-partial.log — NOT counted. Use scratch/triage/run-battery-session7.sh with
+`setsid nohup bash ... &` to run the battery detached. Still not run: measure.mjs (owner rule).
