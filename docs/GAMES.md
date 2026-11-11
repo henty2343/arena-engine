@@ -121,9 +121,9 @@ The living record of game design: what exists and what is decided next. Platform
 | 904 | 2026-11-02 | 700 | 1 |
 | 906 | 2026-11-02 | 701 | 6 |
 | 918 | 2026-11-02 | 702 | 4 |
-| 930 | 2026-11-02 | `grudge-r70` — THE LONG GRUDGE, the wand's trait | <1 |
+| 930 | 2026-11-02 | 703 | <1 |
 | 932 | 2026-11-02 | 704 | 3 |
-| 942 | 2026-11-02 | `flick-r72` — THE WHIP-CRACK FLICK, the wand's trait | <1 |
+| 942 | 2026-11-02 | 705 | <1 |
 | 944 | 2026-11-03 | 706 | 4 |
 | 952 | 2026-11-03 | 707 | 2 |
 | 960 | 2026-11-03 | 708 | 3 |
@@ -132,7 +132,7 @@ The living record of game design: what exists and what is decided next. Platform
 | 980 | 2026-10-31 | 711 | 4 |
 | 986 | 2026-10-31 | 712 | 4 |
 | 992 | 2026-10-31 | 713 | 2 |
-| 998 | 2026-10-31 | `lane-r81` — THE SCORCHED LANE, the scroll's trait | <1 |
+| 998 | 2026-10-31 | 714 | <1 |
 | 1000 | 2026-10-31 | 715 | 5 |
 | 1006 | 2026-10-31 | 716 | 4 |
 | 1012 | 2026-10-31 | 717 | 2 |
@@ -927,7 +927,7 @@ Canonical: md5 `37d16bc2a499334d998ea07febd101af`, 4,628 lines, stamps `hexfam-r
 
 Canon: the TRIO entry's FIRE sentence amended to the dormancy + one-shape-three-inks law; the hex/family entries' h-formula carries the SEEK_H0 floor and their h=0 byte-identity claims are struck; REGISTRY shotR consumers two → one; smoke-r66 + smoke-r62 aligned (edits, not new probes — #674). NEXT: the WAND CROWN discussion (owner: *"once done we will discuss"*), then the scroll's slot (UNROLLING served), the 10 melee blanks, bot cast, balance.
 
-**`grudge-r70` — THE LONG GRUDGE, the wand's trait (2026-11-02); REVERTED WHOLE at the owner's eye (#704) Full record: `git show docs-precleanup2:docs/GAMES.md`.**
+**703 — (2026-11-02) `grudge-r70` — THE LONG GRUDGE, the wand's trait; REVERTED WHOLE at the owner's eye (#704) Full record: `git show docs-precleanup2:docs/GAMES.md`.**
 
 **704 — (2026-11-02) `chillfix-r71` LANDED — TWO OWNER CORRECTIONS: THE GRUDGE REVERTED WHOLE, AND THE CHILL BECOMES WEAPON-ONLY.**
 
@@ -939,7 +939,7 @@ Canon: the TRIO entry's FIRE sentence amended to the dormancy + one-shape-three-
 
 Canon: the #698 FROST sentence and the YAH nova clause amended to the weapon-only law; the YAH's grudge paragraph becomes the revert scar with the slot reopened; traits 11 of 22 again; REGISTRY's grudge entry reads REVERTED. NEXT: the owner's pick from the new wand menu, then the scroll's slot (UNROLLING served), the 10 melee blanks, bot cast, balance.
 
-**`flick-r72` — THE WHIP-CRACK FLICK, the wand's trait (2026-11-02); REVERTED at the owner's eye (*"it reminds too much about the other spells"*, #706) Full record: `git show docs-precleanup2:docs/GAMES.md`.**
+**705 — (2026-11-02) `flick-r72` — THE WHIP-CRACK FLICK, the wand's trait; REVERTED at the owner's eye (*"it reminds too much about the other spells"*, #706) Full record: `git show docs-precleanup2:docs/GAMES.md`.**
 
 **706 — (2026-11-03) `bloom-r73` LANDED — THE WAND'S TRAIT: TRANSFIGURATION (THE BLOOM); THE WHIP-CRACK FLICK REVERTED WHOLE.** Menu four (disarm / transfigure / counterspell / point-at + the untried survivors) got his pick — TRANSFIGURATION — then the elaboration menu locked option 1 (*"yes option 1, it should do nothing at all"*), random joke objects at his ask (*"a good laugh for viewers"*), and the go-word *"go, your leans"* landed it. At the same word the flick died: *"it reminds too much about the other spells"* — the second projectile-tuning veto (the grudge was the first): the wand cannot win by tuning its comet, the comet IS the resemblance; FLICK/flickSoft/flickBirth/flickSpeedAt gone whole, name reserved (FLICK_REVERTED, the grudge's pattern).
 
@@ -995,7 +995,7 @@ Canon: the POOL const, the scroll row (byte-identical to pre-r78 + the pool line
 
 Canon: the POOL const and the drawPools shimmer carry the ruling; the row comment, the REGISTRY stanza and the YAH note the r80 dials. Traits stay 12 of 22. NEXT: his eye on the bigger, longer, breathing pool, then the SCROLL's trait menu (UNROLLING recommended), then the 10 melee blanks, bot cast, balance.
 
-**`lane-r81` — THE SCORCHED LANE, the scroll's trait (2026-10-31); REVERTED WHOLE at the owner's eye (*"no i dont like that either… we need something visual/spectacular"*), succeeded by the ember spill Full record: `git show docs-precleanup2:docs/GAMES.md`.**
+**714 — (2026-10-31) `lane-r81` — THE SCORCHED LANE, the scroll's trait; REVERTED WHOLE at the owner's eye (*"no i dont like that either… we need something visual/spectacular"*), succeeded by the ember spill Full record: `git show docs-precleanup2:docs/GAMES.md`.**
 
 **715 — (2026-10-31) `kindling-r82` LANDED — THE EMBER SPILL FILLS THE SCROLL'S SLOT; THE SCORCHED LANE REVERTED WHOLE (SCAR #2).** The lane died at his eye (*"no i dont like that either, but i realised we need something visual/spectacular. something which can also snowball, give me more suggestions, dont code"*) — the scroll's SECOND revert scar after the called fall. An S-menu was served (METEOR CALL super-finale / ERUPTION geysers / EMBER FAMILIARS / INFERNAL ASCENSION); instead he recalled the parked E2 kindling from the lane menu — *"the metoer/projectile as it travels through the arena it 'spills' out af few embers, which lasts for a few secs and if the opponent touches then they take damage, elaborate on this idea"* — and after the elaboration (the three-beat read: SHED in flight / COAL on the floor / POP on touch, served with four leans) his go carried THE GROWTH BRAKE: *"yes try and implement this, also growth only happens when the meteor hits the target, not when the target steps on the embers on the board, otherwise i think it is going to snowball very quickly"*. What landed: every scroll spell SHEDS burning coals IN FLIGHT on a BIRTH-SNAPSHOT cadence (effR — st.eiv = max(dropMin 6, drop 14 − dropCut 1 × min(shotStep, steps 8)) ticks: 14 at stack 0 → 6 at the cap, the spill quickens with the fight; the hex-bent path scatters them along the curve); each coal snapshots AT THE DROP: life 300 + 24/stack (2.5s → 4.1s), r 15 + 0.8/stack, dmg max(0.3, caster.dmg × POOL.rate × EMBER.rate 0.5) — half a pool beat; the foe's centre within r + half a body POPS it — ONE honest bite, the coal CONSUMED (the one-shot pop is the word that separates it from the pool's standing beat), honest kills (deathSeq). THE GROWTH BRAKE IS LAW: a pop touches NO counter — no shotStep, no hits/landed, no hex deepening, no slow-mo (the pool's burns-grow-nothing law's twin); growth rides the METEOR's hit alone. Cap 14 live coals — oldest dies young (the lace guard); the roll clears; a ZONE not a status — no ring slot, no grow, no hex; the pool payload untouched: pool = the fire that lingers and burns while you stand, coal = the fire that bites once and is gone — one grammar, two words. Renderer drawEmbers: char disc, breathing amber heart with a white-hot pip, two dancing flame tongues, one rising spark mote, a landing flare over the first 10 ticks — zero rng, warm palette only (never gray, never red). EMBER const { drop 14, dropCut 1, dropMin 6, life 300, lifeAdd 24, steps 8, r 15, rAdd 0.8, rate 0.5, cap 14, flare 10 } — every dial PROVISIONAL. The lane machinery retired WHOLE (segDist/polyDist/spawnLane/laneStep, the st.lp sampling, drawLanes/strokePoly, G.lanes/G.strokes, stats.lanes/singes — chromecheck proves laneGone live). Traits stay 13 of 22 — kindling swaps into the lane's slot (the bloom-r73 precedent).
 
