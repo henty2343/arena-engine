@@ -22,7 +22,7 @@ No cloud, no accounts, no telemetry, no network calls after `npm install`. Binds
 | [SPEC.md](./docs/SPEC.md) | The rules. Architecture, stack, pipeline, output specs, video-quality requirements, house style, studio UX, repo layout, what must never be introduced. |
 | **[CONTRACT.md](./docs/CONTRACT.md)** | The interface a game implements. Services injected, what a game may not do, timeline shape, the eight compliance checks. |
 | **[BUILD.md](./docs/BUILD.md)** | What to build next. Nine phases with pass/fail gates, the definition of done, and the full quality checklists. |
-| [HANDOFF.md](./docs/HANDOFF.md) | **New agent: read after README.** Session handoff — what the previous session completed (THE RESTRUCTURE, 2026-11-05 — AMENDED 2026-11-10: the push landed partial, `uploads/` retired, `previews/` is the ONE canonical, `combine.js` + the dump retired), the laws protecting it, and what is pending (**2026-11-11:** also the Item-3 stale-proof triage — CLOSED and on `main`, GAMES #723–#731 — and the recovery recipe for the pruned `scratch/` handoffs, tag `item3-closed`). |
+| [HANDOFF.md](./docs/HANDOFF.md) | **New agent: read after README.** The repo-organization laws: one canonical, asserted-patch method, static verification, token economy. Game/engine work state lives in the checkpoint below and `docs/GAMES.md`. |
 
 If you are an AI assistant working on this project: read all five before writing code, and treat SPEC.md's rules as overriding any reasonable default you would otherwise choose.
 
@@ -260,13 +260,12 @@ special skill outright. **Knock still has no seam** (no `CFG.knock`; applied dif
 landings, parry shoves and bounces) and needs a decision about *which* knock before it can be a row
 field. A general hook/plugin framework was deliberately **not** built — do not add one.
 
-**The working set — what a fresh session reads first** (repo paths; the uploads-era "batch/cap"
-framing is RETIRED 2026-11-10 at the owner's ruling — the repo itself is the working set now,
-and `previews/` is the only canonical):
+**The working set — what a fresh session reads first** (repo paths; the repo itself is the
+working set, and `previews/` is the only canonical):
 
 | file | why |
 |---|---|
-| `previews/spinclash-preview.html` | the canonical game — the ONLY canonical (owner ruling 2026-11-10; the old local `uploads/` folder is retired). md5 **`99bb910d74d7390a435ce3354fb9320f`**, build **`links-r87`**, **5,392 lines**. Start at the `TRAIT / SKILL REGISTRY` comment block above `const WEAPONS = {`. The spear grows `len: 0.0959` per damaging hit over a **12-step** ladder of per-step re-baked coverings in the marked `LEN_CIRCLES` block (regenerate with `.qa/lengrow-bake.mjs`; never hand-edit). The cap is **uniform at 12 (+200.1%, `REACH.spear` 505.488) for every holder** — `skill.lenSteps` (the `skill-r29` carrier era: 18 steps, +420%, REACH 829.571, carrier Speedy by measurement) was **RETIRED at `nocombo-r34`** under the owner's NO COMBOS ruling: a skill and a trait may stack only by addition on a shared axis. `seam-r30` added the two seams the remaining weapons need — an authored `brief` per row and an **inert** shot-cadence multiplier (`shot.mult` / `skill.shotMult`), both boot-guarded. Per-build history r33–r57 lives in GAMES.md's Measured facts (#645–#695) — the README no longer duplicates it (its own stated law). The flail now grows by ADDING LINKS (`links-r87`, #721): `FLAIL_CH.ext` { unit 28, every 4, max 3, ring 3, bar 4 } — one ring+bar pair added per 4 damaging hits, max 3 units (LEN_STEPS 12 / 4); np = 3+2n hinged particles; every added link re-uses its TYPE's baked covering (`circBySeg`) — zero re-bake; `chainGrow` returns the added-unit count; boot-gated (`ext.max` must cover floor(LEN_STEPS/every)); REACH carries `ext.max × ext.px`; the r86 pitch stretch + `growMax` are retired. |
+| `previews/spinclash-preview.html` | the canonical game — the ONLY canonical. md5 **`99bb910d74d7390a435ce3354fb9320f`**, build **`links-r87`**, **5,392 lines**. Start at the `TRAIT / SKILL REGISTRY` comment block above `const WEAPONS = {`. The spear grows `len: 0.0959` per damaging hit over a **12-step** ladder of per-step re-baked coverings in the marked `LEN_CIRCLES` block (regenerate with `.qa/lengrow-bake.mjs`; never hand-edit). The cap is **uniform at 12 (+200.1%, `REACH.spear` 505.488) for every holder** — `skill.lenSteps` (the `skill-r29` carrier era: 18 steps, +420%, REACH 829.571, carrier Speedy by measurement) was **RETIRED at `nocombo-r34`** under the owner's NO COMBOS ruling: a skill and a trait may stack only by addition on a shared axis. `seam-r30` added the two seams the remaining weapons need — an authored `brief` per row and an **inert** shot-cadence multiplier (`shot.mult` / `skill.shotMult`), both boot-guarded. Per-build history r33–r57 lives in GAMES.md's Measured facts (#645–#695) — the README no longer duplicates it (its own stated law). The flail now grows by ADDING LINKS (`links-r87`, #721): `FLAIL_CH.ext` { unit 28, every 4, max 3, ring 3, bar 4 } — one ring+bar pair added per 4 damaging hits, max 3 units (LEN_STEPS 12 / 4); np = 3+2n hinged particles; every added link re-uses its TYPE's baked covering (`circBySeg`) — zero re-bake; `chainGrow` returns the added-unit count; boot-gated (`ext.max` must cover floor(LEN_STEPS/every)); REACH carries `ext.max × ext.px`; the r86 pitch stretch + `growMax` are retired. |
 | `docs/GAMES.md` | the record: every owner decision with its quote, every measured fact, the test recipe. Its md5 moves with every edit — never pin it |
 | `measure.mjs` (repo root) | the sanctioned instrument — owner-gated (standing rule 2); no md5 pin, the repo copy is the only copy. (`--band-dump` added 2026-10-28 plus the corrected law-3 disclosure text; both report-additive — the flag is proven byte-identical with it off). **Never runs without the owner's explicit go** |
 | `README.md` (repo root) | this file |
@@ -307,7 +306,7 @@ is the measurement that ruled that route out. **`.qa/seam-proof.mjs`** (~2s, Tie
 and the one a fresh session should run first after any skill or bot landing: it proves the seams are
 live and, more usefully, that the boot guards actually throw.
 
-**Tier 2 — only if the task needs it:** **`.qa/pair-proof.mjs`** (~27s, Tier 0, read-only, **37/37**, its re-seeded balance-aware tripwire proven **FALSIFIABLE 6/6** — the pairing step's only probe, and the one instrument that runs a pairing where `slot ≠ idx`, which the fingerprint suite cannot do in principle. **Section I drives the RENDERER**: a recording canvas stub captures the VS poster's `fillText` while the real frame loop is hand-stepped, and a comment-aware tripwire audits all 23 cast-table index reads in the file. It is **proven to fire** — against the pre-fix `pair-r31` canonical it reports 4 FAILs and names all 13 offending sites. **Promote it to Batch 1 the moment bots are added**, because every bot landing edits the fields it sweeps. It asserts its own sample sizes, so a future stall fails loudly instead of passing on zero observations) · `uploads/chromecheck.mjs` (~26s render/clock check **+ a pairing section**: it drives `APP.setCast([1, 0])` and asserts the scorebug names, identity swatches and legend rows exchange sides together, the slot-keyed score stays put, and the winner overlay names the ACTOR — the only coverage of the chrome's pairing path, since `pair-proof` loads the sim block alone) ·
+**Tier 2 — only if the task needs it:** **`.qa/pair-proof.mjs`** (~27s, Tier 0, read-only, **37/37**, its re-seeded balance-aware tripwire proven **FALSIFIABLE 6/6** — the pairing step's only probe, and the one instrument that runs a pairing where `slot ≠ idx`, which the fingerprint suite cannot do in principle. **Section I drives the RENDERER**: a recording canvas stub captures the VS poster's `fillText` while the real frame loop is hand-stepped, and a comment-aware tripwire audits all 23 cast-table index reads in the file. It is **proven to fire** — against the pre-fix `pair-r31` canonical it reports 4 FAILs and names all 13 offending sites. **Promote it to Batch 1 the moment bots are added**, because every bot landing edits the fields it sweeps. It asserts its own sample sizes, so a future stall fails loudly instead of passing on zero observations) · `chromecheck.mjs` (~26s render/clock check **+ a pairing section**: it drives `APP.setCast([1, 0])` and asserts the scorebug names, identity swatches and legend rows exchange sides together, the slot-keyed score stays put, and the winner overlay names the ACTOR — the only coverage of the chrome's pairing path, since `pair-proof` loads the sim block alone) ·
 `docs/BUILD.md` · `.qa/inscribe.mjs` + `.qa/bake-rows.mjs` (the house gate and the row baker —
 needed for any art/poly/scale edit. **Correction, 2026-10-28:** this line used to call them "the
 only tools that write to the canonical", but only `bake-rows.mjs` writes; `inscribe.mjs` is
@@ -320,25 +319,10 @@ assertions, and the gate that proves the remap route's ceiling) ·
 fingerprint baseline — a historical record of `cross-r24`'s behaviour, **no longer a valid
 equivalence target**; only needed to reproduce the 7-of-8 move the stall fix caused — and
 `.qa/fp-stall-r25.json` joined it as a historical record at `shotgrow-r33`, 2026-10-31: the
-pre-staff-trait baseline, needed only to reproduce the 1-of-8 move the orb growth caused). **Gone (owner, 2026-11-11):** `scratch/baseline-484.csv`, `scratch/baseline-laws.csv`,
-`scratch/measure-summary.mjs`, `scratch/measure-agg.mjs` and `scratch/measure-parts.md` — the 484-cell
-baseline tables and their re-derivation tooling no longer exist anywhere; GAMES.md's dated entries
-are the only record of those numbers. Earlier mentions of them in the docs are history, not pointers.
+pre-staff-trait baseline, needed only to reproduce the 1-of-8 move the orb growth caused).
 
-**Already local-only, not in the workspace** (confirmed at the 2026-11-10 alignment: the uploads-era tier listings name several files that never landed in git — the two baseline CSVs, `measure-summary.mjs` / `measure-agg.mjs` / `measure-parts.md`, `attribution-patch.md` and the raw outputs below — they were believed to live only on the owner's machine — **owner 2026-11-11: gone**; these mentions stay as record and dangle deliberately, the deleted-probe policy): the six `scratch/m-0*.txt` raw baseline outputs
-(216 KB; deleted 2026-10-28 at the owner's word, he holds the copies — their md5s are quoted in
-GAMES.md so he can verify them, and the two CSVs carry the same per-cell data). Deleted the same
-day at the pre-skills checkpoint: `uploads/a-01.txt` + `a-02.txt` (the owner's own attribution
-re-run outputs — he generated them on his machine and holds the copies; all 26 compared fields
-are recorded in the GAMES.md attribution entry) and `scratch/d-off2.txt` + `d-on2.txt` (the
-`--band-dump` control and geometry outputs — these were generated **in the sandbox**, so the
-owner has no separate copy, but the full geometry block is quoted verbatim in the GAMES.md
-`--band-dump` entry and the byte-identity proof is recorded there as a fact). Nothing in the
-workspace reads any of them automatically.
-
-**Committed, but NOT part of the working set:** `docs/HANDOFF.md` (the restructure handoff,
-amended 2026-11-10). The former `docs/CHRONICLE-archive.md` (446 KB of retired prose) was removed
-from HEAD on 2026-11-11 (GAMES #733); recover it with `git show docs-precleanup:docs/CHRONICLE-archive.md`.
+**Committed, but NOT part of the working set:** `docs/HANDOFF.md` (the repo-organization laws).
+The former `docs/CHRONICLE-archive.md` is recoverable via `git show docs-precleanup:docs/CHRONICLE-archive.md`.
 
 **Standing rules, all of them enforced by the owner:**
 
@@ -554,7 +538,7 @@ npm run inspect  -- --game <id> --seed 1 --sheet     # ~24 frames tiled
 
 ## Status
 
-Blueprint complete; **no engine code yet** — start at Phase 0 in `BUILD.md`. Game #1 (SPINCLASH) runs as `previews/spinclash-preview.html` — the ONLY canonical (owner ruling 2026-11-10: the old local `uploads/` folder is retired) — a dependency-free browser sim at build **`links-r87`** (recorded 2026-11-10; *the `<title>` node remains the authority for the stamp — this convenience copy has drifted three times, so check it first*): pure `newGame`/`tick`, then the renderer, then chrome — harness-extractable, no DOM above the RENDERER banner. Its frame (the PEBBLE look) is locked; its weapon art landed at `roster-r12` and the convention CLOSED 2026-10-27 (the prescriptive lock lives in GAMES.md, "Weapon art — the closed convention").
+Blueprint complete; **no engine code yet** — start at Phase 0 in `BUILD.md`. Game #1 (SPINCLASH) runs as `previews/spinclash-preview.html` — the ONLY canonical — a dependency-free browser sim at build **`links-r87`** (recorded 2026-11-10; *the `<title>` node remains the authority for the stamp — this convenience copy has drifted three times, so check it first*): pure `newGame`/`tick`, then the renderer, then chrome — harness-extractable, no DOM above the RENDERER banner. Its frame (the PEBBLE look) is locked; its weapon art landed at `roster-r12` and the convention CLOSED 2026-10-27 (the prescriptive lock lives in GAMES.md, "Weapon art — the closed convention").
 
 **In the sim:** the 22-weapon roster, complete · the Core contact law and the seven shot laws · nine flying shot kinds under the copy rule (1:1 munitions, the staff orb and wand spark under the whole-body waiver, the scroll's fire comet, the tome's poison/frost/fire trio pre-figuring the skill pass) · the knives' three-knife volley · render interpolation · the overflow-band canvas (weapon ink never cuts) · hitstop as a true pause of the on-screen frame, with the kill still on the K.O. hold · the owner-designed VS-poster dice reveal · the 2026-10-21 feel-tuned physics set (gravity 1400 · chaos ceiling 1200 with 0.9 wall bleed · parryPush 700 · the parry flutter gate · the capped, tick-gated pin-escape nudge) · the N-segment generic chain sim (flail 3 particles, nunchaku 1) · the edge-leading mirror on four rows (`lead: -1` — katana, scythe, and since 2026-10-28 the dagger and the staff) with its `headLead` sibling for the javelin and the 180 ms flip transition.
 

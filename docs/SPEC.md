@@ -267,7 +267,7 @@ Excluded from the production build of `apps/studio`.
 ```
 arena-engine/
 ├─ README.md               # the entry point — GitHub renders only this one at the root
-├─ .gitignore              # node_modules/ · output/ · .arena-tmp/ · uploads/ (the owner's retired local folder)
+├─ .gitignore              # scratch/ · uploads/
 ├─ docs/                   # SPEC.md CONTRACT.md BUILD.md GAMES.md HANDOFF.md
 ├─ previews/               # spinclash-preview.html — THE canonical game (single file, dependency-free)
 ├─ chromecheck.mjs         # fast boot + pairing check (~4s) — runs today on bare Node
