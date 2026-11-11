@@ -513,7 +513,7 @@ body {
    * today; length growth and shot multipliers later), while a fighter’s skill takes only axes live on all 22
    * weapons. Identifier-only rename: behaviour-identical, NO stamp bump (the stone->shot precedent), and
    * fingerprint-neutral because the field NAME never enters hashed sim state — only its values do, via
-   * f.spin/f.dmg in grow(). Dated records and CHRONICLE-archive.md keep the old word by design. */
+   * f.spin/f.dmg in grow(). Dated records (GAMES.md, git history) keep the old word by design. */
   const WDEF = { omega: 3.5, dmg: 1 };
   for (const pl of INGR_XBOW.polys) for (const pts of pl.subs) for (const q of pts) { q[0] *= KX; q[1] *= KX; }
   /* ======================= TRAIT / SKILL REGISTRY — READ THIS FIRST =======================
@@ -2985,7 +2985,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
    * flag — which now MATCHES the audience word, so one concept carries one name
    * through every layer. Per-shot on-screen names stay (arrow, bolt, knife, orb,
    * spark, boomerang, star, javelin, page, scroll) via shot.what. The old
-   * 'stone' vocabulary survives only in dated records (CHRONICLE-archive.md, the
+   * 'stone' vocabulary survives only in dated records (git history, the
    * 2026-10-28 chainlaw output, GAMES.md's dated entries) and in the frozen bench
    * page's snapshots — that page left the tree at the 2026-10-28 checkpoint clean
    * (the owner holds a copy; its generator and smoke stay, dormant) and it was
@@ -4488,7 +4488,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
    * carrier-on-ink 4.23:1 (Speedy) / 5.02:1 (Heavy), plate-on-flame 8.0–9.8:1, nucleus 8.44 css px.
    * DISCLOSED (a): these two polys per kind are IMPLEMENTER-GENERATED, not delivery-verbatim — the
    * flame layers stay exactly as delivered, and the retired nuclei (the scroll's 4-point star, the
-   * trio's 32-gon at r 5.25) are archived verbatim in CHRONICLE-archive.md. (b) The plate's r 10.14
+   * trio's 32-gon at r 5.25) are in git history (tag docs-precleanup). (b) The plate's r 10.14
    * stays inside the delivered flame head (y ±14.8, x to +15.6), so no kind's silhouette changes.
    * (c) Measured while auditing this: the HALO hitbox tint disc is 100% HIDDEN under the opaque
    * flame art on all four kinds (pre-existing, not caused here) — which is exactly why the nucleus
@@ -4607,7 +4607,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   /* TOMBSTONE (2026-10-25 cleanup): the legacy procedural shot draws (arrow,
    * bolt, javelin, orb, spark, star, boom, page, scroll) retired here at
    * roster-r12 — superseded by SHOTS_ART data, the copy kinds and drawArrow's
-   * removal. Their record lives in CHRONICLE-archive/GAMES Measured facts. */
+   * removal. Their record lives in GAMES Measured facts and git history (tag docs-precleanup). */
   function drawCastFlash(g, st) {   // 3-beat cast punctuation: a 3-tick flash at the stored spawn point, spell family only (extracted at the 2026-10-25 cleanup)
     const fek = st.kind || 'arrow';
     if (!SPELLFAM[fek] || st.born == null || G.t - st.born > 3) return;

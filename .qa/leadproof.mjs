@@ -216,7 +216,7 @@ for (const [wId, pr] of Object.entries(PROBES)) {
            * :3654): the victim's blade cuts the anchored spear on an ANGLE test, with NO circle
            * contact at all, so the touch recompute cannot apply to that class. It FAILed on CORRECT
            * code — 15 javelin swats, and 0 true contact failures anywhere in the suite (verified by
-           * scratch/triage/diag-lead-swat.mjs).
+           * scratch/triage/diag-lead-swat.mjs — pruned from HEAD 2026-11-11, docs-cleanup; recover with `git show docs-precleanup:scratch/triage/diag-lead-swat.mjs`).
            * The stored gap tells the classes apart:
            *   - TOUCH class (canonical :3663): killShot stores `best - st.r` with best < st.r, so
            *     the stored gap is STRICTLY NEGATIVE. The circle recompute applies, unchanged.

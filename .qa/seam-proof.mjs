@@ -340,7 +340,7 @@ let spinViol=0, spinUps=0, bladeHits0=0, catches=0;   // hoisted: the CYCLE-ONLY
   /* RETIRED 2026-11-11 (Item-3 triage session 3) — G1b IS VACUOUS, PROVEN, not merely stale.
    * Predicate: |st.speed/|st.turn| − BM.shot.speed/BM.shot.turn| > 1e-9. The ROW's BM.shot.turn is
    * undefined (axis retired at hexfam-r68) ⇒ the row ratio is NaN ⇒ NaN > 1e-9 is ALWAYS FALSE ⇒
-   * radiusBad can never be nonzero. Decisive test (scratch/triage/diag-g1b-vacuity.mjs, executed):
+   * radiusBad can never be nonzero. Decisive test (scratch/triage/diag-g1b-vacuity.mjs, executed — pruned from HEAD 2026-11-11, docs-cleanup; recover with `git show docs-precleanup:scratch/triage/diag-g1b-vacuity.mjs`):
    * multiply EVERY loop's speed by 1e6 — a gross violation — and the predicate fires 0 times across
    * 21,077 in-flight checks, while the cell cheerfully prints "42788 in-flight checks, 0 off-scale".
    * Owner non-negotiable #2: a probe that measured nothing cannot claim PASS. The subtlety worth
@@ -398,7 +398,7 @@ retired('G4b the growth is CYCLE-ONLY (owner ruling 2026-11-01) — reported, no
 const g5=threw("WEAPONS.boomerang.trait.cycle = -0.5;");
 ok('GUARD FIRES: a non-positive cycle rate is a boot error', !!g5&&/not a positive finite growth rate/.test(g5), g5?g5.slice(0,96):'no throw — loops would slow toward frozen');
 /* RETIRED 2026-11-10 (Item-3 triage, owner go) — the two halo-era guards. Both were verified by
- * executed probe (scratch/triage/diag-guards.mjs), not by reading:
+ * executed probe (scratch/triage/diag-guards.mjs — pruned from HEAD 2026-11-11, docs-cleanup; recover with `git show docs-precleanup:scratch/triage/diag-guards.mjs`), not by reading:
  *   g6  injecting shot.turn = 0 STILL throws, but with a DIFFERENT guard's message —
  *       "boomerang: trait.turn / shot.turn are RETIRED (hexfam-r68) — the bend+hunt is the FAMILY
  *       FLIGHT LAW…". The halo validator's /never comes home/ contract is gone, so the cell can
@@ -519,7 +519,7 @@ ok('I1 SOURCE LAW: every same-owner shot pair skips the cross test (the generali
   const RATE=WEAPONS.bow.trait.mult, CAP=api.MULT_STEPS, TAU=2*Math.PI;
   const SM_HI=1+RATE*CAP;
   /* CORRECTION 2026-11-10 (Item-3 triage): the accumulator ledger used a bare 1e-9, authored for a
-   * quieter sim. MEASURED on this build (probe scratch/triage/diag-bow-band.mjs, executed): worst
+   * quieter sim. MEASURED on this build (probe scratch/triage/diag-bow-band.mjs, executed — pruned from HEAD 2026-11-11, docs-cleanup; recover with `git show docs-precleanup:scratch/triage/diag-bow-band.mjs`): worst
    * deviation 6.41e-4 rad over 5,165 fires — 93 bank-tick, 11 fire, 11 saturation observations off
    * the 1e-9 line. That is float accumulation across the chain era, NOT a cadence breach: the
    * cadence law itself holds (I1/I4-I7 green, and the unblocked run reproduced H 9/9 green).

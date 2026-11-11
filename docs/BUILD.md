@@ -268,7 +268,7 @@ A game does not ship until every box is checked.
 - [ ] One easing family throughout; staggered entrances; nothing linear that should feel alive
 - [ ] Every impact within ~40ms of its visual
 - [ ] Uses the shared intro, scoreboard, caption bars and outro — identifiable from a single screenshot
-- [ ] Weapon and prop art follows GAMES.md "Weapon art" — the convention **CLOSED 2026-10-27** (landed at roster-r12 2026-10-25; the prescriptive lock lives in GAMES.md, "Weapon art — the closed convention"); new art arrives through the artist-kit route and its intake audit — *the kit tooling was purged 2026-10-28 at the pre-balance checkpoint and is retired verbatim to `CHRONICLE-archive.md`, so the route is prescriptive-only until the owed kit-route rebuild (GAMES.md hygiene pass #2)*; `ingest.mjs` stands dormant/superseded (close item 2a)
+- [ ] Weapon and prop art follows GAMES.md "Weapon art" — the convention **CLOSED 2026-10-27** (landed at roster-r12 2026-10-25; the prescriptive lock lives in GAMES.md, "Weapon art — the closed convention"); new art arrives through the artist-kit route and its intake audit — *the kit tooling was purged 2026-10-28 at the pre-balance checkpoint and is retired verbatim (recover with `git show docs-precleanup:docs/CHRONICLE-archive.md`), so the route is prescriptive-only until the owed kit-route rebuild (GAMES.md hygiene pass #2)*; `ingest.mjs` stands dormant/superseded (close item 2a)
 
 **Engineering**
 - [ ] Passes all eight contract-compliance checks

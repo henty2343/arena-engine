@@ -60,12 +60,12 @@ const FRAME_MS = 16.7;
  *   headLead joined the mirror at skewer-r46), so T2's "the unflagged side never leaves ±1" law
  *   drowned in false reds; and s4 now rolls the STAFF, which joined the mirror at the 2026-10-28
  *   facing pass, so the CONTROL battle was not a control (T2b's own rollsFlagged tripwire fired).
- *   The measured naturals (scratch/triage/diag-flip-seeds.mjs — the session-2 scan redone with the
+ *   The measured naturals (.qa/flip-seeds.mjs — the session-2 scan redone with the
  *   one-side criterion) are FLAG -> s1 (spear+flail / scythe+shield, 38 parries, the flagged spear
  *   on ONE side only) and CTRL -> s7 (orb+orb / bow+boomerang, 13 parries, nothing flagged in any
  *   rolled round). The argv override stays, the rollsFlagged tripwire stays a HARD assert, and a
  *   pinned seed that stops holding FAILS LOUDLY (it never silently substitutes a fallback) — the
- *   re-pick procedure is `node scratch/triage/diag-flip-seeds.mjs`.
+ *   re-pick procedure is `node .qa/flip-seeds.mjs`.
  */
 const FLAG_SEED = Number(process.argv[3] || 1);    // natural s1: spear+flail / scythe+shield — the spear's lead drives the flagged side, and the OTHER side carries nothing flagged
 const CTRL_SEED = Number(process.argv[4] || 7);    // natural s7: orb+orb / bow+boomerang — no flagged weapon in ANY rolled round (s2 → s1 and s4 → s7: each roster growth re-rolls the naturals; Part A's rollsFlagged assertion below is the tripwire that catches the next re-roll)
@@ -99,13 +99,13 @@ const AOtherFlagged = A.sideFlagged[1 - A.firstFlaggedParry.side];
 chk(!AOtherFlagged, `T2a' the OTHER side never holds a flagged weapon (s${FLAG_SEED}: side ${A.firstFlaggedParry.side} flagged, side ${1 - A.firstFlaggedParry.side} clean)`);
 chk(C.parries > 0 && !C.rollsFlagged, 'T2b control battle really parries with NO flagged weapon in any rolled round (rollsFlagged = the pool-growth tripwire)');
 /* LOUD FAIL on a pinned seed that no longer holds — the probe never silently substitutes a
- * fallback seed. The re-pick procedure is `node scratch/triage/diag-flip-seeds.mjs`. */
+ * fallback seed. The re-pick procedure is `node .qa/flip-seeds.mjs`. */
 if (!A.parries || A.firstFlaggedParry.side < 0 || AOtherFlagged || !C.parries || C.rollsFlagged) {
   console.error('');
   console.error(`!! PINNED SEED NO LONGER HOLDS — refusing to continue with a seed that fails its own criterion.`);
   console.error(`   FLAG_SEED ${FLAG_SEED}: parries ${A.parries}, first flagged side ${A.firstFlaggedParry.side}, sideFlagged ${JSON.stringify(A.sideFlagged)}, rolls ${JSON.stringify(A.rolls)}`);
   console.error(`   CTRL_SEED ${CTRL_SEED}: parries ${C.parries}, rollsFlagged ${C.rollsFlagged}, rolls ${JSON.stringify(C.rolls)}`);
-  console.error(`   Re-pick the naturals with: node scratch/triage/diag-flip-seeds.mjs`);
+  console.error(`   Re-pick the naturals with: node .qa/flip-seeds.mjs`);
   console.error('');
   process.exit(1);
 }
@@ -181,7 +181,7 @@ function bootApp() {
    * COUNTER G.t — the frame loop runs floor(tickAcc) sim ticks with tickAcc += adv*fxRate, so a
    * frame that advanced >= 2 ticks ran FULL RATE (any slower rate advances at most 1 tick per
    * frame at tickHz 120 / 16.7ms) and its spend is exactly the wall dt. Every measured sweep
-   * agrees to 1e-6 (scratch/triage/diag-flip-ledger.mjs); A1 carries TOL_MS of tolerance because
+   * agrees to 1e-6 (scratch/triage/diag-flip-ledger.mjs — pruned from HEAD 2026-11-11, docs-cleanup; recover with `git show docs-precleanup:scratch/triage/diag-flip-ledger.mjs`); A1 carries TOL_MS of tolerance because
    * the tick channel resolves a rate only to {1, 0.25} and the hit-slow window's EDGE frame blends
    * its rate.
    */

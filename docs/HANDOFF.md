@@ -44,7 +44,7 @@ No game code was touched (none is in this repo yet — the scaffolding dirs are
 ## THE RESTRUCTURE — COMPLETED AND PROVEN (2026-11-05 record of the rehearsed plan)
 
 **Moved (pure renames, zero content change):** SPEC.md · CONTRACT.md · BUILD.md ·
-GAMES.md · CHRONICLE-archive.md → `docs/`  |  spinclash-preview.html ·
+GAMES.md · CHRONICLE-archive.md [removed from HEAD 2026-11-11, GAMES #733; tag `docs-precleanup`] → `docs/`  |  spinclash-preview.html ·
 project_dump.txt → `previews/`  |  README.md STAYS AT ROOT (GitHub renders only that one).
 **[2026-11-10: only `spinclash-preview.html` actually landed; `project_dump.txt` never
 entered git and is retired.]**
@@ -76,7 +76,7 @@ from git history; this paragraph is the record of the rehearsal.]**
    now resolves `../previews/spinclash-preview.html` (and `docs/GAMES.md` for the doc
    tools) — those repoints are DONE, verified statically; do not revert them. The
    re-mirroring clause of the old law is moot: there is one copy, in git.
-2. **History is never rewritten.** GAMES.md and CHRONICLE-archive.md keep their dated
+2. **History is never rewritten.** GAMES.md keeps its dated
    bare-filename mentions by design; superseded mechanics stay in their dated entries
    with the new entry carrying the SUPERSEDED marker (the #720 → #721 pattern).
 3. **~~`previews/project_dump.txt` is GENERATED~~ — RETIRED 2026-11-10.** The dump and

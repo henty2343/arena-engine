@@ -1,7 +1,7 @@
-/* scratch/triage/diag-flip-seeds.mjs — READ-ONLY probe (Item-3 triage, session 6, 2026-11-11).
+/* .qa/flip-seeds.mjs (moved from scratch/triage/diag-flip-seeds.mjs, docs-cleanup 2026-11-11) — READ-ONLY probe (Item-3 triage, session 6, 2026-11-11).
  *
  * Menu item 5, the SEEDS half: .qa/flipproof.mjs hardcoded FLAG_SEED 2 and CTRL_SEED 4. Measured
- * (session 2, scratch/triage/runs-before/diag-flip-t4.out): s4 now rolls the STAFF, which joined
+ * (session 2, scratch/triage/runs-before/diag-flip-t4.out — pruned from HEAD 2026-11-11, GAMES #731; `git show item3-closed:scratch/triage/runs-before/diag-flip-t4.out`): s4 now rolls the STAFF, which joined
  * the edge-leading mirror at the 2026-10-28 facing pass — so the control battle's "no flagged weapon
  * in ANY rolled round" tripwire fires exactly as designed and the whole T2 control half is dead.
  *
@@ -24,7 +24,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const ROOT = resolve(here, '..', '..');
+const ROOT = resolve(here, '..');
 const html = readFileSync(join(ROOT, 'previews', 'spinclash-preview.html'), 'utf8');
 const blocks = [];
 { let i = 0; while (true) { const a = html.indexOf('<script>', i); if (a < 0) break; const b = html.indexOf('</script>', a); blocks.push(html.slice(a + 8, b)); i = b; } }
