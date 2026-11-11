@@ -123,23 +123,38 @@ resolving — do not guess.
 ## STEP 4 — land the GAMES entries (the one file the App couldn't carry)
 
 ```bash
-git apply scratch/triage/games-entries.patch
+git apply --ignore-whitespace scratch/triage/games-entries.patch
+sed -i 's/\r$//' docs/GAMES.md          # strip Windows CRs (see the note below)
+git add docs/GAMES.md
 ```
 
-**Good output:** *silence* (success). A failure here means your local `docs/GAMES.md` differs
-from the remote's — see the fallback at the bottom.
+**THE `--ignore-whitespace` AND THE `sed` ARE NOT OPTIONAL ON WINDOWS.** This repo has **no
+`.gitattributes`**, so a Windows checkout with `core.autocrlf=true` puts **CRLF** in your working
+copy while the patch's context lines are **LF** — plain `git apply` then fails with
+`patch failed: docs/GAMES.md:23` (line 23 = the nav block, the first hunk). `--ignore-whitespace`
+matches the context, and the `sed` normalises the file back to LF so the committed blob is
+byte-identical to the session's.
 
-Verify it landed:
+**Verify it landed — this is the strong check:**
 
 ```bash
-grep -c "^## 2026-11-1" docs/GAMES.md          # expect: 5   (the #723-#727 headings)
-git diff --stat                                 # expect: ONLY docs/GAMES.md listed
+git rev-parse :docs/GAMES.md
+# expect: 86bcb36c234319fa8fd6fa80a5765c5b9c83f93b   <- byte-exact with the session's file
+
+grep -cE "^## 2026-11-1[01] — #72[3-7]" docs/GAMES.md   # expect: 5  (the #723-#727 headings)
+git diff --stat                                          # expect: ONLY docs/GAMES.md listed
 ```
 
-Optional strong check — if you saved the attached `GAMES.md` next to your repo:
+(The loose `grep -c "^## 2026-11-1"` prints **6** — it also matches #722, which is dated
+`2026-11-10 (late)`. Use the anchored pattern above.)
+
+**If the apply still fails** after `--ignore-whitespace`, your local `docs/GAMES.md` really does
+diverge from the remote's. Then skip patching and copy the delivered file wholesale:
 
 ```bash
-diff -q ~/Downloads/GAMES.md docs/GAMES.md && echo "IDENTICAL to the session-6 file"
+cp /path/to/delivered/GAMES.md docs/GAMES.md
+git add docs/GAMES.md
+git rev-parse :docs/GAMES.md      # must still print 86bcb36c234319fa8fd6fa80a5765c5b9c83f93b
 ```
 
 ## STEP 5 — commit the GAMES entries
