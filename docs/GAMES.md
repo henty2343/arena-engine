@@ -28,21 +28,21 @@ The living record of game design: what exists and what is decided next. Platform
 | Weapon art — the closed convention (locked 2026-10-18, CLOSED 2026-10- | 386 | 10 KB |
 | Design principles for all games | 407 | 2 KB |
 | Open design questions | 417 | 15 KB |
-| Measured facts | 434 | 431 KB |
-| Testing recipe (headless) | 1104 | 24 KB |
-| 2026-11-10 (late) — #722 · THE HARNESS CONTRACT + THE FLAIL'S HONEST R | 1142 | 3 KB |
-| 2026-11-10 — #723 · THE STALE-PROOF TRIAGE BEGINS (Item 3; stamp stays | 1152 | 5 KB |
-| 2026-11-11 — #724 · THE HALO FAMILY RETIRED — AND A CORRECTION THAT SU | 1163 | 2 KB |
-| 2026-11-11 — #725 · SEAM-PROOF RE-VERIFIED, AND THE NON-VACUITY NUMBER | 1169 | 2 KB |
-| 2026-11-11 — #726 · ITEM 3 (PAIR-PROOF) COMPLETE AND PROVEN FALSIFIABL | 1175 | 3 KB |
-| 2026-11-11 — #727 · ITEM 3 CLOSED: ITEMS 4, 5 AND 6 RE-SEEDED, EVERY R | 1182 | 10 KB |
-| 2026-11-11 — #728 · LENGROW-BAKE'S "CHAIN CASE" WAS A TOO-BROAD GUARD, | 1195 | 5 KB |
-| 2026-11-11 — #729 · THE FULL BATTERY RE-RUN ON THE SESSION-7 BYTES — A | 1205 | 3 KB |
-| 2026-11-11 — #730 · ITEM 3 IS ON `main` — PR #3 MERGED WITH A MERGE CO | 1213 | 3 KB |
-| 2026-11-11 — #731 · THE POST-CLOSE CLEANUP: THE ONE-SHOT SCRATCH SCAFF | 1222 | 5 KB |
-| 2026-11-11 — #732 · THE CLEANUP LANDED; TWO DANGLING CITATIONS THE PRU | 1233 | 3 KB |
-| 2026-11-11 — #733 · THE DOCS CLEANUP: THE CHRONICLE ARCHIVE, `scratch/ | 1241 | 7 KB |
-| 2026-11-11 — #734 · A `.gitattributes` PINS LF ON CHECKOUT, SO THE WIN | 1252 | 2 KB |
+| Measured facts | 434 | 398 KB |
+| Testing recipe (headless) | 1036 | 24 KB |
+| 2026-11-10 (late) — #722 · THE HARNESS CONTRACT + THE FLAIL'S HONEST R | 1074 | 3 KB |
+| 2026-11-10 — #723 · THE STALE-PROOF TRIAGE BEGINS (Item 3; stamp stays | 1084 | 5 KB |
+| 2026-11-11 — #724 · THE HALO FAMILY RETIRED — AND A CORRECTION THAT SU | 1095 | 2 KB |
+| 2026-11-11 — #725 · SEAM-PROOF RE-VERIFIED, AND THE NON-VACUITY NUMBER | 1101 | 2 KB |
+| 2026-11-11 — #726 · ITEM 3 (PAIR-PROOF) COMPLETE AND PROVEN FALSIFIABL | 1107 | 3 KB |
+| 2026-11-11 — #727 · ITEM 3 CLOSED: ITEMS 4, 5 AND 6 RE-SEEDED, EVERY R | 1114 | 10 KB |
+| 2026-11-11 — #728 · LENGROW-BAKE'S "CHAIN CASE" WAS A TOO-BROAD GUARD, | 1127 | 5 KB |
+| 2026-11-11 — #729 · THE FULL BATTERY RE-RUN ON THE SESSION-7 BYTES — A | 1137 | 3 KB |
+| 2026-11-11 — #730 · ITEM 3 IS ON `main` — PR #3 MERGED WITH A MERGE CO | 1145 | 3 KB |
+| 2026-11-11 — #731 · THE POST-CLOSE CLEANUP: THE ONE-SHOT SCRATCH SCAFF | 1154 | 5 KB |
+| 2026-11-11 — #732 · THE CLEANUP LANDED; TWO DANGLING CITATIONS THE PRU | 1165 | 3 KB |
+| 2026-11-11 — #733 · THE DOCS CLEANUP: THE CHRONICLE ARCHIVE, `scratch/ | 1173 | 7 KB |
+| 2026-11-11 — #734 · A `.gitattributes` PINS LF ON CHECKOUT, SO THE WIN | 1184 | 2 KB |
 
 **Measured facts — entry index** (92 entries, oldest first; this section is the file's largest, so the index is the way in. "line" = the entry's first line.)
 
@@ -82,64 +82,64 @@ The living record of game design: what exists and what is decided next. Platform
 | 665 | 2026-10-31 | Bind fix — `bindfix-r35`: latched binds push apart from their first tick, and crosse | 4 |
 | 672 | 2026-10-31 | The dagger's spin growth lands as `spingrow-r36` — the pass's third weapon trait and | 4 |
 | 678 | 2026-10-31 | The boomerang's Return + cycle growth lands as `returngrow-r37` — the pass's fourth  | 6 |
-| 685 | 2026-10-31 | [REJECTED at the owner's eye + REVERTED the same day — `freeloop-r38` | 8 |
-| 701 | 2026-10-31 | `freeloop-r38` REJECTED at the owner's eye and REVERTED the same day | 4 |
-| 713 | 2026-11-01 | The Loyal Halo lands as `halo-r39` — the boomerang's redesign is DONE: the owner-anc | 6 |
-| 727 | 2026-11-01 | 667 | 3 |
-| 733 | 2026-11-01 | 668 | 6 |
-| 749 | 2026-11-01 | 669 | 6 |
-| 761 | 2026-11-01 | 670 | 3 |
-| 769 | 2026-11-01 | 671 | 2 |
-| 771 | 2026-11-01 | 672 | 8 |
-| 791 | 2026-11-01 | 673 | 2 |
-| 793 | 2026-11-01 | 674 | 2 |
-| 795 | 2026-11-01 | 675 | 3 |
-| 797 | 2026-11-01 | 676 | 5 |
-| 805 | 2026-11-01 | 677 | 2 |
-| 811 | 2026-11-01 | 678 | 5 |
-| 819 | 2026-11-01 | 679 | 2 |
-| 825 | 2026-11-01 | 680 | 4 |
-| 833 | 2026-11-01 | 681 | 3 |
-| 839 | 2026-11-01 | 682 | 4 |
-| 843 | 2026-11-01 | 683 | 4 |
-| 847 | 2026-11-01 | 684 | 4 |
-| 851 | 2026-11-01 | 685 | 6 |
-| 856 | 2026-11-01 | 686 | 4 |
-| 860 | 2026-11-01 | 687 | 3 |
-| 864 | 2026-11-01 | 688 | 3 |
-| 868 | 2026-11-01 | 689 | 3 |
-| 872 | 2026-11-01 | 690 | 4 |
-| 876 | 2026-11-01 | 691 | 4 |
-| 880 | 2026-11-02 | 692 | 5 |
-| 884 | 2026-11-02 | 693 | 4 |
-| 892 | 2026-11-02 | 694 | 5 |
-| 898 | 2026-11-02 | 695 | 5 |
-| 906 | 2026-11-02 | 696 | 5 |
-| 918 | 2026-11-02 | 697 | 6 |
-| 928 | 2026-11-02 | 698 | 8 |
-| 938 | 2026-11-02 | 699 | 6 |
-| 954 | 2026-11-02 | 700 | 1 |
-| 956 | 2026-11-02 | 701 | 6 |
-| 968 | 2026-11-02 | 702 | 4 |
-| 980 | 2026-11-02 | 703 | 3 |
-| 990 | 2026-11-02 | 704 | 3 |
-| 1000 | 2026-11-02 | 705 | 3 |
-| 1008 | 2026-11-03 | 706 | 4 |
-| 1016 | 2026-11-03 | 707 | 2 |
-| 1024 | 2026-11-03 | 708 | 3 |
-| 1032 | 2026-11-03 | 709 | 3 |
-| 1038 | 2026-11-03 | 710 | 2 |
-| 1044 | 2026-10-31 | 711 | 4 |
-| 1050 | 2026-10-31 | 712 | 4 |
-| 1056 | 2026-10-31 | 713 | 2 |
-| 1062 | 2026-10-31 | 714 | 4 |
-| 1068 | 2026-10-31 | 715 | 5 |
-| 1074 | 2026-10-31 | 716 | 4 |
-| 1080 | 2026-10-31 | 717 | 2 |
-| 1086 | 2026-10-31 | 718 | 4 |
-| 1092 | 2026-10-31 | 719 | 2 |
-| 1094 | 2026-10-31 | 720 | 3 |
-| 1096 | 2026-11-10 | 721 | 20 |
+| 685 | 2026-10-31 | `freeloop-r38` — the boomerang's free-loop redesign | <1 |
+| 687 | 2026-10-31 | `freeloop-r38` REJECTED and REVERTED | <1 |
+| 689 | 2026-11-01 | The Loyal Halo `halo-r39` | <1 |
+| 691 | 2026-11-01 | 667 | 3 |
+| 697 | 2026-11-01 | 668 | 6 |
+| 713 | 2026-11-01 | 669 | 6 |
+| 725 | 2026-11-01 | 670 | 3 |
+| 733 | 2026-11-01 | 671 | 2 |
+| 735 | 2026-11-01 | 672 | 8 |
+| 755 | 2026-11-01 | 673 | 2 |
+| 757 | 2026-11-01 | 674 | 2 |
+| 759 | 2026-11-01 | 675 | 3 |
+| 761 | 2026-11-01 | 676 | 5 |
+| 769 | 2026-11-01 | 677 | 2 |
+| 775 | 2026-11-01 | 678 | 5 |
+| 783 | 2026-11-01 | 679 | 2 |
+| 789 | 2026-11-01 | 680 | 4 |
+| 797 | 2026-11-01 | 681 | 3 |
+| 803 | 2026-11-01 | 682 | 4 |
+| 807 | 2026-11-01 | 683 | 4 |
+| 811 | 2026-11-01 | 684 | 4 |
+| 815 | 2026-11-01 | 685 | 6 |
+| 820 | 2026-11-01 | 686 | 4 |
+| 824 | 2026-11-01 | 687 | 3 |
+| 828 | 2026-11-01 | 688 | 3 |
+| 832 | 2026-11-01 | 689 | 3 |
+| 836 | 2026-11-01 | 690 | 4 |
+| 840 | 2026-11-01 | 691 | 4 |
+| 844 | 2026-11-02 | 692 | 5 |
+| 848 | 2026-11-02 | 693 | 4 |
+| 856 | 2026-11-02 | 694 | 5 |
+| 862 | 2026-11-02 | 695 | 5 |
+| 870 | 2026-11-02 | 696 | 5 |
+| 882 | 2026-11-02 | 697 | 6 |
+| 892 | 2026-11-02 | 698 | 8 |
+| 902 | 2026-11-02 | 699 | 1 |
+| 904 | 2026-11-02 | 700 | 1 |
+| 906 | 2026-11-02 | 701 | 6 |
+| 918 | 2026-11-02 | 702 | 4 |
+| 930 | 2026-11-02 | `grudge-r70` — THE LONG GRUDGE, the wand's trait | <1 |
+| 932 | 2026-11-02 | 704 | 3 |
+| 942 | 2026-11-02 | `flick-r72` — THE WHIP-CRACK FLICK, the wand's trait | <1 |
+| 944 | 2026-11-03 | 706 | 4 |
+| 952 | 2026-11-03 | 707 | 2 |
+| 960 | 2026-11-03 | 708 | 3 |
+| 968 | 2026-11-03 | 709 | 3 |
+| 974 | 2026-11-03 | 710 | 2 |
+| 980 | 2026-10-31 | 711 | 4 |
+| 986 | 2026-10-31 | 712 | 4 |
+| 992 | 2026-10-31 | 713 | 2 |
+| 998 | 2026-10-31 | `lane-r81` — THE SCORCHED LANE, the scroll's trait | <1 |
+| 1000 | 2026-10-31 | 715 | 5 |
+| 1006 | 2026-10-31 | 716 | 4 |
+| 1012 | 2026-10-31 | 717 | 2 |
+| 1018 | 2026-10-31 | 718 | 4 |
+| 1024 | 2026-10-31 | 719 | 2 |
+| 1026 | 2026-10-31 | 720 | 3 |
+| 1028 | 2026-11-10 | 721 | 20 |
 
 ---
 
@@ -682,47 +682,11 @@ The stray copy was deleted to restore the known 31-file workspace; the leak itse
 *Owed:* `measure.mjs`'s 7s replica-departure enumeration needs `catch`/`expire` + `shotCatch`/`shotExpire` before the next owner-sanctioned run (it would miscount boomerang-cell departures otherwise). The which-knock decision still gates the knock seam; shuriken bounce growth is the standing runner-up for the next cheap slot. Owner sign-off on the landed form pending with the full measurement table. The deferred bundle is unchanged.
 *Playtest seeds scouted (7 of 100 naturals roll a boomerang):* **seed 28** — round 2 scythe×boomerang, DECIDED at 12,406 ticks (the shortest watch), 2 catches + 5 expires (both Return outcomes visible), the boomerang side wins · **seed 92** — round 2 a NATURAL shuriken×boomerang (the fingerprint cell's texture), 4 catches, decided at 17,900 · **seed 34** — the Return showcase: wand-holder turns boomerang vs a bow, **25 catches / 24 expires**, but undecided at the 18,000 budget (the deliberate projectile-stall regime; watch it for the catches, not the result).
 
-**[REJECTED at the owner's eye + REVERTED the same day — `freeloop-r38` (2026-10-31): *"no it looks bad"* (diagnosis: the arena-sized free loop was visual noise, and the root flaw was geometric — the owner stood at the loop's CENTER, never on its path, so every anti-jam patch became visible drag). This entry is the record of a rejected landing; the owner-chosen redesign — THE LOYAL HALO, the owner-anchored oval with the hand ON the path — is directed in #665. The r38 file is parked at `scratch/boomvars/freeloop-r38-parked.html`.]** **The boomerang's free-loop redesign lands as `freeloop-r38` — superseding `returngrow-r37`'s lap-budget Return THE SAME DAY, at the owner's word (2026-10-31: *"what if the boomerang just keeps flying in the air until it hits something"*; *"if it hits the weapon, the boomerang will be destroyed"*; *"only 1 boomerang flying… should not fire more if there is already one active"*; the circle *"is bad — try making it an elongated ellipse"*; shape then delegated — *"you decide, i just want it to look smooth and natural"*).** Three owner rulings carried it: the growth trigger moves to the catch-cycle (*"each catch and throw makes it faster"* — hits damage but never grow), the jam hazard gets the owner-picked bounded fix (*"propose an anti-jam fix"*, no visible seeking), and the pass-through body law (*"it will pass through"*). Six sections: the flight contract, the oval's math, the growth-law move, the anti-jam package, the proofs, the seeds.
+**`freeloop-r38` — the boomerang's free-loop redesign (2026-10-31), REJECTED at the owner's eye and REVERTED the same day; superseded by the halo then the world orbit Full record: `git show docs-precleanup2:docs/GAMES.md`.**
 
-*Flight contract — it ends ONLY on blade, cross, or its owner.* ONE boomerang in the air per owner: the `fireShots` singleton gate holds while a returning shot lives and the accumulator KEEPS BANKING behind it, so the catch rethrows with no dead time (`fireAcc += TAU` at the catch site — the catch IS the rethrow). The rim it PIERCES (law 1's second row-owned exception after the shuriken's bounce); bodies it PASSES THROUGH — damage + knock, one hit per passage on the deep-clearance latch (`LATCH_CLEAR` 60, the blade deep-gate idiom), law 4's row-gated exception. A foe blade swat or a crossed shot destroys it. No timer, no expire, no lap budget: `shot.laps`/`shot.refund` are gone from the row and the guards, `shotExpire` no longer exists, and the catch carries no `lap`. The catch arms only after the throw clears the hand (`CATCH_ARM` 20 — no birth-tick self-catch loop). Birth carries the flight state `returns/arc/age/armed/latch/peak/ell/ax` — hashed, returns rows only, every other shot byte-identical.
+**`freeloop-r38` REJECTED and REVERTED (2026-10-31, owner: *"no it looks bad, dont code suggest a complete redesign of the trait"*); the redesign menu it opened led to the halo (#666), since superseded by the world orbit Full record: `git show docs-precleanup2:docs/GAMES.md`.**
 
-*The oval — exact closure, locked shape.* `shot.orbit.elong` **0.65** (guarded finite in [0, 0.95)): curvature modulates with heading against the birth-throw axis, κ(ψ) = κ₀(1 − elong·cos 2ψ). cos 2ψ is orthogonal to the heading's cos/sin, so the path closes EXACTLY every circuit — no precession, no drift of the curve itself, continuous curvature, constant speed: the smooth-and-natural brief under the owner's delegation. 648×385px at birth (1.68:1), period 3.18s shrinking to ~0.5s at the growth cap. Growth scales speed AND turn together, so every radius of the oval scales alike — the SHAPE stays locked under growth, only the period shrinks (the owner's own objection to plain speed growth, answered). In-sim verification: closure gap 0.8–2.5px over full circuits.
-
-*The growth-law move — one trigger, new event class.* `trait.cycle` **0.20 PROVISIONAL** stays the first CAPPED axis (`CYCLE_STEPS` 10, cap at read time). What moved is the TRIGGER: r37's "damaging hit" is now the catch-cycle (`CATCH_GROW` true / `HIT_GROW` false — the owner's pick over per-hit and per-both). The one-trigger law is intact, but the boomerang's growth event is no longer a damage event — a new pattern for the pass, and #663's "growth remains single-trigger (damage hit)" is hereby amended to "(catch cycle)" for this row. The shared `grow()` counter law is unchanged (the wielder's blade hits WOULD still advance it — none did in any forced battle: seam G4's off-twin sits at Σ max-step 0 with 27 pass-through hits landed, so the measured differential is provably the catch itself).
-
-*The anti-jam package — bounded, no visible seeking (owner pick out of a measured spectrum).* A loop that misses everything would orbit empty space forever while the singleton gate jams the weapon. Two dials, both ramping with flight age, both pure-position (velocity untouched, so the closure/orientation math stays exact): DRIFT translates the whole oval toward the wielder (30px/s + 12px/s², cap 300 — the law-3 substep budget carries `DRIFT_MAX`) and WIDE HAND grows the catch window (+6px/s, cap +80px). Measured (12k×8-seed probe, 24 battles per variant): long flights (>1000t) **55 → 35**, decided battles **4/24 → 13/24**, landings Σ 102 → 98 spread across far more battles. Lead-targeting drift was probed and REJECTED with a geometric reason: converging the oval's CENTER onto the owner parks him in the loop's HOLE (band 190–320px vs a 74px catch window) — better aim centers the miss. The stronger 400px/s variant (31 jams, 11/24 decided) and the drift-only / wide-hand-only forms were all probed; the owner picked the gentle-ramp combo. Disclosed floor: a typical FORCED battle still keeps ONE ~1–1.7min jam flight, ending on a swat or a wide-hand snag — in the 50-seed natural scan no flight exceeded 900 ticks. Spiral turn-decay remains STILLBORN (the path straightened and escaped into space).
-
-*Proofs.* Tier 0: build-proof **57/57** · chromecheck PASS both sections (labels changed: brief `+SPD +LOOP / Catch`, the row line, both stamps). Tier 1: seam-proof **35/35** — section G REWRITTEN for the r38 contract (13 assertions): the row declares `orbit.elong` and no laps/refund survives; birth-snapshot law exact over 260 births within the same-tick growth ambiguity (the candidate set now counts blade-hit + catch events); shape-scale lock **0/43,831** in-flight checks; cap saturation exact at 1.2^10 (raw step 25); the flight contract (**141 catches, 0 rim deaths, 0 singleton violations**, 91 pass-through hits); the catch-growth differential vs a `CATCH_GROW=false` twin (Σ max-step **86 vs 0**) as a suite-level law; the reset LAW; the wand untouched; FOUR guards fire (cycle rate, turn 0, elong 1.2, orbit null). A new replace-loader (`loadR`) injects core CONSTANTS — the old inject point sits before the const block (TDZ), and it refuses to run on an unmatched target, so the twin can never be silently vacuous. pair-proof **37/37**. Fingerprints **2 of 8 moved — again exactly the boomerang-bearing cells** (forced boomerang+shuriken s1; natural s7, which rolls the boomerang: 15,002 → 13,832 ticks); the six unmoved cells are the isolation proof that the r38 shotStep surgery leaked into no other path. New standing baseline **`.qa/fp-freeloop-r38.json`** (md5 `433702dd369036c4439c63ae638f335a`, deterministic across regenerations). Canonical md5 `19e54c884b76e0c635fc17e2f5fc6a9e` → **`68ab0ac7daa176a5a83cf79416883a1b`**, **3,710 lines**; stamp bumped `returngrow-r37` → `freeloop-r38` (owner-observable landing). `measure.mjs` EDITED NOT RUN (owner-go rule): the 4s replica now knows the catch departure (`shotCatch`) and the pass-through (`shotPass` — counted, NOT departed; the row is read via `curW[e.by]` since the shot-hit event carries no weapon field) — discharging #663's owed item ahead of the next sanctioned run.
-
-*Playtest seeds RE-SCOUTED for r38 (the #663 seeds 28/92/34 roll different battles now; 14 of 50 naturals roll a boomerang):* **seed 14** — DECIDED at 10,798 ticks (the shortest watch, ~90s), 15 catches / 23 throws · **seed 22** — DECIDED at 14,374, the richest watch: 33 catches, 27 swats, 123 throws (the full catch-rethrow rhythm AND the swat war) · **seed 4** — the 18k marathon: 88 catches / 246 throws, the catch-cycle escalation showcase (timeout class, deliberate per the stall ruling).
-
-*Owed:* owner sign-off on the landed form pending with the measurement tables. The which-knock decision still gates the knock seam; shuriken bounce growth is the standing runner-up for the next cheap slot. **18 weapon traits remain after the boomerang.** The deferred bundle is unchanged; the 484-cell re-run and spear cell stay deferred to the end of the pass.
-
-**`freeloop-r38` REJECTED at the owner's eye and REVERTED the same day (2026-10-31, *"no it looks bad, dont code suggest a complete redesign of the trait"*) — the boomerang redesign is re-directed to THE LOYAL HALO.** Five sections: the rejection and its diagnosis, the revert, the parked artifacts, the halo ruling, what survives.
-
-*The rejection, diagnosed.* The owner watched the landed free loop and called it bad; the follow-up question localized it: **"the loop itself — too big / chaotic"**, not the drift drag alone, not the rhythm alone. The structural diagnosis on record: r38's oval put the owner at the loop's CENTER (band 190–320px away, catch window 74px), so the boomerang never naturally passed through the hand — and every mechanism patching that absence (drift ramp, wide hand, long empty orbits, the jammed singleton gate) became visible noise. A boomerang's identity is *it passes through the hand*; r38 built the one geometry that guarantees it never does.
-
-*The revert — byte-identical, battery-proven.* `uploads/spinclash-preview.html` restored from the pre-graft backup: md5 **`19e54c884b76e0c635fc17e2f5fc6a9e`**, 3,641 lines, stamp `returngrow-r37` — the exact #663 identity. `measure.mjs` reversed edit-for-edit back to md5 **`ec0b819901a0f3a09dcd5e68722d46bf`**, 1,379 lines (byte-identity proves the reversal complete). `.qa/seam-proof.mjs` section G restored from the verbatim #663 record and PROVEN by run: **34/34 with every figure matching the original** (618 births / 49,141 radius checks / raw step 51 / 17 catches min-lap 2 / 31 expires / Σ 644 vs 596, 3 more–1 fewer). Battery on the restored bytes: build-proof **57/57** · chromecheck **PASS** · pair-proof **37/37** · fingerprints **8/8 vs `.qa/fp-returngrow-r37.json`** — the standing baseline is r37's again; `fp-freeloop-r38.json` becomes a historical record.
-
-*Parked artifacts (for parts salvage — the halo reuses most of the r38 machinery):* `scratch/boomvars/freeloop-r38-parked.html` (the rejected canonical: singleton gate, rim pierce, body pass-through + latch, armed catch + `fireAcc += TAU` top-up, `CATCH_GROW`/`HIT_GROW` switches, exact-closure oval integrator — ALL of which survive into the halo) · `scratch/boomvars/seam-proof-freeloop-r38.mjs` (the 13-assertion G rewrite + the `loadR` replace-loader, to be re-cut for the halo's contract) · the probe family in `scratch/boomvars/` · `/tmp` harnesses are throwaway and already gone.
-
-*The halo ruling (owner picks from the four-direction menu).* **Direction 1 — THE LOYAL HALO**: the oval is ANCHORED to its wielder — the whole path translates 1:1 with the owner (pure position offset, velocity untouched, the r38 drift math but constant and law-like instead of an impatient ramp) — and **the hand sits ON the path**, so the boomerang passes through the hand exactly once per circuit, guaranteed: every pass = catch = rethrow from the banked accumulator = one growth step. The jam class cannot exist; drift, wide hand and every anti-jam dial are DELETED, not tuned. Companion answers: the size complaint means the halo is probed SMALL (the r38 oval was 648×385; halo candidates ≈ 324×192 to 421×250 via a row-turn raise, radius 100–130 instead of 200) with elongation kept at the delegated 0.65. Canonical holds r37 until the halo lands (this revert).
-
-*What survives from the r38 rulings (all still law for the halo):* ONE boomerang in the air per owner (singleton gate, accumulator banks) · flight ends only on blade swat, shot cross, or the owner's catch · rim pierced, bodies passed through (latched, one hit per passage) · growth per CATCH-CYCLE (*"each catch and throw makes it faster"* — hits damage only) · one-trigger law intact · shape delegated, brief "smooth and natural". What dies: the free loop itself, the world-anchored arena oval, DRIFT0/K/MAX, CATCH_K/CAP, the `st.age` ramps. *Owed:* the halo probe (size ladder × 8-seed benefit battery, jams-structurally-zero to be PROVEN not assumed), the halo WATCH file, then the landing with a re-cut seam-proof G and the measure.mjs catch/pass-through replica edits redone (they are owed again exactly as #663 recorded, now to the halo).
-
-**The Loyal Halo lands as `halo-r39` — the boomerang's redesign is DONE: the owner-anchored oval with the hand ON the path, cycle-only catch growth, and the anti-jam machinery deleted as unnecessary (2026-11-01; owner picks from the #665 menu: direction **halo**, size complaint **"the loop itself — too big / chaotic"**, growth fork **cycle-only**, size **M**).** Six sections: the mechanic, the two probe findings, the growth fork, the proofs, the seeds, the owed.
-
-*Mechanic — the guarantee is geometric, not patched.* The oval (exact-closure cos 2ψ curvature modulation, `orbit.elong` 0.65, shape locked under growth) TRANSLATES 1:1 with its wielder every substep — a pure position delta, velocity untouched, so the closure/orientation math stays exact — and the throw's birth point is the hand: the closed path therefore walks the hand through itself **once per circuit, forever**. The catch (armed once the throw clears the hand, window `bodyR + r + CATCH_PAD`) retires the loop, tops the accumulator up a full revolution (`fireAcc += TAU`, immediate rethrow through the singleton gate) and advances the cycle counter. Row `turn` 2.6 → **4.0** (the M rung: 421×250px vs the rejected r38's 648×385; period 1.57s → ~0.25s at the cap). Everything else from the r38 rulings survives verbatim: ONE in the air per owner (accumulator banks behind the gate), rim pierced (law 1's second row-owned exception), bodies passed through (damage + knock, one hit per passage on the `LATCH_CLEAR` 60 latch), destroyed only by blade swat or shot cross, no timer, no expire. **Deleted, not retuned:** DRIFT ramp, wide hand, and the whole anti-jam dial family — the jam class cannot exist when the catch is construction.
-
-*Two probe findings that shaped the landing.* (1) **`CATCH_PAD` 20**: the first halo probe caught NOTHING — the loop closes through the art-centre spawn point (~81px out), which sits 7px OUTSIDE the bare `bodyR + r` = 74px window; the r38 wide hand had been accidentally masking the same gap. One static constant fixes it — no ramp, no seek. (2) **~7°/circuit of discrete precession** (disclosed): the periapsis distance is constant at the birth distance, so the catch never degrades; the sweep pattern just rotates slowly, which arguably helps the band cover angles. Size ladder measured (cycle-only, landings bh-S/bh-H/bb): S 324×193 → 32/35/73 · **M 421×250 → 39/41/84 (picked)** · L 527×313 → 34/44/84; across ALL 18 probe runs: **0 jam flights** (worst retired flight = exactly one period, 237t), 0 singleton violations, mirror 518 throws / 413 catches / 84 landings med.
-
-*The growth fork — cycle-only, with the numbers that decided it.* The catch site inherited r37's full `grow()` first: at 300–600 catches a battle that snowballed — spin pinned at `omegaCap` 140 rad/s (22 rev/s, deep in the drawn-blade strobe band the dagger probe calibrated) and dmg +0.7/catch made pass-throughs lethal (16/24 probe battles decided fast) — but it out-spun the **dagger's own spin trait** (a uniqueness collision) and the owner picked the literal ruling: **"each catch and throw makes it faster" = the BOOMERANG gets faster**. Landed form: the catch advances ONLY `own.shotStep++` (cap still applies at read time via `CYCLE_STEPS`); the spin/dmg axes stay on the damaging-hit trigger. Cost, disclosed: chip-damage volume without dmg growth parks most cells in the sanctioned projectile-stall regime (probe: ~2/24 decided at the 12k window; the 420s termination red is already live and deliberate).
-
-*Proofs.* Tier 0: build-proof **57/57** · chromecheck PASS both sections (labels changed: the row line now reads *"one boomerang in the air · orbits its wielder · passes through bodies — blades swat it"*; brief `+SPD +LOOP / Catch` survives from r38). Tier 1: seam-proof **36/36** — section G rewritten for the halo contract (14 assertions): the row declares `orbit.elong`/turn 4.0 with no laps/refund; birth-snapshot law exact over **894 births**; shape-scale lock **0/37,216**; cap saturation exact at 1.2^10 (raw step 156); **THE HALO FLIGHT CONTRACT — 717 catches, worst retired flight 237t ≤ the 400t one-orbit bound, 0 rim deaths, 0 singleton violations, 159 pass-through hits**; the catch-growth differential vs a `CATCH_GROW=false` twin (Σ max-step **487 vs 0**, off twin still landing 53 pass-through hits); **the CYCLE-ONLY law — 0 unpaired spin rises across 717 catches**, a law that FAILED its first draft (8 unpaired rises) and was DIAGNOSED not weakened: every one was a roundStart omega reset (0 → 3.5, `catchThisTick=false`), so the law now exempts the reset tick and the catch never touched the axis; reset LAW; wand untouched; four guards fire. pair-proof **37/37**. Fingerprints **2 of 8 moved — exactly the boomerang-bearing cells for the third consecutive landing** (forced boomerang+shuriken s1; natural s7), six bit-identical as the isolation proof. New standing baseline **`.qa/fp-halo-r39.json`** (md5 `23049cd9c327590c55e15d69a9c18d31`). Canonical md5 `19e54c884b76e0c635fc17e2f5fc6a9e` (r37) → **`252597a68532a62d4721207180bb29e5`**, **3,713 lines**; stamp bumped to `halo-r39` (owner-observable landing). `measure.mjs` EDITED NOT RUN (owner-go rule): the 4s replica knows the catch departure (`shotCatch`) and the pass-through (`shotPass`, counted NOT departed, row read via `curW[e.by]`) — md5 `2fc7026a399d01a57d078ea0eb1f8f20`, 1,391 lines.
-
-*Playtest seeds RE-SCOUTED for the halo (14 of 50 naturals roll a boomerang; EVERY boomerang flight in the scan ≤ 236 ticks — the orbit guarantee visible in raw naturals):* **seed 21** — the shortest DECIDED watch (~98s), 116 catches / 178 throws / 23 swats · **seed 13** — the buzzsaw marathon: **671 catches / 824 throws** / 117 swats (timeout class, deliberate per the stall ruling — watch the halo tighten as the cycle counter climbs) · **seed 4** — the swat war: 300 catches / 508 throws / 83 swats.
-
-*Owed:* owner sign-off on the landed form pending with the measurement tables. The which-knock decision still gates the knock seam; shuriken bounce growth is the standing runner-up. **18 weapon traits remain after the boomerang.** The deferred bundle is unchanged; the 484-cell re-run and the spear cell stay deferred to the end of the pass. The r37/r38 probe family and the parked r38 build stay in `scratch/boomvars/` as the record of the same-day arc.
+**The Loyal Halo `halo-r39` (2026-11-01) — the boomerang's owner-anchored oval; SUPERSEDED by the world-orbit boomerang (`touchorbit-r53`→`instantthrow-r59`) Full record: `git show docs-precleanup2:docs/GAMES.md`.**
 
 **667 — (2026-11-01) THE BOOMERANG PARKS AT THE OWNER'S CALL · `scratch/boomvars/` PURGED AT HIS ORDER · THE SHURIKEN TRAIT RULED (ricochet budget, per-rim-bounce trigger, uncapped — probe first).** Owner: *"lets park the boomerang for now, im not happy with it, we look at it later. now we foccus on shuriken… it should just bounce off the rim/edge, give me some suggestions."* The landed `halo-r39` STAYS canonical and untouched — the park is a program-state note, not a revert (an r37 rollback was offered and not taken; do not revert unprompted). The whole boomerang probe tree — `scratch/boomvars/`, 39 files: the parked r38 build, the r37/r38 probe zoo, the halo family, the parked seam-proof rewrite — is **DELETED at the owner's order**; the parts salvage was already complete (halo-r39 carries every machine that survived), so the same-day arc now lives only in entries #663–#666.
 
@@ -935,23 +899,9 @@ Canonical: md5 `5a75da5379c481455e60da7f99bbde52`, 4,450 lines, stamps `hexspark
 
 Canonical: md5 `7422404ea11d50d508ac905ad43436aa`, 4,589 lines, stamps `affinity-r66`. LEDGER: POISON is claimed by the tome's halo page (the 2026-10-25 affinity doctrine predates every other claim — a future scythe trait needs a different lane); RED stays reserved for the bleed retrofit; the buff slot + soft-outward pulse wait for the healing. Traits 11 of 22 — 11 remain.
 
-**699 — (2026-11-02) `wordform-r67` LANDED — THE WORD REFORMS (tome, PROVISIONAL, REVERT-READY): the owner's launcher-action menu pick A — the first blade swat on a tome page SHATTERS it instead of destroying it; the motes hang INERT for one 0.35s beat, regather, and the page resumes its ORIGINAL flight vector; the NEXT swat kills; the rim stays final.** The frustration brief behind it: the plain launchers land too few shots to watch — the inevitability ledger showed every non-frustrating launcher owns exactly one guarantee axis (shuriken=persistence, wand=accuracy, crossbow=failure-conversion, bow=volume, boomerang=presence, javelin=consequence) while tome/staff/scroll owned NONE. The menu (A word-reforms / B last-word / C verdict / D bot-cast rushers) was served proposals-only (*"suggestions and opinions only, dont code anything"*); he picked A with the revert card demanded up front: *"yes try and build a, but i just want to see, im not completely convinced, so be ready to revert it all again"*.
+**699 — (2026-11-02) `wordform-r67` LANDED — THE WORD REFORMS (tome, PROVISIONAL, REVERT-READY): the owner's launcher-action menu pick A — the first blade swat on a tome page SHATTERS it instead of destroying it; the motes hang INERT for one 0.35s beat, regather, and the page resumes its ORIGINAL flight vector; the NEXT swat kills; the rim stays final.** The frustration brief behind it: the plain launchers land too few shots to watch — the inevitability ledger showed every non-frustrating launcher owns exactly one guarantee axis (shuriken=persistence, wand=accuracy, crossbow=failure-conversion, bow=volume, boomerang=presence, javelin=consequence) while tome/staff/scroll owned NONE. The menu (A word-reforms / B last-word / C verdict / D bot-cast rushers) was served proposals-only (*"suggestions and opinions only, dont code anything"*); he picked A with the revert card demanded up front: *"yes try and build a, but i just want to see, im not completely convinced, so be ready to revert it all again"*. Full record: `git show docs-precleanup2:docs/GAMES.md`.
 
-**THE MECHANIC (row-flagged, tome first — `shot.reform: 1`; extends to staff/scroll at his word).** killShot's swat branch is intercepted at the funnel head: budget consumed, `st.reformT = WORDFORM_BEAT` (0.35s PROVISIONAL), `stats.reformed++`, a 'reform' event carrying the swatter's pose, `return false` — and the blade-swat site became `if (killShot(...)) continue;`, so a reformed page falls through to the compaction window instead of leaving it. THE R64 AUDIT LAW IS RESPECTED: 'swat' still means REMOVED — never emitted for a reform, and `swatted` still counts removals only (the new `stats.reformed` counts shatters). The regather beat is ONE gate at the shotStep loop head: the page is fully INERT — no motion, rim, body, catch, BLADES or cross (two cross guards complete the footprint) — because a sweeping hammer would otherwise swat it twice inside one swing (substeps are 1/120s apart) and the beat would never be SEEN, and the seeing is the owner's whole point. Inert ≠ immune: the beat is bounded, the next swat kills, the rim stays final — this is DENIAL-RESISTANCE, not the blanket swat immunity the menu vetoed. The resume rides the original vector — no re-aim (homing was vetoed from the menu); the trio payload rides the reformed page unchanged.
-
-**THE RENDERER + GUARDS.** drawReformMotes: 8 motes in the page's element ink (`REFORM_INK` — KP1 poison green / KN1 frost blue / KV1 fire orange), angles hashed off the sid (NO rng draws), scatter ∝ p² converging with a slow spin-in, plus a shatter ring across the beat's first 45% — the clang made visible (a reform never latches a kill still; nothing died). drawShot's intercept suppresses the page art AND the hitbox disc during the beat (inert — a live disc would lie). Boot guards: reform must be a positive integer; reform ⊥ returns (the loop is already swat-immune — catchonly-r56 — a budget on it would be dead law).
-
-**THE REVERT CARD (the owner's explicit condition).** `WORDFORM = false` is FULL DORMANCY (the nocatch-r55 pattern): the intercept never fires, reformT never exists, and the loop gate, the cross guards and the renderer branch are dead code by construction. Full removal = that flip + the row flag + two label strings (the legend line, the stamps).
-
-**THE HEADLESS FINDING (disclosed — this is what his unconvinced eye is being asked to judge).** smoke-r67's outcome witness: 20 reforms across the two blade cells, 18 resumes, 2 second-swat kills — and **0 reformed landings; 16 of 20 exited at the rim**. Swats mostly catch ALREADY-DODGED flights (a page aimed at the body either lands or is evaded before the blade arrives), and the inert beat hands the swatter a free reposition. So what A provably guarantees is denial-resistance + arena presence (the page threatens the crossing again; some force the second swat), not body-hit conversion. `reformLanded` is REPORTED, not gated (the measure.mjs alignment precedent — outcomes are the owner's eye to judge per #674). If "it kept flying" doesn't READ as more action to him, the knobs are: a shorter beat (less dodge freedom), or the menu's B/C/D still stand.
-
-**THE PROOF.** `scratch/smoke-r67.mjs` PASS ~3.9s (tome×hammer s21 + tome×katana s22, 90s): every law clean — the birth flag asserted on every spell (`reform===1` — the flagfix-r64 lesson is a hard gate now), one reform per spell, the inert beat (tick-sampled positions frozen, 0 violations), the resume witnessed, beat cap `reformT ≤ 0.35`, no vanish, `stats.reformed` ≡ the event count, 0 NaN. Regressions: smoke-r66 PASS (the tome mirror cell byte-identical — coexist 623; no swats landed in those 90s, the trio untouched); smoke-r65, smoke-r62 and the mandatory smoke-r64 battery (twin spawn-line edit — the r64 standing law) all PASS BYTE-IDENTICAL (7,428 sparkTicks / 37 parries / 715 pins · 68 consumed · 181 bounces · 20 catches). Non-tome rows carry no flag: the whole mechanic is row-gated data. Chromecheck-r67 PASS first run (two transient /tmp puppeteer launch failures — a CLI bisect exonerated chrome and the harness; the retry ran clean): P1 forced tome×hammer s21 — zero errors, stamp+title `wordform-r67`, the LONGER legend line fits (`fitBad []`), 79 mote frames (the renderer branch live in chrome), 16 beat sids witnessed resuming, `reformKilled 1` browser-witnessed, beatBad 0, recorder 1,728 full / 90 slow / 12 frozen, completed; harness note: the per-frame event scan undercounted reforms (2 vs 16 state witnesses — consumeEvents drains the log between rAF callbacks), so the state-based witnesses are the reliable class. P2 natural: completed, zero errors, labels clean.
-
-Canon: the WORD REFORMS entry added; the TRIO canon entry's rot fixed in passing — venom "4s"→8s and chill "3s"→6s (the #698 sustenance numbers hadn't reached the canon block). 'reform' joins the DEFERRED event-kind bundle (poison/poisonTick/dotEnd/chill/chillEnd); measure.mjs untouched (edit-only law).
-
-Canonical: md5 `b5cd5de746447010a27852290a04c07c`, 4,658 lines, stamps `wordform-r67`. LEDGER: traits 11 of 22 landed (the tome now carries BOTH the trio payload and the wordform row law); the launcher-action question stays OPEN pending his eye — A built, B/C/D on the menu, D (bot-cast caster-rushers) already queued in the roadmap.
-
-**700 — (2026-11-02) `wordform-r67` REVERTED at the owner's word — FULL REMOVAL, canon restored BYTE-IDENTICAL to `affinity-r66` (md5 `7422404ea11d50d508ac905ad43436aa` re-proven at the revert, 4,589 lines, zero wordform traces).** Owner: *"actually, i think we should revert it, and then from now on all magic/spell users should adopt the same mechanig as wand currently have, it looks good"* — the rejection of menu pick A and the family ruling arrived in the same word. The #699 headless finding stands as the record of why: reformed pages mostly re-crossed to the rim (16/20; 0 landing conversions) — "it kept flying" guaranteed denial-resistance, not the landed action he asked for. The revert was the full-removal route (not the dormant flip): intercept, inert gate, cross guards, guards, motes renderer, row flag, labels — every r67 edit reversed and the md5 re-proven against the blessed r66 before a single r68 edit landed. `scratch/smoke-r67.mjs` retired with the mechanic (freeloop-r38 pattern: a rejected experiment survives in its records only — #699 and this entry). The canon TRIO-ttl rot-fix (4s/3s → the sustenance 8s/6s of #698) rode back with the byte-revert and re-landed in the #701 canon pass.
+**700 — (2026-11-02) `wordform-r67` REVERTED at the owner's word — FULL REMOVAL, canon restored BYTE-IDENTICAL to `affinity-r66` (md5 `7422404ea11d50d508ac905ad43436aa` re-proven at the revert, 4,589 lines, zero wordform traces).** Owner: *"actually, i think we should revert it, and then from now on all magic/spell users should adopt the same mechanig as wand currently have, it looks good"* — the rejection of menu pick A and the family ruling arrived in the same word. The #699 headless finding stands as the record of why: reformed pages mostly re-crossed to the rim (16/20; 0 landing conversions) — "it kept flying" guaranteed denial-resistance, not the landed action he asked for. The revert was the full-removal route (not the dormant flip): intercept, inert gate, cross guards, guards, motes renderer, row flag, labels — #699 and this entry). The canon TRIO-ttl rot-fix (4s/3s → the sustenance 8s/6s of #698) rode back with the byte-revert and re-landed in the #701 canon pass. Full record: `git show docs-precleanup2:docs/GAMES.md`.
 
 **701 — (2026-11-02) `hexfam-r68` LANDED — THE FAMILY FLIGHT LAW: THE HEX IS NO LONGER THE WAND'S TRAIT — IT IS WHAT MAGIC DOES.** Owner: *"from now on all magic/spell users should adopt the same mechanig as wand currently have, it looks good, what do you think, but then we just need to find something unique for the wand"* → the go: *"yes go ahead and do the revert and implement the new 'flight' law for all magic users, also staff. once done we will discuss what trait wand will now get as it is left with no trait, since its 'flight' was its trait before"*. The doctrine this completes (the #699 ledger, answered as a CLASS law instead of three bespoke patches): **STEEL OWNS PRESENCE, MAGIC OWNS INEVITABILITY.**
 
@@ -977,15 +927,7 @@ Canonical: md5 `37d16bc2a499334d998ea07febd101af`, 4,628 lines, stamps `hexfam-r
 
 Canon: the TRIO entry's FIRE sentence amended to the dormancy + one-shape-three-inks law; the hex/family entries' h-formula carries the SEEK_H0 floor and their h=0 byte-identity claims are struck; REGISTRY shotR consumers two → one; smoke-r66 + smoke-r62 aligned (edits, not new probes — #674). NEXT: the WAND CROWN discussion (owner: *"once done we will discuss"*), then the scroll's slot (UNROLLING served), the 10 melee blanks, bot cast, balance.
 
-**703 — (2026-11-02) `grudge-r70` LANDED — THE WAND'S TRAIT RETURNS: THE LONG GRUDGE.** The discussion queued at r68 (*"once done we will discuss what trait wand will now get"*) opened with a four-lane menu — LONG GRUDGE (linger), THE PINCER (mirror twins), THE DEEPER HEX (hotter seek), THE SECOND BITE (pierce), plus a split-spark idea retired in the same breath as combo-gated — and the owner picked: *"ok try doing the long grudge and ill look at it if its good"*.
-
-**THE MECHANIC.** `trait.grudge` 0.11 — the fraction of birth speed a spark surrenders per damaging hit, capped at `GRUDGE.steps` 5 into `GRUDGE.floor` 0.45 exactly (0.11 × 5 = 0.55 = 1 − floor). `grudgeBirth` freezes `v0`, `gFloor` and `gStep` at launch — gFloor joins `st.turn` in the frozen-at-birth law (in-flight shots never change). In flight the spark's speed eases from v0 to v0×gFloor over `GRUDGE.ease` 1.2s (a smooth drag, no snap), and ω scales with v (tv × vd/v0) so **the arc GEOMETRY is unchanged** — the never-orbit floor is geometric (333px) and holds by construction; only the TRAVERSAL slows. The visible law the owner approved: the comet LINGERS, the late air thickens with hunting sparks, the seek gains aim time. Disclosed consequence: the lingering curse arrives SOFT — knock reads the slowed velocity.
-
-**WHY DRAG AND NOT THE OBVIOUS READS.** The pitch said "lifetime grows", but inspection found sparks have NO ttl — they die only at rim/hit/swat — so a ttl axis would bind nothing (or kill circlers early: the opposite). A rim bounce or rim-slide would give the RIM path ownership (⊥ the r68 plain-flight law for hex rows). Bend-growth is the RETIRED `trait.turn` reborn and would break family uniformity. Drag is the one lever that lands the linger while keeping every codified law — geometry, freeze, authority, family ladder — exactly where it was.
-
-**THE PROOF.** `scratch/smoke-r70.mjs` PASS, one cell wand×hammer s4321 60s (~7s): 182 sparks born, birth formula / frozen-at-birth / step-0 identity / speed band / ease-completion all 0 violations, grudgeAir 14,187 ticks of dragging flight, maxStep 5 (the cap witnessed), ends honest (25 landed / 19 swatted / 159 rim), no NaN. `smoke-r62` re-aligned (its exact-800 speed check becomes the band [v0×0.45, v0] for grudge sparks only; step-0 and non-grudge sparks keep the exact check) PASS; `smoke-r65` PASS (hex machinery untouched); `smoke-r68` PASS with the scroll and staff cells BIT-IDENTICAL to the r69 run (4,393 / 2,696 shot ticks — the family is untouched; the wand cell's ticks rose, which IS the linger). `LABELCHECK-R70` PASS headless (stamps, the four family briefs, HEX lines, the tome shape law, the wand's new brief/line/trait) — because the sandbox's puppeteer page-creation went DOWN mid-landing (canary: the proven clean-page screenshot recipe fails identically), `chromecheck-r70` is BUILT (/tmp) and OWED the moment the env recovers; this landing touches NO renderer or frame-loop code (velocity-only sim change; the art reads heading), so the chrome risk surface is exactly the label strings labelcheck covers.
-
-Canon: REGISTRY gains the `trait.grudge` entry (one consumer, the wand); the YAH's wand paragraph carries the drag clause and its trait slot is FILLED (the queued discussion closed with his pick); wand brief '+SPD +GRUDGE +HEX / Hit', line reworded. NEXT: the owner's eye on the grudge in motion; then the scroll's slot (UNROLLING served), the 10 melee blanks, bot cast, balance.
+**`grudge-r70` — THE LONG GRUDGE, the wand's trait (2026-11-02); REVERTED WHOLE at the owner's eye (#704) Full record: `git show docs-precleanup2:docs/GAMES.md`.**
 
 **704 — (2026-11-02) `chillfix-r71` LANDED — TWO OWNER CORRECTIONS: THE GRUDGE REVERTED WHOLE, AND THE CHILL BECOMES WEAPON-ONLY.**
 
@@ -997,13 +939,7 @@ Canon: REGISTRY gains the `trait.grudge` entry (one consumer, the wand); the YAH
 
 Canon: the #698 FROST sentence and the YAH nova clause amended to the weapon-only law; the YAH's grudge paragraph becomes the revert scar with the slot reopened; traits 11 of 22 again; REGISTRY's grudge entry reads REVERTED. NEXT: the owner's pick from the new wand menu, then the scroll's slot (UNROLLING served), the 10 melee blanks, bot cast, balance.
 
-**705 — (2026-11-02) `flick-r72` LANDED — THE WAND'S TRAIT: THE WHIP-CRACK FLICK.** The wand-like menu (glitter lane / whip-crack flick / ribbon guard / conductor's beat — served after his eye retired the grudge and pocketed the first four proposals for future magical weapons) got his pick: *"ok try and do 2, and ille let my eye judge"*.
-
-**THE MECHANIC.** `trait.flick` 0.09 — the crack multiplier per damaging hit above row speed, capped at `FLICK.steps` 5 (1.45× at depth). The spark is BORN at `FLICK.soft` 0.55 of row speed with its birth turn scaled by the SAME fraction — so the family birth-RADIUS language (v/ω: the ~889px birth arc, the 333px never-orbit floor) holds EXACTLY at birth; the family law owns the birth, the flick owns only the after-flight. Then: 0.22s of soft glide (the wind-up the eye needs to read a snap), then a 0.16s smoothstep ease to vCrack — continuous speed AND continuous acceleration-at-the-knee, so the whip CRACKS, never teleports. As v grows under a frozen ω the arc FLATTENS: radius = v/ω GROWS, and the never-orbit floor is a MINIMUM, so growing is lawful — the crack commits the flick into a straighter duelist's line. Knock reads the live velocity, so an early touch arrives soft and a late one arrives cracked — natural, disclosed. Renderer: one expanding white-gold ring at the crack moment (`drawCrackFlash`, 30 ticks, garnish-only, sim-tick timed so it slows in slow-mo and freezes at the KO with everything else). Non-flick rows get `flickSoft` 1 and an empty spread — byte-identical, proven by the scroll/staff cells below.
-
-**THE PROOF.** `scratch/smoke-r72.mjs` PASS (wand×hammer s4321 60s + a tome control cell): birth freeze / birth formula (turn = ladder × soft) / radius floor (v/|turn| ≥ 333 at every tick) / speed monotone (the whip only cracks forward) / crack-completion / flash-moment all 0 violations, 79 births, maxStep 10, no leak of flick state onto tome shots; the crack-completion assert is fight-phase-gated (the KO freeze gates the fight step while the phase clock runs — a spark caught mid-ease at the KO stays honestly frozen). `smoke-r68` aligned (the ladder check divides the soft fraction back out — the LADDER LANGUAGE itself is unchanged) and PASSes with the scroll and staff cells bit-identical (4,393 / 2,696 shot ticks); `smoke-r62` aligned (formula × soft; the speed check becomes the band [440, 1160] for flick sparks, exact-800 elsewhere) PASS; `r65`, `r66` PASS. `chromecheck-r72` PASS — the sandbox browser recovered mid-turn: P1 wand×hammer bent 677 / hunt 220/557 / capTurn 1.32 / flickFrames 594 / flashMoments 274, P2 natural over, zero page errors. Eye frame: `scratch/shot-wand-r72.png` (two hunting sparks, caster-gold tails, the crack ring mid-punctuation, legend '+SPD +FLICK +HEX / Hit').
-
-Canon: REGISTRY gains the `trait.flick` entry; the YAH's wand paragraph carries the flick clause and the trait slot reads FILLED; traits 12 of 22. NEXT: the owner's eye on the flick in live motion (his judge); then the scroll's slot (UNROLLING served), the 10 melee blanks, bot cast, balance.
+**`flick-r72` — THE WHIP-CRACK FLICK, the wand's trait (2026-11-02); REVERTED at the owner's eye (*"it reminds too much about the other spells"*, #706) Full record: `git show docs-precleanup2:docs/GAMES.md`.**
 
 **706 — (2026-11-03) `bloom-r73` LANDED — THE WAND'S TRAIT: TRANSFIGURATION (THE BLOOM); THE WHIP-CRACK FLICK REVERTED WHOLE.** Menu four (disarm / transfigure / counterspell / point-at + the untried survivors) got his pick — TRANSFIGURATION — then the elaboration menu locked option 1 (*"yes option 1, it should do nothing at all"*), random joke objects at his ask (*"a good laugh for viewers"*), and the go-word *"go, your leans"* landed it. At the same word the flick died: *"it reminds too much about the other spells"* — the second projectile-tuning veto (the grudge was the first): the wand cannot win by tuning its comet, the comet IS the resemblance; FLICK/flickSoft/flickBirth/flickSpeedAt gone whole, name reserved (FLICK_REVERTED, the grudge's pattern).
 
@@ -1059,11 +995,7 @@ Canon: the POOL const, the scroll row (byte-identical to pre-r78 + the pool line
 
 Canon: the POOL const and the drawPools shimmer carry the ruling; the row comment, the REGISTRY stanza and the YAH note the r80 dials. Traits stay 12 of 22. NEXT: his eye on the bigger, longer, breathing pool, then the SCROLL's trait menu (UNROLLING recommended), then the 10 melee blanks, bot cast, balance.
 
-**714 — (2026-10-31) `lane-r81` LANDED — THE SCORCHED LANE FILLS THE SCROLL'S TRAIT SLOT.** The slot reopened by the called-fall revert (#712) closes on the owner's own pick: with the r80 pool landed he ruled the scroll still off (*"something is just off about the magic scroll and its trait"*); a writing-mechanics menu (W) and then a fire-direction menu (F) were served, and he picked the fire trail — *"i like the firetrail its smoehing new"*; the execution menu (E) followed with the lean, and his ruling was *"do e1 with your lean"* = E1's singeing lanes + E3's settle-manuscript layer — the flare capstone, the meteor wake and E2's kindling stay PARKED (no landing without a fresh ruling). THE MECHANIC: every scroll cast samples its TRUE curved flight (waypoints every 12 ticks — the hex-bent path IS the path), and at ANY death (hit, rim, swat, cross) the path is written as a lane of fire: char bed, breathing fire line, hot heart, round-capped, drawn under bodies over pools. Standing in it (body centre within lane half-width + half a body, polyline distance) SINGES a beat every 0.4s at a quarter of the pool's bite — max(0.15, dmg × POOL.rate × 0.25), damage snapshot at the write (the effR doctrine); stacks on the SHARED f.shotStep counter (LANE.steps 8) add life (2s → 3s+) and half-width (+0.6/stack) additively, snapshot at the death that wrote the lane — in-flight lanes never change; cap 8 live lanes, the oldest SETTLES early; dead lanes settle into whisper-quiet brown manuscript strokes (alpha 0.06 + 0.01/stack, #5a3a26 — never gray) that persist the ROUND, cap 48; the roll clears lanes AND strokes (traits reset every round = LAW). A ZONE not a status — no ring slot, no grow, no hex; the pool law's precedent. The SHOT payload is untouched: the family spell projectile + the burning pool on hit stay exactly as r80 left them — path fire and impact fire, one grammar. LANE const { life 240, lifeAdd 15, steps 8, wAdd 0.6, tick 48, rate 0.25, cap 8, strokes 48, sample 12 } — every dial PROVISIONAL, his eye pending.
-
-**THE PROOF.** smoke-r81 PASS, three cells (~6s): A scroll×hammer s22459 90s — 145 writes with every law zero-bad (write-on-death count including same-tick births, owner, grip/endpoint anchors, life+width snapshots, cap, settle-into-strokes, stroke cap, roll clear, NaN), 25 singes on the exact acc-ladder mirror with exact snapshot dmgs, 35 pool burns coexisting, lanesMax 8 and strokesMax 48 — both caps reached, so cap + settle are proven live; B scroll×wand s4321 60s — 63 writes beside 2,330 bloom ticks, the lane coexists with the fig; C hammer×hammer silent. Two watcher laws disclosed en route (harness bugs, not sim bugs): a sid-map of live shots must DELETE its dead or every past death re-counts every tick, and shots born AND killed inside one tick are never seen alive — count fired-but-never-seen as deaths, not violations. Regressions on the r81 bytes: smoke-r79 PASS (pool laws), smoke-r73 PASS (bloom laws). chromecheck-r81 PASS: P1 scroll×hammer s22459 60s FF — 430 writes, 55 singes, 75 pools + 98 burns, laneMax 8, strokeMax 48, 3,398 frames / 0 frozen / 0 errors, menu copy exact ('+SPD +LANE +HEX / Hit', the SCORCHES ITS PATH line); P2 natural — the natural cast draws lanes too (26 writes, 25 strokes), fit and overflow clean.
-
-Canon: REGISTRY gains the trait.lane stanza; the scroll row carries trait.lane 1, the new brief and the SCORCHES ITS PATH line; the LANE const block owns the dials; the YAH head carries the filled slot. Traits 13 of 22 — THE SCROLL'S SLOT IS FILLED. NEXT: his eye on the scorch lane in motion (every dial PROVISIONAL), then the 10 melee blanks, bot cast, balance — his order.
+**`lane-r81` — THE SCORCHED LANE, the scroll's trait (2026-10-31); REVERTED WHOLE at the owner's eye (*"no i dont like that either… we need something visual/spectacular"*), succeeded by the ember spill Full record: `git show docs-precleanup2:docs/GAMES.md`.**
 
 **715 — (2026-10-31) `kindling-r82` LANDED — THE EMBER SPILL FILLS THE SCROLL'S SLOT; THE SCORCHED LANE REVERTED WHOLE (SCAR #2).** The lane died at his eye (*"no i dont like that either, but i realised we need something visual/spectacular. something which can also snowball, give me more suggestions, dont code"*) — the scroll's SECOND revert scar after the called fall. An S-menu was served (METEOR CALL super-finale / ERUPTION geysers / EMBER FAMILIARS / INFERNAL ASCENSION); instead he recalled the parked E2 kindling from the lane menu — *"the metoer/projectile as it travels through the arena it 'spills' out af few embers, which lasts for a few secs and if the opponent touches then they take damage, elaborate on this idea"* — and after the elaboration (the three-beat read: SHED in flight / COAL on the floor / POP on touch, served with four leans) his go carried THE GROWTH BRAKE: *"yes try and implement this, also growth only happens when the meteor hits the target, not when the target steps on the embers on the board, otherwise i think it is going to snowball very quickly"*. What landed: every scroll spell SHEDS burning coals IN FLIGHT on a BIRTH-SNAPSHOT cadence (effR — st.eiv = max(dropMin 6, drop 14 − dropCut 1 × min(shotStep, steps 8)) ticks: 14 at stack 0 → 6 at the cap, the spill quickens with the fight; the hex-bent path scatters them along the curve); each coal snapshots AT THE DROP: life 300 + 24/stack (2.5s → 4.1s), r 15 + 0.8/stack, dmg max(0.3, caster.dmg × POOL.rate × EMBER.rate 0.5) — half a pool beat; the foe's centre within r + half a body POPS it — ONE honest bite, the coal CONSUMED (the one-shot pop is the word that separates it from the pool's standing beat), honest kills (deathSeq). THE GROWTH BRAKE IS LAW: a pop touches NO counter — no shotStep, no hits/landed, no hex deepening, no slow-mo (the pool's burns-grow-nothing law's twin); growth rides the METEOR's hit alone. Cap 14 live coals — oldest dies young (the lace guard); the roll clears; a ZONE not a status — no ring slot, no grow, no hex; the pool payload untouched: pool = the fire that lingers and burns while you stand, coal = the fire that bites once and is gone — one grammar, two words. Renderer drawEmbers: char disc, breathing amber heart with a white-hot pip, two dancing flame tongues, one rising spark mote, a landing flare over the first 10 ticks — zero rng, warm palette only (never gray, never red). EMBER const { drop 14, dropCut 1, dropMin 6, life 300, lifeAdd 24, steps 8, r 15, rAdd 0.8, rate 0.5, cap 14, flare 10 } — every dial PROVISIONAL. The lane machinery retired WHOLE (segDist/polyDist/spawnLane/laneStep, the st.lp sampling, drawLanes/strokePoly, G.lanes/G.strokes, stats.lanes/singes — chromecheck proves laneGone live). Traits stay 13 of 22 — kindling swaps into the lane's slot (the bloom-r73 precedent).
 
