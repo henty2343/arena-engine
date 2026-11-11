@@ -1,0 +1,10 @@
+  ok   C0 control: real roster passes, chain grower reported — lengrow-bake: chain growers skipped by design (link-adders: no ladder row to bake) — flail (chain.ext every 4, max 3)
+  ok   C1 no rigid grower -> refuses — lengrow-bake: expected exactly one RIGID growing weapon (spear), found [] — this tool bake
+  ok   C2 SECOND rigid grower -> refuses (the guard IS the coverage) — lengrow-bake: expected exactly one RIGID growing weapon (spear), found [spear, katana] — t
+  ok   C3 sole rigid grower is not the spear -> refuses — lengrow-bake: expected exactly one RIGID growing weapon (spear), found [katana] — this too
+  ok   C4 flail loses its chain (rigid grower #2) -> refuses — lengrow-bake: expected exactly one RIGID growing weapon (spear), found [spear, flail] — th
+  ok   C5 SECOND chain grower -> passes, BOTH reported — lengrow-bake: chain growers skipped by design (link-adders: no ladder row to bake) — flail (chain.ext every 4, max 3), nunchaku (c
+  ok   C6 chain.ext missing -> never silent (line says MISSING) — lengrow-bake: chain growers skipped by design (link-adders: no ladder row to bake) — flail (chain.ext MISSING)
+  ok   C7 old-vs-new witness: PRE-patch guard refuses the real roster — lengrow-bake: expected exactly one growing weapon (spear), found [spear, flail] — this tool bakes the spear on
+
+NON-VACUITY: 8/8 — the scoped guard refuses what it must, passes what it must, and the defect is witnessed on the old guard.

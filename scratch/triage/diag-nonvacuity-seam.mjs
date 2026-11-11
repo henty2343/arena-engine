@@ -8,6 +8,14 @@
  * Cells under test: G0b (static), G2 + G5 (battle), G6 (battle), g5 + g8 (guard falsifiability),
  * and the three RE-SEEDED expectation cells B-bow / E-staff / C-band (static or short-run).
  * Writes nothing; runs no measure.mjs.
+ *
+ * DATED CORRECTION 2026-11-11 (session 4): the G6 mutation as shipped (a pre-boot ROW edit
+ * WEAPONS.wand.shot.returns = true) trips the hex⊥returns boot guard (canonical :1572) and kills the
+ * run — so this file could not have produced "10/10 NON-VACUOUS, exit 0" as the session-3 handoff
+ * records (observed here: 7/7 NON-VACUOUS, then an uncaught Error, no verdict line, exit 1).
+ * Patches applied by scratch/triage/patch-nonvacuity.mjs (this file's predecessor in the patcher
+ * lineage): N1 re-seeds the G6 break to a scalar runtime injection (see N1's in-place record);
+ * N2 is this note. Everything else in this diag is unchanged.
  */
 import { readFileSync } from 'node:fs';
 function fakeEl(){const t=function(){};return new Proxy(t,{get(x,p){if(p===Symbol.toPrimitive)return()=>0;if(!(p in x))x[p]=fakeEl();return x[p];},set(x,p,v){x[p]=v;return true;},apply(){return fakeEl();}});}
@@ -98,8 +106,20 @@ function battleCells(api, seeds, maxT){
     while(!G.over&&G.t<6000){ tick(G);
       for(const s of G.shots) if(s.sid>sid){ sid=s.sid; wn++; if(s.speed!==WEAPONS.wand.shot.speed||s.returns!==undefined) wbad++; } }
     return wn>10&&wbad===0; };
-  const m=load("WEAPONS.wand.shot.returns = true;");
-  report('G6 non-cycle launcher untouched', pred(load(null)), pred(m), 'wand shot given returns:true');
+  /* CORRECTION 2026-11-11 (session 4): the original break here was load("WEAPONS.wand.shot.returns = true;")
+   * — a ROW edit injected before boot, which trips the hexfam-r68 guard at canonical :1572
+   * ("shot.hex requires a PLAIN flight path — ... rides no other law's shot"; the wand is a hex row)
+   * BEFORE the mutation can ever reach the predicate. The diag crashed: 7 cells reported, NO VERDICT
+   * line, exit 1 — the session-3 claim "fixed diag runs 10/10 NON-VACUOUS, exit 0" is NOT reproducible
+   * as shipped (recorded here as a dated correction; the superseded line kept visible below in comment):
+   *   const m=load("WEAPONS.wand.shot.returns = true;");            [SUPERSEDED — trips the boot guard]
+   * Re-seeded per the owner's lesson: prefer a break that MUTATES A SCALAR over one that trips a boot
+   * guard, unless the guard IS the coverage (true for g5/g8 — they keep their guard injections).
+   * The scalar break forges return-state onto every NON-returning shot at birth — exactly what G6
+   * asserts never happens (s.returns!==undefined ⇒ wbad++ ⇒ predicate false). */
+  const m=loadM('      else if (!st.pinned && !st.returns) { st.x += st.vx * sdt; st.y += st.vy * sdt; }',
+                '      else if (!st.pinned && !st.returns) { st.x += st.vx * sdt; st.y += st.vy * sdt; st.returns = true; }');
+  report('G6 non-cycle launcher untouched', pred(load(null)), pred(m), 'runtime forge: non-returning shots stamped with return state');
 }
 
 /* ---------- the re-seeded I2/I3 BAND: must still be able to fail ---------- */

@@ -23,129 +23,137 @@ The living record of game design: what exists and what is decided next. Platform
 | section | from line | size |
 |---|---|---|
 | The documents | 7 | 1 KB |
-| Current state | 152 | 48 KB |
-| Game #1 — SPINCLASH | 168 | 112 KB |
-| Weapon art — the closed convention (locked 2026-10-18, CLOSED 2026-10- | 392 | 10 KB |
-| Design principles for all games | 413 | 2 KB |
-| Open design questions | 423 | 15 KB |
-| Measured facts | 440 | 439 KB |
-| Testing recipe (headless) | 1147 | 24 KB |
+| Current state | 160 | 48 KB |
+| Game #1 — SPINCLASH | 176 | 112 KB |
+| Weapon art — the closed convention (locked 2026-10-18, CLOSED 2026-10- | 400 | 10 KB |
+| Design principles for all games | 421 | 2 KB |
+| Open design questions | 431 | 15 KB |
+| Measured facts | 448 | 439 KB |
+| Testing recipe (headless) | 1155 | 24 KB |
+| 2026-11-10 (late) — #722 · THE HARNESS CONTRACT + THE FLAIL'S HONEST R | 1193 | 3 KB |
+| 2026-11-10 — #723 · THE STALE-PROOF TRIAGE BEGINS (Item 3; stamp stays | 1203 | 5 KB |
+| 2026-11-11 — #724 · THE HALO FAMILY RETIRED — AND A CORRECTION THAT SU | 1214 | 2 KB |
+| 2026-11-11 — #725 · SEAM-PROOF RE-VERIFIED, AND THE NON-VACUITY NUMBER | 1220 | 2 KB |
+| 2026-11-11 — #726 · ITEM 3 (PAIR-PROOF) COMPLETE AND PROVEN FALSIFIABL | 1226 | 3 KB |
+| 2026-11-11 — #727 · ITEM 3 CLOSED: ITEMS 4, 5 AND 6 RE-SEEDED, EVERY R | 1233 | 10 KB |
+| 2026-11-11 — #728 · LENGROW-BAKE'S "CHAIN CASE" WAS A TOO-BROAD GUARD, | 1246 | 5 KB |
+| 2026-11-11 — #729 · THE FULL BATTERY RE-RUN ON THE SESSION-7 BYTES — A | 1256 | 3 KB |
 
 **Measured facts — entry index** (111 entries, oldest first; this section is the file's largest, so the index is the way in. "line" = the entry's first line.)
 
 | line | date | entry | KB |
 |---|---|---|---|
-| 442 | 2026-10-23 | The 2026-10-19 era | <1 |
-| 445 | 2026-10-24 | Staff redesign replaced by the owner's hand-made pass on the review sheet | <1 |
-| 448 | 2026-10-25 | Paste workflow adopted as the standing roster-redesign loop | <1 |
-| 451 | 2026-10-25 | Claude artist session commissioned as the paste-loop's designer | <1 |
-| 454 | 2026-10-25 | Visuals-only arena test page built for judging the new weapon art in game | <1 |
-| 457 | 2026-10-27 | Orb round-out + the regen-splice lesson | <1 |
-| 459 | 2026-10-27 | Gold retired from art + roundness class + orb band flush | <1 |
-| 462 | 2026-10-27 | Clinch spring | <1 |
-| 465 | 2026-10-27 | First sanctioned measure run since 2026-10-19 | <1 |
-| 468 | 2026-10-27 | Carry-kill at the clang | <1 |
-| 471 | 2026-10-27 | True pause | <1 |
-| 474 | 2026-10-27 | Weapon art convention CLOSED + the great trim | <1 |
-| 477 | 2026-10-27 | Whole-file code-review cleanup #3 | <1 |
-| 480 | 2026-10-28 | Workspace hygiene pass #1 | <1 |
-| 481 | 2026-10-28 | The 2026-10-27 law red set ATTRIBUTED — harness chain-blindness, not a sim violation | <1 |
-| 482 | 2026-10-28 | Workspace hygiene pass #2 — the pre-balance checkpoint | <1 |
-| 483 | 2026-10-28 | The `stone` → `shot` vocabulary rename | <1 |
-| 484 | 2026-10-28 | Base damage 5 → 1 across the roster, build `dmg1-r21` | 6 |
-| 490 | 2026-10-28 | The length band — floor 54 (the orb), ceiling named for the spear, both ends boot-ga | 4 |
-| 494 | 2026-10-28 | The authoring-scale pass — weapon defaults, a derived tuck, and the placement/reach  | 7 |
-| 500 | 2026-10-28 | The facing pass — the dagger and the staff join the edge-leading mirror, build `lead | <1 |
-| 501 | 2026-10-28 | Pre-skills cleanup — the launcher's four per-weapon special-cases become row data, a | 7 |
-| 509 | 2026-10-28 | The spin ceiling measured — `omegaCap` 140 is dormant, the real ceiling is structura | 4 |
-| 514 | 2026-10-28 | Spell-family sigil legibility — the nucleus becomes a hitbox-sized carrier disc on a | 6 |
-| 521 | 2026-10-28 | Pre-skills hygiene pass — the stray fingerprint deleted, the frozen bench's real gap | <1 |
-| 522 | 2026-10-28 | Whole-file code-review cleanup #4 | <1 |
-| 523 | 2026-10-28 | Pre-skills checkpoint clean — three session artifacts out of the tree, the sigil moc | <1 |
-| 524 | 2026-10-28 | The skills model ruled — M2, two languages: a weapon's ability is data, a fighter's  | 3 |
-| 526 | 2026-10-28 | The five M2 rulings — stacking adds, skills are shown in the legend, three hook targ | 4 |
-| 530 | 2026-10-28 | Axis placement ruled — class-dependent axes go on the weapon, universal axes on the  | 3 |
-| 532 | 2026-10-28 | The weapon row's `ability` renamed to `trait` — vocabulary only, behaviour-identical | 5 |
-| 537 | 2026-10-28 | The fighter cast scoped — two generic bots own the two numeric axes, the special tie | 4 |
-| 541 | 2026-10-28 | `measure.mjs` contact law 3 was structurally incapable of passing — one field missin | 4 |
-| 545 | 2026-10-28 | The first sanctioned `measure.mjs` run — the 484-cell baseline split across two mach | <1 |
-| 546 | 2026-10-28 | The 484-cell baseline COMPLETED and `measure.mjs` patched for attribution — the shie | 8 |
-| 556 | undated | The 2026-10-28 workspace cleanup — 28 files out of the tree, the 484-cell baseline d | 4 |
-| 561 | 2026-10-28 | Whole-file canonical audit, doc-alignment pass, and the fingerprint arg-order guard | 6 |
-| 567 | 2026-10-28 | The attribution re-runs landed — law 3 is the resolver, law 4s was a sim double-kill | 9 |
-| 575 | 2026-10-28 | Law 3's resolver diagnosed with `--band-dump` — three hypotheses refuted, the real m | 7 |
-| 582 | 2026-10-28 | The pre-skills checkpoint cleanup — and the stale build identity it exposed | 4 |
-| 586 | 2026-10-28 | The length-growth coverage probe — the ladder is safe BECAUSE it is pre-baked, and t | 6 |
-| 596 | 2026-10-28 | The resolver's inverted stall test fixed, with the two comments it had falsified — l | 9 |
-| 609 | 2026-10-28 | The length-growth build landed as `lengrow-r26` — the spear's trait is live, the geo | 11 |
-| 624 | 2026-10-28 | The spear now TRIPLES in length — `lengrow-r28`, per-step re-baked coverings, and th | 12 |
-| 639 | 2026-10-28 | The first special skill — `skill-r29`: a fighter's skill raises the spear's growth c | 7 |
-| 650 | 2026-10-28 | Two skill seams land ahead of the remaining 21 weapons — `seam-r30`, behaviour-ident | 5 |
-| 658 | 2026-10-28 | The pairing step — a match can now pick 2 of N cast members. `pair-r31`, behaviour-i | 6 |
-| 670 | 2026-10-28 | Whole-file code-review cleanup #5 — and the `pair-r31` renderer bug it caught. `revi | 13 |
-| 694 | 2026-10-31 | The staff's orb growth lands as `shotgrow-r33` — the second weapon trait of the pass | 5 |
-| 700 | 2026-10-31 | NO COMBOS — `nocombo-r34`: `skill.lenSteps` retired, the spear's cap uniform at 12 f | 4 |
-| 708 | 2026-10-31 | Bind fix — `bindfix-r35`: latched binds push apart from their first tick, and crosse | 4 |
-| 715 | 2026-10-31 | The dagger's spin growth lands as `spingrow-r36` — the pass's third weapon trait and | 4 |
-| 721 | 2026-10-31 | The boomerang's Return + cycle growth lands as `returngrow-r37` — the pass's fourth  | 6 |
-| 728 | 2026-10-31 | [REJECTED at the owner's eye + REVERTED the same day — `freeloop-r38` | 8 |
-| 744 | 2026-10-31 | `freeloop-r38` REJECTED at the owner's eye and REVERTED the same day | 4 |
-| 756 | 2026-11-01 | The Loyal Halo lands as `halo-r39` — the boomerang's redesign is DONE: the owner-anc | 6 |
-| 770 | 2026-11-01 | 667 | 3 |
-| 776 | 2026-11-01 | 668 | 6 |
-| 792 | 2026-11-01 | 669 | 6 |
-| 804 | 2026-11-01 | 670 | 3 |
-| 812 | 2026-11-01 | 671 | 2 |
-| 814 | 2026-11-01 | 672 | 8 |
-| 834 | 2026-11-01 | 673 | 2 |
-| 836 | 2026-11-01 | 674 | 2 |
-| 838 | 2026-11-01 | 675 | 3 |
-| 840 | 2026-11-01 | 676 | 5 |
-| 848 | 2026-11-01 | 677 | 2 |
-| 854 | 2026-11-01 | 678 | 5 |
-| 862 | 2026-11-01 | 679 | 2 |
-| 868 | 2026-11-01 | 680 | 4 |
-| 876 | 2026-11-01 | 681 | 3 |
-| 882 | 2026-11-01 | 682 | 4 |
-| 886 | 2026-11-01 | 683 | 4 |
-| 890 | 2026-11-01 | 684 | 4 |
-| 894 | 2026-11-01 | 685 | 6 |
-| 899 | 2026-11-01 | 686 | 4 |
-| 903 | 2026-11-01 | 687 | 3 |
-| 907 | 2026-11-01 | 688 | 3 |
-| 911 | 2026-11-01 | 689 | 3 |
-| 915 | 2026-11-01 | 690 | 4 |
-| 919 | 2026-11-01 | 691 | 4 |
-| 923 | 2026-11-02 | 692 | 5 |
-| 927 | 2026-11-02 | 693 | 4 |
-| 935 | 2026-11-02 | 694 | 5 |
-| 941 | 2026-11-02 | 695 | 5 |
-| 949 | 2026-11-02 | 696 | 5 |
-| 961 | 2026-11-02 | 697 | 6 |
-| 971 | 2026-11-02 | 698 | 8 |
-| 981 | 2026-11-02 | 699 | 6 |
-| 997 | 2026-11-02 | 700 | 1 |
-| 999 | 2026-11-02 | 701 | 6 |
-| 1011 | 2026-11-02 | 702 | 4 |
-| 1023 | 2026-11-02 | 703 | 3 |
-| 1033 | 2026-11-02 | 704 | 3 |
-| 1043 | 2026-11-02 | 705 | 3 |
-| 1051 | 2026-11-03 | 706 | 4 |
-| 1059 | 2026-11-03 | 707 | 2 |
-| 1067 | 2026-11-03 | 708 | 3 |
-| 1075 | 2026-11-03 | 709 | 3 |
-| 1081 | 2026-11-03 | 710 | 2 |
-| 1087 | 2026-10-31 | 711 | 4 |
-| 1093 | 2026-10-31 | 712 | 4 |
-| 1099 | 2026-10-31 | 713 | 2 |
-| 1105 | 2026-10-31 | 714 | 4 |
-| 1111 | 2026-10-31 | 715 | 5 |
-| 1117 | 2026-10-31 | 716 | 4 |
-| 1123 | 2026-10-31 | 717 | 2 |
-| 1129 | 2026-10-31 | 718 | 4 |
-| 1135 | 2026-10-31 | 719 | 2 |
-| 1137 | 2026-10-31 | 720 | 3 |
-| 1139 | 2026-11-10 | 721 | 20 |
+| 450 | 2026-10-23 | The 2026-10-19 era | <1 |
+| 453 | 2026-10-24 | Staff redesign replaced by the owner's hand-made pass on the review sheet | <1 |
+| 456 | 2026-10-25 | Paste workflow adopted as the standing roster-redesign loop | <1 |
+| 459 | 2026-10-25 | Claude artist session commissioned as the paste-loop's designer | <1 |
+| 462 | 2026-10-25 | Visuals-only arena test page built for judging the new weapon art in game | <1 |
+| 465 | 2026-10-27 | Orb round-out + the regen-splice lesson | <1 |
+| 467 | 2026-10-27 | Gold retired from art + roundness class + orb band flush | <1 |
+| 470 | 2026-10-27 | Clinch spring | <1 |
+| 473 | 2026-10-27 | First sanctioned measure run since 2026-10-19 | <1 |
+| 476 | 2026-10-27 | Carry-kill at the clang | <1 |
+| 479 | 2026-10-27 | True pause | <1 |
+| 482 | 2026-10-27 | Weapon art convention CLOSED + the great trim | <1 |
+| 485 | 2026-10-27 | Whole-file code-review cleanup #3 | <1 |
+| 488 | 2026-10-28 | Workspace hygiene pass #1 | <1 |
+| 489 | 2026-10-28 | The 2026-10-27 law red set ATTRIBUTED — harness chain-blindness, not a sim violation | <1 |
+| 490 | 2026-10-28 | Workspace hygiene pass #2 — the pre-balance checkpoint | <1 |
+| 491 | 2026-10-28 | The `stone` → `shot` vocabulary rename | <1 |
+| 492 | 2026-10-28 | Base damage 5 → 1 across the roster, build `dmg1-r21` | 6 |
+| 498 | 2026-10-28 | The length band — floor 54 (the orb), ceiling named for the spear, both ends boot-ga | 4 |
+| 502 | 2026-10-28 | The authoring-scale pass — weapon defaults, a derived tuck, and the placement/reach  | 7 |
+| 508 | 2026-10-28 | The facing pass — the dagger and the staff join the edge-leading mirror, build `lead | <1 |
+| 509 | 2026-10-28 | Pre-skills cleanup — the launcher's four per-weapon special-cases become row data, a | 7 |
+| 517 | 2026-10-28 | The spin ceiling measured — `omegaCap` 140 is dormant, the real ceiling is structura | 4 |
+| 522 | 2026-10-28 | Spell-family sigil legibility — the nucleus becomes a hitbox-sized carrier disc on a | 6 |
+| 529 | 2026-10-28 | Pre-skills hygiene pass — the stray fingerprint deleted, the frozen bench's real gap | <1 |
+| 530 | 2026-10-28 | Whole-file code-review cleanup #4 | <1 |
+| 531 | 2026-10-28 | Pre-skills checkpoint clean — three session artifacts out of the tree, the sigil moc | <1 |
+| 532 | 2026-10-28 | The skills model ruled — M2, two languages: a weapon's ability is data, a fighter's  | 3 |
+| 534 | 2026-10-28 | The five M2 rulings — stacking adds, skills are shown in the legend, three hook targ | 4 |
+| 538 | 2026-10-28 | Axis placement ruled — class-dependent axes go on the weapon, universal axes on the  | 3 |
+| 540 | 2026-10-28 | The weapon row's `ability` renamed to `trait` — vocabulary only, behaviour-identical | 5 |
+| 545 | 2026-10-28 | The fighter cast scoped — two generic bots own the two numeric axes, the special tie | 4 |
+| 549 | 2026-10-28 | `measure.mjs` contact law 3 was structurally incapable of passing — one field missin | 4 |
+| 553 | 2026-10-28 | The first sanctioned `measure.mjs` run — the 484-cell baseline split across two mach | <1 |
+| 554 | 2026-10-28 | The 484-cell baseline COMPLETED and `measure.mjs` patched for attribution — the shie | 8 |
+| 564 | undated | The 2026-10-28 workspace cleanup — 28 files out of the tree, the 484-cell baseline d | 4 |
+| 569 | 2026-10-28 | Whole-file canonical audit, doc-alignment pass, and the fingerprint arg-order guard | 6 |
+| 575 | 2026-10-28 | The attribution re-runs landed — law 3 is the resolver, law 4s was a sim double-kill | 9 |
+| 583 | 2026-10-28 | Law 3's resolver diagnosed with `--band-dump` — three hypotheses refuted, the real m | 7 |
+| 590 | 2026-10-28 | The pre-skills checkpoint cleanup — and the stale build identity it exposed | 4 |
+| 594 | 2026-10-28 | The length-growth coverage probe — the ladder is safe BECAUSE it is pre-baked, and t | 6 |
+| 604 | 2026-10-28 | The resolver's inverted stall test fixed, with the two comments it had falsified — l | 9 |
+| 617 | 2026-10-28 | The length-growth build landed as `lengrow-r26` — the spear's trait is live, the geo | 11 |
+| 632 | 2026-10-28 | The spear now TRIPLES in length — `lengrow-r28`, per-step re-baked coverings, and th | 12 |
+| 647 | 2026-10-28 | The first special skill — `skill-r29`: a fighter's skill raises the spear's growth c | 7 |
+| 658 | 2026-10-28 | Two skill seams land ahead of the remaining 21 weapons — `seam-r30`, behaviour-ident | 5 |
+| 666 | 2026-10-28 | The pairing step — a match can now pick 2 of N cast members. `pair-r31`, behaviour-i | 6 |
+| 678 | 2026-10-28 | Whole-file code-review cleanup #5 — and the `pair-r31` renderer bug it caught. `revi | 13 |
+| 702 | 2026-10-31 | The staff's orb growth lands as `shotgrow-r33` — the second weapon trait of the pass | 5 |
+| 708 | 2026-10-31 | NO COMBOS — `nocombo-r34`: `skill.lenSteps` retired, the spear's cap uniform at 12 f | 4 |
+| 716 | 2026-10-31 | Bind fix — `bindfix-r35`: latched binds push apart from their first tick, and crosse | 4 |
+| 723 | 2026-10-31 | The dagger's spin growth lands as `spingrow-r36` — the pass's third weapon trait and | 4 |
+| 729 | 2026-10-31 | The boomerang's Return + cycle growth lands as `returngrow-r37` — the pass's fourth  | 6 |
+| 736 | 2026-10-31 | [REJECTED at the owner's eye + REVERTED the same day — `freeloop-r38` | 8 |
+| 752 | 2026-10-31 | `freeloop-r38` REJECTED at the owner's eye and REVERTED the same day | 4 |
+| 764 | 2026-11-01 | The Loyal Halo lands as `halo-r39` — the boomerang's redesign is DONE: the owner-anc | 6 |
+| 778 | 2026-11-01 | 667 | 3 |
+| 784 | 2026-11-01 | 668 | 6 |
+| 800 | 2026-11-01 | 669 | 6 |
+| 812 | 2026-11-01 | 670 | 3 |
+| 820 | 2026-11-01 | 671 | 2 |
+| 822 | 2026-11-01 | 672 | 8 |
+| 842 | 2026-11-01 | 673 | 2 |
+| 844 | 2026-11-01 | 674 | 2 |
+| 846 | 2026-11-01 | 675 | 3 |
+| 848 | 2026-11-01 | 676 | 5 |
+| 856 | 2026-11-01 | 677 | 2 |
+| 862 | 2026-11-01 | 678 | 5 |
+| 870 | 2026-11-01 | 679 | 2 |
+| 876 | 2026-11-01 | 680 | 4 |
+| 884 | 2026-11-01 | 681 | 3 |
+| 890 | 2026-11-01 | 682 | 4 |
+| 894 | 2026-11-01 | 683 | 4 |
+| 898 | 2026-11-01 | 684 | 4 |
+| 902 | 2026-11-01 | 685 | 6 |
+| 907 | 2026-11-01 | 686 | 4 |
+| 911 | 2026-11-01 | 687 | 3 |
+| 915 | 2026-11-01 | 688 | 3 |
+| 919 | 2026-11-01 | 689 | 3 |
+| 923 | 2026-11-01 | 690 | 4 |
+| 927 | 2026-11-01 | 691 | 4 |
+| 931 | 2026-11-02 | 692 | 5 |
+| 935 | 2026-11-02 | 693 | 4 |
+| 943 | 2026-11-02 | 694 | 5 |
+| 949 | 2026-11-02 | 695 | 5 |
+| 957 | 2026-11-02 | 696 | 5 |
+| 969 | 2026-11-02 | 697 | 6 |
+| 979 | 2026-11-02 | 698 | 8 |
+| 989 | 2026-11-02 | 699 | 6 |
+| 1005 | 2026-11-02 | 700 | 1 |
+| 1007 | 2026-11-02 | 701 | 6 |
+| 1019 | 2026-11-02 | 702 | 4 |
+| 1031 | 2026-11-02 | 703 | 3 |
+| 1041 | 2026-11-02 | 704 | 3 |
+| 1051 | 2026-11-02 | 705 | 3 |
+| 1059 | 2026-11-03 | 706 | 4 |
+| 1067 | 2026-11-03 | 707 | 2 |
+| 1075 | 2026-11-03 | 708 | 3 |
+| 1083 | 2026-11-03 | 709 | 3 |
+| 1089 | 2026-11-03 | 710 | 2 |
+| 1095 | 2026-10-31 | 711 | 4 |
+| 1101 | 2026-10-31 | 712 | 4 |
+| 1107 | 2026-10-31 | 713 | 2 |
+| 1113 | 2026-10-31 | 714 | 4 |
+| 1119 | 2026-10-31 | 715 | 5 |
+| 1125 | 2026-10-31 | 716 | 4 |
+| 1131 | 2026-10-31 | 717 | 2 |
+| 1137 | 2026-10-31 | 718 | 4 |
+| 1143 | 2026-10-31 | 719 | 2 |
+| 1145 | 2026-10-31 | 720 | 3 |
+| 1147 | 2026-11-10 | 721 | 20 |
 
 ---
 
@@ -1191,3 +1199,64 @@ Tier guide: `--solidity` — **the owner's tunneling/overlap suite** (owner requ
 - **THE FLAIL ROW IS RE-BAKED PROPERLY** with the fixed baker: 60 circles over 4 segments (the hand-row's 65 carried five surplus pokers); poke −0.25px, tie 0px, dots-off-ink 0/60 — `inscribe` `GATE: PASS`, all weapons green. Re-proved the suite: chromecheck 2×PASS; pair-proof 36/37, lengrow-build-proof 56/57, leadproof 15F, seam-proof 6F — FAIL COUNTS IDENTICAL to the pre-repair known-stale sets (zero new reds). Fingerprint baseline recorded: `.qa/fp-flailfix-r88.json`.
 - Canonical: `previews/spinclash-preview.html` @ **`e431d344347a55da51e1f4604cbeb4ed`**, 5,392 lines. Live md5 slots updated (README ×2); the `afc301…` in HANDOFF is KEPT as its dated amendment record.
 - **Outstanding:** stale-proof triage (Item 3 — the cells above were already red on the r86 build; full list in `scratch/handoff-repair-brief.md`).
+
+## 2026-11-10 — #723 · THE STALE-PROOF TRIAGE BEGINS (Item 3; stamp stays `links-r87` — every repair in this entry is PROOF-SIDE, the canonical is never touched)
+
+- **THE TRIAGE, NOT A REGRESSION.** The owner opened Item 3 — the stale-proof triage — over five `.qa` probe families whose cells had gone red against CORRECT code. The baseline was re-established green FIRST, on this build: `.qa/inscribe.mjs` → **GATE: PASS**; `chromecheck.mjs` → **2× PASS** (canonical `previews/spinclash-preview.html` @ `e431d344347a55da51e1f4604cbeb4ed`, 5,392 lines, `links-r87`). The red sets were then captured to disk (`scratch/triage/runs-before/*.log`) rather than re-derived by hand.
+- **CANONICAL UNTOUCHED, and it says so on every page.** `previews/spinclash-preview.html` md5 `e431d344347a55da51e1f4604cbeb4ed`, **5,392 lines** — verified by md5sum at the end of the session. **No md5 / fingerprint / bake ritual is triggered by anything on this menu: every repair is `.qa/*.mjs` proof-side.** Canonical edits are a separate owner matter.
+- **THE HOUSE DOCTRINE, restated because this menu is where it bites:** *assert-patch* (exact-match + an expected count; a count mismatch fails loudly and writes NOTHING), *non-vacuity* (a probe that measured nothing cannot claim PASS), *never hand-edit baked rows*, *history is never rewritten* (dated corrections, superseded claims stay visible), *pushes are the owner's*, and **`measure.mjs` NEVER runs without the owner's explicit go.**
+- **`seam-proof` PATCHED (asserted patch, 15/15 replacements, 0 mismatches; the original is backed up).** New machinery: a `retired()` reporter + counter — a retired cell is **printed and counted, never silent** (the failure mode "red becomes normal" and its twin "gone becomes invisible"). Re-seeds: the bow's rain-axis holder set (exactly `{bow, crossbow}`, both `trait.mult 0.5` — the crossbow took it at `pinlaw-r44`; a THIRD holder still fails), the staff's expected brief (`'+SPD +SIZE +HEX / Hit'`, `hexfam-r68`), the C-factor band re-measured (this build measures ratio 2.54 against the declared 2×, so the ±0.35 band was re-derived, not deleted), and the I2/I3 float band (the bare `1e-9` ledger tolerance → a named `BAND=1e-3`, justified by the measured worst deviation **6.41e-4 rad over 5,165 fires** — float accumulation, not a cadence breach).
+- **THE G4 CRASH — a dead cell SILENCED the law sections behind it.** G4's replace-loader targeted `const CATCH_GROW = true;`, retired at `touchorbit-r53` (the four constants folded into prose at canonical :1776-1781); the throw killed everything after it, so **sections H (star ricochet LAW) and I (bow RAIN laws) never ran**. Unblocking it is not a menu item, it is the price of honesty — and the reward was immediate: with the crash stubbed, **H is fully GREEN (9/9)** and I runs (I1/I4-I7 green, I2/I3 red on the stale tolerance).
+- **THE CAUTIONARY TALE, PROVEN BY AN EXECUTED PROBE: G1b was VACUOUS while GREEN.** Its predicate was `Math.abs(st.speed/Math.abs(st.turn) - BM.shot.speed/BM.shot.turn) > 1e-9`, but the ROW's `BM.shot.turn` is `undefined` ⇒ the row ratio is `NaN` ⇒ `NaN > 1e-9` is always false. The decisive test: every loop's speed multiplied by **1e6** — a gross violation — and the predicate fired **0 times across 21,077 in-flight checks**, while the cell printed `ok … 42788 in-flight checks, 0 off-scale`. **A probe that measured nothing cannot claim PASS.** (The shot objects do carry a defined `turn`; it is the ROW reference that is undefined.)
+- **ITEMS 3–7 WERE DIAGNOSED BY EXECUTED PROBES, NOT BY READING.** pair-proof's `[^\]]*` index regex truncates at the INNER `]` (13 real sites, canonical :4732/:4774 — a FALSE POSITIVE on correct code); lengrow-build-proof's ladder cell asserts a law that died with `links-r87` (the flail declares `trait.len` but is a LINK-ADDER — boot :1810 skips chain rows and requires `chain.ext`); flipproof's `CTRL_SEED 4` now rolls the STAFF (it joined the mirror at the 2026-10-28 facing pass), so the control battle is not a control; flipproof's T4 frame budget predates `slowmo-r63`, which legitimately STRETCHES the flip clock (canonical :5080 `fa.t -= dtFrames*1000/60`, :5267 `draw(dtFrames*fxRate)`); leadproof's 15 FAILs are all javelin swats in the skewer's CUT-FREE WINDOW (canonical :3654) — verified: all 15 recompute green under the cut law from stored fields alone, **0 true contact failures anywhere in the suite**.
+- **SESSION 2 ENDED ON TOKEN BUDGET, NOT ON A FINISHED RUN.** What it produced is the menu (`scratch/stale-triage-menu.md`), the original brief (`scratch/handoff-repair-brief.md`), the measured facts every later session needed (flipproof's FLAG→s1 / CTRL→s7 seed scan, the flail's `chain.ext` numbers, the cut-law recompute), and the patchers. **Outstanding: items 1–7 and the close-out.** (Session 3's own handoff file was absent from the next snapshot — see #724.)
+
+## 2026-11-11 — #724 · THE HALO FAMILY RETIRED — AND A CORRECTION THAT SUPERSEDES A 10/10 CLAIM (Item 3, session 3)
+
+- **THE HALO FAMILY (section G) IS RETIRED WHOLE, WITH A DATED RECORD.** The LOYAL HALO was retired at `touchorbit-r53`: the row carries no `orbit.elong`/`shot.turn` and the ≤400t one-orbit bound is gone (loops orbit until caught; `shot.turn` injections now throw the `hexfam-r68` RETIRED error instead of the halo validator's). G0/G1/G3 were retired with the reason named; G4b's CYCLE-ONLY witness was KEPT and still reports (0 unpaired spin rises / 231 catches), so the retirement names what it measured rather than what it stopped. The cells that stay LIVE and green are G0b, G2, G5, G6, g5, g8 — and **g8 was re-SEEDED, not retired**: that guard is alive (`shot.orbit = null` boot-errors on the `touchorbit-r53` world orbit `{ a, b, peak }`), so its matcher moved from `/needs shot\.orbit\.elong/` to `/needs shot\.orbit/`. Coverage kept.
+- **⚠ CORRECTION (dated; the superseded claim stays visible, per Law #2).** Session 3 shipped a non-vacuity mutation test and claimed **"fixed diag runs 10/10 NON-VACUOUS, exit 0"**. **That claim was FALSE as shipped**: `scratch/triage/diag-nonvacuity-seam.mjs` CRASHED at cell 8 (exit 1). Its G6 mutation set `WEAPONS.wand.shot.returns=true` **PRE-BOOT**, tripping the `hexfam-r68` boot guard (canonical :1572) — so the "proof" was stopped by the very guard it meant to measure. **The file cannot produce 10/10 and never could; do not sign that claim.** The superseding measurement is **9/9** — see #725. The lesson applied everywhere after it: **prefer SCALAR post-boot breaks over boot-guard-tripping breaks, unless the guard IS the coverage** (g5/g8 keep their guard injections legitimately).
+- **After session 3:** seam-proof 47/55 + 8 retired + 0 failed, and the G4 crash fixed so **H (9/9) and I run again**.
+
+## 2026-11-11 — #725 · SEAM-PROOF RE-VERIFIED, AND THE NON-VACUITY NUMBER CORRECTED TO 9/9 (Item 3, session 4)
+
+- **RE-TESTED, NOT ASSUMED.** `.qa/seam-proof.mjs` full run: **47/55 passed, 8 retired, 0 failed, exit 0** (captured: `scratch/triage/runs-after/seam-proof-session4.log`); P10-P15 + the Q-family present. Canonical untouched all session; `node .qa/inscribe.mjs` → **GATE: PASS**. (There is NO `arena-engine.html` at repo root in this snapshot — the canonical path is `previews/spinclash-preview.html`, `.qa/inscribe.mjs:59`.)
+- **THE NON-VACUITY REPAIR (asserted patch, exact-match + expected count, wrote nothing on mismatch; 2/2 ok).** N1 re-seeds the G6 break as a **runtime scalar forge** (the value is stamped at the integration site, after boot) instead of the pre-boot mutation that tripped the guard; N2 appends the dated correction comment. **Honest post-fix verdict: 9/9 cells NON-VACUOUS, exit 0** (`scratch/triage/runs-after/nonvacuity-session4-fixed.log`). **The 10/10 claim of #724 is superseded by this 9/9** — see #723/#724 for the original wording, which stays visible by rule.
+- **THE RE-MERGE PROTOCOL, for whoever lands the parallel batch.** `other-agent-branch` did NOT exist in the session-4 snapshot (no remotes, no gh CLI; `show-ref` showed only `item-3--stale-proof-triage-46812` + the working branch, same commit). If it appears: `git merge --no-commit --no-ff other-agent-branch`, resolve the `.mjs` seams semantically keeping BOTH sides' intent, then re-run inscribe GATE: PASS + chromecheck 2× PASS + the md5 check (`e431d344347a55da51e1f4604cbeb4ed` / 5,392 lines) — **STOP if the canonical moved.**
+
+## 2026-11-11 — #726 · ITEM 3 (PAIR-PROOF) COMPLETE AND PROVEN FALSIFIABLE; ITEM 4 RE-SEEDED BUT ITS NON-VACUITY STILL PENDING (Item 3, session 5 — the STOP checkpoint)
+
+- **ITEM 3 — THE PAIR-PROOF FALSE POSITIVE, FIXED AND PROVEN.** The static tripwire's regex `/\b(?:COLS|TINTS|FIGHTERS|SKILL_SHORT)\[([^\]]*)\]/g` stops at the INNER `]`, so `COLS[(G.fighters[p.o] || { idx: p.o }).idx]` (canonical :4732/:4774) parses as index `(G.fighters[p.o` — no `idx` token → flagged. The code was CORRECT. Fix: a **balance-aware bracket scan** over the comment-stripped text, replacing the per-line `slines.forEach` scan (asserted patch PP1, `scratch/triage/patch-pair-proof.mjs`, exact-match + count, wrote nothing on mismatch). Run: **37/37 passed, exit 0**. The `reads.length >= 20` floor was kept **HONEST** — verified that ≥20 single-level COLS reads survive comment-stripping (a witness is in the diag log).
+- **ITEM 3 — NON-VACUITY 6/6, INCLUDING THE OLD-vs-NEW WITNESS** (`scratch/triage/diag-nonvacuity-pair.mjs`, `scratch/triage/runs-after/nonvacuity-pair-session5.log`): the re-seeded scanner must still FIRE on real slot-keyed violations (B1-B4), B5 is the **false-positive witness** (the old scanner truncates the nested extent and flags correct code; the new one reads the full extent and allows it), and the regression witness proves the old scanner flagged exactly **2** burnfix false positives on the clean canonical where the new one flags **0** with the audit size still ≥20. The trap this cell had to avoid: an audit that is simply switched off would also "pass" — hence the witness pair.
+- **ITEM 4 — RE-SEEDED (asserted patch LG1), TEST GREEN, NON-VACUITY STILL PENDING.** The old cell asserted `GROWERS.every(id => LEN_LADDER[id])`, which FAILed on correct code since `links-r87` (the flail declares `trait.len` but is a LINK-ADDER; boot :1810-1815 skips chain rows before the ladder loop and requires `chain.ext`). Re-seed: RIGID growers must have a ladder row, CHAIN growers must carry a well-formed `chain.ext` whose cap covers every step (the same law boot gates) — so the "a new `trait.len` row forgot its mechanism" catch SURVIVES both ways. Run: **57 passed, 0 failed**. **Outstanding at the stop: the injected-break non-vacuity proof of this re-seeded cell.**
+- **SESSION 5 ENDED ON AN OWNER STOP, mid-item-4, and the branch was made ready for the next agent** — no fabricated push, no rewritten history. The handoff's GIT STATE block named the wrong branch and claimed no remote existed; **both claims are corrected by dated amendment in the file itself** (the owner had pushed the session-5 work to GitHub as `spinclash-item-three-triage-80aa6` @ `556e34c`, and the session-6 snapshot DOES have a remote).
+
+## 2026-11-11 — #727 · ITEM 3 CLOSED: ITEMS 4, 5 AND 6 RE-SEEDED, EVERY RE-SEEDED CELL PROVEN FALSIFIABLE, FULL BATTERY GREEN (Item 3, session 6 — the close-out)
+
+- **ITEM 4 — THE LENGROW RE-SEED IS PROVEN FALSIFIABLE (6/6), AND A CRASH WAS FIXED.** `scratch/triage/diag-nonvacuity-lengrow.mjs` extracts the shipped cell's SOURCE **verbatim** and evaluates it against mutated runtime objects (no hand-copied re-implementation, so the proof cannot drift from what ships; the canonical is never touched): B4 control green · **B1** a rigid grower (spear) without its ladder row → clean FAIL · **B2a** a chain grower (flail) with `chain.ext = undefined` → clean FAIL · **B2b** `ext.every = 0` → clean FAIL · **B2c** `ext.max` under-covering the steps → clean FAIL · **B3** a chain grower wrongly given a ladder row → clean FAIL. **B2a is why the cell was hardened**: the verdict logic null-guards `chain.ext`, but the cell's DETAIL string did not, so the case the cell exists to catch CRASHED the proof instead of reporting red — and a dead cell does not report red, it **aborts the run and every assertion after it never executes** (the seam-proof G4 lesson, verbatim). The detail string now reports `ext MISSING` and the catch reports RED (asserted patch LG2; the pre-patch copy is kept beside it).
+- **ITEM 5 — THE FLIPPROOF SEEDS WERE ROTTED; THE T4 BUDGET WAS THE WRONG UNIT.** The hardcoded pair had both failed: **s2** rolls `[[scythe,tome],[hammer,javelin]]` — BOTH sides carry a flagged weapon (the javelin's `headLead` joined the mirror at `skewer-r46`), so T2's "the unflagged side never leaves ±1" law drowned in false reds; **s4** now rolls the **STAFF** (it joined the mirror at the 2026-10-28 facing pass), so the CONTROL battle was not a control and T2b's own `rollsFlagged` tripwire fired. The measured naturals (the session-2 scan redone WITH the one-side criterion) are **FLAG → s1** (spear+flail / scythe+shield, 38 parries, the flagged spear on ONE side only) and **CTRL → s7** (orb+orb / bow+boomerang, 13 parries, nothing flagged in any rolled round). The argv override stays, the tripwire stays a hard assert, and a pinned seed that stops holding now **fails loudly** instead of drifting (re-pick: `node scratch/triage/diag-flip-seeds.mjs`).
+- **ITEM 5 — T4 IS NOW THE CLOCK'S OWN LEDGER, MEASURED PER SWEEP.** The old cell counted FRAMES (`epLen - epFrozen <= epSweeps * 13`). That budget predates `slowmo-r63`: the flip clock is a WALL clock (canonical :5080) and the hit-slow window STRETCHES it (the draw call gets `dtFrames * fxRate`, canonical :5267), so a slowed sweep legitimately spans more than 13 frames — session 2 measured episode 2 at **17 frames with 0 hitstop-frozen** and the old cell called it red. The old `epFrozen` counter could not help: `inf.stopMs` is the **KO HARD FREEZE** (`stopTicks`), NOT the hit-slow window. The new law: **A1 ARM** the clock is armed at exactly `CFG.flipMs` · **A2 LAND** the clock lands at exactly 0 · **A3 SPEND** the RAW spend covers the budget and no more · **A4 TAIL** the clamp's masked tail is bounded · **A5 RESET** arms === sweeps · **A6 RATE** full-rate frames ≤ 13 per sweep. **A3/A4 use the RAW per-frame spend, not the clamped residual**: the canonical's `Math.max(0,…)` (canonical :5080) drops the last frame's tail, so a clamped sum reads SHORT and the law would fail spuriously. The raw spend comes from TWO independent channels — the flip clock's own decrease (exact for every frame except the arm and the landing) and the **SIM TICK COUNTER `G.t`** (the frame loop runs `floor(tickAcc)` sim ticks with `tickAcc += adv*fxRate`, so a frame that advanced ≥2 ticks ran FULL RATE — any slower rate advances at most 1 tick per frame at `tickHz` 120 / 16.7ms — and its spend is exactly the wall dt). **Measured on s1 over 14 sweeps** (`scratch/triage/diag-flip-ledger.mjs`): the ARM law holds **exactly** for every sweep (arm flipT + the tick-witnessed spend = **180.000**), the clock lands on exactly 0 every time, the raw spend is **183.7–188.1ms** against the 180ms budget (the clamp's masked tail 3.7–8.1ms, always under one frame), and the worst full-rate frame count is **10** (budget 13).
+- **ITEM 5 — NON-VACUITY 12/12, WITH THE COUPLINGS MEASURED RATHER THAN HIDDEN** (`scratch/triage/diag-nonvacuity-flip.mjs`): every law is shown to fire under an injected break; **TAIL is strictly stronger than SPEND** (the same boundary seen from two sides) and **RATE is implied by SPEND** (13 full-rate frames already cost 217.1ms over the 196.7ms ceiling) — both reported as they are. The seed predicates T2a / T2a' / T2b are each shown to fire, the healthy seeds stay green, and a SOURCE check asserts no T4 law can silently vanish from the shipped cell.
+- **ITEM 6 — LEADPROOF'S SWAT CELL NOW AUDITS BOTH CLASSES.** The cell asserted that EVERY swat is a circle touch; that law PREDATES the skewer's CUT-FREE WINDOW (`skewer-r46` / `impale-r48`, canonical :3654), where the victim's blade cuts the anchored spear on an ANGLE test with **no circle contact at all** — so it FAILed on correct code (15 javelin swats, **0 true contact failures** anywhere in the suite). Re-seed: the STORED gap discriminates the classes — the physical path (canonical :3663) stores `best - st.r` under a `best < st.r` guard, so it is **strictly negative** (circle recompute, unchanged); the cut path (canonical :3654) stores **exactly 0** (the angle law `cos(fAng)·w / |w| > SKEWER.cutCos`, recomputed from stored fields alone). **Both classes stay audited — nothing becomes unauditable**; the menu's retire option (drop the 15 javelin cells) would have lost EVERY flagged-swat audit, which r64's lesson says never to fly blind on. `SKEWER` had to join the harness's extracted surface — it was missing, so the cell could not read its own law constant. Non-vacuity **6/6** (`scratch/triage/diag-nonvacuity-lead.mjs`), including a SOURCE check on the canonical's two `killShot('swat')` paths.
+- **THE CLOSE-OUT BATTERY — every live probe, run on the final bytes, canonical never touched.** seam-proof **47/55 passed, 8 retired, 0 failed** · lengrow-build-proof **57 passed, 0 failed** · pair-proof **37/37** · flipproof **ALL PASS** (14 sweeps, arms === sweeps) · leadproof **ALL PASS** (hits 442 / parries 311 / swats 154 — touch-class 139, cut-window 15, every one recomputed from stored fields) · `.qa/inscribe.mjs` **GATE: PASS** · **chromecheck 2× PASS** (chrome + pairing). Canonical after the whole session:
+- **THE TWO NON-ZERO EXITS IN THE BATTERY, HONESTLY (they are NOT regressions, and they were NOT fixed — one is by design, one is the next open item).** `lengrow-gate` exits **1** BY DESIGN: its honest verdict on the shipped design is that the uniform runtime stretch first breaks the inscribed gate at **k = 1.0778 (+7.8 %)**, i.e. the pre-baked ladder IS required — the tool is proving the ceiling of the remap route, which is the recorded design point, not a failing build. `lengrow-bake --verify` exits **2** and **writes nothing**: its guard says *"expected exactly one growing weapon (spear), found [spear, flail] — this tool bakes the spear only; extend it deliberately if that changes"* — **pre-existing since `links-r87`** (the flail declares `trait.len` as a LINK-ADDER; the canonical is byte-identical to the pre-session commit, so nothing in this session caused it), and the **same fact Item 4's re-seed encodes**. It is the natural NEXT item: the baker must learn the chain case, deliberately. **This entry does not claim it green.** **`e431d344347a55da51e1f4604cbeb4ed`, 5,392 lines** — **unchanged, md5-verified before and after every run.**
+- **DOCS CORRECTED.** README's stale tallies now read the live numbers (seam-proof 47/55 + 8 retired; the non-vacuity **9/9, NOT 10/10**; pair-proof 37/37 + 6/6; lengrow-build-proof 57/57 + 6/6; leadproof/flipproof's live verdicts; the build's own assertion count 46 → **57**), and the halo family is no longer sold as a live contract in the README. The live md5 slots needed no change — the canonical never moved.
+- **THE PUSH, AND THE ONE FILE THE CONNECTED APP COULD NOT CARRY.** The session's work reached `spinclash-item-three-triage-80aa6` through the connected GitHub App's `push_files` (the sandbox has **no git credentials** — a plain `git push` answers *"could not read Username for 'https://github.com'"*). Each menu commit went over as its OWN App commit, so the **remote SHAs differ from the local ones — same trees, different commit objects** — and the remote branch is a PARALLEL LINEAGE off `556e34c`. **`docs/GAMES.md` could not be pushed at all**: the file is **~690KB** and the App's tool-call payload cap is **512KiB** (measured: a 523,102-byte request is accepted, a 524,302-byte one is rejected with `connector_payload_too_large`), and a file must be written whole. **So the remote branch carries the code, the README, `docs/HANDOFF.md`, the handoff and the battery logs — and NOT these #723–#727 entries.** The owner reconciles by **MERGING** the local branch (never force-pushing): the two trees differ in exactly one file's CONTENT, `docs/GAMES.md`, and the merge resolves it to the local (complete) version, after which the local branch fast-forwards the remote. **That merge is already made** — local commit `e57baf7` — so the local branch descends from the remote tip and the owner's next push is a plain fast-forward (the only other delta is the exec bit on the two runner scripts, which the contents API cannot carry).
+- **WHAT THIS ENTRY DOES NOT CLAIM.** `measure.mjs` did not run (standing owner rule — it never runs without the owner's explicit go). The fingerprint suite was not re-based: the canonical is byte-identical, so no fingerprint moved by construction. **Item 3 is closed; the branch `spinclash-item-three-triage-80aa6` carries the whole session and the owner pushes.**
+
+## 2026-11-11 — #728 · LENGROW-BAKE'S "CHAIN CASE" WAS A TOO-BROAD GUARD, NOT MISSING LOGIC — SCOPED TO RIGID GROWERS, PROVEN FALSIFIABLE (8/8), `--verify` 12/12 (Item 3 follow-on, session 7)
+
+- **DATED CORRECTION TO #727 AND TO THE SESSION-7 BRIEF (the superseded text stays visible above).** #727 and `NEXT-AGENT-PROMPT.md` named the open item as *"the baker must learn the chain case, deliberately"*. **Measured this session: that framing was wrong.** `.qa/lengrow-bake.mjs` refused (exit 2, writes nothing) because its `GROWERS` guard counted EVERY row declaring `trait.len` — `[spear, flail]` since `links-r87` — but the flail is a **link-adder**: the canonical's boot loop (`:1810`) `continue`s past chain rows before building any ladder, so a chain grower has **no `LEN_CIRCLES` row and no ladder**, only a `chain.ext` that boot gates and `lengrow-build-proof`'s chain half audits (#727 item 4). There is no covering for the baker to re-pack for the flail. The baker's own header said a second grower would need `tempFor()` generalised — true only for a second RIGID grower.
+- **THE MEASUREMENT BEFORE THE FIX (read-only).** A throwaway copy of the baker with the guard scoped to rigid growers, run with `--emit` (canonical never opened for writing), reproduced the shipped `LEN_CIRCLES` block **byte-for-byte except for two comment lines**: the shipped provenance reads *"Baked for build skill-r29 … LEN_STEPS 18 … 22/24/…/89 circles"*, the live build is `links-r87` at LEN_STEPS 12 (the 18-step rows were purged when the cap went uniform at `nocombo-r34`; the comment was not regenerated). The rows themselves are current. **That stale comment is deliberately NOT refreshed here**: refreshing it needs `--write`, which moves the canonical md5 (the block is 22 lines either way, so the line count would hold) and triggers the md5 re-record in every live slot — an owner call, cosmetic, left open.
+- **THE FIX — asserted patch `scratch/triage/patch-lengrow-bake.mjs` (LB1–LB3, 3/3, 0 mismatches), `.qa/` only.** LB1 scopes `GROWERS` to rigid growers (`ALL_GROWERS` minus `.chain`) and adds `CHAIN_GROWERS`; the superseded line is kept visible in a comment. LB2 keeps the guard's condition — exactly one rigid grower and it must be the spear, so a SECOND rigid grower still refuses — reworded to say RIGID, and adds a **visible** "chain growers skipped by design" line (`flail (chain.ext every 4, max 3)`, or `chain.ext MISSING`): scoped-by-design must never become gone-and-invisible. LB3 adds a dated correction to the header's SCOPE paragraph. The pre-patch copy is `scratch/triage/lengrow-bake.mjs.orig`. A **second run of the patcher refused** (LB2/LB3 mismatch, exit 1) and left the file byte-identical — the assertion works. (LB1's old text survives inside its own superseded-line comment, so it still matches once on a re-run; the other two mismatching is what makes the whole run refuse.)
+- **NON-VACUITY 8/8 — `scratch/triage/diag-nonvacuity-lengrow-bake.mjs`** extracts the shipped guard source **verbatim** and evaluates it against the real roster and mutated copies: **C0** control — the real roster passes and the flail is reported · **C1** spear loses `trait.len` → refuses · **C2** a second rigid grower (katana given `trait.len`) → refuses (*the guard is the coverage*) · **C3** the sole rigid grower is not the spear → refuses · **C4** the flail loses its chain (the regression class) → refuses · **C5** a second CHAIN grower (nunchaku) → passes with both reported — the scoping is deliberate, and this documents it · **C6** `flail.chain.ext = undefined` → the line says `MISSING` (never silent) · **C7** old-vs-new witness: the PRE-patch guard on the real roster → exit 2 with exactly *"found [spear, flail]"* — the defect, reproduced. Log: `scratch/triage/runs-session7/nonvacuity-lengrow-bake.log`.
+- **THE END-TO-END RUN.** `node .qa/lengrow-bake.mjs --verify` → **exit 0, `ALL 12 STEPS PASS the house gate on their own baked rows`**: 22→50 circles, poke **−0.30px** at every step, worst miss **4.25px** against the 4.6px tolerance (step 7), minR 2.00–2.20. It writes nothing without `--write`, and none was passed. (The `duration=0s` printed in the log is **meaningless** — the background runner was `sh`, which has no `SECONDS`; no timing is claimed for this run.) The two neighbouring proofs re-run on the same bytes: `lengrow-build-proof` **57 passed, 0 failed**, `inscribe` **GATE: PASS**.
+- **THE CANONICAL WAS NEVER TOUCHED:** md5 `e431d344347a55da51e1f4604cbeb4ed`, **5,392 lines**, checked before and after the runs above (`runs-session7/md5-before-verify.txt`, `md5-after-verify.txt`).
+- **WHAT THIS ENTRY DOES NOT CLAIM.** `measure.mjs` did not run (standing owner rule). The fingerprint suite was not re-based (canonical byte-identical). `seam-proof`, `pair-proof`, `flipproof`, `leadproof` and `chromecheck` were **not re-run** this session — nothing they read changed. `--write` and `--emit` on the PATCHED baker were not exercised (the one-line-different probe copy was, which is how the byte-identical result was measured); `--verify` was. **Open, unchanged:** the stale provenance comment above (owner call), the runner scripts' exec bits, PR #3's base, the two `.orig` backups (now three with `lengrow-bake.mjs.orig` — same convention, same diff noise), and the `64f2ef7`/`1ff647d` equivalence.
+
+## 2026-11-11 — #729 · THE FULL BATTERY RE-RUN ON THE SESSION-7 BYTES — ALL AS EXPECTED, CANONICAL UNTOUCHED (Item 3 follow-on, session 7)
+
+- **DATED ADDENDUM — SUPERSEDES ONE CLAIM IN #728 (the original stays visible above).** #728's *"What this entry does not claim"* said `seam-proof`, `pair-proof`, `flipproof`, `leadproof` and `chromecheck` were **not re-run** this session. They have now been, on the committed session-7 bytes (`09fb202`), plus `lengrow-gate`. Nothing they read had changed, so every verdict is the expected one — but it is now **measured, not inferred**.
+- **THE RESULTS (logs: `scratch/triage/runs-session7/battery-*.log`, each ending with its exit code, duration and md5-after).** `seam-proof` **47/55 passed, 8 retired, 0 failed**, exit 0 (232 s) · `pair-proof` **37/37**, exit 0 (19 s) · `flipproof` **ALL PASS**, exit 0 (17 s; the T4 ledger line reads 14 sweeps, 14 arms) · `leadproof` **ALL PASS**, exit 0 (22 s; hits 442 / parries 311 / swats 154 = touch 139 + cut-window 15) · `chromecheck` **2× PASS** (chrome + pairing), exit 0 (12 s) · `lengrow-gate` **exit 1 BY DESIGN** (4 s) — *"the uniform stretch first breaks the gate at k=1.0778 (+7.8%)"*, i.e. the pre-baked ladder IS required, the recorded design point, not a failure. Earlier in the session: `inscribe` **GATE: PASS**, `lengrow-build-proof` **57 passed, 0 failed**, `lengrow-bake --verify` **exit 0, 12/12** (#728).
+- **THE MD5 AFTER EVERY RUN is `e431d344347a55da51e1f4604cbeb4ed` / 5,392 lines** — canonical untouched, never written by anything in this session.
+- **A FIRST ATTEMPT WAS KILLED AND IS NOT COUNTED.** The first launch of this battery was backgrounded without detaching and died when the tool call that started it ended: its `seam-proof` log stops mid-section H with **no exit line**, and no process was left running. It proves nothing and is kept, labelled, as `battery-seam-proof.KILLED-partial.log`. The reported run was relaunched fully detached (`setsid`) via `scratch/triage/run-battery-session7.sh` and ran to completion. (Only the `seam-proof` log of the first attempt existed; the others never started.)
+- **WHAT THIS ENTRY DOES NOT CLAIM.** `measure.mjs` did not run (standing owner rule). The fingerprint suite was not re-based (canonical byte-identical). **Item 3 and its follow-on remain closed; the open items are the owner's** and unchanged: the stale `LEN_CIRCLES` provenance comment (needs `--write`, moves the md5), the runner scripts' exec bits, PR #3's base, the `.orig` backups, and `64f2ef7`/`1ff647d`. Nothing here is pushed.

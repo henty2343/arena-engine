@@ -1,0 +1,39 @@
+=== flip-ledger-session6 :: node scratch/triage/diag-flip-ledger.mjs 1 0 ===
+flip ledger probe — seed s1, side 0, flipMs 180
+trace frames: 6665, sweeps: 14, slow/fast toggles engaged: false
+
+  arm@3972 armFt 175.825 armSpend 4.175 | spends [4.17 + 4.17 + 4.18 + 4.17 + 4.17 + 4.17 + 4.17 + 4.40 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70] land 16.700
+         raw 183.925 vs 180 (overshoot 3.925, clamped residual 12.775) | armExact 180.000 ok | full 8 slow 8 frozen 0
+  arm@4127 armFt 163.300 armSpend 16.700 | spends [16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70] land 16.700
+         raw 183.700 vs 180 (overshoot 3.700, clamped residual 13.000) | armExact 180.000 ok | full 10 slow 0 frozen 0
+  arm@4332 armFt 163.300 armSpend 16.700 | spends [16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70] land 16.700
+         raw 183.700 vs 180 (overshoot 3.700, clamped residual 13.000) | armExact 180.000 ok | full 10 slow 0 frozen 0
+  arm@4399 armFt 163.300 armSpend 16.700 | spends [16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70] land 16.700
+         raw 183.700 vs 180 (overshoot 3.700, clamped residual 13.000) | armExact 180.000 ok | full 10 slow 0 frozen 0
+  arm@4450 armFt 163.300 armSpend 16.700 | spends [16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70] land 16.700
+         raw 183.700 vs 180 (overshoot 3.700, clamped residual 13.000) | armExact 180.000 ok | full 10 slow 0 frozen 0
+  arm@4735 armFt 163.300 armSpend 16.700 | spends [16.70 + 4.17 + 4.17 + 4.17 + 4.18 + 4.17 + 4.17 + 4.17 + 4.17 + 4.40 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70] land 16.700
+         raw 188.100 vs 180 (overshoot 8.100, clamped residual 8.600) | armExact 180.000 ok | full 8 slow 9 frozen 0
+  arm@5197 armFt 163.300 armSpend 16.700 | spends [16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70] land 16.700
+         raw 183.700 vs 180 (overshoot 3.700, clamped residual 13.000) | armExact 180.000 ok | full 10 slow 0 frozen 0
+  arm@5493 armFt 163.300 armSpend 16.700 | spends [16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70] land 16.700
+         raw 183.700 vs 180 (overshoot 3.700, clamped residual 13.000) | armExact 180.000 ok | full 10 slow 0 frozen 0
+  arm@5705 armFt 163.300 armSpend 16.700 | spends [16.70 + 4.17 + 4.17 + 4.17 + 4.18 + 4.17 + 4.17 + 4.17 + 4.17 + 4.40 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70] land 16.700
+         raw 188.100 vs 180 (overshoot 8.100, clamped residual 8.600) | armExact 180.000 ok | full 8 slow 9 frozen 0
+  arm@5793 armFt 163.300 armSpend 16.700 | spends [16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70] land 16.700
+         raw 183.700 vs 180 (overshoot 3.700, clamped residual 13.000) | armExact 180.000 ok | full 10 slow 0 frozen 0
+  arm@5978 armFt 163.300 armSpend 16.700 | spends [16.70 + 4.18 + 4.17 + 4.17 + 4.17 + 4.17 + 4.18 + 4.17 + 4.17 + 4.40 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70] land 16.700
+         raw 188.100 vs 180 (overshoot 8.100, clamped residual 8.600) | armExact 180.000 ok | full 8 slow 9 frozen 0
+  arm@6096 armFt 163.300 armSpend 16.700 | spends [16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70] land 16.700
+         raw 183.700 vs 180 (overshoot 3.700, clamped residual 13.000) | armExact 180.000 ok | full 10 slow 0 frozen 0
+  arm@6255 armFt 163.300 armSpend 16.700 | spends [16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70] land 16.700
+         raw 183.700 vs 180 (overshoot 3.700, clamped residual 13.000) | armExact 180.000 ok | full 10 slow 0 frozen 0
+  arm@6402 armFt 163.300 armSpend 16.700 | spends [16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70 + 16.70] land 16.700
+         raw 183.700 vs 180 (overshoot 3.700, clamped residual 13.000) | armExact 180.000 ok | full 10 slow 0 frozen 0
+
+SUMMARY over 14 sweeps:
+  ARM law  (arm flipT + the arm frame's tick-witnessed spend === CFG.flipMs): HOLDS for every sweep
+  LAND law (the clock reaches EXACTLY 0 at the landing frame): HOLDS for every sweep
+  SPEND law (raw spend >= CFG.flipMs and < CFG.flipMs + one frame): HOLDS for every sweep
+  worst clamp overshoot (the tail Math.max(0,·) masks): 8.100 ms (one frame = 16.7 ms)
+  worst full-rate frame count: 10 (old budget 13/sweep)

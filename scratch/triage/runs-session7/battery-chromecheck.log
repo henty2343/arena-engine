@@ -1,0 +1,5 @@
+PASS chrome: bug=219B legend=814B clock=true over=true hitstop=true (seen=true frozen=true)
+PASS pairing: cast=true namesSwap=true colsSwap=true legendSwap=true scoreSlotKeyed=true winnerNamesActor=true restore=true
+       default Speedy / Heavy [#a8892f #ff6b4a]  ->  swapped Heavy / Speedy [#ff6b4a #a8892f]  winner overlay "Heavy" = cast[0] Heavy
+exit=0 duration=12s
+md5-after: e431d344347a55da51e1f4604cbeb4ed lines: 5392

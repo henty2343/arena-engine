@@ -24,8 +24,12 @@
  *   against the weapon's own local vertices at fp = 1 and fp = −1.
  * Part B  — flagged battles stay auditable from stored events: every hit's
  *   contact recomputes to ≤0.3px, every parry's ENTRY poses to gap ≤ EPS,
- *   every swat's touch to ≤ EPS — using ONLY the event fields (aSp/bSp/fSp),
+ *   every swat to ≤ EPS — using ONLY the event fields (aSp/bSp/fSp),
  *   the way measure.mjs's laws do. No new unauditable class.
+ *   RE-SEEDED 2026-11-11 (session 6, menu item 6): a swat is audited by the class its STORED
+ *   gap names — the TOUCH class (gap strictly negative) by the circle recompute, the CUT class
+ *   (gap exactly 0, the skewer's cut-free window) by the ANGLE law. Both are audited; neither is
+ *   dropped. The one-class law that predated skewer-r46 FAILed on correct code.
  */
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -48,11 +52,14 @@ const opener = '(function () {';
 body = body.slice(body.indexOf(opener) + opener.length);
 body = body.slice(0, body.lastIndexOf('})();'));
 const api = new Function('document', 'window', 'performance', 'requestAnimationFrame', 'console',
-  body + '\n;return { newGame, tick, CFG, WEAPONS, WEAPON_IDS, geom, drawWeaponOn };')(
+  body + '\n;return { newGame, tick, CFG, WEAPONS, WEAPON_IDS, geom, drawWeaponOn, SKEWER };')(
   { getElementById: () => fakeEl(), createElement: () => fakeEl(), querySelectorAll: () => [], addEventListener: () => {}, activeElement: null },
   { devicePixelRatio: 1, innerWidth: 1200, innerHeight: 900, addEventListener: () => {} },
   { now: () => 0 }, () => 0, console);
-const { newGame, tick, CFG, WEAPONS, geom } = api;
+/* RE-SEEDED 2026-11-11 (session 6, menu item 6): SKEWER joins the extracted surface — the
+ * cut-free window's law constant (SKEWER.cutCos, canonical :1614) is what the cut-class swat cell
+ * has to audit against. It was NOT in the returned set, so the cell could not read its own law. */
+const { newGame, tick, CFG, WEAPONS, geom, SKEWER } = api;
 
 let fails = 0;
 const ok = (cond, msg) => { if (!cond) { fails++; console.log('  FAIL ' + msg); } };
@@ -174,6 +181,7 @@ for (const [wId, pr] of Object.entries(PROBES)) {
     ['staff+bow', 11, ['staff', 'bow']],              // flagged swats both directions: the staff's spine vs arrows, against an unflagged launcher
   ];
   let hits = 0, parries = 0, swats = 0, flaggedHits = 0, flaggedParrySides = 0, flaggedSwats = 0;
+  let cutSwats = 0, touchSwats = 0;   // RE-SEEDED 2026-11-11 (session 6, LP3): the two swat classes, counted separately — a branch that measured nothing cannot claim a pass
   for (const [name, seed, w] of CELLS) {
     const G = newGame(seed, { weapons: w });
     let t = 0;
@@ -200,13 +208,37 @@ for (const [wId, pr] of Object.entries(PROBES)) {
         } else if (e.kind === 'swat') {
           swats++;
           if (WEAPONS[e.fW].lead) flaggedSwats++;
-          const circ = geom.bladeCircles(e.fx, e.fy, e.fAng, e.fW, [], undefined, geom.leadFlip(e.fW, e.fSp));
-          let best = Infinity;
-          for (let ci = 0; ci < circ.length; ci += 3) {
-            const d = Math.hypot(e.x - circ[ci], e.y - circ[ci + 1]) - circ[ci + 2];
-            if (d < best) best = d;
+          /* RE-SEEDED 2026-11-11 (session 6, menu item 6): TWO swat classes, discriminated by the
+           * STORED gap. SUPERSEDED (kept visible): the cell used to assert that EVERY swat is a
+           * circle touch —
+           *   ok(best - e.sr <= 1e-4, '... swat touch gap ...')
+           * That law predates the skewer's CUT-FREE WINDOW (skewer-r46 / impale-r48, canonical
+           * :3654): the victim's blade cuts the anchored spear on an ANGLE test, with NO circle
+           * contact at all, so the touch recompute cannot apply to that class. It FAILed on CORRECT
+           * code — 15 javelin swats, and 0 true contact failures anywhere in the suite (verified by
+           * scratch/triage/diag-lead-swat.mjs).
+           * The stored gap tells the classes apart:
+           *   - TOUCH class (canonical :3663): killShot stores `best - st.r` with best < st.r, so
+           *     the stored gap is STRICTLY NEGATIVE. The circle recompute applies, unchanged.
+           *   - CUT class (canonical :3654): the cut-free window. killShot stores exactly 0.
+           * Both classes stay audited from stored fields alone — the cut class by the ANGLE law
+           * (cos(fAng)·wx + sin(fAng)·wy over wd > SKEWER.cutCos), the touch class by the circle
+           * recompute — so NO swat becomes unauditable. */
+          if (e.gap === 0) {
+            cutSwats++;
+            const wx = e.x - e.fx, wy = e.y - e.fy, wd = Math.hypot(wx, wy) || 1;
+            const cosv = (Math.cos(e.fAng) * wx + Math.sin(e.fAng) * wy) / wd;
+            ok(cosv > SKEWER.cutCos, `${name} s${seed} t${e.tick}: cut-window swat — the blade's outward radial cos ${cosv.toFixed(3)} > cutCos ${SKEWER.cutCos}`);
+          } else {
+            touchSwats++;
+            const circ = geom.bladeCircles(e.fx, e.fy, e.fAng, e.fW, [], undefined, geom.leadFlip(e.fW, e.fSp));
+            let best = Infinity;
+            for (let ci = 0; ci < circ.length; ci += 3) {
+              const d = Math.hypot(e.x - circ[ci], e.y - circ[ci + 1]) - circ[ci + 2];
+              if (d < best) best = d;
+            }
+            ok(best - e.sr <= 1e-4, `${name} s${seed} t${e.tick}: swat touch gap ${(best - e.sr).toExponential(2)} <= 0`);
           }
-          ok(best - e.sr <= 1e-4, `${name} s${seed} t${e.tick}: swat touch gap ${(best - e.sr).toExponential(2)} <= 0`);
         }
       }
       G.events.length = 0;
@@ -214,7 +246,11 @@ for (const [wId, pr] of Object.entries(PROBES)) {
   }
   ok(flaggedHits > 50, `non-vacuity: flagged-weapon hits exercised (${flaggedHits})`);
   ok(flaggedParrySides > 20, `non-vacuity: flagged parry sides (${flaggedParrySides})`);
-  console.log(`  Part B: hits ${hits} (flagged ${flaggedHits}), parries ${parries} (flagged sides ${flaggedParrySides}), swats ${swats} (flagged ${flaggedSwats}) — every one recomputed from stored fields`);
+  /* RE-SEEDED 2026-11-11 (session 6, LP3): BOTH swat classes must be exercised — the cut class is
+   * the whole point of the re-seed, and the touch class must not have been silently dropped. */
+  ok(cutSwats > 0, `non-vacuity: cut-window swats exercised (${cutSwats})`);
+  ok(touchSwats > 0, `non-vacuity: touch-class swats exercised (${touchSwats})`);
+  console.log(`  Part B: hits ${hits} (flagged ${flaggedHits}), parries ${parries} (flagged sides ${flaggedParrySides}), swats ${swats} (flagged ${flaggedSwats}) — touch-class ${touchSwats}, cut-window ${cutSwats}; every one recomputed from stored fields`);
 }
 
 console.log(fails ? `LEADPROOF: ${fails} FAILURES` : 'LEADPROOF: ALL PASS — the edge faces the motion, art mirrors with the hitbox, flagged battles auditable from stored events');

@@ -397,13 +397,33 @@ console.log('\nI  the RENDERER names and colours the ACTOR, not the side');
     }
     return out;
   })();
-  const slines = stripped.split('\n');
+  /* RE-SEEDED 2026-11-11 (session 5, menu item 3): the superseded per-line scan
+   *   slines.forEach((l, n) => { for (const m of l.matchAll(/\b(?:COLS|TINTS|FIGHTERS|SKILL_SHORT)\[([^\]]*)\]/g)) ... })
+   * stopped at the INNER closing bracket of nested reads, truncating the index text. That made the two
+   * burnfix-r84 sites canonical :4732/:4774 — COLS[(G.fighters[p.o] or brace-fill).idx] — parse as
+   * "(G.fighters[p.o" (no idx token), so the cell FAILed on CORRECT code: a false positive. The
+   * replacement below is a balance-aware scan over the whole comment-stripped text: depth counter over
+   * opening/closing brackets from the match start to the matching close. Strings and comments are
+   * already neutralised by the stripped scanner upstream, so bracket counting is safe there.
+   * reads keeps its {n, idx, line} shape; allowed() and the >=20 floor are untouched. Measured honesty
+   * of the floor: 33 sites survive comment-stripping under BOTH scanners (raw canonical: 37 regex hits,
+   * 4 of them inner double-counts) — >=20 holds with margin. */
   const reads = [];
-  slines.forEach((l, n) => {
-    for (const m of l.matchAll(/\b(?:COLS|TINTS|FIGHTERS|SKILL_SHORT)\[([^\]]*)\]/g)) {
-      reads.push({ n: n + 1, idx: m[1].trim(), line: l.trim() });
+  for (const m of stripped.matchAll(/\b(COLS|TINTS|FIGHTERS|SKILL_SHORT)\[/g)) {
+    let depth = 1, j = m.index + m[0].length;
+    while (j < stripped.length && depth > 0) {
+      const ch = stripped[j];
+      if (ch === '[') depth++;
+      else if (ch === ']') depth--;
+      j++;
     }
-  });
+    if (depth !== 0) continue;                       // unbalanced tail: not a read we can vouch for
+    const lnStart = stripped.lastIndexOf('\n', m.index) + 1;         // line start containing the read
+    let lnEnd = stripped.indexOf('\n', j); if (lnEnd === -1) lnEnd = stripped.length;
+    reads.push({ n: stripped.slice(0, m.index).split('\n').length,
+                 idx: stripped.slice(m.index + m[0].length, j - 1).trim(),
+                 line: stripped.slice(lnStart, lnEnd).trim() });
+  }
   /* Allowed: anything naming idx or cast; `ci`, the poster half's documented actor local
    * (`const ci = G.cast[i]`); and `i` inside the roster build `FIGHTERS.map((f, i) => …)`, where
    * `i` IS the cast index because it iterates FIGHTERS itself. */

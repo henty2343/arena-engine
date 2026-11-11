@@ -1,0 +1,21 @@
+=== leadproof-session6 :: node .qa/leadproof.mjs ===
+=== started 2026-11-10T23:18:24Z ===
+  katana   lead     − → contour faces motion: 256/256
+  scythe   lead     − → contour faces motion: 256/256
+  javelin  headLead + → contour faces motion: 256/256
+  dagger   lead     − → contour faces motion: 256/256
+  staff    lead     − → contour faces motion: 256/256
+  katana   fp +1: 178/178 drawn points on the mirrored mapping
+  katana   fp −1: 178/178 drawn points on the mirrored mapping
+  scythe   fp +1: 286/286 drawn points on the mirrored mapping
+  scythe   fp −1: 286/286 drawn points on the mirrored mapping
+  javelin  fp +1: 182/182 drawn points on the mirrored mapping
+  javelin  fp −1: 182/182 drawn points on the mirrored mapping
+  dagger   fp +1: 86/86 drawn points on the mirrored mapping
+  dagger   fp −1: 86/86 drawn points on the mirrored mapping
+  staff    fp +1: 232/232 drawn points on the mirrored mapping
+  staff    fp −1: 232/232 drawn points on the mirrored mapping
+  Part B: hits 442 (flagged 316), parries 311 (flagged sides 425), swats 154 (flagged 91) — touch-class 139, cut-window 15; every one recomputed from stored fields
+LEADPROOF: ALL PASS — the edge faces the motion, art mirrors with the hitbox, flagged battles auditable from stored events
+=== exit=0 ===
+=== canonical md5 after: e431d344347a55da51e1f4604cbeb4ed / 5392 lines ===

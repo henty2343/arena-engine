@@ -1,0 +1,7 @@
+seam-proof done exit=0
+pair-proof done exit=0
+flipproof done exit=0
+leadproof done exit=0
+chromecheck done exit=0
+lengrow-gate done exit=1
+ALLDONE

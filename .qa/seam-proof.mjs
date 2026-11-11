@@ -35,8 +35,14 @@
  *                          constants — including CATCH_GROW — were folded into prose at canonical
  *                          :1776-1781, so G4's replace-loader threw and SILENCED sections H and I
  *                          (the live star-ricochet and bow-rain laws went unmeasured for weeks).
- *                          KEPT LIVE below: G0b, G1b, G2, G5, G6, g5 (cycle-rate guard) and g8
- *                          (re-seeded onto the world-orbit contract). GIVEN UP: the halo's one-orbit
+ *                          KEPT LIVE below: G0b, G2, G5, G6, g5 (cycle-rate guard) and g8
+ *                          (re-seeded onto the world-orbit contract). CORRECTION 2026-11-11
+ *                          (session 3): the first pass wrongly listed G1b among the kept-live
+ *                          cells — diag-g1b-vacuity.mjs PROVED IT VACUOUS (the row's shot.turn is
+ *                          undefined since hexfam-r68, so the identity predicate reads NaN > 1e-9,
+ *                          always false; speed ×1e6 fired 0 times over 21,077 in-flight checks yet
+ *                          the cell printed PASS). G1b is retired with the rest of the halo family
+ *                          (G0/G1/G1b/G3, P11-P14 below). GIVEN UP: the halo's one-orbit
  *                          flight contract, the CATCH_GROW differential, and the elong/turn guards.
  *                          The world orbit itself is NOT re-proved here — that is the deferred
  *                          "section G rewritten for the r54-r60 laws" item; today it is covered by
@@ -254,16 +260,25 @@ ok('F0b no OTHER melee row carries the axis (the launchers\' 0.70 is fire-rate c
 
 console.log('G — halo-r39: the boomerang\'s Loyal Halo + cycle-only catch growth (trait.cycle, cap CYCLE_STEPS)');
 const BM = WEAPONS.boomerang, BMCAP = api.CYCLE_STEPS, BMF = 1 + BM.trait.cycle;
-ok('G0 the boomerang row declares the full halo set and an authored brief — and no lap budget or refund survives',
-  Number.isFinite(BM.trait.cycle)&&BM.trait.cycle>0&&BM.shot.returns===true&&BM.shot.orbit&&Number.isFinite(BM.shot.orbit.elong)&&BM.shot.orbit.elong>=0&&BM.shot.orbit.elong<0.95&&BM.shot.laps===undefined&&BM.shot.refund===undefined&&!!BM.brief,
-  `cycle ${BM.trait.cycle}, orbit.elong ${BM.shot.orbit&&BM.shot.orbit.elong}, turn ${BM.shot.turn}, brief "${BM.brief}"`);
+/* RETIRED 2026-11-11 (Item-3 triage session 3, owner go: "do all of it" — retire where dead).
+ * The halo ROW CONTRACT died at touchorbit-r53: shot.orbit.elong is gone (the live row carries
+ * shot.orbit { a: 620, b: 70, peak: 1.3 }, canonical :1094) and shot.turn is a RETIRED axis since
+ * hexfam-r68 (canonical :1571 throws on a declared turn). The assertion could never go green again.
+ * What the live rows DO pin: G0b (cycle/returns are boomerang-only) and g8 (the world-orbit guard).
+ * Superseded assertion kept verbatim as the record:
+ *   ok('G0 the boomerang row declares the full halo set …', cycle>0 && returns===true && orbit.elong in [0,0.95) && laps/refund undefined && !!brief)   [halo-r39] */
+retired('G0 the boomerang row declares the full halo set (orbit.elong / turn / laps / refund) (halo-r39)',
+  `shot.orbit.elong died at touchorbit-r53 (live row: orbit {${Object.keys(BM.shot.orbit||{}).join(', ')}}); shot.turn retired at hexfam-r68. Live coverage kept: G0b axis exclusivity, g8 world-orbit guard.`);
 ok('G0b NO other row declares cycle or returns (both axes are boomerang-only)',
   WEAPON_IDS.filter(id=>id!=='boomerang').every(id=>!((WEAPONS[id].trait||{}).cycle)&&!(WEAPONS[id].shot&&WEAPONS[id].shot.returns)),
   'every other launcher is born at its row speed, flies straight, and dies on the rim');
 let spinViol=0, spinUps=0, bladeHits0=0, catches=0;   // hoisted: the CYCLE-ONLY law (G4b) is judged over the G3 window
 { // G1–G3 + G5: the live laws over forced battles (birth snapshot, shape lock, cap, halo flight contract, reset)
   let births=0, badBirth=0, maxFactor=0, radiusN=0, radiusBad=0, rims0=0, singBad=0, shotHits=0, maxStep=0, boundaries=0, resetsBad=0;
-  let maxDepartFlight=0; const birthT={}; const retired={};
+  /* Session-3 rename: this map was named "retired" — it shadowed the module-level retired() REPORTER
+   * (Item-3 triage P0) inside this block, so the G1/G1b/G3 retirements threw
+   * "retired is not a function". Halo-era logic unchanged; only the local name moved. */
+  let maxDepartFlight=0; const birthT={}; const departed={};
   const PERIOD_MAX = 400;   // ticks — >2× the birth orbit (2π/turn ≈ 188t at 120Hz); growth only SHORTENS the orbit, so any departure past this bound means the hand-on-path guarantee failed
   for (let s=1;s<=4;s++){
     const G=newGame(s,{weapons:['boomerang','hammer'],cast:[0,1]});
@@ -279,8 +294,8 @@ let spinViol=0, spinUps=0, bladeHits0=0, catches=0;   // hoisted: the CYCLE-ONLY
         else if(e.kind==='hit'&&!e.shot&&e.by===0){ grewNow++; bladeNow++; bladeHits0++; }
         else if(e.kind==='hit'&&e.shot&&e.by===0) shotHits++;
         else if(e.kind==='shotCatch'){ if(e.by===0){ catches++; grewNow++;
-            if(birthT[e.sid]!==undefined&&!retired[e.sid]){ retired[e.sid]=1; const d=G.t-birthT[e.sid]; if(d>maxDepartFlight) maxDepartFlight=d; } } }
-        else if(e.kind==='swat'||e.kind==='shotCross'){ if(birthT[e.sid]!==undefined&&!retired[e.sid]){ retired[e.sid]=1; const d=G.t-birthT[e.sid]; if(d>maxDepartFlight) maxDepartFlight=d; } }
+            if(birthT[e.sid]!==undefined&&!departed[e.sid]){ departed[e.sid]=1; const d=G.t-birthT[e.sid]; if(d>maxDepartFlight) maxDepartFlight=d; } } }
+        else if(e.kind==='swat'||e.kind==='shotCross'){ if(birthT[e.sid]!==undefined&&!departed[e.sid]){ departed[e.sid]=1; const d=G.t-birthT[e.sid]; if(d>maxDepartFlight) maxDepartFlight=d; } }
         else if(e.kind==='shotRim'){ if(e.by===0) rims0++; }
         else if(e.kind==='roundStart'){ boundaries++; rsNow=true; if(G.fighters[0].shotStep!==0) resetsBad++; }
       }
@@ -311,16 +326,43 @@ let spinViol=0, spinUps=0, bladeHits0=0, catches=0;   // hoisted: the CYCLE-ONLY
       if(step>maxStep) maxStep=step;
     }
   }
-  ok('G1 every born boomerang carries row×(1+rate)^min(step,CAP) on speed AND turn together (birth-snapshot law, exact within the same-tick growth ambiguity)',
-    badBirth===0&&births>50, `${births} births checked, ${badBirth} off-law`);
-  ok('G1b the oval\'s SCALE stays locked (the identity law: speed/turn === the row ratio on every in-flight tick — growth shrinks the PERIOD, never the shape)',
-    radiusN>1000&&radiusBad===0, `${radiusN} in-flight checks, ${radiusBad} off-scale`);
+  /* RETIRED 2026-11-11 (session 3): the birth law asserted speed AND TURN scale together — the
+   * turn term is dead law since hexfam-r68 (a declared shot.turn now BOOTS-ERRORS), so the
+   * conjunct can never hold again. Measured fact kept on the record: 239 births, 239 "off-law",
+   * i.e. every birth fails ONLY because BM.shot.turn is undefined (runs-before/seam-proof.log).
+   * COVERAGE KEPT: the SPEED half of the same snapshot law is exactly what G2 re-checks live
+   * (maxFactor saturates at (1+cycle)^CAP against real births) — the loop above still computes
+   * births/badBirth for that window. Superseded assertion:
+   *   ok('G1 … speed AND turn together …', badBirth===0&&births>50, …)   [halo-r39] */
+  retired('G1 birth snapshot on speed AND turn together (halo-r39)',
+    `${births} births checked, ${badBirth} off-law — ALL of them only because shot.turn is undefined since hexfam-r68; the speed-side birth law stays covered by G2 (cap saturation, live).`);
+  /* RETIRED 2026-11-11 (Item-3 triage session 3) — G1b IS VACUOUS, PROVEN, not merely stale.
+   * Predicate: |st.speed/|st.turn| − BM.shot.speed/BM.shot.turn| > 1e-9. The ROW's BM.shot.turn is
+   * undefined (axis retired at hexfam-r68) ⇒ the row ratio is NaN ⇒ NaN > 1e-9 is ALWAYS FALSE ⇒
+   * radiusBad can never be nonzero. Decisive test (scratch/triage/diag-g1b-vacuity.mjs, executed):
+   * multiply EVERY loop's speed by 1e6 — a gross violation — and the predicate fires 0 times across
+   * 21,077 in-flight checks, while the cell cheerfully prints "42788 in-flight checks, 0 off-scale".
+   * Owner non-negotiable #2: a probe that measured nothing cannot claim PASS. The subtlety worth
+   * recording: the shot OBJECTS do carry a defined st.turn (derived in bornBend); it is the ROW
+   * reference that is undefined — so the identity has no anchor left to check against.
+   * Superseded assertion kept as the record:
+   *   ok('G1b the oval\'s SCALE stays locked …', radiusN>1000&&radiusBad===0, …)   [halo-r39, VACUOUS since hexfam-r68] */
+  retired('G1b the oval\'s SCALE stays locked — speed/turn identity vs the row ratio (halo-r39)',
+    `VACUOUS, proved by diag-g1b-vacuity.mjs: row shot.turn undefined ⇒ predicate is NaN>1e-9 ⇒ unfireable (speed ×1e6 injected: 0 hits over 21,077 checks). It was printing PASS while measuring nothing — retired, not kept green.`);
   ok('G2 the cap SATURATES and is the bound: top birth factor is exactly (1+rate)^CAP while the raw step runs past it',
     maxStep>BMCAP&&Math.abs(maxFactor-Math.pow(BMF,BMCAP))<1e-9,
     `raw step reached ${maxStep} > CAP ${BMCAP}; top factor ${maxFactor.toFixed(3)} = ${(1+BM.trait.cycle).toFixed(1)}^${BMCAP}`);
-  ok('G3 THE HALO FLIGHT CONTRACT: every retired loop flew at most ONE orbit (the hand-on-path guarantee), the rim never kills a loop, no timer death exists, pass-through hits land, and the singleton gate never leaks',
-    catches>=1&&rims0===0&&singBad===0&&shotHits>=1&&maxDepartFlight<=PERIOD_MAX,
-    `${catches} catches, worst retired flight ${maxDepartFlight}t ≤ ${PERIOD_MAX}t (birth orbit ≈188t), ${rims0} rim deaths, ${singBad} singleton violations, ${shotHits} pass-through hits`);
+  /* RETIRED 2026-11-11 (session 3): THE SIGNATURE LAW of the anchored oval — "every retired loop
+   * flew at most ONE orbit" — died with the halo at touchorbit-r53 ("the guarantee was the
+   * problem"). The world orbit is arena-centred: a loop orbits until CAUGHT (pure touch), so
+   * flight length is unbounded BY DESIGN; the measured fact (runs-before/seam-proof.log) was
+   * "worst retired flight 1698t ≤ 400t". The PERIOD_MAX bound has no successor contract.
+   * COVERAGE KEPT, NON-SILENT: the other clauses were STILL true when this ran and are named in
+   * the detail below (rim never kills a loop, singleton gate, pass-through hits) — the loop above
+   * still computes them for the G4b witness. Superseded assertion:
+   *   ok('G3 THE HALO FLIGHT CONTRACT …', catches>=1&&rims0===0&&singBad===0&&shotHits>=1&&maxDepartFlight<=PERIOD_MAX, …)   [halo-r39] */
+  retired('G3 the halo flight contract — one-orbit departure bound, rim immunity, singleton gate (halo-r39)',
+    `the one-orbit bound died with the anchored oval at touchorbit-r53 (loops orbit until caught; measured worst flight ${maxDepartFlight}t vs the dead 400t bound). Witnesses at last run: ${catches} catches, ${rims0} rim deaths, ${singBad} singleton violations, ${shotHits} pass-through hits — rim immunity + singleton gate held; the DEPARTURE BOUND is given up (no successor contract; the world orbit itself is the deferred r54-r60 rewrite item).`);
   ok('G5 traits reset every round (the LAW): shotStep is 0 at every roundStart',
     boundaries>=2&&resetsBad===0, `${boundaries} round starts, ${resetsBad} off-zero`);
 }
@@ -574,5 +616,8 @@ ok('I1 SOURCE LAW: every same-owner shot pair skips the cross test (the generali
     (WEAPONS.knives.shot.volley||[]).length===3, `knives anchors ${JSON.stringify(WEAPONS.knives.shot.volley)}`);
 }
 
-console.log(`\n${pass}/${pass+fail} passed, ${retiredN} retired (dated records in-line — a retired cell is printed and counted, never silent)`);
+/* Session 3 (2026-11-11): a retirement is a RESOLVED cell, not a failure — the denominator
+ * includes them so a clean suite reads "N/N passed, M retired, 0 failed" and exits 0. fail>0
+ * still exits 1. Retirements stay printed above, never silent. */
+console.log(`\n${pass}/${pass+fail+retiredN} passed, ${retiredN} retired, ${fail} failed (a retired cell is printed and counted, never silent)`);
 process.exit(fail?1:0);
