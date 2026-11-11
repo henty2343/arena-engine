@@ -1,0 +1,4 @@
+# Line endings: committed blobs are LF; force LF on checkout so md5 / fingerprint checks read the same on every OS.
+*.html text eol=lf
+*.mjs  text eol=lf
+*.md   text eol=lf
