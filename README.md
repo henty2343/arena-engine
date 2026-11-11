@@ -291,7 +291,7 @@ covering regenerator — `--verify` is the shipped-ladder proof, gated on each s
 against their own art; ⚠ **it currently REFUSES, exit 2, and writes nothing**: the roster has
 **two** growing weapons since `links-r87` (spear + the flail's link-adder `trait.len`) and this
 tool bakes the spear only — "extend it deliberately if that changes" — the same fact Item 4's
-re-seed encodes, and the NEXT open item; `--write` splices the `LEN_CIRCLES` block; `--emit FILE` writes the block
+re-seed encodes, and the NEXT open item **[SUPERSEDED 2026-11-11, session 7 (GAMES #728): the guard now counts RIGID growers only, so `--verify` now exits **0** with 12/12 and prints the flail as a chain grower skipped by design — the flail is a link-adder with no ladder row, so there was never anything to bake for it; a SECOND rigid grower still refuses, by design; the ⚠ text above is kept as the dated record]**; `--write` splices the `LEN_CIRCLES` block; `--emit FILE` writes the block
 without touching the canonical, so a code edit and a geometry edit can land **atomically** (otherwise
 the boot guard rejects the file mid-transition); `--steps N` probes a taller ladder and refuses
 `--write`. It reads `trait.len`/`lenJ`/`LEN_STEPS` out of the canonical so baked rows cannot

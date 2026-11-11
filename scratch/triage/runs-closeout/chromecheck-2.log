@@ -1,8 +1,0 @@
-=== chromecheck-2 :: node chromecheck.mjs ===
-=== started 2026-11-10T23:28:04Z ===
-PASS chrome: bug=219B legend=826B clock=true over=true hitstop=true (seen=true frozen=true)
-PASS pairing: cast=true namesSwap=true colsSwap=true legendSwap=true scoreSlotKeyed=true winnerNamesActor=true restore=true
-       default Speedy / Heavy [#a8892f #ff6b4a]  ->  swapped Heavy / Speedy [#ff6b4a #a8892f]  winner overlay "Speedy" = cast[1] Speedy
-=== exit=0 ===
-=== seconds: 6 ===
-=== canonical md5 after: e431d344347a55da51e1f4604cbeb4ed / 5392 lines ===

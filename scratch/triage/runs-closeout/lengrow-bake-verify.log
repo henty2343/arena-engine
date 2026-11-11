@@ -1,6 +1,0 @@
-=== lengrow-bake-verify :: node .qa/lengrow-bake.mjs --verify ===
-=== started 2026-11-10T23:28:14Z ===
-lengrow-bake: expected exactly one growing weapon (spear), found [spear, flail] — this tool bakes the spear only; extend it deliberately if that changes.
-=== exit=2 ===
-=== seconds: 0 ===
-=== canonical md5 after: e431d344347a55da51e1f4604cbeb4ed / 5392 lines ===

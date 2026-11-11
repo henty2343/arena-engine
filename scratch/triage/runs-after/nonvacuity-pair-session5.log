@@ -1,9 +1,0 @@
-BASELINE clean canonical: 33 reads audited, 0 bad, verdict=true, floor(>=20)=true
-  NON-VACUOUS B1 slot-keyed COLS read (burnfix shape) — reads=33, bad=1, verdict=false
-  NON-VACUOUS B2 slot-keyed COLS read (st.o shape) — reads=33, bad=1, verdict=false
-  NON-VACUOUS B3 slot-keyed SKILL_SHORT read — reads=33, bad=1, verdict=false
-  NON-VACUOUS B4 slot-keyed FIGHTERS read — reads=33, bad=1, verdict=false
-  WITNESS-OK  B5 nested-extent witness (old truncates -> false flag; new reads full -> allowed) — new bad=0 (want 0), old bad=2 (want >=1)
-  WITNESS-OK  old-vs-new delta on clean canonical — old scanner bad=2 (the 2 burnfix false positives), new bad=0, new count=33 (>=20 honest)
-
-PAIR-TRIPWIRE NON-VACUITY VERDICT: 6/6 scenarios proven falsifiable/witnessed.

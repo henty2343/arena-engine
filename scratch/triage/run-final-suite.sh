@@ -1,6 +1,6 @@
 #!/bin/bash
 # the Item-3 close-out battery — every live probe, read-only, canonical never touched
-cd /workspace/arena-engine
+cd "$(dirname "$0")/../.." || exit 1   # repo root (2026-11-11: was a hard-coded sandbox path)
 mkdir -p scratch/triage/runs-closeout
 run() {
   local label="$1"; shift

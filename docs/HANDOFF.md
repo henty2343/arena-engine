@@ -129,3 +129,21 @@ from git history; this paragraph is the record of the rehearsal.]**
   verified before and after every run. The non-vacuity number is the honest **9/9, NOT 10/10**
   (session 3's false claim is superseded, and stays visible in GAMES.md #724). The handoff chain
   for the next agent is `scratch/HANDOFF-ITEM3-SESSION6.md`.
+- **2026-11-11 (later) — Item 3 is ON `main`, and the scratch handoff chain was PRUNED (GAMES.md #728–#731;
+  the two `scratch/` pointers above — `handoff-repair-brief.md` and `HANDOFF-ITEM3-SESSION6.md` — are
+  SUPERSEDED and stay visible as the dated record).** The lengrow-bake `GROWERS` guard was scoped to RIGID
+  growers (the flail is a link-adder with no ladder row — `--verify` now exits 0, 12/12; #728), the full
+  battery was re-run on the final bytes (#729), PR #3 merged to `main` with a merge commit `c46fbe8` (#730),
+  and the one-shot session scaffolding was removed from HEAD (#731): the Item-3 handoffs, the repair brief,
+  the triage menu, the next-agent prompt, the push tutorial, the 52 `runs-*` logs and the three one-shot
+  `append-games-*` scripts. **Nothing is lost:** the annotated tag `item3-closed` marks the state just before
+  the prune — recover any file with `git show item3-closed:<path>` (e.g.
+  `git show item3-closed:scratch/HANDOFF-ITEM3-SESSION6.md`). KEPT: `scratch/` itself (the proofs write their
+  temp files into it and never create it), `docreflow.mjs`, `navgen.mjs`, `diag-flip-seeds.mjs` (flipproof's
+  re-pick tool) and the other `diag-*`/`patch-*` tools, the four `.orig` backups, and the runner scripts
+  (made repo-relative). **NEW AGENT: start from README's checkpoint, this file and GAMES.md #728–#731.**
+  Item 3 leaves nothing outstanding. Owner-only leftovers: the stale `LEN_CIRCLES` provenance comment
+  ("skill-r29 / LEN_STEPS 18"; rows are current; best left for the baker to rewrite at the next real
+  re-bake) and the README's references to `scratch/baseline-484.csv`, `measure-summary.mjs`,
+  `measure-agg.mjs`, `measure-parts.md`, which are NOT tracked on `main` (local-only or missing).
+  `measure.mjs` never ran. Canonical untouched: md5 `e431d344347a55da51e1f4604cbeb4ed`, 5,392 lines.

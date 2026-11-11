@@ -1,6 +1,7 @@
 #!/bin/bash
-cd /home/claude/arena-engine
+cd "$(dirname "$0")/../.." || exit 1   # repo root (2026-11-11: was a hard-coded sandbox path)
 OUT=scratch/triage/runs-session7
+mkdir -p "$OUT"   # the logs are not tracked any more; create the folder
 for cmd in "seam-proof:node .qa/seam-proof.mjs" "pair-proof:node .qa/pair-proof.mjs" "flipproof:node .qa/flipproof.mjs" "leadproof:node .qa/leadproof.mjs" "chromecheck:node chromecheck.mjs" "lengrow-gate:node .qa/lengrow-gate.mjs"; do
   name=${cmd%%:*}; c=${cmd#*:}
   s=$(date +%s)
