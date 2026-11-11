@@ -42,6 +42,13 @@
  * second length-growing weapon ever lands, `tempFor()` needs generalising (it hardcodes INGR_SPEAR)
  * and the gate needs that weapon's own silhouette. Other skills — shot multipliers, knock — need NO
  * baking at all: they are data on a row plus a hook, with no covering to re-pack.
+ *
+ * DATED CORRECTION (2026-11-11, session 7) — the paragraph above stays visible as the record. A second
+ * length-growing weapon DID land (the flail, trait.len, longchain-r86/links-r87), but it grows by ADDING
+ * LINKS (chain.ext), not by stretching, so it has no covering to re-pack and nothing here to bake: boot
+ * (canonical :1810) skips chain rows. The GROWERS guard therefore counts RIGID growers only and must
+ * still be exactly [spear]; chain growers are listed on a visible line. A second RIGID grower still
+ * refuses (exit 2), by design — that is when tempFor() would need generalising.
  */
 import { readFileSync, writeFileSync, rmSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -81,7 +88,14 @@ const api = new Function('document', 'window', 'performance', 'requestAnimationF
   { devicePixelRatio: 1, innerWidth: 1200, innerHeight: 900, addEventListener: () => {} },
   { now: () => 0 }, () => 0, console);
 
-const GROWERS = Object.keys(api.WEAPONS).filter(id => api.WEAPONS[id].trait && api.WEAPONS[id].trait.len);
+/* SCOPED 2026-11-11 (session 7): SUPERSEDED line kept visible —
+ *   const GROWERS = Object.keys(api.WEAPONS).filter(id => api.WEAPONS[id].trait && api.WEAPONS[id].trait.len);
+ * It counted the flail (trait.len since r86) and refused to run since links-r87. The flail is a LINK-ADDER:
+ * boot (canonical :1810) skips chain rows — no ladder, no LEN_CIRCLES row, only a chain.ext that boot and
+ * lengrow-build-proof gate. A covering to re-pack exists only for RIGID growers, so only they are counted. */
+const ALL_GROWERS = Object.keys(api.WEAPONS).filter(id => api.WEAPONS[id].trait && api.WEAPONS[id].trait.len);
+const GROWERS = ALL_GROWERS.filter(id => !api.WEAPONS[id].chain);
+const CHAIN_GROWERS = ALL_GROWERS.filter(id => api.WEAPONS[id].chain);
 /* --steps N: probe a ladder TALLER than the canonical's (feasibility check for a raised cap).
  * Read-only by construction: --write refuses an override, because splicing N rows under a
  * canonical whose LEN_STEPS is something else would trip the boot guard on the next load. */
@@ -100,9 +114,13 @@ if (STEPS_OVERRIDE && WRITE) {
  * current canonical it is undefined and the fallback to LEN_STEPS always wins. */
 const STEPS = STEPS_OVERRIDE || api.LEN_STEPS_TOP || api.LEN_STEPS;
 if (GROWERS.length !== 1 || GROWERS[0] !== 'spear') {
-  console.error(`lengrow-bake: expected exactly one growing weapon (spear), found [${GROWERS.join(', ')}] — this tool bakes the spear only; extend it deliberately if that changes.`);
+  console.error(`lengrow-bake: expected exactly one RIGID growing weapon (spear), found [${GROWERS.join(', ')}] — this tool bakes the spear only; extend it deliberately if that changes. (chain growers [${CHAIN_GROWERS.join(', ')}] are not counted: they carry no ladder row.)`);
   process.exit(2);
 }
+/* Chain growers are reported, never silently dropped: a visible line is the difference between
+ * "scoped by design" and "gone becomes invisible". Their coverage lives elsewhere (boot's chain.ext
+ * gate, lengrow-build-proof's chain half, inscribe's chain tie). */
+if (CHAIN_GROWERS.length) console.log(`lengrow-bake: chain growers skipped by design (link-adders: no ladder row to bake) — ${CHAIN_GROWERS.map(id => { const ex = api.WEAPONS[id].chain.ext; return id + (ex ? ` (chain.ext every ${ex.every}, max ${ex.max})` : ' (chain.ext MISSING)'); }).join(', ')}`);
 const W = api.WEAPONS.spear;
 const RATE = W.trait.len, LENJ = W.lenJ;
 /* Provenance names the BUILD, not a date: this sandbox's clock runs ahead of the owner's local
