@@ -239,7 +239,7 @@ exemplar and was RETIRED at `nocombo-r34`: a skill may add on a shared axis, nev
 trait's mechanic.) For a CHEAP axis the assertion's
 house is `seam-proof.mjs` — its shotgrow section E is the template (`shotR` was ~6 sim lines plus 3
 renderer lines, no bake). After any skill or bot landing run
-`.qa/seam-proof.mjs` (~8s) then `.qa/lengrow-build-proof.mjs` (~60s); add Tier 1 (`inscribe`,
+`.qa/seam-proof.mjs` (~5min) then `.qa/lengrow-build-proof.mjs` (~60s); add Tier 1 (`inscribe`,
 `bake --verify`, `leadproof`, `flipproof`) **only if geometry moved**.
 
 **More bots is now cheaper, but not free.** The pairing step removed the sim's 1v1 *identity*
@@ -435,7 +435,7 @@ label) · (4) author `brief` (weapon) / `short` (fighter) if the new axis is not
 derivation cannot express it and the guard will throw · (5) add an assertion to `.qa/seam-proof.mjs`,
 **including one that proves the guard FIRES** by injecting a bad row · (6) update the REGISTRY block.
 
-**Proofs — Tier 0 only unless geometry moved.** `.qa/seam-proof.mjs` (~2s) then
+**Proofs — Tier 0 only unless geometry moved.** `.qa/seam-proof.mjs` (~5min) then
 `.qa/lengrow-build-proof.mjs` (~60s); `chromecheck` if a label changed; `fingerprint.mjs` if the
 landing is *meant* to be behaviour-identical (an inert seam, a comment) — where 0 of 8 IS meaningful.
 Tier 1 (`inscribe`, `bake --verify`, `leadproof`, `flipproof`) only if art, polys, coverings or scale
@@ -531,7 +531,7 @@ npm run inspect  -- --game <id> --seed 1 --sheet     # ~24 frames tiled
 - Believes **interest drives comprehension** — viewers rewind or rewatch when they care. Raise a readability concern once, then defer to the owner's judgement.
 - **Discuss before writing.** Proposals and analysis first; nothing goes into docs or code until the owner says go.
 - The owner **plays the preview personally** and reports symptoms. Reproduce headlessly with the measurement harness before patching.
-- **`measure.mjs` never runs without the owner's explicit go** (standing rule, owner 2026-10-19: "dont run measure.mjs ... ever. ask if you want to"). Parallel and tiered since v1.2 (`--solidity` / `--quick` / `--vs` / `--cells` / full — the report is identical at any job count). `--solidity` is the owner's tunneling/overlap suite (~109 battles: naturals + a curated 23-cell overlap gauntlet — minutes, not an hour); a full matrix run is ≈3,900 battles at the 22-weapon roster, wall ≈2.5h ÷ cores, and the assistant's sandbox cannot host it (long runs get killed and look like stalls) — matrix baselines run on the owner's machine. Fast iteration goes through `chromecheck.mjs` (~4s) and `.qa/inscribe.mjs` (~6s — mandatory after any art/poly/scale edit). **`.qa/projectile-fix.mjs` — the ~2–3 min targeted probe for shot-rule changes — was retired in the 2026-10-28 pre-skills cleanup, so `measure.mjs` (owner-gated) is now the only instrument that covers shots, holds and the damage gate. Budget for that, or rebuild the probe, before touching shot behaviour.**
+- **`measure.mjs` never runs without the owner's explicit go** (standing rule, owner 2026-10-19: "dont run measure.mjs ... ever. ask if you want to"). Parallel and tiered since v1.2 (`--solidity` / `--quick` / `--vs` / `--cells` / full — the report is identical at any job count). `--solidity` is the owner's tunneling/overlap suite (~109 battles: naturals + a curated 23-cell overlap gauntlet — minutes, not an hour); a full matrix run is ≈3,900 battles at the 22-weapon roster, wall ≈2.5h ÷ cores, and the assistant's sandbox cannot host it (long runs get killed and look like stalls) — matrix baselines run on the owner's machine. Fast iteration goes through `chromecheck.mjs` (~30s) and `.qa/inscribe.mjs` (~6s — mandatory after any art/poly/scale edit). **`.qa/projectile-fix.mjs` — the ~2–3 min targeted probe for shot-rule changes — was retired in the 2026-10-28 pre-skills cleanup, so `measure.mjs` (owner-gated) is now the only instrument that covers shots, holds and the damage gate. Budget for that, or rebuild the probe, before touching shot behaviour.**
 - Allergic to over-engineering. Any mechanism must earn its place; expect "is this actually necessary?" and answer it honestly.
 
 ---

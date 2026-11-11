@@ -20,7 +20,7 @@ Five consequences to hold onto when making tradeoffs:
 2. **Platform compliance is revenue, not pedantry.** Resolution, framerate, codec, loudness, duration and safe zones decide whether a video is eligible and how it's treated. These are hard requirements, not preferences.
 3. **Consistent house style is a growth mechanism.** Recognisable videos convert a one-off viewer into a subscriber, and subscribers are what turn watch time into compounding watch time. Ten unrelated-looking games is ten times worse than one channel.
 4. **"Works on my machine" is failure.** The bar is: published, watched by a stranger on a phone, monetized. A video is not done when it renders — it's done when it would survive being uploaded.
-5. **The tool never touches publishing, accounts or revenue.** It makes the file; a human uploads it. Don't build upload automation, analytics, scheduling or account features — they are permanently out of scope, both because platforms prohibit them and because they distract from the only thing that matters.
+5. **The tool never touches publishing, accounts or revenue.** It makes the file; a human publishes it. Don't build upload automation, analytics, scheduling or account features — they are permanently out of scope, both because platforms prohibit them and because they distract from the only thing that matters.
 
 ---
 
@@ -267,7 +267,7 @@ Excluded from the production build of `apps/studio`.
 ```
 arena-engine/
 ├─ README.md               # the entry point — GitHub renders only this one at the root
-├─ .gitignore              # scratch/ · uploads/
+├─ .gitignore              # scratch/
 ├─ docs/                   # SPEC.md CONTRACT.md BUILD.md GAMES.md HANDOFF.md
 ├─ previews/               # spinclash-preview.html — THE canonical game (single file, dependency-free)
 ├─ chromecheck.mjs         # fast boot + pairing check (~4s) — runs today on bare Node
