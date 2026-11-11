@@ -8,6 +8,9 @@ pick a game → set options → generate → watch it → download
 
 No cloud, no accounts, no telemetry, no network calls after `npm install`. Binds `127.0.0.1` and writes files to `output/`.
 
+> **Audience:** this repo's docs are written for AI agents — the owner rarely reads them. Write for agents: outcomes, rules, pointers, token economy. The journey lives in GAMES' dated entries; don't re-narrate it in quick-start paths.
+
+
 **The purpose:** those MP4s get published to ad-supported platforms — YouTube, TikTok, Reels — and earn from the ads on them. The video file is the product; everything else in this repo is scaffolding to produce it. See the Purpose section at the top of `SPEC.md` before making any tradeoff.
 
 **Requirements:** Node 22+ and VSCode are for the ENGINE, once Phase 0 lands — there is **no `package.json` yet**: ffmpeg, the canvas runtime and the fonts arrive with `npm install` when the engine's npm surface exists (`BUILD.md` Phase 0; `assets/fonts/` is a placeholder until then, NOT committed). The SpinClash harness (`chromecheck.mjs` · `measure.mjs` · `ingest.mjs` · `.qa/` · `scratch/`) is dependency-free and runs TODAY on bare Node.
@@ -33,160 +36,16 @@ If you are an AI assistant working on this project: read all five before writing
 Long chats die, so the work restarts in a fresh one. The repo IS the split now — the working-set
 table below lists what a fresh session needs first; everything else is record or on-demand tooling.
 
-**YOU ARE HERE** (written for the next session). Build **`links-r87`**, canonical md5
-`99bb910d74d7390a435ce3354fb9320f`, **5,392 lines** — which REBUILT THE FLAIL'S GROWTH: THE
-CHAIN GROWS BY ADDING LINKS, NEVER BY STRETCHING ART (GAMES #721, the owner's own invention —
-*"i have invented the link stretch, just not documented it"*; recorded retroactively 2026-11-10:
-every `every` 4 damaging hits ADDS one ring+bar link pair further out in S2's frame, at most
-`max` 3 units — the uniform LEN_STEPS 12 cap consumed in 4-hit units; the grown flail has
-np = 3+2n hinged particles and every added link re-uses its TYPE's baked covering (`circBySeg`) —
-zero re-bake, the inscribe gate holds by construction; `chainGrow` returns the integer added-unit
-count and stays the ONE growth read for sim + hitbox + art; REACH carries `ext.max × ext.px`; a
-new boot gate requires `ext.max` to cover floor(LEN_STEPS/every); `FLAIL_CH.growMax` and the whole
-pitch-stretch mechanism are DELETED; the `auditFl` stride widened 13→37 for the longer chain
-poses; the haft and the head never scale; the nunchaku — no trait.len — never grows). It sits on
-`longchain-r86`, which opened THE MELEE PASS: THE FLAIL'S TRAIT SLOT IS FILLED (THE LONG CHAIN,
-GAMES #720, owner pick *"try and make the flail first"*: every damaging hit stretched the chain's
-PITCHES — trait.len 0.025, uniform cap 12 steps, the ball's orbit +30% at the top; ONE factor
-`chainGrow` read by sim + hitbox + art alike; rigid segment assemblies kept the coverage
-bake-frozen — zero re-bake, inscribe PASS at every step; boot-gated by FLAIL_CH.growMax 1.39,
-the ring-tip art-connectivity ceiling; the haft never scales; the nunchaku — no trait.len —
-never grows) — **that pitch-stretch mechanism and its growMax ceiling are SUPERSEDED WHOLE by
-r87's adding-links growth (#721); this sits-on entry is the historical record**. It sits on `emberfix-r85`, which made THE
-COAL'S DEATHS READABLE
-(GAMES #718: every non-bite death — expiry AND the silent cap ejection his eye caught as
-*"fell through 3 and only took 2 damage"* — now breathes a warm-brown WISP, while a bite BURSTS
-in gold; the pop test runs on every tick of the coal's life including its last; and THE POP GETS
-THE SLOW-MO — the hit's own ¼× window + the victim's flash, *"i forgot to write that it wasnt
-present"* — with pop/burn KILLS taking the KO hard freeze: every killing blow freezes; the
-non-kill burn beats stay unslowed by design). It sits on the r84 tuning (GAMES #717), which made THE BIG FIRE burn faster (a beat
-every 0.1s), BITE ON CONTACT (the entry edge bites the very tick the body touches it — stepping off
-re-arms; the pool born on the hit victim bites on the spawn tick), and wear ITS OWNER'S CAST
-COLOUR on every pool rim and coal bed (GAMES #717, his scroll×scroll read: *"impossible to tell all
-the circles apart"* — the hex-mark precedent; measured 5.9 burns/pool). It sits on the r83 tuning
-(GAMES #716, *"this is mechanic is good i think, we just need to tweak it"*): the pool (the BIG
-spot) now bites repeatedly — every ~0.13s with a 110px reach, the pinned-javelin continuous read
-without stealing the javelin's pin ("only the bigger spot"; the coals keep their one-shot pop) —
-the spill halves its cadence (every 30 ticks → 14 at the cap) and scatters on a RANDOM DISC
-around the meteor, not in a tail, and the fading coal's bite is VISIBLE (the pop bursts: flash
-ring + five sparks, 0.18 alpha fade floor — the bite never faded, the read did). It sits on
-KINDLING / THE EMBER SPILL (GAMES #715, owner: *"the metoer/projectile as it travels through the
-arena it 'spills' out af few embers, which lasts for a few secs and if the opponent touches then
-they take damage"* + THE GROWTH BRAKE: *"growth only happens when the meteor hits the target, not
-when the target steps on the embers"*): every scroll spell sheds burning coals IN FLIGHT (a
-birth-snapshot cadence, 14 ticks → 6 at the stack cap); each coal lands with a flare, burns a few
-seconds (2.5s → 4.1s on stacks, snapshot at the drop) and POPS under the foe — one honest bite,
-the coal consumed, honest kills; a pop grows NOTHING (the pool's burns-grow-nothing twin); cap 14
-live coals, oldest dies young; the roll clears; a ZONE not a status — no ring, no grow, no hex.
-THE SCORCHED LANE (`lane-r81`, #714) was REVERTED WHOLE at his eye (*"no i dont like that either…
-we need something visual/spectacular"*) — the scroll's SECOND revert scar after the called fall;
-its machinery is retired whole. The shot payload is UNTOUCHED, on top of THE BURNING POOL (GAMES
-#712–#713: r 62, 4.5s of life, breathing heart + flame ring + two ≤0.10-alpha heat-shimmer rings):
-the scroll's cast is the family spell projectile again (the visible projectile, row byte-identical
-to pre-r78), and every damaging scroll hit leaves a burning pool where the victim stood — 3s of
-amber/orange/gold fire with a char rim and ember motes (never gray, never red), cap 6 on the
-floor; stepping in burns a beat every 0.2s (quarter-damage snapshot, honest kills) — a ZONE, not
-a status: no ring slot, no grow, no hex. THE CALLED FALL (meteor-r78) was REVERTED WHOLE at his
-eye (*"we need to see a projectile"*) — the scroll's first revert scar. It sits on
-THE FAMILY FLIGHT LAW (owner
-ruling 2026-11-02: *"from now on all magic/spell users should adopt the same mechanig as wand
-currently have, it looks good"* — GAMES #701): THE HEX IS WHAT MAGIC DOES. Every `shot.hex` row
-(wand, tome, scroll, staff — the orb weapon is a sentinel; steel flies straight) is born bent and
-hunts the hexed, on the wand's blessed ladder DERIVED off the row's own speed ÷ HEXFAM.ref 800
-(base 0.9 + 0.15 × min(shotStep, TURN_STEPS 10)): one radius language family-wide (~889px birth
-arc, ~333px hunt floor at the cap — the never-orbit wall by construction), and the wand
-BIT-IDENTICAL (k = 1 exactly; smoke-r65 re-proved byte-identical). The grow() counter gate now
-reads `shot.hex` itself — retiring `trait.turn` had silently dropped the wand off its own counter
-(the discovery, disclosed in #701: when retiring a field, hunt its CONSUMERS). trait.turn +
-shot.turn are RETIRED (boot guards throw); hex ⊥ returns/ricochet/pin/skewer. The victim wears the
-mark in the ATTACKER's colour and the comet trails ride (the r65 renderer was row-generic as
-written); the tome KEEPS its TRIO (flight × payload orthogonal). **THE WAND'S TRAIT SLOT IS FILLED — TRANSFIGURATION / THE BLOOM
-(`bloom-r73`, GAMES #706)**: every damaging wand hit turns the struck weapon into a joke object
-that does nothing at all for 3s (the body stays alive; re-hits extend under a 6.0s cap; 2s
-immunity after the poof; six joke objects rotate slow and tangential, grip-anchored so they
-touch the body and ride the sweep tangential like held weapons — at 0.35 of tempo, so viewers
-read them; the object touching the rim shakes the joke off early, and only a natural expiry
-carries the 2s silence). The wand trait journey concludes here (#710). Two revert scars sit before it: the grudge
-(r70→r71) and the whip-crack flick (r72→r73, *"it reminds too much about the other spells"*).
-The prior experiment `wordform-r67` (THE WORD REFORMS — the launcher-action menu pick A, built
-revert-ready at his *"im not completely convinced"*) was REVERTED WHOLE at the same word that
-ruled the family law (#700 — canon re-proven byte-identical to `affinity-r66` before r68 landed;
-the headless finding: reformed pages mostly re-crossed to the rim — denial-resistance, not landed
-action). It sits on
-THE TOME TRIO (`affinity-r66` — the 2026-10-28 ruling executed — GAMES
-#698): the pages cycle POISON → FROST → FIRE. Halo pages stack a biting DoT (cap 5, 0.35×stacks hp
-per 40 ticks, 8s); nova pages chill the whole tempo (sweep + movement + cadence, 7%/stack, FLOOR 0.6
-— never a full lock, 6s); vortex pages swell at birth (linear off the shared counter, capped ×1.9 —
-element-gated, poison/frost pages never swell). THE SUSTENANCE LAW: any page hit refreshes both
-curses, the element's own page deepens (the first smoke caught the strict cycle self-diluting).
-THE SLOT LAW + THE RING GRAMMAR are the owner's design (one DoT slot + one debuff slot; one ring
-design — colour=which, thickness=depth, pulse=tempo beating INWARD, cap=the MAXED inner bleed; the
-BUFF slot is reserved outermost for the coming healing — he will design the generic ring himself
-and show us). Round-reset applies; no new rng draws; non-tome matches bit-identical (regressions
-byte-identical). Rates PROVISIONAL — his eye pending. The prior build `hexspark-r65` landed THE HEX
-on the wand (EYE-BLESSED: *"i watched it and i like it a lot"*) — the owner's excitement pick out
-of a five-option menu, reframed by his identity question — homing as SPITE, not guidance): the
-birth bend keeps turn authority (1−h), a LIVE SEEK toward the hexed foe gets h = min(shotStep,
-TURN_STEPS)/TURN_STEPS, so the whole air turns hostile at once when the hex deepens; authority is
-conserved ⇒ the never-orbit law (333px radius floor) holds by construction; h=0 is the r62 bend
-byte-for-byte; no new rng draws. The victim WEARS the counter (a pulsing ring in the attacker's
-colour — renderer-only) and hex sparks trail comets (renderer-only, `TRAIL_N` 0 disables). Rates
-PROVISIONAL, damage unchanged — the owner's eye verdict pending (GAMES #697). The prior build
-`flagfix-r64` RESTORED THE THREE FLAG LAWS (the r61 bendspark comment had swallowed the
-ricochet/pin/skewer birth spreads at both launch sites — stars/nails/skewer dead r61→r63; the
-slow-mo exonerated 16/16; the winner overlay's frozen wall-FX fixed — GAMES #696). **THE HIT BEAT IS SLOW MOTION** (owner
-2026-11-02: *"i want to change hitstop to do a brief slowmotion instead, hitstop seems laggy
-sometimes, when quick multiple hits occur"*; ruling: *"keep ko hard freeze, and make the slow mo
-nice and smooth"* — GAMES #695): a non-kill damaging hit opens a SLOW-MOTION WINDOW —
-`CFG.hitSlowMs` 150 (wall-clock anchored: FF shortens it, the 's' mode stretches it) at
-`CFG.hitSlowRate` 0.25 (the proven 's'-mode rate — v0.8.2's interpolation was built for it).
-Windows max-merge, NEVER stack — a hit in slow refreshes the window, so a dense exchange reads as
-one sustained intensity slow; the slideshow class is structurally gone because the sim keeps
-living inside the beat. The KILL beat KEEPS its hard freeze (`koStopMs` 400 — the koStill latch +
-winner overlay are built around the hold). Smoothness by construction: the expiry frame BLENDS
-(no seam), interpolation stays live (pose blend, never steppy), and the tick loop never breaks on
-a fresh window (no queued tick is ever dropped). Wall-time FX live in slow inside the window
-(`fxRate`), hold in the KO freeze. Frame-loop layer ONLY — the sim never reads `slowTicks`/`fxRate`,
-fingerprints untouched by construction; `hitStopMs` 60 DORMANT (one branch returns it). The
-chromecheck caught a real bug the headless boot could not (missing `let slowTicks` — the loader
-stubs rAF): frame-loop edits are chromecheck-visible or they are untested. Chromecheck PASS with a
-three-class frame recorder: 125 slow / 13 frozen / 1,702 full frames on the hit-dense cell, both
-passes completed, zero errors. **THE WAND CAME OFF PARK** at the owner's excitement brief (*"i
-need it to be more exciting… people can easily tell ok now they are very op… there is no real
-exciting snowball either"*): the menu served was A angry swarm (split-on-hit) · B hunting curse ·
-C echo ritual (delayed ghost recasts) · D molasses hex (victim-side slow) · E rune wall, plus the
-comet-trail garnish; he picked **B**, and his identity question (*"people understand it if the
-weappn was a heatseeking missile, but i wand do they connect that with homing spell ?"*) reframed
-it as **THE HEX** — `hexspark-r65`, the law above (GAMES #697). The r63-era park menu (comet pass
-/ lottery bend / wobble-vs-spiral / speed ~600) is superseded; its comet garnish folded into the
-landing. **THE TOME TRIO** (`affinity-r66`) then executed the sealed 2026-10-28 ruling — see the
-YOU-ARE-HERE lead and GAMES #698 for the full law (slot model, sustenance, rings, proof).
-**THE FAMILY FLIGHT LAW** (`hexfam-r68`) answered the launcher-action frustration as a CLASS law
-(the inevitability ledger: tome/staff/scroll owned no guarantee axis; the wordform experiment
-`wordform-r67` — menu pick A — was built revert-ready, headless-showed reformed pages mostly
-re-crossing to the rim, and REVERTED whole at the owner's word, #699–#700): the wand's hex
-mechanic became what MAGIC DOES — all four spell rows born bent and hunting on the derived ladder,
-the wand bit-identical, its trait slot OPEN for the crown discussion; GAMES #701 carries the law,
-the grow()-gate discovery and the full proof. The prior
-landing **`allcut-r62`** was ALLCUT — EVERY WEAPON CUTS ON BODY TOUCH: bladeVsBody's gate
-`if (W.shot || W.hold === 'tangential') return;` deleted (the projectile rule 2026-10-19 + the
-shield's 'parries only' clause retired together — the audit: those were the ONLY exemptions);
-launcher spines chip at the WDEF base damage 1 and feed EVERY shared growth counter — the
-shield's `trait.dmg` 0.7, inert since birth, fired for the first time ever; measure.mjs aligned
-(edited, not run; law 7s retired); the same landing carried the owner's r61 eye: bend base
-0.35→0.9, growth 0.085→0.15 (ceiling 2.4 ⇒ radius floor 333px), spark r 6→8 (GAMES #694). Before
-that, **`bendspark-r61`** landed THE WAND'S BENDING SPARK itself (first `trait.turn` axis,
-per-throw rng sign drawn only for bent rows, replica-twin isolation 14/16 — GAMES #693). **The boomerang is DONE****The boomerang is DONE** (*"ok boomerang is done for now"*; the r58 eye verdict
-was *"so it looks good now"*). **Its settled law:** THE CATCH IS THE LOOP'S ONLY OWNER-SIDE END
-and it rethrows **INSTANTLY** (`RETHROW_WAIT` 0 — the r54 beat dormant in the constant, one
-number from returning; killShot banks the revolution at every returns death); blades pass through
-with no effect; enemy projectiles **DIE on its drawn arc** while it flies on; LOOP MEETS LOOP
-**BOTH ARE DESTROYED** on their drawn arcs; SAME-BOT pairs pass through each other (the game-wide
-owner-blind law — the owner's stated intent for a future multi-loop balance); the hitbox IS the
-drawn arc INCLUDING its tumble; the held art draws ALWAYS; a caught loop rides home on the 0.25s
-settle ghost; PURE-TOUCH catch with the arc-aware arm (no departure-tick self-catch); cycle growth
-on the catch; PURE-CHAOS throws on the frozen arena-centred world orbit (b 70); r38 SINGLETON —
-one loop per bot in the air. **The javelin's settled law:** STUCK at the hit → the
+**YOU ARE HERE** (current build). `links-r87`, md5 `99bb910d74d7390a435ce3354fb9320f`, 5,392 lines.
+
+The flail's trait slot is filled with THE ADDING-LINKS CHAIN (GAMES #721): every 4 damaging hits adds one ring+bar link pair, at most 3 units; `chainGrow` returns the added-unit count; zero re-bake.
+
+**Per-build history is the GAMES.md record — the README does not retell it.** Index into GAMES dated entries for the full story of any landing (revert scars, owner quotes, proof receipts).
+
+**What's done:** The 22-weapon roster is complete. 14 of 22 weapon traits landed (spear length, staff orb, dagger spin, shuriken ricochet, bow rain, knives fan, crossbow nails, javelin skewer, boomerang world orbit, wand hex+transfiguration, tome trio, scroll ember spill, flail adding-links). The launcher era is concluded.
+
+**What's next:** 8 remaining weapon traits (7 melee blanks + orb) → bot cast → balance. See "NEXT, in the owner's order" below.
+
 JAVELIN'S-DIRECTION carry with the sink to the centre and the ZERO-TURN facing → forward-only
 NAIL DRIVE along the flight line; no bleed while carrying. **Traits 14 of 22 — 8 remain** — the count is GAMES.md's (#719's blanks minus the flail's #720):
 the 7 melee blanks (hammer, axe, sword, mace, nunchaku, scythe, katana — POISON is ledger-claimed
