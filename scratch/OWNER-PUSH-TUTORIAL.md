@@ -196,7 +196,9 @@ Then the content check (this is the one that matters — it is what the entries 
 
 ```bash
 git show origin/spinclash-item-three-triage-80aa6:docs/GAMES.md | grep -c "#723 · THE STALE-PROOF TRIAGE BEGINS"
-# expect: 1
+# expect: 2  — the nav block's row (line ~34) AND the entry heading (line ~1201).
+#             (An earlier version of this tutorial said 1: that was WRONG — the string
+#              legitimately appears twice, once in the regenerated nav block.)
 ```
 
 If that prints `1`, the record is on the remote. PR #3 picks the new commits up automatically

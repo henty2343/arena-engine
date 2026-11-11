@@ -150,6 +150,25 @@ fast-forward.
 carry the SAME bytes (the handoff-name correction), so `git checkout --ours` (or `--theirs`) is
 correct — then `git add -f scratch/HANDOFF-ITEM3-SESSION5.md && git commit`.
 
+## THE PUSH LANDED — VERIFIED (owner, 2026-11-11)
+
+**Remote tip `0b9655f` — the owner's MERGE commit (author `denn054f`), not a force-push.** Their
+commit `2b9e3f9` "item-3: land the GAMES entries (#723-#727) for sessions 2-6" sits on top of
+the App's `fea7a62`, and the merge brought their local `64f2ef7` (the handoff-name correction)
+back in. The tree diff against the session's HEAD is **content-identical** — the only delta is
+the exec bit on the two runner scripts (`100644` on the remote, `100755` locally: the contents
+API cannot carry mode bits; the scripts are run with `bash script.sh`, so it is cosmetic).
+
+**`docs/GAMES.md` on the remote is byte-identical to the session's file:**
+blob `86bcb36c234319fa8fd6fa80a5765c5b9c83f93b` ✓ — the entries #723–#727 and the regenerated
+nav block are ON THE RECORD.
+
+**THE OWNER'S CHECK THAT SAID `2` WAS RIGHT, AND THE TUTORIAL WAS WRONG.** `grep -c "#723 ·
+THE STALE-PROOF TRIAGE BEGINS"` returns **2** — once in the regenerated nav block (line ~34) and
+once as the entry heading (line ~1201). The tutorial said "expect: 1"; that expectation was
+never verified against the final file and has been corrected. A check that contradicts the
+artifact is a broken check, not a broken artifact.
+
 ## NON-NEGOTIABLES (unchanged — restated for continuity)
 
 Asserted-patch method only (exact-match + expected count, loud on mismatch, write nothing on
