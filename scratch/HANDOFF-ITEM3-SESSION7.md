@@ -45,3 +45,12 @@ leadproof ALL PASS, chromecheck 2x PASS, lengrow-gate exit 1 by design at k=1.07
 #729. A first attempt was killed (backgrounded without setsid) and is kept as
 battery-seam-proof.KILLED-partial.log — NOT counted. Use scratch/triage/run-battery-session7.sh with
 `setsid nohup bash ... &` to run the battery detached. Still not run: measure.mjs (owner rule).
+
+## ADDENDUM 2 (2026-11-11, end of session 7) — supersedes "local commit ... NOT pushed" above
+Pushed (fast-forward) and MERGED: PR #3 -> main with a merge commit, c46fbe8 (parents 6b23d51, d004032).
+PR #1 and #2 closed as superseded (owner's report; the API was rate-limited, not verified by me).
+Canonical on main unchanged: md5 e431d344347a55da51e1f4604cbeb4ed, 5,392 lines. Recorded as GAMES #730.
+Branches NOT deleted (all three are contained in main). CORRECTION: there are FOUR tracked .orig files
+(seam-proof, lengrow-build-proof, pair-proof, lengrow-bake), not three. Item 3 + follow-on: CLOSED, on main.
+Still open (owner): stale LEN_CIRCLES provenance comment (leave for the next real re-bake), runner exec
+bits, 64f2ef7/1ff647d, optional branch cleanup / protecting main. measure.mjs never ran.
