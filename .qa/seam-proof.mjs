@@ -329,7 +329,8 @@ let spinViol=0, spinUps=0, bladeHits0=0, catches=0;   // hoisted: the CYCLE-ONLY
   /* RETIRED 2026-11-11 (session 3): the birth law asserted speed AND TURN scale together — the
    * turn term is dead law since hexfam-r68 (a declared shot.turn now BOOTS-ERRORS), so the
    * conjunct can never hold again. Measured fact kept on the record: 239 births, 239 "off-law",
-   * i.e. every birth fails ONLY because BM.shot.turn is undefined (runs-before/seam-proof.log).
+   * i.e. every birth fails ONLY because BM.shot.turn is undefined (runs-before/seam-proof.log — pruned from HEAD 2026-11-11, GAMES #731; recover with
+   * `git show item3-closed:scratch/triage/runs-before/seam-proof.log`).
    * COVERAGE KEPT: the SPEED half of the same snapshot law is exactly what G2 re-checks live
    * (maxFactor saturates at (1+cycle)^CAP against real births) — the loop above still computes
    * births/badBirth for that window. Superseded assertion:
@@ -355,7 +356,8 @@ let spinViol=0, spinUps=0, bladeHits0=0, catches=0;   // hoisted: the CYCLE-ONLY
   /* RETIRED 2026-11-11 (session 3): THE SIGNATURE LAW of the anchored oval — "every retired loop
    * flew at most ONE orbit" — died with the halo at touchorbit-r53 ("the guarantee was the
    * problem"). The world orbit is arena-centred: a loop orbits until CAUGHT (pure touch), so
-   * flight length is unbounded BY DESIGN; the measured fact (runs-before/seam-proof.log) was
+   * flight length is unbounded BY DESIGN; the measured fact (runs-before/seam-proof.log — pruned from HEAD 2026-11-11, GAMES #731;
+   * `git show item3-closed:scratch/triage/runs-before/seam-proof.log`) was
    * "worst retired flight 1698t ≤ 400t". The PERIOD_MAX bound has no successor contract.
    * COVERAGE KEPT, NON-SILENT: the other clauses were STILL true when this ran and are named in
    * the detail below (rim never kills a loop, singleton gate, pass-through hits) — the loop above

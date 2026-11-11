@@ -22,7 +22,7 @@ No cloud, no accounts, no telemetry, no network calls after `npm install`. Binds
 | [SPEC.md](./docs/SPEC.md) | The rules. Architecture, stack, pipeline, output specs, video-quality requirements, house style, studio UX, repo layout, what must never be introduced. |
 | **[CONTRACT.md](./docs/CONTRACT.md)** | The interface a game implements. Services injected, what a game may not do, timeline shape, the eight compliance checks. |
 | **[BUILD.md](./docs/BUILD.md)** | What to build next. Nine phases with pass/fail gates, the definition of done, and the full quality checklists. |
-| [HANDOFF.md](./docs/HANDOFF.md) | **New agent: read after README.** Session handoff — what the previous session completed (THE RESTRUCTURE, 2026-11-05 — AMENDED 2026-11-10: the push landed partial, `uploads/` retired, `previews/` is the ONE canonical, `combine.js` + the dump retired), the laws protecting it, and what is pending. |
+| [HANDOFF.md](./docs/HANDOFF.md) | **New agent: read after README.** Session handoff — what the previous session completed (THE RESTRUCTURE, 2026-11-05 — AMENDED 2026-11-10: the push landed partial, `uploads/` retired, `previews/` is the ONE canonical, `combine.js` + the dump retired), the laws protecting it, and what is pending (**2026-11-11:** also the Item-3 stale-proof triage — CLOSED and on `main`, GAMES #723–#731 — and the recovery recipe for the pruned `scratch/` handoffs, tag `item3-closed`). |
 
 If you are an AI assistant working on this project: read all five before writing code, and treat SPEC.md's rules as overriding any reasonable default you would otherwise choose.
 
