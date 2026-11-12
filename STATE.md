@@ -29,7 +29,7 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.6k.
 | AGENTS.md | 1,244 |
 | docs/LAWS.md | 2,206 |
 | docs/RECIPES.md | 1,871 |
-| docs/GAMES.md | 155,419 |
+| docs/GAMES.md | 155,501 |
 | docs/SPEC.md | 12,879 |
 | docs/CONTRACT.md | 4,168 |
 | docs/BUILD.md | 4,469 |
