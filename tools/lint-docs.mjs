@@ -86,6 +86,17 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
   if (!rd('README.md').includes('AGENTS.md')) warn('README does not point to the AGENTS.md entry point');
   if (/read all four before writing code/.test(rd('README.md'))) err('README still says "read all four before writing code"');
 } else warn('AGENTS.md entry point is missing');
+  // README router guard (Phase G): README must route agents, not archive them.
+  const readmeText = rd('README.md');
+  if (!readmeText.includes('AGENTS.md')) err('README does not point to AGENTS.md');
+  if (!readmeText.includes('STATE.md')) err('README does not point to STATE.md');
+  if (/read all (four|five) (?:docs? )?before writing code/i.test(readmeText)) {
+    err('README still tells agents to read all docs before writing code');
+  }
+  if (/^## Starting a new chat/m.test(readmeText) && !/Historical chat checkpoints are preserved/.test(readmeText)) {
+    err('README contains an unexplained stale Starting-a-chat section');
+  }
+
 const ok = errors.length===0;
 const verdict = { check:'lint-docs', ok, errors, warnings, canonicalMd5:md5, canonicalTraits };
 if (process.argv.includes('--json')) console.log(JSON.stringify(verdict));
