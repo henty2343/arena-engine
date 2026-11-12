@@ -14,7 +14,20 @@
  *   });
  *
  * Backward compatible: loadSim(path, arrayOfExports) behaves exactly as v1.
+ *
+ *  * SCOPE (Stage 2 decision, 2026-11-13): this loader is the house pattern for SINGLE-block
+ * extraction + standard DOM stubs — used by fingerprint, lengrow-build-proof, leadproof.
+ * The remaining proof tools deliberately keep their own eval because they diverge on purpose:
+ *   - chromecheck / pair-proof / flipproof / flip-seeds: multi-block, Path2D, canvas stubs,
+ *     multiple new Function calls (sim + renderer sections).
+ *   - seam-proof: double-evals the same body, clean + injected bad row, to prove a guard FIRES.
+ *   - lengrow-bake: returns a typeof-guarded expression, not a plain identifier list.
+ *   - lengrow-proof: extra document stubs (body/documentElement) + script-shape guards.
+ *   - lengrow-gate: loads no sim at all (pure geometry).
+ * Consolidate extraction only if ever extended; NEVER collapse these evals into one loader —
+ * the differences are what make each proof correct.
  */
+
 import { readFileSync } from "node:fs";
 
 function fakeEl() {
