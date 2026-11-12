@@ -6,10 +6,10 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.6k.
 
 ## Canonical (the one live game)
 - File: `previews/spinclash-preview.html`
-- md5: `99bb910d74d7390a435ce3354fb9320f`
-- Lines: 5,392
+- md5: `83867fb70ace5ea7fcdbd93e7aeda7e5`
+- Lines: 5,034
 - Build stamp (`<title>`): `links-r87`
-- Approx token cost (chars/4): ~123,828
+- Approx token cost (chars/4): ~115,232
 
 ## Fingerprint baseline
 - Pointer: `.qa/BASELINE` → `fp-flailfix-r88.json`
@@ -25,11 +25,11 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.6k.
 ## Documentation cost (chars/4 estimate)
 | file | ~tokens |
 |---|---:|
-| README.md | 11,161 |
+| README.md | 14,572 |
 | AGENTS.md | 1,244 |
 | docs/LAWS.md | 2,206 |
 | docs/RECIPES.md | 1,871 |
-| docs/GAMES.md | 155,502 |
+| docs/GAMES.md | 160,557 |
 | docs/SPEC.md | 12,897 |
 | docs/CONTRACT.md | 4,168 |
 | docs/BUILD.md | 4,469 |
