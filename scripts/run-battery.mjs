@@ -25,14 +25,13 @@ const STEPS = [
   ["flipproof",           [".qa/flipproof.mjs"]],
   ["leadproof",           [".qa/leadproof.mjs"]],
   ["seam-proof",          [".qa/seam-proof.mjs"]],
-  ["chromecheck-1",       ["chromecheck.mjs"]],
-  ["chromecheck-2",       ["chromecheck.mjs"]],
+  ["chromecheck",         ["chromecheck.mjs"]],
   ["lengrow-gate",        [".qa/lengrow-gate.mjs"]],
   ["lengrow-bake-verify", [".qa/lengrow-bake.mjs", "--verify"]],
 ];
 const EXPECTED = {
   "inscribe": 0, "lengrow-build-proof": 0, "pair-proof": 0, "flipproof": 0, "leadproof": 0,
-  "seam-proof": 0, "chromecheck-1": 0, "chromecheck-2": 0, "lengrow-gate": 0, "lengrow-bake-verify": 0,
+  "seam-proof": 0, "chromecheck": 0, "lengrow-gate": 0, "lengrow-bake-verify": 0,
 };
 const before = canon();
 console.log("battery start — canonical " + before);

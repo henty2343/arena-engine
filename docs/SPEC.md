@@ -279,7 +279,8 @@ arena-engine/
 ├─ ingest.mjs              # weapon-art merge gate + combat gauntlet (DORMANT since roster-r12)
 ├─ .qa/                    # proof probes: inscribe · fingerprint · leadproof · flipproof · pair-proof · seam-proof · the lengrow-* suite · bake-rows + the fp-*.json baselines + BASELINE (pointer to the active baseline; judge with `fingerprint --compare`)
 ├─ tools/                  # LIVE agent tooling: gen-state.mjs · lint-docs.mjs · verify.mjs (judges repo health, JSON verdict)
-├─ scratch/                # LIVE doc tools (navgen · docreflow); loader-r54.mjs is an UNUSED shared-loader prototype (no tool imports it — verified 2026-11-12); per-build smokes live here until the next purge
+├─ scratch/                # gitignored, TEMPORARY ONLY (per-build smokes live here until the next purge; no live tools)
+├─ tools/                  # LIVE agent tooling: gen-state.mjs · lint-docs.mjs · verify.mjs · doc/ (navgen · docreflow) · lib/ (load-sim.mjs, shared sim loader)
 ├─ .vscode/                # Phase-0 placeholder (.gitkeep) — tasks/launch/settings/extensions land with the engine
 ├─ assets/fonts/           # Phase-0 placeholder (.gitkeep) — Inter + JetBrains Mono (OFL) arrive with `npm install` at Phase 0 (NOT committed; README's Requirements line is the authority)
 ├─ packages/               # Phase-0 placeholders (.gitkeep): core (pure TS sim) · render (node-canvas + ffmpeg) · server (Fastify loopback, single job slot)
@@ -293,7 +294,7 @@ The engine dirs are Phase-0 placeholders (`.gitkeep` only) until the matching `B
 
 ### Repo-organization laws
 
-1. **One canonical.** `previews/spinclash-preview.html` is the single canonical game — one copy, in git. Every `.qa/` + `scratch/` tool default resolves `../previews/spinclash-preview.html`; the doc tools default to `docs/GAMES.md`. Do not repoint them.
+1. **One canonical.** `previews/spinclash-preview.html` is the single canonical game — one copy, in git. Every `.qa/` + `tools/` tool default resolves `../previews/spinclash-preview.html`; the doc tools default to `docs/GAMES.md`. Do not repoint them.
 
 2. **Asserted-patch method.** For every structural edit: grep functional references first — markdown links, `join(...)`, default paths, usage examples; patch exact strings with expected match counts; a mismatch warns, never guesses; rehearse on a throwaway copy before touching the real tree.
 
