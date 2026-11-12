@@ -46,26 +46,8 @@ import { dirname, join, resolve } from 'node:path';
 const here = dirname(fileURLToPath(import.meta.url));
 const FILE = resolve(process.argv[2] ? join(here, '..', process.argv[2]) : join(here, '..', 'previews', 'spinclash-preview.html'));
 
-function fakeEl() {
-  const t = function () {};
-  return new Proxy(t, {
-    get(x, p) { if (p === Symbol.toPrimitive) return () => 0; if (!(p in x)) x[p] = fakeEl(); return x[p]; },
-    set(x, p, v) { x[p] = v; return true; },
-    apply() { return fakeEl(); },
-  });
-}
-const html = readFileSync(FILE, 'utf8');
-const a = html.indexOf('<script>'), b = html.indexOf('</script>', a);
-let body = html.slice(a + 8, b);
-const opener = '(function () {';
-body = body.slice(body.indexOf(opener) + opener.length);
-body = body.slice(0, body.lastIndexOf('})();'));
-const EXPORTS = 'newGame, tick, CFG, WEAPONS, WEAPON_IDS, FIGHTERS, LEN_LADDER, LEN_STEPS, LEN_CIRCLES, LEN_REMAP_CEIL, REACH, MINR, SPAN, bladeCircles, grow, spineFrame, SKILL_SHORT';
-const api = new Function('document', 'window', 'performance', 'requestAnimationFrame', 'console',
-  body + `\n;return { ${EXPORTS} };`)(
-  { getElementById: () => fakeEl(), createElement: () => fakeEl(), querySelectorAll: () => [], addEventListener: () => {}, activeElement: null },
-  { devicePixelRatio: 1, innerWidth: 1200, innerHeight: 900, addEventListener: () => {} },
-  { now: () => 0 }, () => 0, console);
+import { loadSim } from '../tools/lib/load-sim.mjs';
+const api = loadSim(FILE, ['newGame', 'tick', 'CFG', 'WEAPONS', 'WEAPON_IDS', 'FIGHTERS', 'LEN_LADDER', 'LEN_STEPS', 'LEN_CIRCLES', 'LEN_REMAP_CEIL', 'REACH', 'MINR', 'SPAN', 'bladeCircles', 'grow', 'spineFrame', 'SKILL_SHORT']);
 const { newGame, tick, CFG, WEAPONS, WEAPON_IDS, FIGHTERS, LEN_LADDER, LEN_STEPS, LEN_CIRCLES, LEN_REMAP_CEIL, REACH, MINR, bladeCircles, grow, SKILL_SHORT } = api;
 
 let pass = 0, fail = 0;
