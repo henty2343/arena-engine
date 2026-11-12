@@ -9,7 +9,9 @@
  * the change did not touch sim behaviour — fingerprints stable.
  *
  * Usage: node .qa/fingerprint.mjs <out.json> [file=previews/spinclash-preview.html]
- * Compares nothing itself — run it before and after, diff the JSONs.
+ *        node .qa/fingerprint.mjs --compare [file]   (judge vs .qa/BASELINE, exit 0/1)
+ * Legacy mode compares nothing itself — run it before and after, diff the JSONs.
+ * --compare reads .qa/BASELINE, runs the same cells, judges 8/8 (exit 0) or lists moved cells (exit 1).
  *
  * ARG-ORDER GUARD (2026-10-28, owner go): arg 2 is the OUTPUT and arg 3 is the FILE. A
  * transposed invocation targets the canonical build as OUT and reads the JSON baseline as
@@ -37,9 +39,14 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 const here = dirname(fileURLToPath(import.meta.url));
-const OUT = resolve(process.argv[2] || '.qa/fingerprint.json');
-const FILE = resolve(process.argv[3] ? join(here, '..', process.argv[3]) : join(here, '..', 'previews', 'spinclash-preview.html'));
-const USAGE = 'usage: node .qa/fingerprint.mjs <out.json> [file.html]   (arg 2 = OUTPUT json, arg 3 = the build)';
+const COMPARE = process.argv.includes('--compare');
+const pos = process.argv.slice(2).filter(a => a !== '--compare');
+// legacy: arg2 = OUTPUT json, arg3 = build.  --compare: optional positional = build.
+const OUT = resolve(COMPARE ? '.qa/fingerprint.json' : (pos[0] || '.qa/fingerprint.json'));
+const fileArg = COMPARE ? pos[0] : pos[1];
+const FILE = resolve(fileArg ? join(here, '..', fileArg) : join(here, '..', 'previews', 'spinclash-preview.html'));
+const USAGE = 'usage: node .qa/fingerprint.mjs <out.json> [file.html]   (arg 2 = OUTPUT json, arg 3 = the build)\n' +
+              '       node .qa/fingerprint.mjs --compare [file.html]   (judge the build vs .qa/BASELINE; exit 0 = identical)';
 if (/\.html?$/i.test(OUT)) {
   console.error('refusing: OUT is an HTML path (' + OUT + ') — this tool writes JSON only.\n' + USAGE);
   process.exit(1);
@@ -122,6 +129,27 @@ for (const [name, seed, weapons] of CELLS) {
   const t0 = Date.now();
   out[name] = fingerprint(seed, weapons);
   console.log(`  ${name.padEnd(24)} ${out[name]}  (${((Date.now() - t0) / 1000).toFixed(1)}s)`);
+}
+if (COMPARE) {
+  const ptrPath = join(here, 'BASELINE');
+  let ptr;
+  try { ptr = readFileSync(ptrPath, 'utf8').trim(); }
+  catch { console.error('refusing: no .qa/BASELINE pointer file — create it naming the standing baseline (Step 1.1).'); process.exit(1); }
+  const basePath = join(here, ptr);
+  let base;
+  try { base = JSON.parse(readFileSync(basePath, 'utf8')); }
+  catch { console.error('refusing: BASELINE points at "' + ptr + '", not a readable JSON baseline (' + basePath + ').'); process.exit(1); }
+  const moved = [];
+  for (const [name] of CELLS) {
+    const same = out[name] === base[name];
+    if (!same) moved.push(name);
+    console.log(`  ${same ? 'ok  ' : 'MOVED'} ${name.padEnd(24)} ${out[name]}${same ? '' : '  (baseline ' + (base[name] || 'MISSING') + ')'}`);
+  }
+  const match = CELLS.length - moved.length;
+  const ok = moved.length === 0;
+  console.log(`FINGERPRINT COMPARE: ${match}/${CELLS.length} vs ${ptr} — ${ok ? 'PASS' : 'FAIL'}`);
+  console.log(JSON.stringify({ check: 'fingerprint', baseline: ptr, match, total: CELLS.length, moved, ok }));
+  process.exit(ok ? 0 : 1);
 }
 writeFileSync(OUT, JSON.stringify(out, null, 1));
 console.log('written: ' + OUT);
