@@ -48,6 +48,7 @@ function checkRetired(text, label) {
   });
 }
 checkRetired(currentState, 'GAMES §Current state');
+if (!currentState.includes('LAWS.md')) err('GAMES §Current state does not point to LAWS.md (the current-laws quick reference)');
 if (existsSync(path.join(root,'docs/LAWS.md'))) checkRetired(rd('docs/LAWS.md'), 'docs/LAWS.md');
 const PLANNED = new Set(['package.json','render.json','targets.ts','characters.json','tasks.json',
   'launch.json','settings.json','extensions.json','doctor.mjs','generate.mjs','inspect.mjs']);

@@ -141,6 +141,10 @@ The living record of game design: what exists and what is decided next. Platform
 
 ## Current state
 
+> **Quick reference:** the distilled CURRENT standing laws live in [`LAWS.md`](./LAWS.md) — canonical for the
+> normative law statements, lint-checked to agree with this section. This section is the fuller design record:
+> read `LAWS.md` first, then grep here for detail, provenance and owner quotes. (Added Phase C part 2.)
+
 
 - **Fresh start, now with a first game.** These docs descend from an earlier, abandoned iteration; its platform philosophy is kept, its game content was cleared. Game #1 has since been designed, built as a preview, and visually locked.
 - Platform: fully specified, **no engine code yet**. Start at Phase 0 in `BUILD.md`.
