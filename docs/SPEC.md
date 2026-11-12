@@ -268,7 +268,9 @@ Excluded from the production build of `apps/studio`.
 
 ```
 arena-engine/
-├─ README.md               # the entry point — GitHub renders only this one at the root
+├─ README.md               # human-facing overview + detailed standing rules; agents start at AGENTS.md
+├─ AGENTS.md               # THE agent entry point — loading order, standing rules, task→file map
+├─ STATE.md                # GENERATED mutable facts (md5/stamp/lines/baseline/inventory) — tools/gen-state.mjs
 ├─ .gitignore              # scratch/
 ├─ docs/                   # SPEC.md CONTRACT.md BUILD.md GAMES.md + archive/ (retired rules, audit baselines, take-over history)
 ├─ previews/               # spinclash-preview.html — THE canonical game (single file, dependency-free)
@@ -276,6 +278,7 @@ arena-engine/
 ├─ measure.mjs             # the sanctioned law matrix — OWNER-GATED, never runs without his explicit go
 ├─ ingest.mjs              # weapon-art merge gate + combat gauntlet (DORMANT since roster-r12)
 ├─ .qa/                    # proof probes: inscribe · fingerprint · leadproof · flipproof · pair-proof · seam-proof · the lengrow-* suite · bake-rows + the fp-*.json baselines + BASELINE (pointer to the active baseline; judge with `fingerprint --compare`)
+├─ tools/                  # LIVE agent tooling: gen-state.mjs · lint-docs.mjs · verify.mjs (judges repo health, JSON verdict)
 ├─ scratch/                # LIVE doc tools (navgen · docreflow); loader-r54.mjs is an UNUSED shared-loader prototype (no tool imports it — verified 2026-11-12); per-build smokes live here until the next purge
 ├─ .vscode/                # Phase-0 placeholder (.gitkeep) — tasks/launch/settings/extensions land with the engine
 ├─ assets/fonts/           # Phase-0 placeholder (.gitkeep) — Inter + JetBrains Mono (OFL) arrive with `npm install` at Phase 0 (NOT committed; README's Requirements line is the authority)
@@ -286,7 +289,7 @@ arena-engine/
 └─ output/                 # gitignored, created at runtime; one folder per render; also the stats source
 ```
 
-The engine dirs are Phase-0 placeholders (`.gitkeep` only) until the matching `BUILD.md` phase lands; the LIVE tree today is the SpinClash harness — the root `.mjs` tools, `.qa/`, `scratch/` and `previews/spinclash-preview.html` (the one canonical) — which runs on bare Node with no `package.json`. Realigned to the actual tree 2026-11-10.
+The engine dirs are Phase-0 placeholders (`.gitkeep` only) until the matching `BUILD.md` phase lands; the LIVE tree today is the SpinClash harness — the root `.mjs` tools, `.qa/`, `scratch/` and `previews/spinclash-preview.html` (the one canonical) — which runs on bare Node with no `package.json`. Realigned to the actual tree 2026-11-12 (added AGENTS.md, STATE.md, tools/).
 
 ### Repo-organization laws
 
@@ -299,6 +302,16 @@ The engine dirs are Phase-0 placeholders (`.gitkeep` only) until the matching `B
 4. **Token economy.** Pull big files via API/curl into local files and grep/sed them; do not read multi-hundred-KB docs into chat context.
 
 5. **Tagged removals.** Owner-ruled removals get a recovery tag before the cleanup commit. Recover with `git show <tag>:<path>`. Pushes are the owner’s to make.
+
+6. **Agent entry + progressive disclosure.** Agents start at `AGENTS.md` + `STATE.md` and load only what the task needs. `GAMES.md` is grep-first (by `#NNN`, symbol, or heading) — never read whole.
+
+7. **Generated facts.** Mutable facts (md5, stamp, line count, baseline, inventory, doc costs) are generated into `STATE.md` by `tools/gen-state.mjs` — never hand-pinned in prose. Design facts (e.g. the trait count) have ONE canonical home (`GAMES.md` §Current state) and are validated across docs, not duplicated.
+
+8. **Doc lint is a gate.** `tools/lint-docs.mjs` fails on dead live refs, stale canonical md5 slots, trait-count disagreement, retired rules stated as live, and a missing baseline. Run it via `tools/verify.mjs` after doc changes.
+
+9. **Current vs history.** Current docs state current rules; dated entries + `docs/archive/` hold history. A retired rule never appears as live in a current-state section.
+
+10. **Readable lines + headers.** Prose lines stay ≤ ~300 chars where practical (generated tables/data exempt). Each doc opens with a three-line header: what it contains / when to read it / approximate token cost.
 
 Run IDs: `<game>-<YYYY-MM-DD>-<HHMMSS>`. Sortable, readable, no library.
 
