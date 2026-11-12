@@ -270,13 +270,13 @@ Excluded from the production build of `apps/studio`.
 arena-engine/
 ├─ README.md               # the entry point — GitHub renders only this one at the root
 ├─ .gitignore              # scratch/
-├─ docs/                   # SPEC.md CONTRACT.md BUILD.md GAMES.md
+├─ docs/                   # SPEC.md CONTRACT.md BUILD.md GAMES.md + archive/ (retired rules, audit baselines, take-over history)
 ├─ previews/               # spinclash-preview.html — THE canonical game (single file, dependency-free)
 ├─ chromecheck.mjs         # fast boot + pairing check (~4s) — runs today on bare Node
 ├─ measure.mjs             # the sanctioned law matrix — OWNER-GATED, never runs without his explicit go
 ├─ ingest.mjs              # weapon-art merge gate + combat gauntlet (DORMANT since roster-r12)
-├─ .qa/                    # proof probes: inscribe · fingerprint · leadproof · flipproof · pair-proof · seam-proof · the lengrow-* suite · bake-rows + the fp-*.json baselines
-├─ scratch/                # LIVE doc tools (navgen · docreflow) + the SIM loader (loader-r54); per-build smokes live here until the next purge
+├─ .qa/                    # proof probes: inscribe · fingerprint · leadproof · flipproof · pair-proof · seam-proof · the lengrow-* suite · bake-rows + the fp-*.json baselines + BASELINE (pointer to the active baseline; judge with `fingerprint --compare`)
+├─ scratch/                # LIVE doc tools (navgen · docreflow); loader-r54.mjs is an UNUSED shared-loader prototype (no tool imports it — verified 2026-11-12); per-build smokes live here until the next purge
 ├─ .vscode/                # Phase-0 placeholder (.gitkeep) — tasks/launch/settings/extensions land with the engine
 ├─ assets/fonts/           # Phase-0 placeholder (.gitkeep) — Inter + JetBrains Mono (OFL) arrive with `npm install` at Phase 0 (NOT committed; README's Requirements line is the authority)
 ├─ packages/               # Phase-0 placeholders (.gitkeep): core (pure TS sim) · render (node-canvas + ffmpeg) · server (Fastify loopback, single job slot)
@@ -319,7 +319,7 @@ Plain terms only — broadcast jargon has been removed. These are the technical 
 
 | Term                | Meaning                                                                                                                                                                                                                            |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Player**          | One participant in a match: `id`, `name`, `color`, optional `mark`. Always a single named thing, never a crowd. Matches are 1v1 or a four-way free-for-all. (Code may use `entity` as a variable name.)                            |
+| **Player**          | One participant in a match: `id`, `name`, `color`, optional `mark`. Always a single named thing, never a crowd. Matches are 1v1 or a free-for-all of up to four players (the game declares its shape). (Code may use `entity` as a variable name.)                            |
 | **Body**            | The player's on-board presence — the moving piece the audience follows. `gfx.body(player, opts)` draws the default one; games override it only where their subject demands.                                                        |
 | **Color**           | A player's permanent, unique color — the same in every game, so they stay recognisable. No two players in a pool share one.                                                                                                        |
 | **Mark**            | The detailed visual identity drawn on a player's body — a glyph for a character, a flag for a nation. Separate from color, because a flag can't fill a progress bar.                                                               |

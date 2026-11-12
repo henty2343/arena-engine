@@ -44,8 +44,7 @@ The flail's trait slot is filled with THE ADDING-LINKS CHAIN (GAMES #721): every
 
 **What's next:** 8 remaining weapon traits (7 melee blanks + orb) → bot cast → balance. See "NEXT, in the owner's order" below.
 
-JAVELIN'S-DIRECTION carry with the sink to the centre and the ZERO-TURN facing → forward-only
-NAIL DRIVE along the flight line; no bleed while carrying. **Traits 14 of 22 — 8 remain** — the count is GAMES.md's (#719's blanks minus the flail's #720):
+**Traits 14 of 22 — 8 remain** — the count is GAMES.md's (#719's blanks minus the flail's #720):
 the 7 melee blanks (hammer, axe, sword, mace, nunchaku, scythe, katana — POISON is ledger-claimed
 by the tome's halo page, RED reserved for the bleed retrofit) + the orb. Both magic journeys are
 CONCLUDED: the wand's TRANSFIGURATION (#706, journey closed #710) and the scroll's EMBER SPILL
@@ -85,10 +84,10 @@ slot, so every cast-table read there must go through `G.cast`. They hold the sam
 `DEFAULT_CAST = [0, 1]`, which is why the landing looked behaviour-identical — **and why the
 fingerprint suite can never check any of it.** Run `.qa/pair-proof.mjs` (sections E, F and **I**)
 after any edit near those fields; section I drives the real frame loop against a recording canvas
-and statically audits all 27 cast-table reads in the file (`LEN_CAP` left the audited list at
+and statically audits every cast-table read in the file (a dynamic, comment-stripped scan — 33 sites at links-r87, ≥20 floor) (`LEN_CAP` left the audited list at
 `nocombo-r34` with the table itself).
 
-**NEXT, in the owner's order: a unique TRAIT for each of the remaining 13 weapons (9 of 22 landed), then the bot cast
+**NEXT, in the owner's order: a unique TRAIT for each of the remaining 8 weapons (14 of 22 landed), then the bot cast
 (every bot a unique skill), then balance — additive stacking only, NO unique combos.**
 The pattern to copy is `shotR` — a row field → **ONE** consumer site → one assertion in a Tier-0
 proof (~6 sim lines plus 3 renderer lines, no bake). (`lenSteps` was the original cheap-pattern
@@ -163,7 +162,7 @@ is the measurement that ruled that route out. **`.qa/seam-proof.mjs`** (~2s, Tie
 and the one a fresh session should run first after any skill or bot landing: it proves the seams are
 live and, more usefully, that the boot guards actually throw.
 
-**Tier 2 — only if the task needs it:** **`.qa/pair-proof.mjs`** (~27s, Tier 0, read-only, **37/37**, its re-seeded balance-aware tripwire proven **FALSIFIABLE 6/6** — the pairing step's only probe, and the one instrument that runs a pairing where `slot ≠ idx`, which the fingerprint suite cannot do in principle. **Section I drives the RENDERER**: a recording canvas stub captures the VS poster's `fillText` while the real frame loop is hand-stepped, and a comment-aware tripwire audits all 23 cast-table index reads in the file. It is **proven to fire** — against the pre-fix `pair-r31` canonical it reports 4 FAILs and names all 13 offending sites. **Promote it to Batch 1 the moment bots are added**, because every bot landing edits the fields it sweeps. It asserts its own sample sizes, so a future stall fails loudly instead of passing on zero observations) · `chromecheck.mjs` (~26s render/clock check **+ a pairing section**: it drives `APP.setCast([1, 0])` and asserts the scorebug names, identity swatches and legend rows exchange sides together, the slot-keyed score stays put, and the winner overlay names the ACTOR — the only coverage of the chrome's pairing path, since `pair-proof` loads the sim block alone) ·
+**Tier 2 — only if the task needs it:** **`.qa/pair-proof.mjs`** (~27s, Tier 0, read-only, **37/37**, its re-seeded balance-aware tripwire proven **FALSIFIABLE 6/6** — the pairing step's only probe, and the one instrument that runs a pairing where `slot ≠ idx`, which the fingerprint suite cannot do in principle. **Section I drives the RENDERER**: a recording canvas stub captures the VS poster's `fillText` while the real frame loop is hand-stepped, and a comment-aware tripwire audits every cast-table index read in the file (dynamic scan, ≥20 floor). It is **proven to fire** — against the pre-fix `pair-r31` canonical it reports 4 FAILs and names all 13 offending sites. **Promote it to Batch 1 the moment bots are added**, because every bot landing edits the fields it sweeps. It asserts its own sample sizes, so a future stall fails loudly instead of passing on zero observations) · `chromecheck.mjs` (~26s render/clock check **+ a pairing section**: it drives `APP.setCast([1, 0])` and asserts the scorebug names, identity swatches and legend rows exchange sides together, the slot-keyed score stays put, and the winner overlay names the ACTOR — the only coverage of the chrome's pairing path, since `pair-proof` loads the sim block alone) ·
 `docs/BUILD.md` · `.qa/inscribe.mjs` + `.qa/bake-rows.mjs` (the house gate and the row baker —
 needed for any art/poly/scale edit. **Correction, 2026-10-28:** this line used to call them "the
 only tools that write to the canonical", but only `bake-rows.mjs` writes; `inscribe.mjs` is
@@ -204,7 +203,7 @@ axis placement "designed out", parry forbidden as a skill reward, cast stays at 
 
 **Owed, in order:** (1) **Nothing structural from the skills pass's own build steps — they are
 all IN** (the spear's length growth at +200% with the uniform 12-step cap, the two `seam-r30`
-seams, the pairing step, and NINE weapon traits; the pass continues with the remaining 13). The
+seams, the pairing step, and FOURTEEN weapon traits; the pass continues with the remaining 8). The
 full build history and its measurements live in GAMES.md (the _Length growth — the spear's trait_
 section plus Measured facts #645–#692). The LIVE DOCTRINE distilled from it, kept here because
 every remaining trait landing leans on it: **(a)** damage-coupled growth is self-limiting — the
@@ -395,7 +394,7 @@ npm run inspect  -- --game <id> --seed 1 --sheet     # ~24 frames tiled
 
 ## Status
 
-Blueprint complete; **no engine code yet** — start at Phase 0 in `BUILD.md`. Game #1 (SPINCLASH) runs as `previews/spinclash-preview.html` — the ONLY canonical — a dependency-free browser sim at build **`links-r87`** (recorded 2026-11-10; _the `<title>` node remains the authority for the stamp — this convenience copy has drifted three times, so check it first_): pure `newGame`/`tick`, then the renderer, then chrome — harness-extractable, no DOM above the RENDERER banner. Its frame (the PEBBLE look) is locked; its weapon art landed at `roster-r12` and the convention CLOSED 2026-10-27 (the prescriptive lock lives in GAMES.md, "Weapon art — the closed convention").
+Blueprint complete; **no engine code yet** — start at Phase 0 in `BUILD.md`. Game #1 (SPINCLASH) runs as `previews/spinclash-preview.html` — the ONLY canonical — a dependency-free browser sim at build **`links-r87`** (landed 2026-11-10, #721; md5 re-pinned at #733, 2026-11-11; _the `<title>` node remains the authority for the stamp — this convenience copy has drifted three times, so check it first_): pure `newGame`/`tick`, then the renderer, then chrome — harness-extractable, no DOM above the RENDERER banner. Its frame (the PEBBLE look) is locked; its weapon art landed at `roster-r12` and the convention CLOSED 2026-10-27 (the prescriptive lock lives in GAMES.md, "Weapon art — the closed convention").
 
 **In the sim:** the 22-weapon roster, complete · the Core contact law and the seven shot laws · nine flying shot kinds under the copy rule (1:1 munitions, the staff orb and wand spark under the whole-body waiver, the scroll's fire comet, the tome's poison/frost/fire trio pre-figuring the skill pass) · the knives' three-knife volley · render interpolation · the overflow-band canvas (weapon ink never cuts) · hitstop as a true pause of the on-screen frame, with the kill still on the K.O. hold · the owner-designed VS-poster dice reveal · the 2026-10-21 feel-tuned physics set (gravity 1400 · chaos ceiling 1200 with 0.9 wall bleed · parryPush 700 · the parry flutter gate · the capped, tick-gated pin-escape nudge) · the N-segment generic chain sim (flail 3 particles, nunchaku 1) · the edge-leading mirror on four rows (`lead: -1` — katana, scythe, and since 2026-10-28 the dagger and the staff) with its `headLead` sibling for the javelin and the 180 ms flip transition.
 
