@@ -272,7 +272,7 @@ arena-engine/
 ├─ AGENTS.md               # THE agent entry point — loading order, standing rules, task→file map
 ├─ STATE.md                # GENERATED mutable facts (md5/stamp/lines/baseline/inventory) — tools/gen-state.mjs
 ├─ .gitignore              # scratch/
-├─ docs/                   # LAWS.md (current laws) · RECIPES.md (add trait/bot) · SPEC.md CONTRACT.md BUILD.md GAMES.md + archive/ (retired rules, audit baselines, take-over history)
+├─ docs/                   # LAWS.md (current laws) · RECIPES.md (add trait/bot) · SPEC.md CONTRACT.md BUILD.md GAMES.md
 ├─ previews/               # spinclash-preview.html — THE canonical game (single file, dependency-free)
 ├─ chromecheck.mjs         # fast boot + pairing check (~4s) — runs today on bare Node
 ├─ measure.mjs             # the sanctioned law matrix — OWNER-GATED, never runs without his explicit go
@@ -310,7 +310,7 @@ The engine dirs are Phase-0 placeholders (`.gitkeep` only) until the matching `B
 
 8. **Doc lint is a gate.** `tools/lint-docs.mjs` fails on dead live refs, stale canonical md5 slots, trait-count disagreement, retired rules stated as live, and a missing baseline. Run it via `tools/verify.mjs` after doc changes.
 
-9. **Current vs history.** Current docs state current rules; dated entries + `docs/archive/` hold history. A retired rule never appears as live in a current-state section.
+9. **Current vs history.** Current docs state current rules; dated entries + `git history ` hold history. A retired rule never appears as live in a current-state section.
 
 10. **Readable lines + headers.** Prose lines stay ≤ ~300 chars where practical (generated tables/data exempt). Each doc opens with a three-line header: what it contains / when to read it / approximate token cost.
 

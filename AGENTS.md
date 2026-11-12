@@ -16,7 +16,7 @@ A localhost-only Node tool that renders seeded game simulations into publishable
 | Before any sim/doc edit | `docs/LAWS.md` (current laws quick ref) | the standing game laws |
 | Add a weapon trait / bot | `docs/RECIPES.md` + the canonical `TRAIT / SKILL REGISTRY` | the cheap-class pattern |
 | Engine work | `docs/SPEC.md` · `CONTRACT.md` · `BUILD.md` | only when building the platform |
-| History / a past decision | `docs/GAMES.md` dated entries · `docs/archive/` | grep by `#NNN` or symbol — NEVER read whole |
+| History / a past decision | `docs/GAMES.md` dated entries (git history for older) | grep by `#NNN` or symbol — NEVER read whole |
 
 `docs/GAMES.md` is ~155k tokens. **Never load it whole.** Grep for the entry number (`#721`), a symbol, or a section heading, and read only that region. `STATE.md` carries the current md5/stamp/line-count/baseline so you never hunt for them.
 
@@ -53,5 +53,5 @@ A localhost-only Node tool that renders seeded game simulations into publishable
 - Current game laws (quick reference) → `docs/LAWS.md`; the fuller design record + trait count + open queue → `docs/GAMES.md` §Current state.
 - Landing recipes (add trait / skill / bot, stamp discipline) → `docs/RECIPES.md`.
 - Agent workflow / loading order → this file. Platform rules → `docs/SPEC.md`.
-- Decisions, owner quotes, measured history → `docs/GAMES.md` dated entries + `docs/archive/`.
+- Decisions, owner quotes, measured history → `docs/GAMES.md` dated entries (git history for older).
 - `tools/lint-docs.mjs` fails the build if these drift (dead refs, stale md5, trait-count disagreement, retired rules stated as live).

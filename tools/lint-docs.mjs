@@ -3,7 +3,7 @@
  * Catches: dead live refs, stale canonical md5 slots, trait-count disagreement, retired rules stated
  * as live, missing baseline. Usage: node tools/lint-docs.mjs [--json]. Exit 0 = no errors; 1 = errors.
  * Scope: operational docs lint fully; GAMES.md is the archive (only §Current state linted for live refs);
- * docs/archive/ + fp-*.json + scratch/ artifacts are exempt (history). Read-only, bare Node.
+ * fp-*.json + scratch/ artifacts are exempt (history). Read-only, bare Node.
  */
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -54,7 +54,7 @@ const PLANNED = new Set(['package.json','render.json','targets.ts','characters.j
   'launch.json','settings.json','extensions.json','doctor.mjs','generate.mjs','inspect.mjs']);
 const PLANNED_DIR = /^(packages|apps|games|output|assets\/pools|assets\/fonts|\.vscode)\//;
 const HIST = /retired|purged|recover|git show|docs-precleanup|item3-closed|never committed|unrecoverable|former|removed|deleted|was\b|tombstone|archived|RETIRED|DORMANT|reverted|parked|pruned|gone|no longer|since retired/i;
-const SEARCH_DIRS = ['', '.qa','docs','tools','scripts','scratch','previews','docs/archive'];
+const SEARCH_DIRS = ['', '.qa','docs','tools','scripts','scratch','previews'];
 function resolves(ref) {
   const clean = ref.split('#')[0]; if (!clean) return true;
   if (PLANNED.has(path.basename(clean)) || PLANNED_DIR.test(clean)) return true;

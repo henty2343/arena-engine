@@ -7,7 +7,7 @@ record, with owner quotes and provenance); the two MUST agree — `tools/lint-do
 Platform rules live in `docs/SPEC.md`; agent workflow in `AGENTS.md`; mutable facts in `STATE.md`.
 
 > These are the laws as of build `links-r87`. Retired rules are NOT listed here — they live in
-> `docs/archive/` and GAMES' dated entries. If a law below conflicts with GAMES §Current state, stop and
+> GAMES' dated entries (git history for older). If a law below conflicts with GAMES §Current state, stop and
 > reconcile (that is a lint error), do not silently pick one.
 
 ## Battle structure
@@ -56,7 +56,7 @@ Platform rules live in `docs/SPEC.md`; agent workflow in `AGENTS.md`; mutable fa
 - **5s** the substep budget audit (0 violations).
 - **6s** launch doctrine — every launch recomputes to its hold-derived point (radial → tip; tangential → middle).
 - **7s RETIRED at `allcut-r62`** — was "zero melee hits by projectile weapons"; every spine now cuts, so the counter
-  survives as visibility only (`rangedMeleeHits`). See `docs/archive/retired-projectile-rule.md`.
+  survives as visibility only (`rangedMeleeHits`). See §Retired rules below.
 - **Firing is physics:** one shot per full revolution (`fireAcc += |spin|·sdt`, releases at 2π) — spin rate IS fire rate.
   Shot damage snapshots the thrower's CURRENT damage at launch. The combo matrix is forced: 484 ordered cells × 8 seeds
   at the 22-weapon roster.
@@ -103,3 +103,18 @@ Platform rules live in `docs/SPEC.md`; agent workflow in `AGENTS.md`; mutable fa
   `measure.mjs` NEVER runs without the owner's explicit go. Judge health with `node tools/verify.mjs`.
 - **No balancing during the skills pass** (no win-rate tables); the 484-cell re-run, resolver rework and spear-bearing
   fingerprint cell are deferred to the end.
+
+## Retired rules (kept as provenance, NOT current)
+
+The following rules were once live and were retired. They are recorded here so they never get "fixed" as bugs.
+Full verbatim text is in git history; GAMES dated entries record the landings.
+
+- **The projectile rule** (retired `allcut-r62`, owner 2026-11-02): formerly "a projectile weapon's spine deals
+  no damage, only its projectiles do." Now every weapon cuts on body touch, launchers and shield included. The
+  gate-free law is in `bladeVsBody`; `measure.mjs` keeps `rangedMeleeHits` as visibility only.
+- **Former law 4 exception** (retired Phase A, GAMES #735, 2026-11-12): formerly "a projectile spine touching
+  the body latches/shoves but emits no hit event." Now every latched rising edge pairs a hit.
+- **Former law 7s clause** (retired Phase A, GAMES #735, 2026-11-12): formerly "zero melee hits by projectile
+  weapons." Now every spine can hit; law 7s is removed from the live suite.
+
+If you're tempted to "restore" any of these, stop — they were retired for reasons recorded in the dated entries.
