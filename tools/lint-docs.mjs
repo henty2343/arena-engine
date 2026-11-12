@@ -27,7 +27,7 @@ const currentState = games.slice(0, csEnd>0?csEnd:games.length);
 const m = currentState.match(/(\d+)\s+of\s+22\s+weapon\s+traits\s+landed/);
 const canonicalTraits = m ? parseInt(m[1],10) : null;
 if (canonicalTraits==null) warn('could not read canonical trait count from GAMES §Current state');
-else for (const f of ['README.md','AGENTS.md']) {
+else for (const f of ['README.md','AGENTS.md','docs/LAWS.md']) {
   if (!existsSync(path.join(root,f))) continue;
   const txt = rd(f);
   for (const mm of txt.matchAll(/(\d+)\s+of\s+22/g)) {
@@ -40,14 +40,17 @@ else for (const f of ['README.md','AGENTS.md']) {
 }
 const retiredSignatures = ['spine never damages','deals no damage and emits no hit event',
   'zero melee hits by projectile weapons','Seven shot-law checks','The projectile-rule exception (owner 2026-10-19)'];
-const csLines = currentState.split('\n');
-for (const sig of retiredSignatures)
-  csLines.forEach((line,i) => {
-    if (line.includes(sig) && !/retired|RETIRED|was |no longer|former|history/i.test(line))
-      err(`GAMES §Current state (line ${i+1}) states a retired rule as live: "${sig}"`);
+function checkRetired(text, label) {
+  text.split('\n').forEach((line,i) => {
+    for (const sig of retiredSignatures)
+      if (line.includes(sig) && !/retired|RETIRED|was |no longer|former|history/i.test(line))
+        err(`${label} (line ${i+1}) states a retired rule as live: "${sig}"`);
   });
+}
+checkRetired(currentState, 'GAMES §Current state');
+if (existsSync(path.join(root,'docs/LAWS.md'))) checkRetired(rd('docs/LAWS.md'), 'docs/LAWS.md');
 const PLANNED = new Set(['package.json','render.json','targets.ts','characters.json','tasks.json',
-  'launch.json','settings.json','extensions.json','doctor.mjs','generate.mjs','inspect.mjs','LAWS.md','RECIPES.md']);
+  'launch.json','settings.json','extensions.json','doctor.mjs','generate.mjs','inspect.mjs']);
 const PLANNED_DIR = /^(packages|apps|games|output|assets\/pools|assets\/fonts|\.vscode)\//;
 const HIST = /retired|purged|recover|git show|docs-precleanup|item3-closed|never committed|unrecoverable|former|removed|deleted|was\b|tombstone|archived|RETIRED|DORMANT|reverted|parked|pruned|gone|no longer|since retired/i;
 const SEARCH_DIRS = ['', '.qa','docs','tools','scripts','scratch','previews','docs/archive'];
@@ -63,7 +66,7 @@ function resolves(ref) {
   return false;
 }
 const refRe = /`([A-Za-z0-9_./\-]+\.(?:mjs|md|json|html|ts|js|svg|csv|txt|sh))`|\]\(([^)\s]+)\)/g;
-const operational = ['README.md','AGENTS.md','STATE.md','docs/SPEC.md','docs/CONTRACT.md','docs/BUILD.md'];
+const operational = ['README.md','AGENTS.md','STATE.md','docs/LAWS.md','docs/RECIPES.md','docs/SPEC.md','docs/CONTRACT.md','docs/BUILD.md'];
 function lintRefs(f, text, off=0) {
   text.split('\n').forEach((line,i) => {
     for (const mm of line.matchAll(refRe)) {

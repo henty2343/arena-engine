@@ -25,7 +25,7 @@ function facts() {
   const scripts = list(path.join(root, 'scripts'), /\.mjs$/);
   const tools = list(path.join(root, 'tools'), /\.mjs$/);
   const tok = p => existsSync(p) ? Math.round(readFileSync(p, 'utf8').length / 4) : 0;
-  const docs = ['README.md','AGENTS.md','docs/GAMES.md','docs/SPEC.md','docs/CONTRACT.md','docs/BUILD.md']
+  const docs = ['README.md','AGENTS.md','docs/LAWS.md','docs/RECIPES.md','docs/GAMES.md','docs/SPEC.md','docs/CONTRACT.md','docs/BUILD.md']
     .map(f => ({ file: f, approxTokens: tok(path.join(root, f)) }));
   return { canonical:'previews/spinclash-preview.html', md5, lines, stamp, baseline, baselineOk,
     counts:{proofs:proofs.length,baselines:baselines.length,rootTools:rootTools.length,scripts:scripts.length,tools:tools.length},

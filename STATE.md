@@ -25,10 +25,12 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.6k.
 ## Documentation cost (chars/4 estimate)
 | file | ~tokens |
 |---|---:|
-| README.md | 12,868 |
-| AGENTS.md | 1,209 |
+| README.md | 11,160 |
+| AGENTS.md | 1,244 |
+| docs/LAWS.md | 2,206 |
+| docs/RECIPES.md | 1,871 |
 | docs/GAMES.md | 155,419 |
-| docs/SPEC.md | 12,813 |
+| docs/SPEC.md | 12,879 |
 | docs/CONTRACT.md | 4,168 |
 | docs/BUILD.md | 4,469 |
 

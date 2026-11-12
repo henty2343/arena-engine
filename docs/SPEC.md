@@ -272,7 +272,7 @@ arena-engine/
 ├─ AGENTS.md               # THE agent entry point — loading order, standing rules, task→file map
 ├─ STATE.md                # GENERATED mutable facts (md5/stamp/lines/baseline/inventory) — tools/gen-state.mjs
 ├─ .gitignore              # scratch/
-├─ docs/                   # SPEC.md CONTRACT.md BUILD.md GAMES.md + archive/ (retired rules, audit baselines, take-over history)
+├─ docs/                   # LAWS.md (current laws) · RECIPES.md (add trait/bot) · SPEC.md CONTRACT.md BUILD.md GAMES.md + archive/ (retired rules, audit baselines, take-over history)
 ├─ previews/               # spinclash-preview.html — THE canonical game (single file, dependency-free)
 ├─ chromecheck.mjs         # fast boot + pairing check (~4s) — runs today on bare Node
 ├─ measure.mjs             # the sanctioned law matrix — OWNER-GATED, never runs without his explicit go
@@ -303,7 +303,7 @@ The engine dirs are Phase-0 placeholders (`.gitkeep` only) until the matching `B
 
 5. **Tagged removals.** Owner-ruled removals get a recovery tag before the cleanup commit. Recover with `git show <tag>:<path>`. Pushes are the owner’s to make.
 
-6. **Agent entry + progressive disclosure.** Agents start at `AGENTS.md` + `STATE.md` and load only what the task needs. `GAMES.md` is grep-first (by `#NNN`, symbol, or heading) — never read whole.
+6. **Agent entry + progressive disclosure.** Agents start at `AGENTS.md` + `STATE.md`, read `docs/LAWS.md` before touching the sim, and `docs/RECIPES.md` for a trait/skill/bot landing — loading only what the task needs. `GAMES.md` is grep-first (by `#NNN`, symbol, or heading) — never read whole. `LAWS.md` is the distilled current-laws quick reference and must agree with GAMES §Current state (lint-checked).
 
 7. **Generated facts.** Mutable facts (md5, stamp, line count, baseline, inventory, doc costs) are generated into `STATE.md` by `tools/gen-state.mjs` — never hand-pinned in prose. Design facts (e.g. the trait count) have ONE canonical home (`GAMES.md` §Current state) and are validated across docs, not duplicated.
 
