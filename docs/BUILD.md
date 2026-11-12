@@ -132,7 +132,7 @@ Platform work resumes only when a real game needs something it doesn't have.
 
 ## Design previews — every game starts here
 
-Before any engine code exists, a game is designed as a **dependency-free HTML preview**: one file, no build step, no imports, openable directly by the owner. Naming convention: **`<game-name>-preview.html`**, kebab-case game name, living in this folder.
+Before any engine code exists, a game is designed as a **dependency-free HTML preview**: one file, no build step, no imports, openable directly by the owner. Naming convention: **`<game-name>-preview.html`**, kebab-case game name, living in `previews/`.
 
 Why this lane exists: the owner playtests personally and reports symptoms, and rules get judged by feel plus headless measurement before a single line of engine code is written. The preview is a design toy, not a port source: when a game moves into the engine (Phase 8), it is rebuilt against the contract from `games/_template/` — the preview's *rules and measured facts* transfer, its code does not.
 

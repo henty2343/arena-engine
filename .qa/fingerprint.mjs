@@ -30,7 +30,7 @@
  *
  * UPDATE 2026-10-28 (pre-skills workspace cleanup, owner go): those four historical checkpoints —
  * fp-authoring.json, fp-dmg1-r21.json, fp-shotvocab.json and fp-pause-after.json — were DELETED,
- * so `.qa/fp-lead-r22.json` is now the only baseline file on disk. The reasoning above is kept
+ * so at that point `.qa/fp-lead-r22.json` was the only baseline on disk (a 2026-10-28 snapshot — many dated `fp-<stamp>.json` checkpoints exist now; the standing one is named in `.qa/BASELINE`, judged via `--compare`). The reasoning above is kept
  * verbatim because it records why they were never strays while they existed; the deletion reverses
  * the keeping decision, not the reasoning, and GAMES.md's Testing recipe carries the dated note.
  */

@@ -1,5 +1,7 @@
 # ARENA ENGINE — Game Contract
 
+> **STATUS: PLANNED — not implemented.** This is the target interface for the future engine (BUILD.md Phases 0–8). No `games/<id>/` modules exist yet; the one live game is `previews/spinclash-preview.html` (a single-file `newGame`/`tick` sim). Read this as the goal, not as shipped code.
+
 The interface a game implements. The platform knows nothing about any specific game: **zero `gameId` conditionals in platform code, ever.** If you find yourself adding one, the contract is wrong — fix the contract.
 
 ---

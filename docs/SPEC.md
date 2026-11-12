@@ -1,12 +1,14 @@
 # ARENA ENGINE — Spec
 
+> **STATUS: the platform described here is PLANNED (BUILD.md Phases 0–8) — there is no engine code yet.** The one live game is `previews/spinclash-preview.html` (a single-file sim) with its bare-Node harness; the rules, stack and pipeline below are the target, not shipped code.
+
 A localhost-only Node.js tool: pick a game → set options → generate → watch it → download the MP4.
 
 Read this with `CONTRACT.md` (the game interface) and `BUILD.md` (what to build next).
 
 ---
 
-## Purpose — read this before anything else
+## Purpose — read this before any tradeoff
 
 This tool exists to produce one thing: **a video that gets published to ad-supported platforms** — YouTube, TikTok, Instagram Reels — and earns money from the ads placed on it.
 
@@ -267,7 +269,7 @@ Excluded from the production build of `apps/studio`.
 ```
 arena-engine/
 ├─ README.md               # the entry point — GitHub renders only this one at the root
-├─ .gitignore              # scratch/ · uploads/
+├─ .gitignore              # scratch/
 ├─ docs/                   # SPEC.md CONTRACT.md BUILD.md GAMES.md
 ├─ previews/               # spinclash-preview.html — THE canonical game (single file, dependency-free)
 ├─ chromecheck.mjs         # fast boot + pairing check (~4s) — runs today on bare Node
@@ -280,7 +282,7 @@ arena-engine/
 ├─ packages/               # Phase-0 placeholders (.gitkeep): core (pure TS sim) · render (node-canvas + ffmpeg) · server (Fastify loopback, single job slot)
 ├─ apps/studio/            # Phase-0 placeholder (.gitkeep) — Vite + React
 ├─ games/                  # Phase-0 placeholders (.gitkeep) — _probe (contract fixtures) · _template (commented scaffold)
-├─ scripts/                # Phase-0 placeholder (.gitkeep) — doctor.mjs, generate.mjs, inspect.mjs
+├─ scripts/                # run-battery.mjs (LIVE — one-command proof battery) + Phase-0 placeholders: doctor.mjs, generate.mjs, inspect.mjs
 └─ output/                 # gitignored, created at runtime; one folder per render; also the stats source
 ```
 
