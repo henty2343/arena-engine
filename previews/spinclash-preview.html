@@ -963,85 +963,40 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   }
 
   // @@data/len-growth
-  /* ---- LENGTH GROWTH (owner ruling 2026-10-28, the spear's trait; built 2026-10-28) ----
-   * A weapon row may declare `trait.len` = the fraction of LENGTH gained per damaging hit,
-   * and `lenJ` = its shaft/head junction as a fraction of its own drawn tip. Growth is
-   * LENGTH-ONLY and never thickens: the spine coordinate `d` is remapped while `l` and every
-   * covering radius `r` are held (owner: "i was actually preferring only the lenght, im scared
-   * the spear will become 'thick'").
-   *
-   * The remap is PIECEWISE, not uniform. At or behind the junction, d scales by the shaft
-   * factor; beyond it, d TRANSLATES rigidly — so the head cluster keeps its exact drawn shape
-   * and simply sits further out. Both branches give J*k at the junction, so the map is
-   * continuous and no gap opens between shaft and head.
-   *
-   * WHY NOT A UNIFORM d-STRETCH — measured, not assumed. `.qa/lengrow-gate.mjs` drives
-   * inscribe.mjs's own gate over the ladder: a uniform stretch elongates the tapered head,
-   * spreading the covering circles apart along a longer silhouette, and the deepest uncovered
-   * ink point climbs 4.25 -> 5.14px, past the gate's 4.6px MISS_TOL from +6.1% onward. The
-   * piecewise map holds miss at 4.18-4.50px and poke at -0.26..-0.30px across a d-REMAPPED ladder
-   * — but only up to a wall, and this spear now grows past it. With the covering held (radii
-   * untouched, spacing scaled) MISS binds again at tip growth +39.5% (shaft k 1.6469, miss 4.59 of
-   * the 4.60 band) and fails at +40% (4.61): the shaft circles spread apart faster than their held
-   * radii can bridge. At the +200% authored below, the covering therefore FOLLOWS the growth —
-   * every step carries its own re-packed row in LEN_CIRCLES, baked offline against that step's own
-   * stretched silhouette by the HOUSE packer (bake-rows.mjs -> inscribe.mjs's regen: the same
-   * raster-EDT greedy union-inscribed cover that baked all 22 shipped rows, so no new packing
-   * algorithm enters the sim and nothing is hand-placed). Gated step by step against their own art
-   * (`node .qa/lengrow-bake.mjs --verify`): poke -0.30px at all twelve, miss 2.30-4.25px —
-   * BETTER than the shipped base row's 4.25, because a fresh pack fits the stretched silhouette
-   * instead of inheriting the base row's spacing. LEN_REMAP_CEIL below is that +39.5% wall, and a
-   * growing weapon that passes it without baked rows is a BOOT ERROR, not a silent gap hit.
-   * Art and circles MUST share one map: a per-shape variant (shaft scaled, head translated as a
-   * body) fails on POKE from +4.9%, because the circles carry no shape label and would follow a
-   * different map than the art they have to stay inscribed in.
-   *
-   * Note canonical :452-455 renormalises maxD to LT, and that renormalisation is scale-invariant,
-   * so the authored INGR_* coordinates CANNOT carry a stretch — it is applied here, to the booted
-   * world-px polys and circles, which is also what the runtime reads.
-   *
-   * `trait.len` is the OBSERVABLE rate: 0.0959 grows the drawn tip 9.6% per damaging hit, 12 steps
-   * to +200.1% — the spear ends a round THREE times its shipped length (drawn tip 147.472 ->
-   * 442.548px, REACH 210.412 -> 505.488, so from mid-arena in a 1000px box its tip reaches the
-   * wall). It was 0.012 (+15.4%) when growth landed as `lengrow-r26` and 0.0253 (+35.0%) as
-   * `lengrow-r27`; the owner raised it twice the same day — "i want it to be more ridiculous, so
-   * increase the growth of the spear even more", then, at +35%, "its not ridiculous enough". +35%
-   * was the most a d-remapped covering could take, so the second raise is what forced the baked
-   * rows above rather than a preference for authored data.
-   * The shaft factor delivering it is larger (the junction is ~61% of the tip; 4.2769 at the top
-   * step) and is derived here, never authored — and derived per step from the tip factor, so the
-   * observable growth compounds exactly at the authored rate rather than drifting as a linearised
-   * shaft rate. LEN_STEPS is 12 as the BASE ladder. The "~14 damaging hits land per fighter per
-   * round" figure that justified 12 was an ESTIMATE and is now measured (115 rounds across 50
-   * forced-spear cells): median 24 hits, p25 17, min 3. And 24 is a hard wall rather than a
-   * coincidence — base dmg 1 plus the trait's +0.3 per hit crosses 100 hp exactly at hit 24
-   * (cumulative 106.8), so LETHALITY, not the ladder, is what stops the snowball. The consequence:
-   * the spear already SATURATES the 12-step base in 85% of rounds. At this rate each click is still
-   * ~14px of visible spear. [AMENDED nocombo-r34, 2026-10-31: the "headroom a special skill can
-   * use" sentence this replaces died with `skill.lenSteps` — the cap is UNIFORM at LEN_STEPS for
-   * every holder now (owner no-combos ruling), so the ladder is 12 steps, full stop. The +420%
-   * era (steps 13-18, REACH 829.571) is history in GAMES.md; +200% at 12 steps is the shipped look
-   * the owner playtest-approved ("it looks good now").]
-   *
-   * REACH is raised to the TOP step below. That is not a nicety: REACH is the parryGap prune bound
-   * at :994, so a stale value would silently CULL real contacts at the grown tip, and the substep
-   * tip-speed budget at :1249 reads the same table. Both become conservative. MINR is now the
-   * LADDER-WIDE MINIMUM, not the base row's: a re-baked step can pack a THINNER circle than the
-   * shipped row did (the spear's step 5 packs r 2.0 against a base-row 2.2, so MINR.spear is 2.00),
-   * and MINR sizes the parry substep delta at :1344 — holding the base value would make the
-   * budget too coarse for exactly the step that needs it finest. While the covering was merely
-   * d-remapped every radius was held and the base value was correct by construction; that stopped
-   * being true the moment rows were re-baked.
-   *
-   * Steps are per-fighter (`f.lenStep`); the CAP is UNIFORM at LEN_STEPS since nocombo-r34
-   * (2026-10-31) — the per-fighter `LEN_CAP` addend (`skill.lenSteps`) was retired with the
-   * owner's no-combos ruling. Every round still RESETS all growth — spin,
-   * dmg and lenStep alike — and that reset is an OWNER LAW, not an implementation convenience
-   * (2026-10-28, rejecting a cross-round-persistence skill: "i dont like this at all, each round
-   * weapons traits should reset"). No skill may carry trait growth across a round boundary. There
-   * is still no `lenCap` constant (owner: "no cap let it snowball, we will balance laer if it gets
-   * too ridiculous") — the ladder's top step is the geometry ceiling, the round reset is the balance
-   * bound, and lethality at 24 hits is the practical one. The shared WEAPONS row is never mutated. */
+  /* ---- LENGTH GROWTH (the spear's trait) ----
+   * A row may declare `trait.len` = the fraction of LENGTH gained per damaging hit, and `lenJ` =
+   * its shaft/head junction as a fraction of its own drawn tip. Growth is LENGTH-ONLY and never
+   * thickens: the spine coordinate `d` is remapped while `l` and every covering radius `r` are
+   * held (owner: "i was actually preferring only the lenght, im scared the spear will become 'thick'").
+   * The remap is PIECEWISE, not uniform: at or behind the junction d scales by the shaft factor,
+   * beyond it d TRANSLATES rigidly, so the head keeps its drawn shape and simply sits further out.
+   * Both branches give J*k at the junction — continuous, no shaft/head gap. Art and circles MUST
+   * share this one map (a per-shape variant fails POKE: the circles carry no shape label). The
+   * INGR_* coordinates cannot carry the stretch — maxD renormalisation is scale-invariant — so it
+   * is applied to the booted world-px polys and circles, which is what the runtime reads.
+   * WHY BAKED ROWS, measured not assumed: a uniform d-stretch spreads the covering apart along a
+   * longer silhouette and the deepest uncovered ink climbs past inscribe.mjs's MISS_TOL (4.6px) —
+   * `.qa/lengrow-gate.mjs` drives that gate. Holding the radii and remapping d buys only up to
+   * LEN_REMAP_CEIL (+39.5%); past that wall the shaft circles outpace their held radii. So every
+   * step carries its own re-packed row in LEN_CIRCLES, baked offline by the HOUSE packer
+   * (bake-rows.mjs -> inscribe.mjs regen, the same cover that baked all 22 shipped rows) and gated
+   * step by step (`node .qa/lengrow-bake.mjs --verify`). A grower past the ceiling without baked
+   * rows is a BOOT ERROR, never a silent gap hit.
+   * `trait.len` is the OBSERVABLE rate: the spear's 0.0959 over LEN_STEPS 12 = +200% drawn tip.
+   * The shaft factor is DERIVED per step from the tip factor, never authored, so growth compounds
+   * at the authored rate instead of drifting as a linearised shaft rate.
+   * The ladder is 12 steps for EVERY holder (nocombo-r34). What stops the snowball is LETHALITY,
+   * not the ladder: base dmg 1 + the trait's +0.3 per hit crosses 100 hp at hit 24, so the spear
+   * already saturates the base ladder in most rounds.
+   * REACH is raised to the TOP step because it is the parryGap prune bound and the substep
+   * tip-speed budget — a stale value would CULL real contacts at the grown tip. MINR is the
+   * LADDER-WIDE MINIMUM, not the base row's: a re-baked step can pack a thinner circle, and MINR
+   * sizes the parry substep delta.
+   * Steps are per-fighter (`f.lenStep`); every round RESETS spin, dmg and lenStep alike — an OWNER
+   * LAW, not a convenience: no skill may carry trait growth across a round boundary. There is no
+   * `lenCap`: the ladder top is the geometry ceiling, the round reset is the balance bound. The
+   * shared WEAPONS row is never mutated.
+   * ref: lengrow-r26, lengrow-r27, nocombo-r34 */
   // LEN_CIRCLES BEGIN — generated by .qa/lengrow-bake.mjs, never hand-edit
   /* One re-packed covering per length-growth step for the spear; step 0 is the shipped
    * CIRCLES_V2 row and is not listed. Regenerate with `node .qa/lengrow-bake.mjs --write`.
@@ -1065,51 +1020,26 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   };
   // LEN_CIRCLES END
 
-  /* ROW INTEGRITY (boot guard, seam-r30). Two classes of silent wrongness that a NEW AXIS
-   * introduces, both caught at load rather than in a screenshot or a hung tab:
-   *  (1) `brief` — APP.meta's weapon shorthand was DERIVED from a binary `trait.spin ? '+SPD' :
-   *      '+DMG'` test, so it read '+DMG / Hit' for the spear and never mentioned length growth:
-   *      wrong the day the length trait landed, and wronger for every axis after it. The derivation
-   *      survives as a fallback for plain spin/dmg rows, but any trait axis outside {spin, dmg}
-   *      REQUIRES an authored `brief` (owner ruling: authored legend labels, never derived).
-   *  (2) `shot.mult` / `skill.shotMult` — the shot-cadence multiplier seam below. The effective
-   *      value DIVIDES the launch accumulator's `need`, so a non-positive value would spin the
-   *      release loop forever. The bow's trait.mult (multgrow-r42) rides this seam through the
-   *      capped growth term; the STATIC field is still declared by no row. The check exists so a
-   *      row that declares it cannot hang the sim. Checked for every (weapon, fighter) pair,
-   *      since both contribute — and growth only ADDS a non-negative term, so positivity is
-   *      preserved by construction.
-   *  (3) `trait.shotR` (shotgrow-r33) — the shot-radius growth RATE. It feeds a Math.pow at the
-   *      birth site, so a negative rate would shrink orbs toward zero and NaN would poison every
-   *      shot radius silently; growth-only is the house doctrine, so it must be a positive
-   *      finite number.
-   *  (4) `trait.cycle` (returngrow-r37, trigger moved to the catch cycle in freeloop-r38) — the
-   *      loop-CYCLE growth RATE (paired speed+turn, shape locked). Same failure shape as shotR:
-   *      a negative rate would slow loops toward frozen and NaN would poison birth speeds;
-   *      growth-only, positive finite.
-   *  (5) `shot.returns` (freeloop-r38) — the free loop's row gate. A returning shot needs a
-   *      curve to loop on (turn > 0 — a straight throw never comes home) and a finite
-   *      orbit.elong in [0, 0.95): 0 is the plain circle, and the curvature modulation
-   *      κ(ψ) = κ0(1 − elong·cos2ψ) must stay positive or the oval would kink.
-   *      (`trait.bounce`, the ricochet-budget RATE guarded here at bouncegrow-r40, was
-   *      RETIRED with its axis the same day — ricolaw-r41; `shot.ricochet` is a boolean law
-   *      gate with no number to poison, so it needs no guard.)
-   *  (6) `trait.mult` (multgrow-r42) — the RAIN growth RATE. It feeds the launch cadence's
-   *      smul at read time, capped by MULT_STEPS; a negative rate would thin the rain toward
-   *      still and NaN would poison `need` (the release loop would silently stall);
-   *      growth-only, positive finite.
-   *  (7) `trait.fan` (fan-r43) — the FAN growth RATE. It feeds grownVolley's tier count at read
-   *      time, capped by FAN_STEPS; a negative rate would never widen the fan and NaN would
-   *      poison the tier math (Math.min(NaN, CAP) = NaN — the fan silently frozen at tier 0);
-   *      growth-only, positive finite.
-   *  (8) `shot.pin` (pinlaw-r44) — the crossbow's NAIL law gate. A boolean, so there is no number
-   *      to poison (the ricochet precedent); what IS guarded is exclusivity: a row may own
-   *      exactly ONE rim-law exception — pin (nail the rim), ricochet (bounce forever) or
-   *      returns (pierce) — two on one row would fight over the same arrival.
-   *  (9) `shot.skewer` (skewer-r46) — the javelin's SKEWER law gate: kind-locked to 'javelin',
-   *      exclusive with EVERY rim-law exception (the skewer owns the body-hit law; the rim laws
-   *      own arrival). The SKEWER constants themselves are guarded at their const block (the
-   *      crawl is the escape clock — a zero spin would freeze the cut-free forever). */
+  /* ROW INTEGRITY (boot guard, seam-r30): a new axis must fail at LOAD, not in a screenshot or a
+   * hung tab. What is guarded, and the silent wrongness each guard prevents:
+   *  - `brief`: the derived legend label only understands {spin, dmg}; any other trait axis
+   *    REQUIRES an authored `brief` (owner ruling: authored labels, never derived).
+   *  - growth RATES `trait.shotR` / `trait.cycle` / `trait.mult` / `trait.fan`: positive finite.
+   *    Each feeds a pow or a read-time tier/cadence term, so a negative rate shrinks or freezes
+   *    its axis and NaN poisons it silently (Math.min(NaN, CAP) is NaN). Growth-only doctrine.
+   *  - `trait.turn` / `shot.turn`: RETIRED (hexfam-r68) — the bend+hunt is the FAMILY law now.
+   *  - `shot.hex`: requires a PLAIN flight path — no returns / ricochet / pin / skewer.
+   *  - rim-law EXCLUSIVITY: a row owns at most ONE arrival exception — pin, ricochet or returns.
+   *    `shot.skewer` is kind-locked to 'javelin' and exclusive with all three (it owns the body-hit
+   *    law, the rim laws own arrival). Booleans have no number to poison.
+   *  - `shot.returns`: validates the ORBIT SOLVE data (a > 0, b > 0, b < a, peak > 0) — the halo's
+   *    elong/turn curvature model is retired (touchorbit-r53).
+   *  - effective shot multiplier, per (weapon, fighter) pair: 1 + shot.mult + skill.shotMult must
+   *    be > 0 — it DIVIDES the launch accumulator's `need`, so a non-positive value spins the
+   *    release loop forever. Growth only ADDS a non-negative term, so positivity holds by
+   *    construction. The SKEWER constants are guarded at their own const block.
+   * ref: seam-r30, shotgrow-r33, returngrow-r37, freeloop-r38, ricolaw-r41, multgrow-r42, fan-r43,
+   *      pinlaw-r44, skewer-r46, hexfam-r68, touchorbit-r53 */
   const TRAIT_DERIVABLE = { spin: 1, dmg: 1 };
   for (const id of WEAPON_IDS) {
     const Wr = WEAPONS[id], tr = Wr.trait || {};
@@ -1147,8 +1077,8 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   const HEXFAM = { base: 0.9, grow: 0.15, ref: 800 };   // hexfam-r68 — THE FAMILY FLIGHT LAW's standard (owner ruling 2026-11-02: "from now on all magic/spell users should adopt the same mechanig as wand currently have, it looks good"): the wand's blessed ladder (allcut-r62 base 0.9, bendspark-r61 growth 0.15, TURN_STEPS cap) IS the family law, scaled by each row's own speed ÷ the wand's 800 — so EVERY spell is born on the same ~889px arc and tightens to the same ~333px hunt floor at the cap: the never-orbit identity wall holds family-wide by construction. The wand itself is BIT-IDENTICAL: 800/800 === 1 exactly, x*1 === x. Rates PROVISIONAL family-wide (his eye blessed the wand's — the family rides the same numbers).
   const SEEK_BAND = 0.7;     // hexspark-r65: the hex's angular band (rad, PROVISIONAL) — the seek authority ramps proportionally INSIDE the band and saturates outside it, so a spark pointed at the hexed foe flies straight (a committed hornet, not a chatterbox) and the turn never vibrates across the aim line
   const SEEK_H0 = 0.3;       // spellform-r69 (owner's flight tuning: "tune the flight a bit, bend more or something else i just want it to hit the opponent more"): the SEEK FLOOR — spells hunt from BIRTH. h was 0 until the caster's first hit (the cold start — exactly where the launcher frustration lives), now h = SEEK_H0 + (1−SEEK_H0)·min(shotStep,TURN_STEPS)/TURN_STEPS: born with a grudge, deepening to full authority at the cap. BEND MORE wouldn't serve — the birth bend is pure chaos (signs from rng; magic doesn't aim, it arrives); SEEK is the aim channel, so the hit-rate lever is the seek floor. Authority stays bounded |tv| ≤ |turn| ⇒ the never-orbit floor holds. PROVISIONAL — owner's eye judges
-  const POOL = { life: 540, r: 62, reach: 0.75, tick: 12, rate: 0.25, cap: 6 };   // emberpool-r79 — THE BURNING POOL's ladder (owner: *"on hit leave a burning pitch on the floor... if the opponets steps on it they take damage as well"*); poolfix-r80 AT HIS EYE (*"make the pool bigger and last a big longer, also make it look like its burning or it is how or similar, but just subtle"*): r 44 → 62 (about a body disc — the fire reads as a PLACE now), life 360 → 540 ticks (3s → 4.5s, "a bit longer"); reach 0.5 = stepping in reads as the body centre within r + half a body, tick 24 = a burn beat every 0.2s (a pulse, like the bleed's) [kindlingfix-r83 AMENDED BOTH AT HIS EYE (*"i want the spot to damage multiple times when enemies are standing on it, just like when someone is pinned by javelin against the wall, they take continuous damage, and not just once, but only the bigger spot"*): tick 24 → 16 (a beat every ~0.13s — the pinned-javelin continuous read; the hit's own knock (hitKnock 130) used to slide the victim off the fire after ~1 beat — the smoke's 1.3 burns/pool was his dead read — so the beat quickens AND the reach grows), reach 0.5 → 0.75 (the zone reads to 62 + 48 = 110px — the knocked slide stays in the fire; the small coals ride the same reach, one grammar). The coals keep their ONE-SHOT pop — "only the bigger spot" bites repeatedly. burnfix-r84 AMENDED AGAIN AT HIS EYE (*"make the opponent burn a bit faster when stepping on the big fire circle, also he starts taking damage as soon as he touches it"* + *"when scroll vs scroll it is impossible to tell all the circles apart"*): tick 16 → 12 (a beat every 0.1s); THE TOUCH BITE — damage starts the VERY TICK the body touches the fire (the entry edge bites at once, the beat continues every tick after; leaving re-arms the entry, so a re-step is a fresh touch; a pool spawned ON the victim by the meteor's hit bites its own victim on the spawn tick); and EVERY FIRE WEARS ITS OWNER'S CAST COLOUR — drawPools rings the rim and drawEmbers rings the char bed in COLS[fighter.idx] (the hex-mark precedent: the mark wears the attacker's colour) so scroll×scroll reads at a glance — his fire, my fire — the warm palette inside is untouched (never gray; RED is still bleed's — the cast coral is an IDENTITY, not a status)] rate 0.25 = a quarter of the caster's damage at the hit that lit it (snapshot, floor 0.5 — the effR doctrine), cap 6 pools (the lace guard). A ZONE, not a status: no ring slot, no grow, no hex — the DoT slot law and his generic ring design stay untouched. Rates PROVISIONAL — his eye judges
-  const EMBER = { drop: 30, dropCut: 2, dropMin: 14, life: 300, lifeAdd: 24, steps: 8, r: 15, rAdd: 0.8, rate: 0.5, cap: 14, flare: 10, scatter: 44, popFx: 14, wisp: 20 };   // kindling-r82 — THE EMBER SPILL's dials (ALL PROVISIONAL — his eye judges): the flight sheds a coal every max(dropMin, drop − dropCut × min(shotStep, steps)) ticks; each coal lives life + lifeAdd/stack (2.5s → 4.1s), r + rAdd/stack, bites max(0.3, dmg × POOL.rate × rate) snapshot AT THE DROP, and ONE pop consumes it; cap live coals; flare = the renderer's landing beat. kindlingfix-r83 AT HIS EYE (*"the small spots which spills out fro the meteor/projectile, should not spawn that frequently, but still not too slow, and they should spawn at random rappterns around the meteor not just behind it like a tail"*): cadence halved — drop 14 → 30, dropCut 1 → 2, dropMin 6 → 14 (a coal every 0.25s of flight at stack 0 → every ~0.12s at the cap — still snowballs, no longer a tail-flood); scatter 44 = each coal lands on a RANDOM DISC around the flight point (two row-owned G.rng draws at the drop — angle + sqrt-radius for a uniform disc, the bornBend precedent; rim-clamped, no coal burns off the floor). AND (*"the opponent should take damage stepping on these, even though they are fading away, im not sure i think i saw no damage as it was fading"*): the bite NEVER faded — the sim pops to t=0 — the READ did (the pop was silent art): popFx 14 = the pop now BURSTS (a gold flash ring + five sparks), and the fade keeps a 0.18 alpha floor so a biting coal is never invisible. emberfix-r84's diagnostic answer (owner: *"sometimes they dont do damage... i just saw the opponent fall through 3 and only took 2 damage"* — the bite NEVER missed: 0 alive-overlap dead reads across ~2,450 coals; the SILENT CAP EJECTION did — ~85–92% of coals die ejected by the lace guard with a body on top 14–28× per cell): wisp 20 = every non-bite death (expiry AND ejection) now breathes a thin warm-brown smoke wisp — BURST = it bit, WISP = it died — plus THE POP TEST RUNS FIRST on every tick of the coal's life including its last (the old order could expire a coal silently under a standing body on its final tick; never observed firing, closed anyway), and THE POP GETS THE HIT'S OWN PUNCTUATION (owner: *"i think we should have the slowmo effect, i forgot to write that it wasnt present"*): emberPop opens the ¼× hitSlowMs window + the victim's white flash, a pop KILL takes the koStopMs hard freeze (a poolBurn KILL too — every kill freezes, the r63 ruling); the non-kill BURN beats deliberately do NOT slow (at the 0.1s cadence a burn slow would never lift)
+  const POOL = { life: 540, r: 62, reach: 0.75, tick: 12, rate: 0.25, cap: 6 };   // emberpool-r79 — THE BURNING POOL's ladder (owner: *"on hit leave a burning pitch on the floor... if the opponets steps on it they take damage as well"*). A ZONE, not a status: no ring slot, no grow, no hex. reach = the body centre within r + reach × body, so the knocked slide stays in the fire; tick = the burn beat (kindlingfix-r83: the BIG spot bites REPEATEDLY like the pinned-javelin bleed, "only the bigger spot" — the coals keep their one-shot pop). burnfix-r84: THE TOUCH BITE — damage starts the VERY TICK the body touches the fire, leaving re-arms the entry, and a pool spawned ON the victim bites on its spawn tick; EVERY FIRE WEARS ITS OWNER'S CAST COLOUR (drawPools rim, drawEmbers char bed, COLS[idx]) so scroll vs scroll reads at a glance — the warm palette inside is untouched, RED stays bleed's. rate = the caster's damage fraction snapshotted at the hit that lit it (floor 0.5, the effR doctrine); cap = the lace guard. Rates PROVISIONAL. ref: emberpool-r79, poolfix-r80, kindlingfix-r83, burnfix-r84
+  const EMBER = { drop: 30, dropCut: 2, dropMin: 14, life: 300, lifeAdd: 24, steps: 8, r: 15, rAdd: 0.8, rate: 0.5, cap: 14, flare: 10, scatter: 44, popFx: 14, wisp: 20 };   // kindling-r82 — THE EMBER SPILL's dials (ALL PROVISIONAL): the flight sheds a coal every max(dropMin, drop − dropCut × min(shotStep, steps)) ticks; each coal snapshots life (life + lifeAdd/stack), r (r + rAdd/stack) and dmg (max(0.3, dmg × POOL.rate × rate)) AT THE DROP; ONE pop consumes it; cap live coals; flare = the renderer's landing beat. kindlingfix-r83: scatter = each coal lands on a RANDOM DISC around the flight point (two row-owned rng draws, angle + sqrt-radius, rim-clamped); popFx = the pop BURSTS and the fade keeps an alpha floor — the bite never faded, the READ did. emberfix-r84 (tag not in GAMES — provenance kept here): the bite never missed either; the SILENT CAP EJECTION did — most coals die ejected by the lace guard with a body on top. So wisp = every non-bite death (expiry AND ejection) breathes a smoke wisp: BURST = it bit, WISP = it died; THE POP TEST RUNS FIRST on every tick including the last; and the pop gets the hit's own punctuation — emberPop opens the ¼× hitSlowMs window + the victim's white flash, a pop KILL takes the koStopMs freeze (a poolBurn KILL too), while non-kill BURN beats deliberately do NOT slow. ref: kindling-r82, kindlingfix-r83
   /* skewer-r46 (owner ruling 2026-11-01): THE JAVELIN'S SKEWER — the hit does not consume the
    * spear; it impales, CARRIES the foe to the rim along the flight line, PINS them there
    * BLEEDING, and their own slowly-orbiting blade cutting the spear is the escape ("i want the
@@ -1167,17 +1097,15 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     releaseKnock: 160,  // inward pop when the cut frees them
   };
   if (!(SKEWER.spin > 0 && SKEWER.carrySpeed > 0 && SKEWER.driveSpeed > 0 && SKEWER.bleedEvery >= 1 && SKEWER.bleedDmg > 0 && SKEWER.cutCos > 0 && SKEWER.cutCos < 1 && Number.isFinite(SKEWER.releaseKnock))) throw new Error('SKEWER: constants must be positive finite, cutCos in (0,1) — the crawl is the escape clock and the bleed is the pin\'s teeth (guard 9)');
-  /* affinity-r66 — THE TOME TRIO (owner ruling 2026-10-28 executed: "the three kinds become
-   * mechanically distinct in the skills pass"; the affinity tints pre-figured poison/frost/fire on
-   * 2026-10-25). AFFINITY binds a CYCLE KIND to its element — kind-keyed, and halo/nova/vortex are
-   * tome-only art keys, so no other shot can carry a payload by accident. THE SLOT LAW (the owner's
-   * design session): ONE DoT slot + ONE debuff slot per bot — the same status refreshes and DEEPENS
-   * (never a second instance), a different status in the same slot REPLACES with the stacks reset,
-   * and slots NEVER evict each other (the strict cycle compounds instead of self-canceling). THE
-   * SUSTENANCE LAW: ANY page hit refreshes both statuses' lifetimes — the element's own page is
-   * what DEEPENS (per-element refresh alone starved the stacks: every 3rd page + the swats). 1v1
-   * means one attacker, so cross-weapon status wars are structurally impossible: no immunity, no
-   * purge, no priority tables. All numbers PROVISIONAL — the owner's eye and the balance pass judge. */
+  /* affinity-r66 — THE TOME TRIO. AFFINITY binds a CYCLE KIND to its element — kind-keyed, and
+   * halo/nova/vortex are tome-only art keys, so no other shot can carry a payload by accident.
+   * THE SLOT LAW: ONE DoT slot + ONE debuff slot per bot — the same status refreshes and DEEPENS
+   * (never a second instance), a different status in the same slot REPLACES with the stacks
+   * reset, and slots NEVER evict each other (the strict cycle compounds instead of self-canceling).
+   * THE SUSTENANCE LAW: ANY page hit refreshes both statuses' lifetimes; the element's own page is
+   * what DEEPENS (per-element refresh alone starved the stacks). 1v1 means one attacker, so
+   * cross-weapon status wars are structurally impossible: no immunity, no purge, no priority
+   * tables. All numbers PROVISIONAL. ref: affinity-r66 */
   const AFFINITY = { halo: 'poison', nova: 'frost', vortex: 'fire' };
   const TRIO = {
     steps: 5,          // the uniform stack cap (house cap pattern) — venom depth AND chill depth; the fire-size wall sleeps with TRIO.fireSwell (spellform-r69)
@@ -1298,29 +1226,21 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   for (const bid of WEAPON_IDS) { const Br = WEAPONS[bid]; if (Br.shot && Br.shot.cycle && Br.trait && Br.trait.shotR != null) throw new Error(`${bid}: shot.cycle + trait.shotR — the FIRE size swell is RETIRED (spellform-r69: the owner's shape grammar — same shape, colour only); the dormant rate lives in TRIO.fireGrow behind the TRIO.fireSwell switch`); }
   const FAN_STEPS = 5;    // fan-r43: uniform cap on the fan axis — the wall here is legibility (13 knives reads as a wall; 23 would be a blob), the CYCLE_STEPS pattern
   const FAN_SPREAD = 9;   // fan-r43: extra degrees of half-spread per tier (the base pair sits at ±22°; the capped fan reaches ±67°)   // multgrow-r42: the uniform READ-time cap on the rain axis — cadence growth has no physical wall (unlike shotR, which the rim bounds), so it saturates like CYCLE_STEPS instead of compounding forever; bow rate 0.5 × 10 steps → smul ceiling 6
-  /* THE BOOMERANG'S FLIGHT LAW, current shape — review-r60 consolidated the layered halo-r39/r53/
-   * r56/r59 header that had accreted here (its last two sentences still described the halo's
-   * OWNER-ANCHORED oval, superseded by touchorbit-r53, and pre-r57 projectile immunity; full
-   * lineage and every owner quote: GAMES.md #663–#691):
-   * THE WORLD ORBIT (touchorbit-r53, from the owner's own solo prototype): the throw is an
-   * arena-centred ellipse, solved once at the throw and FROZEN — no homing, no timer, no lap
-   * budget; the loop lives in the WORLD, pierces the rim on its far arc, passes through bodies
-   * (latched, one hit per passage), and comes home only when the wielder's motion intercepts it —
-   * the catch is an EVENT, not an invariant. The halo-r39 owner-anchored oval (the catch
-   * guaranteed EVERY CIRCUIT by construction) is retired precisely because of that guarantee —
-   * the loop never really left him; the r38 anti-jam dials (DRIFT ramp + wide hand) are DELETED,
-   * not retuned: the jam class cannot exist (spiral turn-decay remains STILLBORN — the path
-   * straightened and escaped into space).
-   * THE CATCH IS THE LOOP'S ONLY OWNER-SIDE END, and the loop is immune to everything else
+  /* THE BOOMERANG'S FLIGHT LAW, current shape (review-r60 consolidated the layered header).
+   * THE WORLD ORBIT (touchorbit-r53): the throw is an arena-centred ellipse, solved once at the
+   * throw and FROZEN — no homing, no timer, no lap budget. The loop lives in the WORLD, pierces
+   * the rim on its far arc, passes through bodies (latched, one hit per passage), and comes home
+   * only when the wielder's motion intercepts it: the catch is an EVENT, not an invariant. The
+   * owner-anchored oval (catch guaranteed EVERY circuit) is retired for exactly that guarantee,
+   * and the anti-jam dials are DELETED, not retuned — the jam class cannot exist.
+   * THE CATCH IS THE LOOP'S ONLY OWNER-SIDE END; the loop is immune to everything else
    * (catchonly-r56, owner: "i want the boomerang to be immune to swats instead… only thing to
-   * stop it is when the boomerang is consumed by the wielder") — with the shot-vs-shot exceptions
-   * the owner then ruled: an enemy projectile DIES on the loop's drawn arc while the loop flies
-   * on (snapfix-r57), and loop meets loop BOTH ARE DESTROYED (catchghost-r58). Blades pass
-   * through with no effect at all (the swat test skips returning shots).
-   * After the catch the banked spin rethrows INSTANTLY (instantthrow-r59, owner: "just instantly
-   * throw it" — reversing his own chaosorbit-r54 eye, "wait 1 sec or something before throwing
-   * again, it looks bad when its instant throwing after catch"; the beat was removed
-   * with its dormant machinery). */
+   * stop it is when the boomerang is consumed by the wielder"), with two shot-vs-shot exceptions:
+   * an enemy projectile DIES on the loop's drawn arc while the loop flies on (snapfix-r57), and
+   * loop meets loop BOTH ARE DESTROYED (catchghost-r58). Blades pass through with no effect (the
+   * swat test skips returning shots). After the catch the banked spin rethrows INSTANTLY
+   * (instantthrow-r59).
+   * ref: touchorbit-r53, catchonly-r56, snapfix-r57, catchghost-r58, instantthrow-r59, review-r60 */
   const BIND_UNWIND = true;    // bindfix-r36: latched-bind nudge retreats along the entry arc (true) vs r35's spin-aligned forward sweep (false)
   const LATCH_CLEAR = 60;      // px of peak clearance past the hit window that re-arms a pierced hit (the blade deep-gate idiom)
   const CATCH_ARM = 20;        // px past the catch window the throw must clear before the catch arms — the throw has to leave the hand first; catchonly-r56: the margin is read on BOTH the pivot disc AND the drawn arc (boomGap), which is what killed the departure-tick self-catch
@@ -1337,15 +1257,11 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
    * anti-jam machinery BY RULING: an untouched loop simply keeps orbiting (no timer, no
    * expire), and intercepting it is the wielder's skill. */
   const LEN_STEPS = 12;   // the ladder every length-growing weapon gets — the cap, for EVERY holder
-  /* UNIFORM CAP (nocombo-r34, 2026-10-31, owner ruling: no special combinations — "if i ever did
-   * that, its a mistake on my side"). This block used to compute a per-fighter cap (LEN_CAP) from
-   * `skill.lenSteps`, the retired first special skill that let one carrier run to 18 steps while
-   * everyone else stopped at 12. A fighter may never reach into a weapon trait's mechanics again:
-   * skills and traits meet only by ADDING on a shared axis. So the ladder top is LEN_STEPS for
-   * every holder, REACH below is the step-12 reach (505.488) for every holder, and the six baked
-   * rows the 18-step era needed were purged from LEN_CIRCLES in the same landing. Another
-   * length-growing weapon is still a row edit plus a re-bake; a second cap is now impossible by
-   * construction rather than by discipline. */
+  /* UNIFORM CAP (nocombo-r34): no special combinations — a fighter may never reach into a weapon
+   * trait's mechanics; skills and traits meet only by ADDING on a shared axis. So the ladder top
+   * is LEN_STEPS for EVERY holder and REACH below is the top-step reach for every holder. Another
+   * length-growing weapon is a row edit plus a re-bake; a second cap is impossible by construction
+   * rather than by discipline. ref: nocombo-r34 */
   /* The most tip growth a d-REMAPPED covering (every radius held, spacing scaled) can take before
    * the deepest uncovered ink point passes inscribe.mjs's 4.6px MISS_TOL. SWEPT, not guessed:
    * `.qa/lengrow-gate.mjs --mode rigid` last passes at shaft k 1.6469 = tip +39.5% (miss 4.59) and
@@ -1476,25 +1392,18 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     const W = WEAPONS[wId], t = W.trait, ex = W.chain && W.chain.ext;   // links-r87: returns the number of ADDED LINK UNITS (0 = the shipped chain)
     return t && t.len && ex ? Math.min(ex.max, Math.floor(Math.min(ls || 0, LEN_STEPS) / ex.every)) : 0;
   }
-  /* Edge-leading flip (owner decision 2026-10-22 — the katana "spins backwards"
-   * observation; extended to headLead the same day at the owner's javelin
-   * word): directionally asymmetric art declares the side bearing its
-   * business contour — `lead` = the spine-local L-side bearing the cutting
-   * face (chisel blades, hook beaks), `headLead` = the chord D-end bearing
-   * the head (javelin; pivots about the centred rim grip — tangential only,
-   * never both traits, boot throws). Kinematics (proven at birth, 64 angles ×
-   * both signs, both axes): wAngle += spin·dt makes the LOCAL +l SIDE LEAD
-   * when spin > 0, and the chord head travels +d̂ (v·d̂ = bodyR·spin). When
-   * the spin sign disagrees with the declaration, the placement layer mirrors
-   * ART AND HITBOX TOGETHER on the declared axis — the contour always faces
-   * the motion; a parry (law 5's sign flip) re-presents it, eased by the
-   * renderer-side flip transition (CFG.flipMs — the view layer only; this
-   * function stays the binary sim truth at every tick and in every event).
-   * Radial-asymmetric art (bow belly, knives' outward blades, tome/scroll
-   * pages) must NEVER declare — mirroring faces it inward, wrong at both
-   * signs. ONE source: the sim's collision, the renderer, the stills and
-   * every harness audit derive the flip from THIS function, so the drawing
-   * cannot drift from the hitbox. */
+  /* Edge-leading flip (owner: the katana "spins backwards"). Directionally asymmetric art declares
+   * the side bearing its business contour: `lead` = the spine-local L-side with the cutting face
+   * (chisel blades, hook beaks), `headLead` = the chord D-end bearing the head (javelin; pivots
+   * about the centred rim grip). Tangential only, never both — boot throws. Kinematics (proven at
+   * birth, 64 angles × both signs, both axes): wAngle += spin*dt makes the LOCAL +l SIDE LEAD when
+   * spin > 0, and the chord head travels +d. When the spin sign disagrees with the declaration,
+   * the placement layer mirrors ART AND HITBOX TOGETHER on the declared axis, so the contour
+   * always faces the motion; a parry (law 5's sign flip) re-presents it, eased by the renderer's
+   * flip transition (CFG.flipMs — view only; this function stays the binary sim truth at every
+   * tick and in every event). Radial-asymmetric art (bow belly, knives' outward blades,
+   * tome/scroll pages) must NEVER declare — mirroring faces it inward, wrong at both signs. ONE
+   * source: collision, renderer, stills and every harness audit derive the flip from THIS function. */
   function leadFlip(wId, spin) {
     const W = WEAPONS[wId];
     const L = W.lead !== undefined ? W.lead : W.headLead;   // ONE factor, two declared axes: `lead` mirrors l (the cutting side faces the motion), `headLead` mirrors d about the centred grip (the head END points the way the grip travels — javelin, owner 2026-10-22). Never both (boot throw); bladeCircles/polyPath pick the axis off the same data.
