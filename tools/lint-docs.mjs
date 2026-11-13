@@ -19,7 +19,7 @@ const basePtr = path.join(root, '.qa', 'BASELINE');
 if (!existsSync(basePtr)) err('.qa/BASELINE pointer is missing');
 else { const b = readFileSync(basePtr,'utf8').trim();
   if (!existsSync(path.join(root,'.qa',b))) err(`.qa/BASELINE points to missing file: ${b}`); }
-for (const f of ['README.md','docs/GAMES.md'])
+for (const f of ['docs/GAMES.md'])
   if (!rd(f).includes(md5)) err(`${f} lacks the current canonical md5 ${md5} (stale slot?)`);
 const games = rd('docs/GAMES.md');
 const csEnd = games.indexOf('## Measured facts');
@@ -127,10 +127,18 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
     if (!readmeSlim.includes(needle)) err('README missing router pointer: ' + needle);
   }
 
-  const stateSlim = rd('STATE.md');
-  const md5LineSlim = stateSlim.split('\n').find(l => l.includes('- md5:')) || '';
-  const currentMd5Slim = md5LineSlim.split('`').filter(Boolean).pop();
-  if (currentMd5Slim && !readmeSlim.includes(currentMd5Slim)) err('README lacks current canonical md5');
+  // README must not carry mutable facts (Phase I): they live in STATE.md only.
+  if (/\b[0-9a-f]{32}\b/.test(readmeSlim)) err('README contains an md5 — mutable facts live in STATE.md only');
+  if (/^\s*-\s*(Lines|md5|Build stamp)\s*:/mi.test(readmeSlim)) err('README repeats a mutable fact (Lines/md5/Build stamp) — link STATE.md instead');
+
+  // GAMES.md's preface must not tell agents to read it whole (Phase I).
+  const gamesHead = rd('docs/GAMES.md').split('\n').slice(0, 25).join('\n');
+  if (/(?<!not )(?<!never )read this file (first|whole)/i.test(gamesHead)) err('docs/GAMES.md preface tells agents to read it first/whole — it is grep-only');
+
+  // Hand-typed token costs drift; the only cost source is STATE.md (Phase I).
+  for (const f of ['AGENTS.md','docs/LAWS.md','docs/RECIPES.md','docs/SPEC.md','docs/CONTRACT.md','docs/BUILD.md','docs/GAMES.md'])
+    if (existsSync(path.join(root,f)) && /Approx token cost:\s*~?\d/.test(rd(f).split('\n').slice(0, 12).join('\n')))
+      err(f + ' header has a hand-typed token cost — point to STATE.md §Documentation cost instead');
 
   const staleTexts = [
     'Starting a new chat',

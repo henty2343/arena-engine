@@ -1,7 +1,7 @@
 # RECIPES — add a weapon trait / fighter skill / bot
 
 Contains: the step-by-step recipes for adding a weapon trait, a fighter skill, or a bot, plus stamp discipline.
-Read when: you are adding a trait / skill / bot (task tier). Approx token cost: ~2.5k.
+Read when: you are adding a trait / skill / bot (task tier). Token cost: see STATE.md §Documentation cost.
 Canonical for: the landing recipes (moved here from README in Phase C). The mechanics they must respect are in `docs/LAWS.md`.
 
 ---

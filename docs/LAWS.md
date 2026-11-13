@@ -1,7 +1,7 @@
 # LAWS — the current standing game laws (quick reference)
 
 Contains: the distilled CURRENT mechanical laws of SPINCLASH — what every weapon/skill/hit rule must satisfy.
-Read when: before any sim or game-doc edit (the "before code" tier). Approx token cost: ~4k.
+Read when: before any sim or game-doc edit (the "before code" tier). Token cost: see STATE.md §Documentation cost.
 Canonical for: the current-laws quick reference. Derived from `docs/GAMES.md` §Current state (the fuller design
 record, with owner quotes and provenance); the two MUST agree — `tools/lint-docs.mjs` checks the drift-prone parts.
 Platform rules live in `docs/SPEC.md`; agent workflow in `AGENTS.md`; mutable facts in `STATE.md`.

@@ -1,7 +1,7 @@
 # AGENTS.md — start here
 
 Contains: the entry point for AI agents — what to load per task, the standing rules, and where truth lives.
-Read when: every session, first, alongside STATE.md. Approx token cost: ~1.2k.
+Read when: every session, first, alongside STATE.md. Token cost: see STATE.md §Documentation cost.
 Canonical for: agent workflow and loading order. Mutable facts live in STATE.md (generated); design state in GAMES.md.
 
 ## What this repo is

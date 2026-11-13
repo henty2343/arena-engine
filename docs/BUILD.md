@@ -1,5 +1,8 @@
 # ARENA ENGINE — Build Order
 
+Contains: the PLANNED engine build order — Phases 0–8 with pass/fail gates and quality checklists.
+Read when: engine work only. Canonical for: what to build next for the engine. Token cost: see STATE.md §Documentation cost.
+
 Phases, not dates. **Advance only when the gate is genuinely green** — each phase is built on the one below it.
 
 **Hard rule:** Phase 1 ends with a real MP4 playing on a phone. Architecture does not get to run ahead of that.

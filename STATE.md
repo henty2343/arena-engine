@@ -28,14 +28,14 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.6k (compute
 ## Documentation cost (chars/4 estimate)
 | file | ~tokens | read policy |
 |---|---:|---|
-| README.md | 259 | router only |
-| AGENTS.md | 1,257 | always |
-| docs/LAWS.md | 2,468 | before any sim/doc edit |
-| docs/RECIPES.md | 1,871 | adding a trait/skill/bot |
-| docs/GAMES.md | 160,537 | GREP ONLY — never load whole |
-| docs/SPEC.md | 12,881 | PLANNED engine work only |
-| docs/CONTRACT.md | 4,168 | PLANNED engine work only |
-| docs/BUILD.md | 4,469 | PLANNED engine work only |
+| README.md | 263 | router only |
+| AGENTS.md | 1,262 | always |
+| docs/LAWS.md | 2,473 | before any sim/doc edit |
+| docs/RECIPES.md | 1,876 | adding a trait/skill/bot |
+| docs/GAMES.md | 160,662 | GREP ONLY — never load whole |
+| docs/SPEC.md | 12,988 | PLANNED engine work only |
+| docs/CONTRACT.md | 4,226 | PLANNED engine work only |
+| docs/BUILD.md | 4,525 | PLANNED engine work only |
 
 ## Design state (canonical source: GAMES.md §Current state)
 - Weapon-trait count and the open queue are design facts, NOT generated here.

@@ -1,5 +1,9 @@
 # ARENA ENGINE — Spec
 
+Contains: platform rules for the PLANNED engine — purpose, overriding rules, stack, pipeline, output quality, house style, studio/CLI, repo layout.
+Read when: engine/platform work only — EXCEPT `docs/SPEC.md` §Purpose and §Rules that override everything else, which come before any tradeoff.
+Canonical for: platform rules (game design lives in `docs/GAMES.md` and `docs/LAWS.md`). Token cost: see STATE.md §Documentation cost.
+
 > **STATUS: the platform described here is PLANNED (BUILD.md Phases 0–8) — there is no engine code yet.** The one live game is `previews/spinclash-preview.html` (a single-file sim) with its bare-Node harness; the rules, stack and pipeline below are the target, not shipped code.
 
 A localhost-only Node.js tool: pick a game → set options → generate → watch it → download the MP4.
