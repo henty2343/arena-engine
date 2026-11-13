@@ -554,29 +554,14 @@ body {
       hold: 'tangential',                              // ranged class rule: held along the rim, string chord on the tangent
       //   (nothing of the bow lives under the own disc — the chord sits on the rim, so no tuck clip)
       trait: { spin: 0.70, dmg: 0.0, mult: 0.5 }, brief: '+SPD +RAIN / Hit', line: 'an arrow per rev · the rain thickens with every hit',
-      /* v0.9 bow (replaces the sling; owner 2026-10-19: "the sling should be
-       * removed, instead make it a bow, and the projectiles should be
-       * arrows"). Same ranged rules as the sling it replaces: one release per
-       * full revolution (spin rate IS fire rate), the arrow carries the
-       * thrower's CURRENT dmg; the bow itself dealt no body damage under the
-       * projectile rule RETIRED at allcut-r62 (every weapon cuts on touch now) and still
-       * parries and swats. Held tangentially, so poly +l points at the body
-       * and the belly bulges outward (-l); the arrow therefore flies RADIALLY
-       * out of the grip ('radial' fire) — a bow shoots where its belly faces,
-       * not along its limbs. Hit circle = the arrow's head, the shaft and
-       * fletching trail behind it.
-       *
-       * THE RAIN (multgrow-r42, owner rulings 2026-11-01): trait.mult 0.5 — every
-       * damaging hit thickens the launch cadence (smul ceiling 6 at MULT_STEPS 10).
-       * The first ladder found the self-eating pathology: cadence growth made
-       * consecutive launches overlap at birth and the same-owner cross rule
-       * annihilated the volley (~90% of fires at uncapped rate 1.0). Owner ruled
-       * option A — generalize owner-blindness to ALL shot-vs-shot (friendly fire
-       * eliminated game-wide, the r41 star exemption subsumed) + the uniform cap —
-       * then picked rate 0.50 from the re-probed grid (7.6× hits vs melee at
-       * saturation, peak ~23 arrows, screen readable; the 1.00 firehose's ~106-arrow
-       * late peaks declined). Two-bar test: readable in ~2s (the rain visibly
-       * thickens) and matters vs melee AND ranged. */
+            /* Bow (v0.9, replaces the sling): one release per full revolution (spin rate IS fire
+       * rate), the arrow carries the thrower's CURRENT dmg; held tangentially so poly +l
+       * points at the body and the belly bulges outward (-l), so the arrow flies RADIALLY out
+       * of the grip. Hit circle = the arrow's head. THE RAIN (trait.mult 0.5): every damaging
+       * hit thickens the launch cadence (smul ceiling 6 at MULT_STEPS 10). Friendly fire is
+       * eliminated game-wide (owner-blind all shot-vs-shot) + uniform cap. Rate picked from a
+       * measured grid; two-bar test: reads in ~2s, matters vs melee AND ranged.
+       * ref: multgrow-r42, allcut-r62 */
       shot: { r: 5, speed: 620, fire: 'radial', off: 26, len: 30, what: 'arrow' },   // fire/off/len per the launch doctrine in fireShots' header (tangential → middle; 'radial' → out of the grip); kindless on purpose — drawShot routes kindless shots to drawArrow
       poly: INGR_BOW,
     },
@@ -590,36 +575,22 @@ body {
       ...WDEF,
       name: 'Dagger', len: 78, lead: -1,
       trait: { spin: 2.0, dmg: 0.7 }, line: 'spins faster per damaging hit',
-      /* spingrow-r36 (owner go 2026-10-31: "i just want the dagger to gain rotation speed each
-       * hit, so at some point it gets ridicuolously fast"). The pass's THIRD trait and its first
-       * MELEE one: +2.0 rad/s of |spin| per damaging hit, PROVISIONAL (one-token re-tune), on
+            /* Dagger trait (spingrow-r36): +2.0 rad/s of |spin| per damaging hit, PROVISIONAL, on
        * the axis the launchers' 0.70 fire-rate baseline already runs — no new consumer, no
-       * geometry, Tier 0. Rate picked from a measured 4-rate ladder (0/1/2/4; forced dagger vs
-       * hammer both casts + mirror, 8 seeds, 12000t cap): at 2.0 a decided round ENDS at
-       * 4.4–6.8 rev/s — 8–12× the 0.56 rev/s base — crosses 4× base at ~12s, and stays out of
-       * the >=10 rev/s band where the DRAWN blade wagon-wheels at 60fps (rate 4 lived there in
-       * 94% of rounds; rate 1 peaked at "fast, not ridiculous"). It COMPOUNDS by design: spin is
-       * hit cadence (law-4's deep-disengage gate re-arms about once per revolution), so the
-       * snowball feeds itself — observed max 42.6 rad/s; omegaCap 140 stays a dormant stability
-       * ceiling. Speedy's skill.spin 0.30 ADDS on the shared axis (codified stacking; effective
-       * 2.3/hit). The class-wide dmg 0.7 placeholder stays UNTOUCHED — retiring it is a
-       * balance-pass decision (owner: "we will balance it all later") — so the derived legend
-       * brief reads '+SPD +DMG / Hit' honestly. Uniqueness note: the nine launchers' baseline
-       * trait.spin 0.70 is fire-rate class data, revisited when the pass reaches each of them;
-       * the dagger is the melee spin-grower. Disclosed emergent effect: dagger-mirror undecided
-       * rounds fell 8/24 -> 3/24 at the probe cap — the snowball decides rounds; the
-       * deliberate-stall regime itself is untouched (no timer/ramp/shield change). */
-      /* lead (owner playtest 2026-10-28: "i just noticed the dagger in game, it should have same
-       * behaviour as scythe and katana, if you look closely the dagger is not symmetrical, it has
-       * this white line which hints which way it is facing"). Measured BEFORE landing: the KP
-       * near-white strip — the convention's own cutting/striking-face paint — runs d 39.7..89.8 at
-       * l -7.2..-1.8, ENTIRELY on the -l side of a blade whose steel spans ±9.0. A single bevel:
-       * the katana's case exactly ("its edge strip runs along its -l boundary"), hence -1 (the
-       * authored face leads when spin < 0, mirrored when spin > 0). NOT art-only: three covering
-       * circles sit off the spine at the crossguard (d 20.1 l -13.5 r 6 · d 20.1 l +10.9 r 6 ·
-       * d 20.4 l +16.9 r 3.5; worst mirror residual 4.23px) at world radius ≈81.5px — the clinch
-       * zone — so the mirror moves the hitbox and this is a sanctioned sim change: fingerprints
-       * re-baselined, stamp bumped. The 22-row facing audit that found this is in GAMES.md. */
+       * geometry, Tier 0. Rate picked from a measured 4-rate ladder; at 2.0 a decided round
+       * ends at 4.4-6.8 rev/s (8-12x base), stays out of the >=10 rev/s band where the drawn
+       * blade wagon-wheels at 60fps. It COMPOUNDS by design (spin is hit cadence, law-4's
+       * deep-disengage gate re-arms ~once per revolution); omegaCap 140 stays a dormant
+       * stability ceiling. Speedy's skill.spin 0.30 ADDS on the shared axis (codified
+       * stacking). The class-wide dmg 0.7 placeholder stays UNTOUCHED — retiring it is a
+       * balance-pass decision. ref: spingrow-r36 */
+            /* Dagger lead (facing pass, owner playtest 2026-10-28): the KP near-white strip — the
+       * convention's own cutting/striking-face paint — runs entirely on the -l side of a blade
+       * whose steel spans ±9.0. A single bevel (the katana's case exactly), hence -1 (authored
+       * face leads when spin < 0, mirrored when spin > 0). NOT art-only: three covering circles
+       * sit off the spine at the crossguard at world radius ~81.5px (the clinch zone), so the
+       * mirror moves the hitbox — a sanctioned sim change, fingerprints re-baselined, stamp
+       * bumped. The 22-row facing audit is in GAMES.md. */
       poly: INGR_DAGGER,
     },
     axe: {
@@ -636,128 +607,91 @@ body {
     shield: { ...WDEF, name: 'Shield', len: 110, hold: 'tangential',
       trait: { spin: 0.0, dmg: 0.7 }, line: 'parries · and cuts on touch like every weapon', poly: INGR_SHIELD },   // allcut-r62: the owner's 2026-11-02 ruling ends the no-damage design — trait.dmg 0.7, INERT since birth (grow() fires only on a damaging hit and the shield could never land one — open question 4), is LIVE
     staff:  { ...WDEF, name: 'Staff',  len: 100, lead: -1,
-      /* shotR (owner pick 2026-10-31, from a measured menu — the second weapon trait of the skills
-       * pass): every orb LANDING grows the holder's NEXT orb's radius by this rate, compounding,
-       * per fighter, reset every round (the LAW). 20% is PROVISIONAL — sizing, not balance: the
-       * measured landing budget is small (median 4 landings/decided round, p90 8-15, stall rounds
-       * up to 37 at the 18000-tick budget), so the rate has to be chunky to be seen. No cap and
-       * no ladder: the orb is procedural art + a halo disc at the hitbox radius, so unlike the
-       * spear there is no covering to run out of — the arena rim is the wall (rim death reads
-       * dr + st.r) and the round reset is the balance bound. A rate re-tune is a one-token edit.
-       * The holder's own damage growth sets the budget (the skill-r29 carrier law): Heavy's +0.9
-       * dmg/hit kills at ~13-15 landings, so his staff grows moderately while his orbs hit harder;
-       * Speedy's flat-1 orbs let long rounds escalate endlessly. */
+             /* Staff trait (shotR, owner pick 2026-10-31 from a measured menu): every orb LANDING
+        * grows the holder's NEXT orb's radius by this rate, compounding, per fighter, reset
+        * every round (the LAW). 20% is PROVISIONAL — sizing, not balance: the measured landing
+        * budget is small, so the rate has to be chunky to be seen. No cap/ladder: the orb is
+        * procedural art + a halo disc at the hitbox radius, so unlike the spear there is no
+        * covering to run out of — the arena rim is the wall and the round reset is the balance
+        * bound. A re-tune is a one-token edit. The holder's own damage growth sets the budget
+        * (skill-r29 carrier law). ref: shotgrow-r33, skill-r29 */
       trait: { spin: 0.70, dmg: 0.0, shotR: 0.20 }, brief: '+SPD +SIZE +HEX / Hit',
       line: 'an orb per rev · orbs grow per landing · every hit deepens the HEX — the orbs hunt the hexed',   // hexfam-r68: the FAMILY FLIGHT LAW (owner: "also staff") — the slow fat orb rides the SAME radius language as the spark: speed 430 ÷ ref 800 scales the ladder down, so it births on the same ~889px arc and hunts to the same ~333px floor — a lazy grand curve that tightens into the grudge
-      /* lead (owner ruling 2026-10-28, the same facing pass as the dagger — asked whether to land
-       * the dagger alone or "dagger + staff together", the owner picked together). The staff's only
-       * striking-face paint is one-sided: a KP band at d 109.2..113.9, l -8.6..-5.2, so -1 by the
-       * dagger/katana reasoning. DISCLOSED: most of this row's l-asymmetry is NOT a cutting face —
-       * it is the spiral grip wrapping (KD bands alternating sides at d 10.4..28.6, 20.8..35.1,
-       * 36.7..42.3, 52.0..75.4) and a forked head mirrored to within 1.3px — and those mirror now
-       * too. This is also the roster's largest unflagged mirror delta (22 off-axis circles, worst
-       * residual 21.02px, outline asymmetry 24.2px), all of it in the head region d 86..130 =
-       * world radius 147..191px, the striking zone, so a bigger sim delta than the dagger's is
-       * expected. The tip launch point is ON the spine (l 0) and fireShots does not read leadFlip,
-       * so `fire: 'tip'` is untouched by the mirror. Owner to playtest how the wrapped grip reads
-       * when it flips [PLAYTESTED 2026-10-28 — owner: "i confirm staff is looking good"; the
-       * -1 sign stands, no flip needed, and this row's mirror delta is the roster's largest by
-       * design]; the sign is an eye call (the scythe shipped at +1 and was flipped at
-       * playtest). */
+             /* Staff lead (facing pass, owner ruling 2026-10-28, landed with the dagger): the
+        * staff's only striking-face paint is one-sided (a KP band at d 109.2..113.9, l
+        * -8.6..-5.2), so -1 by the dagger/katana reasoning. DISCLOSED: most of this row's
+        * l-asymmetry is the spiral grip + forked head, not a cutting face, and those mirror
+        * too — the roster's largest unflagged mirror delta (worst residual 21.02px), all in
+        * the head region (world radius 147..191px, the striking zone), so a bigger sim delta
+        * than the dagger's is expected. The tip launch point is ON the spine (l 0) and
+        * fireShots does not read leadFlip, so fire:'tip' is untouched by the mirror.
+        * Playtested 2026-10-28: owner confirmed staff looks good, -1 stands, no flip. */
       shot: { r: 9, speed: 430, fire: 'tip', kind: 'orb', what: 'orb', hex: true }, poly: INGR_STAFF },
     wand:   { ...WDEF, name: 'Wand',   len: 59,
       trait: { spin: 0.70, dmg: 0.0, fig: 3.0 }, brief: '+SPD +FIG +HEX / Hit', line: 'a spark per rev · every hit deepens the HEX — the sparks begin to hunt the hexed · every hit TRANSFIGURES the struck weapon into a joke object that does nothing for 3s',   // bloom-r73 — TRANSFIGURATION (owner menu-4 pick, option 1 locked: *"it should do nothing at all"* + *"go, your leans"*): dose 3s per damaging hit (comet OR spine — allcut; bloomfix-r75 at his word: *"even longer, like 3 seconds"*); the ladder FIG { base 3.0, steps 1, cap 6.0 } — one re-hit lands exactly on the cap; bloomfix-r74: the object rides at the grip, touching the body; bloomfix-r76: the object lies TANGENTIAL and rides the sweep exactly like a held weapon (no own-spin — r75's slow turn retired at his eye); bloomfix-r77: the bloomed SWEEP itself runs at FIG.slow 0.35 of tempo (weapon-only, the chill doctrine) so the orbit is slow enough to read — the wand trait CONCLUDED at his eye; the shake-off is the OBJECT's own silhouette touching the rim (vertex-true test, the body may rest at the edge); silence (FIG.immune 2s) follows a NATURAL expiry only — a shaken-off bot is re-bloomable at once (seed 22459's dead hit); FIG.immune 2.0s of silence after the poof; six joke objects rotate in a fixed cycle (G.figIdx — zero rng draws); the body stays fully alive (full-tempo sweep, movement, jumps); in-flight shots keep landing (the past is honest); the bloomed wand banks ONE comet that leaves at the poof instant; flick-r72 REVERTED whole — the second projectile-tuning veto (*"it reminds too much about the other spells"*): the wand cannot win by tuning its comet, the comet IS the resemblance; hexfam-r68:
       shot: { r: 8, speed: 800, fire: 'tip', kind: 'spark', what: 'spark', hex: true }, poly: INGR_WAND },   // allcut-r62, the owner's eye: "i think it should bend more and also the wand projectiles should be a bit bigger" — base turn 0.35→0.9, spark r 6→8; rates PROVISIONAL. hexspark-r65 (owner, on the hunting-curse pitch: "i dont know, people understand it if the weapon was a heatseeking missile, but a wand?" — so the framing is SPITE, not guidance: a hex ON THE VICTIM): shot.hex splits the SAME turn budget — the birth bend keeps (1−h), a seek toward the hexed foe gets h; the victim wears the counter as a pulsing ring in the attacker's colour. No damage change, no new rng draws
-    /* bendspark-r61 — THE BENDING SPARK (owner go: "ok try and implement it and i will have a
-     * look"): the wand's spark is the game's fastest shot (800) and was a pure tracer — every
-     * defense could pre-solve its line. Now it BENDS: base turn 0.9 rad/s at birth, +0.15 per
-     * damaging hit on the shared f.shotStep counter, capped at TURN_STEPS 10 (ceiling bend 2.4
-     * → radius 800/2.4 ≈ 333px — a hooked arena-crossing ARC, never a closed orbit: orbiting is
-     * the boomerang's soul, and the spark dies at the rim long before a 333px circle could close
-     * and return). [allcut-r62, the owner's eye on the r61 landing: "i think it should bend more
-     * and also the wand projectiles should be a bit bigger" — base 0.35→0.9, growth 0.085→0.15,
-     * spark r 6→8; the spine touch now feeds the counter too (allcut). Rates stay PROVISIONAL.]
-     * The SIGN is rolled per throw on G.rng —
-     * the pure-chaos doctrine: the wand never aims, it deals a lottery of arcing tracers, and
-     * growth tilts the lottery toward drama. Rates PROVISIONAL per the process law (owner's eyes
-     * judge; no balancing). The art keeps its SHOT_SPIN tumble — the bend reads in the FLIGHT
-     * PATH, not the dart's facing (disclosed; art orientation is the owner's eye-call). */
+         /* bendspark-r61 — THE BENDING SPARK: the wand's spark (game's fastest shot, 800) was a
+      * pure tracer — every defense could pre-solve its line. Now it BENDS: base turn 0.9 rad/s
+      * at birth, +0.15 per damaging hit on the shared f.shotStep counter, capped at TURN_STEPS
+      * 10 (ceiling bend 2.4 -> radius ~333px — a hooked arena-crossing ARC, never a closed
+      * orbit: orbiting is the boomerang's soul). [allcut-r62 owner eye: base 0.35->0.9, growth
+      * 0.085->0.15, spark r 6->8; spine touch feeds the counter too. Rates PROVISIONAL.] The
+      * SIGN is rolled per throw on G.rng — pure-chaos doctrine: the wand never aims, it deals
+      * a lottery of arcing tracers, growth tilts toward drama. The art keeps its SHOT_SPIN
+      * tumble — the bend reads in the FLIGHT PATH, not the dart's facing.
+      * ref: bendspark-r61, allcut-r62 */
     crossbow: { ...WDEF, name: 'Crossbow', len: LT, hold: 'tangential',   // len was 116 — the ceiling's only overshoot, rescaled to LT at owner word 2026-10-21 (see KX)
       trait: { spin: 0.70, dmg: 0.0, mult: 0.5 }, brief: '+SPD +NAILS / Hit', line: 'a bolt per rev · misses NAIL the rim — touch them and bleed',
-      /* THE NAILS (pinlaw-r44, owner rulings 2026-11-01: "i was thinking its bolts stays pinned on
-       * the rim/edge of the arena, like nails, and when the opponents touch them, they get hit, the
-       * growth is that the crossbow will shoot faster" — consumed on touch: "yes consume it" —
-       * uncapped: "exactly no cap, we are just doing mechanics… it sounds very overpowerede right
-       * now, but it doesnt matter"): shot.pin turns the rim into a nail board (law 1's third
-       * exception), and every damaging hit thickens the cadence on the SHARED mult axis (trait.mult
-       * 0.5 PROVISIONAL, cap MULT_STEPS — the nails arrive faster). Disclosed overpowered =
-       * balance-pass material by the standing ruling. Two-bar test: nails-in-wall reads in 2s with
-       * zero explanation, and the rim denial matters vs melee AND ranged — plus every knockback
-       * slam toward the wall now risks a nail: pure physics, no combo machinery. Emergent,
-       * disclosed: long rim-stalls erode as nails accumulate near the wall. */
+             /* THE NAILS (pinlaw-r44): shot.pin turns the rim into a nail board (law 1's third
+        * exception), and every damaging hit thickens the cadence on the SHARED mult axis
+        * (trait.mult 0.5 PROVISIONAL, cap MULT_STEPS — the nails arrive faster). Consumed on
+        * touch; uncapped by owner ruling. Disclosed overpowered = balance-pass material by the
+        * standing ruling. Two-bar test: nails-in-wall reads in 2s with zero explanation, and
+        * the rim denial matters vs melee AND ranged — plus every knockback slam toward the
+        * wall now risks a nail: pure physics, no combo machinery. Emergent, disclosed: long
+        * rim-stalls erode as nails accumulate near the wall. ref: pinlaw-r44 */
       shot: { r: 6, speed: 860, fire: 'radial', off: 34, len: 30, kind: 'bolt', what: 'bolt', pin: true }, poly: INGR_XBOW },
     boomerang: { ...WDEF, name: 'Boomerang', len: 110, hold: 'tangential',
       trait: { spin: 0.70, dmg: 0.0, cycle: 0.20 }, brief: '+SPD +LOOP / Catch', line: 'one boomerang in the air · orbits the arena · caught ONLY on touch · blades pass · enemy shots die on it · loops cancel',   // catchghost-r58: the line gains the pair law — loop meets loop, both are destroyed
-      /* touchorbit-r53 (owner-directed redesign 2026-11-01, from his OWN solo prototype —
-       * "i really like this pattern for bomerang" + the PURE-TOUCH ruling: "implement it best
-       * possible to fit out project with pure touch, ill look with my eyes again"). Lineage:
-       * returngrow-r37's lap-budget Return → freeloop-r38 REJECTED at the eye ("no it looks
-       * bad… too big / chaotic") → halo-r39 THE LOYAL HALO (the owner-anchored oval, catch
-       * guaranteed every circuit BY CONSTRUCTION), PARKED at "im not happy with it, we look
-       * at it later" — this SUPERSEDES the halo at his word: the guarantee was the problem.
-       * THREE parts:
-       * (1) THE WORLD ORBIT — shot.returns + shot.orbit { a: 620, b: 50, peak: 1.3 }: ONE
-       *     boomerang in the air per owner (the singleton gate unchanged; the accumulator
-       *     KEEPS BANKING behind it). Each throw SOLVES an arena-centred ellipse through the
-       *     release point (orbitThrow): a forced past the release radius, b forced inside it,
-       *     and of the four (orientation × traversal sense) solutions chaosorbit-r54 draws one
-       *     EQUIPROBABLE on G.rng (pure chaos — the throw never reads the foe); jitter ⇒ an
-       *     orbit FAMILY (never the same loop twice, deterministic per seed). The orbit is
-       *     then FROZEN — world-anchored, the owner's motion no longer rides along. Constant
-       *     parametric rate om = speed/oa ⇒ the KEPLERIAN read: fastest at the near end
-       *     (speed·peak = 676 px/s at birth), slowest at the far end (×b/a). The far arc
-       *     runs OUTSIDE the rim (a ≈ 620 vs the arena's 500) — the rim-pierce stands and the
-       *     overflow band earns its keep. catchonly-r56 (owner: "no it look bad, revert it… i
-       *     want the boomerang to be immune to swats instead, also other projectiles… only thing
-       *     to stop it is when the boomerang is consumed by the wielder"): THE CATCH IS BACK and
-       *     it is the ONLY end of a flight — blades and projectiles are IMMUNE-passed (no swat
-       *     test, no cross test on a returning shot), the rim still pierced, bodies still passed
-       *     through on the deep-clearance latch with the drawn arc as the hitbox (chaosorbit-r54).
-       *     The nocatch-r55 experiment (owner blind to his own loop) is REVERTED; its record stays
-       *     in GAMES #687. The PURE-TOUCH catch now arms on the ARC as well as the disc
-       *     (CATCH_ARM margin both), which retired the departure-tick self-catch the owner saw
-       *     ("the boomerang was immediately consumed when it was thrown").
-       * (2) CYCLE GROWTH, per CATCH-CYCLE, CYCLE-ONLY — trait.cycle 0.20 PROVISIONAL, the
-       *     semantics unchanged ("each catch and throw makes it faster"): the catch advances
-       *     ONLY own.shotStep, and the birth snapshot now scales the ORBIT RATE (speed·peak
-       *     ⇒ om) while the shape stays inside the row's jittered band. The CYCLE_STEPS
-       *     read-time cap stands (the first capped axis, for its named reason: a faster loop
-       *     has no physical wall).
-       * (3) THE BUDGET — the halo's ANCHOR_V owner-velocity headroom is RETIRED with the
-       *     anchor: the law-3 window reads the shot's own honest maximum world speed (the
-       *     periapsis peak, baked into st.speed at birth). */
+             /* touchorbit-r53 — THE WORLD ORBIT (owner-directed redesign, PURE-TOUCH ruling):
+        * SUPERSEDES halo-r39's owner-anchored oval (the catch-guarantee was the problem).
+        * THREE parts:
+        * (1) THE WORLD ORBIT — shot.returns + shot.orbit { a: 620, b: 50, peak: 1.3 }: ONE
+        *     boomerang in the air (singleton gate unchanged; the accumulator KEEPS BANKING).
+        *     Each throw SOLVES an arena-centred ellipse through the release point (orbitThrow:
+        *     a past the release radius, b inside it); chaosorbit-r54 draws one of the four
+        *     (orientation x traversal sense) solutions EQUIPROBABLE on G.rng (pure chaos — the
+        *     throw never reads the foe); jitter => an orbit FAMILY, deterministic per seed.
+        *     The orbit is FROZEN (world-anchored). Constant rate om = speed/oa => KEPLERIAN
+        *     read: fastest at the near end (speed*peak at birth), slowest at the far end
+        *     (xb/a). The far arc runs OUTSIDE the rim (a ~620 vs 500) — the rim-pierce stands.
+        *     catchonly-r56: THE CATCH is the ONLY end of a flight — blades and projectiles are
+        *     IMMUNE-passed, bodies passed through on the deep-clearance latch with the drawn
+        *     arc as the hitbox. The PURE-TOUCH catch arms on the ARC as well as the disc
+        *     (CATCH_ARM margin both), retiring the departure-tick self-catch.
+        * (2) CYCLE GROWTH, per CATCH-CYCLE, CYCLE-ONLY — trait.cycle 0.20 PROVISIONAL: the
+        *     catch advances ONLY own.shotStep; the birth snapshot scales the ORBIT RATE
+        *     (speed*peak => om), shape stays inside the row's jittered band. CYCLE_STEPS
+        *     read-time cap stands (a faster loop has no physical wall).
+        * (3) THE BUDGET — the halo's ANCHOR_V headroom is RETIRED with the anchor: the law-3
+        *     window reads the shot's own honest max world speed (the periapsis peak, baked
+        *     into st.speed at birth). ref: touchorbit-r53, chaosorbit-r54, catchonly-r56,
+        *     returngrow-r37, halo-r39 */
       shot: { r: 10, speed: 520, returns: true, orbit: { a: 620, b: 70, peak: 1.3 }, kind: 'boom', what: 'boomerang', copy: true }, poly: INGR_BOOM },   // chaosorbit-r54 (owner's eye: "make the elliptical or waht its called jsut a bit wider, only a bit"): b 50→70 — a bit wider, still a slim world orbit; the a/peak bands and the solve are untouched
     shuriken: { ...WDEF, name: 'Shuriken', len: 90, hold: 'tangential',
-      /* ricolaw-r41 (owner eye-rulings 2026-11-01, superseding bouncegrow-r40's ricochet
-       * budget THE SAME DAY — the pass's second same-day arc after the boomerang's r37→r39):
-       * "when shurikes collide they destroy each other, i dont like this" and the budget death
-       * "a viewer will probably think it is a bug, and i dont wanna make it exxplanatory" →
-       * THE LAW: "they never gets destoryed, only if they hit the opponent or hit their
-       * weapon", refined as: stars pass through OWN stars; enemy projectiles cancel both.
-       * So: the rim NEVER kills a star (mirror-reflect forever at row speed — no budget, no
-       * counter, no growth); same-owner star pairs skip the cross test; the flight ends only
-       * on the foe's BODY (law-4 hit), the foe's BLADE (swat) or an ENEMY SHOT (cross).
-       * NO GROWTH AXIS — the owner picked "law only, no acceleration" against a measured
-       * 0.10/0.15/0.20 per-bounce accel ladder (0.20 landed harder: hits med 173 vs 126 and
-       * cut the law-only 70-second cruise-star tail ~3× — numbers in GAMES #669) — and the
-       * slot then CLOSED at the owner's word (2026-11-01, "yes shuriken is done"): THE LAW
-       * IS THE TRAIT — doctrine: a weapon's unique trait may be a LAW, not a growth number;
-       * the star's escalation is the shared spin axis thickening the swarm within a round.
-       * The disclosed overpoweredness (5× baseline landings) is balance-pass material by
-       * the owner's own ruling ("we are designing mechanics, later we will adjust them").
-       * 17 remain. The density IS the spectacle: peaks of
-       * ~50 stars in flight (probe-measured, perf flat: own pairs leave the O(n²) cross
-       * loop), and the defender's game becomes swatting (~1,000 swats per 8-battle cell). */
+             /* ricolaw-r41 (owner eye-rulings 2026-11-01, superseding bouncegrow-r40 the same day):
+        * THE LAW: stars never get destroyed — only if they hit the opponent or their weapon.
+        * Stars pass through OWN stars; enemy projectiles cancel both. So: the rim NEVER kills
+        * a star (mirror-reflect forever at row speed — no budget, no counter, no growth);
+        * same-owner star pairs skip the cross test; the flight ends only on the foe's BODY
+        * (law-4 hit), the foe's BLADE (swat) or an ENEMY SHOT (cross). NO GROWTH AXIS — the
+        * owner picked "law only, no acceleration" against a measured accel ladder; THE LAW IS
+        * THE TRAIT (doctrine: a weapon's unique trait may be a LAW, not a growth number) — the
+        * star's escalation is the shared spin axis thickening the swarm within a round. The
+        * disclosed overpoweredness (5x baseline landings) is balance-pass material by the
+        * owner's ruling. The density IS the spectacle: peaks of ~50 stars in flight (perf flat:
+        * own pairs leave the O(n^2) cross loop), and the defender's game becomes swatting.
+        * ref: ricolaw-r41, bouncegrow-r40 */
       trait: { spin: 0.70, dmg: 0.0 }, line: 'a star per rev · ricochets forever — only the foe, their blade or shot ends it',
       shot: { r: 9, speed: 640, ricochet: true, kind: 'star', what: 'star', copy: true }, poly: INGR_SHUR },
     flail: { ...WDEF, name: 'Flail', len: 110.4, trait: { spin: 0.0, dmg: 0.7, len: 0.025 }, brief: '+DMG +LEN / Hit', line: 'a loose chained ball · gains damage per hit · a new chain link every 4 hits — the ball flies further out', chain: FLAIL_CH, poly: INGR_FLAIL },   // 2026-10-21: melee class (axe trait); the chain is simulated (flailStep) — longchain-r86 (owner go 2026-10-31, THE LONG CHAIN): trait.len grows the PITCHES only — rigid segment assemblies ride outward, coverage stays bake-frozen (see chainFrames); boot-gated by FLAIL_CH.growMax
@@ -766,19 +700,18 @@ body {
     katana: { ...WDEF, name: 'Katana', len: 112, trait: { spin: 0.0, dmg: 0.7 }, line: 'a curved folded blade · gains damage per hit', lead: -1, poly: INGR_KATANA },   // the katana's edge strip runs along its -l boundary — edge-leading keeps the chisel side cutting into the motion at both spin signs
     knives: { ...WDEF, name: 'Knives', len: 78, hold: 'tangential',
       trait: { spin: 0.70, dmg: 0.0, fan: 0.5 }, brief: '+SPD +FAN / Hit', line: 'a knife per rev · the fan widens with every hit',
-      /* `revs: 3` — owner volley ruling (b) 2026-10-25: the fan empties once per three revolutions, damage-rate neutral.
-       * `volley` — the three launch anchors [d, l, degrees]: one knife per tip, fanned +/-22 deg (owner ruling (b)
-       * 2026-10-25; Claude's measured anchors, return #2). THESE ARE WORLD px, measured on the x1.3-scaled art —
-       * they match the scaled poly's own extremes exactly (d 17.69..83.71, l -73.8) and are transformed through the
-       * spine frame at launch. They are deliberately OUTSIDE the boot weaponScale loop (which scales shot r/off/len):
-       * adding them there would move every launch 1.3x out. Verified 2026-10-28 (pre-skills consolidation).
-       * `off: 38` is VESTIGIAL for this row: the volley branch recomputes its own anchors and never reads the
-       * radial offset (recorded, not removed — a data change is a sim change until proven otherwise).
-       * THE GROWING FAN (fan-r43, owner rulings 2026-11-01): trait.fan 0.5 — every damaging hit adds one
-       * fan tier (uniform cap FAN_STEPS 5), each tier one knife per side at ±(22 + k×FAN_SPREAD)°: 3 → 13
-       * knives, half-spread 22° → 67°, quantized steps. Rate eye-picked from the knifevars probe family
-       * (0.25/0.5/1.0 → the 0.5 file, "it looks good already implement it"); the family was purged at the
-       * landing per his word. First landing under the #674 fast-process law (smoke-only proof). */
+             /* Knives: revs: 3 — owner volley ruling: the fan empties once per three revolutions,
+        * damage-rate neutral. volley — the three launch anchors [d, l, degrees]: one knife per
+        * tip, fanned ±22 deg (Claude's measured anchors). THESE ARE WORLD px, measured on the
+        * x1.3-scaled art — they match the scaled poly's own extremes exactly and are
+        * transformed through the spine frame at launch. Deliberately OUTSIDE the boot
+        * weaponScale loop (which scales shot r/off/len): adding them there would move every
+        * launch 1.3x out. off: 38 is VESTIGIAL for this row (the volley branch recomputes its
+        * own anchors and never reads the radial offset — recorded, not removed). THE GROWING
+        * FAN (fan-r43): trait.fan 0.5 — every damaging hit adds one fan tier (uniform cap
+        * FAN_STEPS 5), each tier one knife per side at ±(22 + k*FAN_SPREAD)°: 3 -> 13 knives,
+        * half-spread 22° -> 67°, quantized. Rate eye-picked from the knifevars probe.
+        * ref: fan-r43 */
       shot: { r: 6, speed: 780, fire: 'radial', off: 38, len: 24, kind: 'knife', what: 'knife', revs: 3,
         volley: [[50.7, -73.8, 0], [17.69, -60.95, -22], [83.71, -60.95, 22]] }, poly: INGR_KNIVES },
     javelin: { ...WDEF, name: 'Javelin', len: LT, hold: 'tangential', headLead: 1,
