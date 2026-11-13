@@ -2,7 +2,7 @@
 # STATE — current project facts
 
 Contains: the mutable facts of the repo, derived from the canonical and the tree.
-Read when: every session, alongside AGENTS.md. Approx token cost: ~0.6k.
+Read when: every session, alongside AGENTS.md. Approx token cost: ~0.6k (computed).
 
 ## Canonical (the one live game)
 - File: `previews/spinclash-preview.html`
@@ -14,25 +14,28 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.6k.
 ## Fingerprint baseline
 - Pointer: `.qa/BASELINE` → `fp-flailfix-r88.json`
 - Judge: `node .qa/fingerprint.mjs --compare` (8/8 = behaviour-identical, exit 0).
+- Baseline label `r88` != build stamp `r87`: the label names the checkpoint that recorded the baseline; no r88 build was stamped. The `<title>` stamp above is the build.
+- Older baselines (11) live in `.qa/archive/` as history only — they prove nothing about the current build.
 
 ## Tooling inventory
 - Root tools (3): `chromecheck.mjs` · `ingest.mjs` · `measure.mjs`
 - scripts/ (1): `run-battery.mjs`
-- tools/ (3): `gen-state.mjs` · `lint-docs.mjs` · `verify.mjs`
+- tools/ (6, incl. doc/ and lib/): `gen-state.mjs` · `lint-docs.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/load-sim.mjs`
+- scratch/: gitignored RUNTIME temp dir (bake/gate temp copies, battery logs) — not source; nothing in it is tracked except `.gitkeep`.
 - .qa/ proofs (12): `bake-rows.mjs` · `fingerprint.mjs` · `flip-seeds.mjs` · `flipproof.mjs` · `inscribe.mjs` · `leadproof.mjs` · `lengrow-bake.mjs` · `lengrow-build-proof.mjs` · `lengrow-gate.mjs` · `lengrow-proof.mjs` · `pair-proof.mjs` · `seam-proof.mjs`
-- .qa/ baselines (12): `fp-bindfix-r35.json` · `fp-bouncegrow-r40.json` · `fp-flailfix-r88.json` · `fp-freeloop-r38.json` · `fp-halo-r39.json` · `fp-lead-r22.json` · `fp-multgrow-r42.json` · `fp-returngrow-r37.json` · `fp-ricolaw-r41.json` · `fp-shotgrow-r33.json` · `fp-spingrow-r36.json` · `fp-stall-r25.json`
+- .qa/ baselines (1): `fp-flailfix-r88.json`
 
 ## Documentation cost (chars/4 estimate)
-| file | ~tokens |
-|---|---:|
-| README.md | 259 |
-| AGENTS.md | 1,257 |
-| docs/LAWS.md | 2,468 |
-| docs/RECIPES.md | 1,871 |
-| docs/GAMES.md | 160,537 |
-| docs/SPEC.md | 12,881 |
-| docs/CONTRACT.md | 4,168 |
-| docs/BUILD.md | 4,469 |
+| file | ~tokens | read policy |
+|---|---:|---|
+| README.md | 259 | router only |
+| AGENTS.md | 1,257 | always |
+| docs/LAWS.md | 2,468 | before any sim/doc edit |
+| docs/RECIPES.md | 1,871 | adding a trait/skill/bot |
+| docs/GAMES.md | 160,537 | GREP ONLY — never load whole |
+| docs/SPEC.md | 12,881 | PLANNED engine work only |
+| docs/CONTRACT.md | 4,168 | PLANNED engine work only |
+| docs/BUILD.md | 4,469 | PLANNED engine work only |
 
 ## Design state (canonical source: GAMES.md §Current state)
 - Weapon-trait count and the open queue are design facts, NOT generated here.

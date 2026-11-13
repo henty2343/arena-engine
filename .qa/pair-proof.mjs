@@ -1,7 +1,7 @@
 /* .qa/pair-proof.mjs — proves the PAIRING STEP (pair-r31) is live, inert by default, and honest.
  *
  * Why this file exists: the standing fingerprint suite proves the SHIPPED pairing [0, 1] did not
- * move (8/8 vs .qa/fp-stall-r25.json). That is exactly the half of this change it is blind to —
+ * move (8/8 vs .qa/archive/fp-stall-r25.json). That is exactly the half of this change it is blind to —
  * fingerprints run the default cast, where `f.slot` and `f.idx` hold the same number, so a
  * slot/idx mix-up that only shows when they DIFFER cannot appear in them. This probe is the other
  * half: it runs pairings where slot !== idx and checks the invariants the whole split rests on.
