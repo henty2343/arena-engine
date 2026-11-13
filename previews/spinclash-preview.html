@@ -4851,14 +4851,8 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     else if (d < -Math.PI) d += TAU;
     return a + d * t;
   }
-  /* v0.8-step1b: real-time catch-up loop. The old fixed 2-ticks-per-frame
-   * design fell into slow-motion whenever a frame overran its budget (GC
-   * pause, clash cost): sim time drifted behind wall time and the fight
-   * looked laggy (owner report). Now ticks are owed to the wall clock and
-   * caught up, capped so a stall cannot spiral. Fast-forward stays 4x.
-   * v0.8.2: when the cap does engage, the leftover debt is shed instead of
-   * burst-ticked later (sumo_war pattern), and viewA is computed for the
-   * renderer's interpolation between the last two tick poses. */
+    /* Real-time catch-up loop: ticks owed to the wall clock, capped so a stall
+   * cannot spiral. Debt is shed, not burst-ticked (sumo_war pattern). */
   function frame(now) {
     requestAnimationFrame(frame);
     const dtms = Math.max(0, Math.min(50, now - lastNow)); lastNow = now;   // clamp both ways: a non-monotonic clock (harness stubs rewinding) must never feed a negative dt into the accumulator or the hitstop counter
@@ -4871,35 +4865,19 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
        * playback smooth). Slow and fast are mutually exclusive — engaging
        * one releases the other. */
       const adv = dtms * CFG.tickHz * (fast ? 4 : slow ? 0.25 : 1) / 1000;
-      /* KO-freeze gate (owner decision 2026-10-19, trigger policy 1; the kill
-       * beat KEPT its hard freeze at slowmo-r63 — "keep ko hard freeze"):
-       * while stopTicks > 0 the accumulator is gated — sim time freezes while
-       * rendering continues (wall-clock FX freeze with it, see the draw call
-       * below). The freeze counts down on the SAME clock as tickAcc, so it is
-       * a fixed number of SIM ticks: 4× fast-forward passes it in ¼ the wall
-       * time, ¼× slow stretches it in wall time. Overflow when the freeze
-       * expires carries into tickAcc — no wall time is ever lost. */
+            /* KO-freeze gate (slowmo-r63): while stopTicks > 0 the accumulator is gated — sim
+       * time freezes while rendering continues. The freeze counts down on the SAME clock
+       * as tickAcc, so it is a fixed number of SIM ticks. Overflow carries into tickAcc. */
       if (stopTicks > 0) {
         stopTicks -= adv;
         if (stopTicks < 0) { tickAcc += -stopTicks; stopTicks = 0; }
         fxRate = 0;   // the impact frame holds (pause-r20)
       } else {
-        /* Hit-slow window (slowmo-r63): while slowTicks > 0 the accumulator
-         * runs at CFG.hitSlowRate instead of gating to zero — the sim keeps
-         * LIVING in slow motion, so queued contacts resolve inside the beat
-         * (the freeze's slideshow class is structurally gone). The window
-         * counts down on the SAME wall clock the freeze used (FF shortens it,
-         * the 's' mode stretches it). Smoothness laws ("make the slow mo nice
-         * and smooth" — owner): (1) the EXPIRY frame BLENDS — the fraction of
-         * adv still inside the window runs slow, the remainder full-rate, so
-         * there is no seam at the transition; (2) ¼× is the 's'-mode rate
-         * v0.8.2's interpolation was built for — fractional tickAcc keeps the
-         * sub-tick pose blend alive, slow motion reads steppy-free; (3) the
-         * tick loop does NOT break on a fresh window — the frame finishes its
-         * ≤2 integer ticks (sub-frame at 1×) and the slow begins on the next
-         * frame's blend, so NO queued tick is ever dropped (the freeze-era
-         * break shed up to n−i ticks; only the KO freeze still breaks, its
-         * latch semantics want the instant gate). */
+                /* Hit-slow window (slowmo-r63): while slowTicks > 0 the accumulator runs at
+         * CFG.hitSlowRate instead of gating to zero — the sim keeps LIVING in slow motion.
+         * The window counts down on the SAME wall clock the freeze used. Smoothness: (1) the
+         * EXPIRY frame BLENDS — no seam at the transition; (2) ¼× is the 's'-mode rate;
+         * (3) the tick loop does NOT break on a fresh window — NO queued tick is ever dropped. */
         if (slowTicks > 0) {
           const inWin = adv > 0 ? Math.min(1, slowTicks / adv) : 1;   // fraction of this frame's wall time inside the window
           fxRate = inWin * CFG.hitSlowRate + (1 - inWin);
@@ -4917,16 +4895,10 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       }
     }
     if (G.over) { stopTicks = 0; slowTicks = 0; }   // never strand a leftover freeze or slow window on the winner overlay — the flash must decay and the card read
-    /* Interpolation alpha only while the fight sim actually steps. In every
-     * other phase (paused, reveal, K.O. card, over) poses are frozen while
-     * tickAcc keeps churning phase timers — blending against a moving alpha
-     * would visibly oscillate the actors, so those frames render the exact
-     * latest tick pose (viewA = 1) and stand still. During the KO freeze in
-     * the fight phase tickAcc itself is gated, so the alpha holds its leftover
-     * fraction and the pose stands still the same way — no snap. Inside a
-     * hit-slow window (slowmo-r63) the alpha KEEPS MOVING — fractional
-     * tickAcc at ¼× is exactly the 's'-mode case the interpolation was built
-     * for, so the slow motion renders as a blend, never as a stutter. */
+        /* Interpolation alpha only while the fight sim actually steps. In every other phase
+     * (paused, reveal, K.O. card, over) poses are frozen while tickAcc keeps churning phase
+     * timers — blending against a moving alpha would visibly oscillate the actors, so those
+     * frames render the exact latest tick pose (viewA = 1) and stand still. */
     viewA = (!paused && !G.over && G.phase === 'fight') ? clamp01(tickAcc) : 1;
     draw(dtFrames * fxRate);   // wall-time FX (flash decay, banner): held in the KO freeze (fxRate 0 — the impact frame holds, pause-r20), SLOWED with the world inside a hit-slow window (the flash lives in the same slow motion — no frozen-frame read), full-rate otherwise
   }

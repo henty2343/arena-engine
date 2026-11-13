@@ -4,10 +4,10 @@
 Contains: region map, top-level symbol index and no-read data ranges for `previews/spinclash-preview.html`.
 Read when: before opening the canonical. Token cost: see STATE.md §Documentation cost.
 
-Built from md5 `76bee5a9f7574dd26c6a37e36ba77cdc` · stamp `links-r87` · 5,058 lines.
+Built from md5 `bedca518e71b16937443eed958ecabfb` · stamp `links-r87` · 5,030 lines.
 **Line numbers are valid only at that md5.** Symbol names are the durable handle — grep the name.
 
-Canonical ≈ 115,356 tokens; script block 0 carries 905 comment spans ≈ 59,736 tokens.
+Canonical ≈ 114,877 tokens; script block 0 carries 905 comment spans ≈ 59,252 tokens.
 
 ## Regions
 
@@ -34,9 +34,9 @@ Canonical ≈ 115,356 tokens; script block 0 carries 905 comment spans ≈ 59,73
 | render/app-state | 3872–3889 | 203 | 124 |
 | render/draw | 3890–4121 | 3,467 | 1,642 |
 | render/shot-art | 4122–4837 | 12,470 | 7,691 |
-| app/loop | 4838–4934 | 1,749 | 412 |
-| app/input | 4935–4953 | 266 | 190 |
-| app/api | 4954–4975 | 477 | 349 |
+| app/loop | 4838–4906 | 1,270 | 410 |
+| app/input | 4907–4925 | 266 | 190 |
+| app/api | 4926–4947 | 477 | 349 |
 
 ## GENERATED DATA — do not read
 
