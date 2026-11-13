@@ -97,6 +97,36 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
     err('README contains an unexplained stale Starting-a-chat section');
   }
 
+  // README slim guard (Phase H fixed): README is a router, not an archive.
+  const readmeSlim = rd('README.md');
+  if (Buffer.byteLength(readmeSlim) > 3000) err('README is too large to be a router: ' + Buffer.byteLength(readmeSlim) + ' bytes');
+
+  const requiredPointers = ['AGENTS.md', 'STATE.md', 'docs/LAWS.md', 'docs/RECIPES.md', 'docs/GAMES.md', '.qa/BASELINE'];
+  for (const needle of requiredPointers) {
+    if (!readmeSlim.includes(needle)) err('README missing router pointer: ' + needle);
+  }
+
+  const stateSlim = rd('STATE.md');
+  const md5LineSlim = stateSlim.split('\n').find(l => l.includes('- md5:')) || '';
+  const currentMd5Slim = md5LineSlim.split('`').filter(Boolean).pop();
+  if (currentMd5Slim && !readmeSlim.includes(currentMd5Slim)) err('README lacks current canonical md5');
+
+  const staleTexts = [
+    'Starting a new chat',
+    'scratch/docreflow',
+    'scratch/navgen',
+    'read all five',
+    'read all four',
+    '9 of 22',
+    '13 remaining',
+    'fp-multgrow-r42.json',
+    'docs/HANDOFF.md',
+    'docs-precleanup'
+  ];
+  for (const stale of staleTexts) {
+    if (readmeSlim.includes(stale)) err('README contains stale/non-router text: ' + stale);
+  }
+
 const ok = errors.length===0;
 const verdict = { check:'lint-docs', ok, errors, warnings, canonicalMd5:md5, canonicalTraits };
 if (process.argv.includes('--json')) console.log(JSON.stringify(verdict));
