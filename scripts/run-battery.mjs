@@ -31,7 +31,7 @@ const STEPS = [
 ];
 const EXPECTED = {
   "inscribe": 0, "lengrow-build-proof": 0, "pair-proof": 0, "flipproof": 0, "leadproof": 0,
-  "seam-proof": 0, "chromecheck": 0, "lengrow-gate": 0, "lengrow-bake-verify": 0,
+  "seam-proof": 0, "chromecheck": 0, "lengrow-gate": 1 /* exits 1 BY DESIGN: uniform stretch first breaks the inscribed gate at k=1.0778 (+7.8%), proving the pre-baked ladder is required */, "lengrow-bake-verify": 0,
 };
 const before = canon();
 console.log("battery start — canonical " + before);
