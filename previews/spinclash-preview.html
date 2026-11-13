@@ -90,6 +90,7 @@ body {
 (function () {
   'use strict';
 
+  // @@core/consts
   /* =====================================================================
    * SIM — pure. No DOM, no Math.random, no Date/performance below this
    * line until the RENDERER section. Harness-extractable per BUILD.md:
@@ -202,6 +203,7 @@ body {
     ["#eaf6ff", [[72.3,33.83],[75.58,36.14],[79.24,37.85],[83.14,38.89],[87.15,39.25],[91.15,38.89],[95.04,37.85],[98.72,36.14],[102.01,33.83],[104.86,30.98],[107.17,27.69],[106.64,27.38],[103.96,30.22],[101.01,32.65],[97.82,34.58],[94.38,36.02],[90.81,36.92],[87.15,37.29],[83.45,37.12],[79.77,36.4],[76.18,35.12],[72.7,33.36]]],
   ]);
 
+  // @@core/poly-builder
   /* ---- v1.0 poly builder: shapes -> drawn polys + covering circles ----
    * Weapons below are authored as plain polygons in spine-local (d, l)
    * units, pre-weaponScale. The covering circles (the hitbox) are the baked
@@ -516,6 +518,7 @@ body {
    * f.spin/f.dmg in grow(). Dated records (GAMES.md, git history) keep the old word by design. */
   const WDEF = { omega: 3.5, dmg: 1 };
   for (const pl of INGR_XBOW.polys) for (const pts of pl.subs) for (const q of pts) { q[0] *= KX; q[1] *= KX; }
+  // @@data/registry
 /* ======================= TRAIT / SKILL REGISTRY =======================
  * Owner ruling M2: a WEAPON has a TRAIT, a FIGHTER has a SKILL.
  * Keyed to symbol names, not line numbers. Grep the name to find the site.
@@ -844,6 +847,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     for (const pl of W.poly.polys) for (const pts of pl.subs) for (const pt of pts) { pt[0] *= S; pt[1] *= S; }
   }
 
+  // @@data/circles-v2
   /* ---- CIRCLES_V2: THE covering circles (the hitbox) of every weapon ----
    * Owner directive 2026-10-19: "well that is very bad for the viewers, they
    * dont wanna see these 'gap' hits, this should be a top priority to always
@@ -890,6 +894,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   for (const id of WEAPON_IDS) WEAPONS[id].poly.circles = CIRCLES_V2[id] || [];
   for (const c of WEAPONS.crossbow.poly.circles) { c.d *= KX; c.l *= KX; c.r *= KX; }   // the ceiling's downscale on the baked covering — uniform scale keeps it inscribed, gate-proven post-edit
 
+  // @@data/flail-chain
   /* ---- FLAIL chain bootstrap (2026-10-22) ----
    * Joints scale with the same weaponScale as the polys (px from here on). Each
    * baked covering circle is tied to the ONE segment whose own ink wholly
@@ -969,6 +974,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
    * detect). Renderer/boot only — fingerprints byte-identical. */
   const UNBAKED = WEAPON_IDS.filter(id => !CIRCLES_V2[id]);
 
+  // @@core/weapon-geometry
   /* ---- weapon geometry — one spine profile feeds collision, renderer and
    * audit alike (perception pass, 2026-10-16, owner-approved). Every weapon
    * is a path silhouette: drawn polygons plus covering circles packed inside
@@ -1054,6 +1060,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     REACH[id] = reach;
   }
 
+  // @@data/len-growth
   /* ---- LENGTH GROWTH (owner ruling 2026-10-28, the spear's trait; built 2026-10-28) ----
    * A weapon row may declare `trait.len` = the fraction of LENGTH gained per damaging hit,
    * and `lenJ` = its shaft/head junction as a fraction of its own drawn tip. Growth is
@@ -1700,6 +1707,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     spineFrame: spineFrame, parryGap: parryGap, leadFlip: leadFlip,
   };
 
+  // @@sim/rng
   /* ---- seeded RNG: splitmix32 seeding -> sfc32 stream (SPEC's PRNG) ---- */
   function splitmix32(a) {
     return function () {
@@ -1923,6 +1931,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     emit(G, 'ko', { winner: w, loser: dead.slot, x: dead.pos.x, y: dead.pos.y, round: G.round, wins: G.wins.slice() });
   }
 
+  // @@sim/physics
   /* ---- physics (circular bowl only) ---- */
 
   function stepPhysics(G) {
@@ -2066,6 +2075,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     f.pos.y += f.vel.y * sdt;
   }
 
+  // @@sim/chain
   /* ---- CHAIN weapons (flail 2026-10-22, N-segment generic): a taut jointed chain under the game's own physics ----
    * np = ch.np point particles hang off the eye (j[0], fixed to the weapon); flail: Q1 = joint J1, Q2 = joint J2,
    * B = ball centre. Per substep, in world space, exactly like the bodies: gravity + the same integrator, then a
@@ -2341,6 +2351,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     emit(G, 'hit', hev);
   }
 
+  // @@sim/blade-vs-blade
   /* ---- blade-vs-blade: the core contact law's solid pair (2026-10-16) ----
    * Runs EVERY substep — no cooldown may skip it (the v0.5.1 cooldown skip
    * was the tunneling ghost window: 100% of measured interpenetration lived
@@ -2548,6 +2559,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     emit(G, 'parry', pev);
   }
 
+  // @@sim/projectiles
   /* ---- projectiles (v0.7 as the sling's shot; generalised v0.9–v1.0 into
    * the shot system; owner decisions 2026-10-16/17/19) ----
    * Firing: one release per full revolution — spin rate IS fire rate, no
@@ -2815,6 +2827,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
    * these are the row's OWN covering circles, transformed exactly as drawPolySet's copy path
    * transforms the art (offset by -copyCtr, rotated by the velocity heading). Body, blade, cross
    * and catch tests all read them — what the eye sees is what touches. */
+  // @@sim/copy-rule
   /* ---- the copy rule's shared geometry — the flying copy of a thrown weapon (boomerang/star/javelin) is pivoted at the art
    * centroid and tumbles at COPYSPIN. The sim spawns, sweeps and catches with these and the renderer draws with the same
    * numbers, so they live HERE, in the sim section (they used to sit in the renderer, which made the "pure" sim
@@ -3374,6 +3387,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     shots.length = m;
   }
 
+  // @@render/header
   /* =====================================================================
    * RENDERER — sumo-war look: sand ring, shot rim, flat discs, HP inside,
    * white hit flash. No particles, no screen shake, no glow, no name.
@@ -3405,6 +3419,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   const WALL = { t: 12, body: '#a99f86', dark: '#8d8369' };
 
 
+  // @@render/actors
   /* ---- weapon actors: drawn from their own collision polygons ---- */
   function polyPath(g, pl, ox, oy, c, s, fp, W) {
     const m = fp === undefined ? 1 : fp;   // edge-leading/head-leading factor — the SIM-side callers and every audit pass exactly ±1 (×1 exact); the art pass may pass the flip transition's continuous value (owner decision 2026-10-22: art eases old→edge-on→mirrored over CFG.flipMs while the hitbox is already at its new true pose — the disclosed, owner-accepted trade; the hitbox overlay and the stills always draw the binary truth)
@@ -3610,6 +3625,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     drawWeapon(g, WEAPONS[id], -m.x, -m.y, 0, tint || undefined, undefined, acc, m.polys);
     g.restore();
   }
+  // @@render/reveal
   /* ---- reveal background: soft white petal glow (borderless — light only, no outlines) ----
    * Drawn only once the weapon has LANDED (see drawReveal), blooming open over the first ~22 ticks:
    * e = 0..1 is the progress since landing and op = ease-out(e) opens the petals. ---- */
@@ -3642,6 +3658,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     g.restore();
   }
 
+  // @@render/fx
   /* ---- fx: white flash only (renderer-side). The struck body's white flash
    * is the frame's only hit punctuation — all contact-pose ghosts (hit,
    * parry, swat) were retired by owner decision 2026-10-18; proof-of-contact
@@ -3792,6 +3809,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     }
   }
 
+  // @@render/canvas
   /* ---- canvas + pre-rendered arena ---- */
   const cv = document.getElementById('c');
   const ctx = cv.getContext('2d');
@@ -3851,6 +3869,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   window.addEventListener('resize', resize);
   resize();
 
+  // @@render/app-state
   /* ---- app state ---- */
   let paused = false, slow = false, fast = false, showHitbox = false;
   let ACC_OVERRIDE = null;   // arena review accent (ACC chip): the sigil swap reads this before the carrier color
@@ -3868,6 +3887,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     slowTicks = 0;   // slowmo-r63: a restart must never carry a slow window into the fresh battle
   }
 
+  // @@render/draw
   /* ---- drawing ---- */
   /* v0.8-step1b (owner decision 2026-10-18): bodies and weapons are separate
    * passes — every weapon draws ABOVE every body, so a blade never disappears
@@ -4099,6 +4119,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
    * draws as a plain steel disc at the impact point.
    * Renderer-only; the sim never reads this. Alphas are dials. */
   const HALO = { orb: 'rgba(159,224,255,0.28)', spark: 'rgba(212,167,58,0.22)', star: 'rgba(143,163,181,0.24)', boom: 'rgba(143,163,181,0.18)', bolt: 'rgba(143,163,181,0.18)', arrow: 'rgba(143,163,181,0.18)', javelin: 'rgba(143,163,181,0.18)', knife: 'rgba(143,163,181,0.18)', spell: 'rgba(214,51,26,0.20)', halo: 'rgba(93,184,58,0.20)', nova: 'rgba(111,195,236,0.20)', vortex: 'rgba(236,95,26,0.20)' };   // every shot kind inks its own hitbox disc (owner directive 2026-10-19); spell-family tints follow their affinity locals; page/scroll retired with the kind splits (2026-10-25)   // javelin/page/scroll entries pre-wired 2026-10-22; scroll halo retinted at the 2026-10-23 reconcile to the held art KT parchment family (owner-reference colours) — every shot kind inks its own hitbox disc (owner directive 2026-10-19)
+  // @@render/shot-art
   /* ---- SHOT ART (2026-10-25, phase 2): the return-2 blocks, verbatim polys.
    * Affinity doctrine (owner 2026-10-25): spell-local reference colours —
    * KF fire (scroll comet), KP1/KP2 poison, KN1 frost (+KB), KV fire-orange
@@ -4814,6 +4835,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     for (let i = 0; i < 2; i++) { flashV[i] *= Math.pow(0.88, dtFrames); poisonPulse[i] *= Math.pow(0.82, dtFrames); }   // affinity-r66: the bite flash decays on the same wall-time clock (fxRate'd dtFrames — it throbs in slow-mo, freezes at the KO)   // the flip transition's clock lives in the view build (same frozen dtFrames)
   }
 
+  // @@app/loop
   /* ---- main loop ---- */
   let lastNow = performance.now();
   let tickAcc = 0;
@@ -4910,6 +4932,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   }
   requestAnimationFrame(frame);
 
+  // @@app/input
   /* ---- input ---- */
   // ONE implementation of each toggle: the keyboard and window.APP (hence the chrome chips) both call these.
   const actions = {
@@ -4928,6 +4951,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     else if (KEY_ACTION[k]) { actions[KEY_ACTION[k]](); if (k === ' ') e.preventDefault(); }   // Space would also scroll the page
   });
 
+  // @@app/api
   window.APP = {
     restart: restart,
     setSeed: function (v) { restart(v | 0); },

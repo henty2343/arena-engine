@@ -16,49 +16,8 @@ const CANON = argOf('--file') || path.join(root, 'previews', 'spinclash-preview.
 
 /* Comment scanner: strings, template literals (nested ${}), regex literals, // and /* *\/.
  * Regex-vs-division is a heuristic; tools/lib/strip-comments.mjs cross-checks it. */
-const KW = new Set(['return','typeof','case','in','of','delete','void','throw','new','else','do','instanceof','yield','await']);
-function scan(src) {
-  const comments = []; let i = 0; const n = src.length;
-  let prev = ''; const tstack = []; let depth = 0;
-  const isIdStart = c => /[A-Za-z_$]/.test(c), isId = c => /[A-Za-z0-9_$]/.test(c);
-  function readTemplate() {
-    while (i < n) { const c = src[i];
-      if (c === '\\') { i += 2; continue; }
-      if (c === '`') { i++; return 'end'; }
-      if (c === '$' && src[i+1] === '{') { i += 2; return 'expr'; }
-      i++; }
-    return 'eof';
-  }
-  while (i < n) {
-    const c = src[i], d = src[i+1];
-    if (c === ' ' || c === '\t' || c === '\n' || c === '\r') { i++; continue; }
-    if (c === '/' && d === '/') { const s = i; while (i < n && src[i] !== '\n') i++; comments.push({s,e:i,kind:'line'}); continue; }
-    if (c === '/' && d === '*') { const s = i; i += 2; while (i < n && !(src[i] === '*' && src[i+1] === '/')) i++; i += 2; comments.push({s,e:i,kind:'block'}); continue; }
-    if (c === '"' || c === "'") { const q = c; i++; while (i < n && src[i] !== q) { if (src[i] === '\\') i++; i++; } i++; prev = 'str'; continue; }
-    if (c === '`') { i++; const r = readTemplate(); if (r === 'expr') { tstack.push(depth); depth = 0; prev = 'op'; } else prev = 'str'; continue; }
-    if (c === '{') { depth++; prev = 'op'; i++; continue; }
-    if (c === '}') {
-      if (tstack.length && depth === 0) { depth = tstack.pop(); const r = readTemplate(); if (r === 'expr') { tstack.push(depth); depth = 0; prev = 'op'; } else prev = 'str'; continue; }
-      depth--; prev = 'close'; i++; continue; }
-    if (c === '/') {
-      const regexOk = prev === 'op' || prev === '' || prev === 'kw' || prev === '(';
-      if (regexOk) { i++; let cls = false;
-        while (i < n) { const x = src[i]; if (x === '\\') { i += 2; continue; } if (x === '[') cls = true; else if (x === ']') cls = false; else if (x === '/' && !cls) break; else if (x === '\n') break; i++; }
-        i++; while (i < n && isId(src[i])) i++; prev = 'str'; continue; }
-      i++; prev = 'op'; continue; }
-    if (isIdStart(c)) { const s = i; while (i < n && isId(src[i])) i++; prev = KW.has(src.slice(s,i)) ? 'kw' : 'id'; continue; }
-    if (/[0-9]/.test(c) || (c === '.' && /[0-9]/.test(d || ''))) { while (i < n && /[0-9A-Za-z_.]/.test(src[i])) { if ((src[i] === 'e' || src[i] === 'E') && (src[i+1] === '+' || src[i+1] === '-')) i++; i++; } prev = 'num'; continue; }
-    if (c === ')' || c === ']') { prev = 'close'; i++; continue; }
-    if ('([,;:=!&|?+-*%<>~^'.includes(c)) { prev = c === '(' ? '(' : 'op'; i++; continue; }
-    i++;
-  }
-  return comments;
-}
-function blank(src, cs) {
-  let out = '', last = 0;
-  for (const c of cs) { out += src.slice(last, c.s) + src.slice(c.s, c.e).replace(/[^\n]/g, ' '); last = c.e; }
-  return out + src.slice(last);
-}
+import { scan, strip } from './lib/strip-comments.mjs';
+
 const tok = s => Math.round(s.length / 4);
 
 function facts() {
@@ -77,7 +36,7 @@ function facts() {
     blocks.push({ startLine: bodyLine, body, comments: scan(body) });
   }
   const main = blocks[0];
-  const stripped = blank(main.body, main.comments);
+  const stripped = strip(main.body, main.comments);
   // comment char count per file line (for per-region code-only cost)
   const commentChars = new Array(lines.length + 2).fill(0);
   const bodyLineStart = [0];
@@ -101,6 +60,8 @@ function facts() {
     if (mk) { marks.push({ line: L, name: mk[1], kind: 'marker' }); continue; }
     const bn = t.match(/^(\s{0,2})\/\*\s*(.*)$/);
     if (!bn) continue;
+    // a marker directly above a banner wins; do not double-count the banner
+    if (/^\s*\/\/\s*@@[a-z0-9-]+\/[a-z0-9-]+\s*$/.test(lines[L - 2] || '')) continue;
     const head = bn[2];
     if (!(/^-{3,}\s*\S/.test(head) || /^={5,}/.test(head))) continue;
     let name = head.replace(/^[-=\s]+/, '').replace(/[-=\s]*\*?\/?$/, '').trim();

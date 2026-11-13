@@ -6,10 +6,10 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.7k (compute
 
 ## Canonical (the one live game)
 - File: `previews/spinclash-preview.html`
-- md5: `83867fb70ace5ea7fcdbd93e7aeda7e5`
-- Lines: 5,034
+- md5: `76bee5a9f7574dd26c6a37e36ba77cdc`
+- Lines: 5,058
 - Build stamp (`<title>`): `links-r87`
-- Approx token cost (chars/4): ~115,232
+- Approx token cost (chars/4): ~115,356
 
 ## Fingerprint baseline
 - Pointer: `.qa/BASELINE` → `fp-flailfix-r88.json`
@@ -20,9 +20,9 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.7k (compute
 ## Tooling inventory
 - Root tools (3): `chromecheck.mjs` · `ingest.mjs` · `measure.mjs`
 - scripts/ (1): `run-battery.mjs`
-- tools/ (7, incl. doc/ and lib/): `gen-codemap.mjs` · `gen-state.mjs` · `lint-docs.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/load-sim.mjs`
+- tools/ (9, incl. doc/ and lib/): `gen-codemap.mjs` · `gen-state.mjs` · `lint-docs.mjs` · `lint-markers.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/load-sim.mjs` · `lib/strip-comments.mjs`
 - scratch/: gitignored RUNTIME temp dir (bake/gate temp copies, battery logs) — not source; nothing in it is tracked except `.gitkeep`.
-- .qa/ proofs (12): `bake-rows.mjs` · `fingerprint.mjs` · `flip-seeds.mjs` · `flipproof.mjs` · `inscribe.mjs` · `leadproof.mjs` · `lengrow-bake.mjs` · `lengrow-build-proof.mjs` · `lengrow-gate.mjs` · `lengrow-proof.mjs` · `pair-proof.mjs` · `seam-proof.mjs`
+- .qa/ proofs (13): `bake-rows.mjs` · `fingerprint.mjs` · `flip-seeds.mjs` · `flipproof.mjs` · `inscribe.mjs` · `leadproof.mjs` · `lengrow-bake.mjs` · `lengrow-build-proof.mjs` · `lengrow-gate.mjs` · `lengrow-proof.mjs` · `pair-proof.mjs` · `seam-proof.mjs` · `strip-hash.mjs`
 - .qa/ baselines (1): `fp-flailfix-r88.json`
 
 ## Documentation cost (chars/4 estimate)
@@ -30,10 +30,10 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.7k (compute
 |---|---:|---|
 | README.md | 263 | router only |
 | AGENTS.md | 1,327 | always |
-| docs/CODEMAP.md | 1,516 | before opening the canonical |
+| docs/CODEMAP.md | 1,529 | before opening the canonical |
 | docs/LAWS.md | 2,473 | before any sim/doc edit |
 | docs/RECIPES.md | 1,876 | adding a trait/skill/bot |
-| docs/GAMES.md | 160,662 | GREP ONLY — never load whole |
+| docs/GAMES.md | 160,957 | GREP ONLY — never load whole |
 | docs/SPEC.md | 12,988 | PLANNED engine work only |
 | docs/CONTRACT.md | 4,226 | PLANNED engine work only |
 | docs/BUILD.md | 4,525 | PLANNED engine work only |
