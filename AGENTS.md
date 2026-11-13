@@ -13,6 +13,7 @@ A localhost-only Node tool that renders seeded game simulations into publishable
 | Tier | Files | When |
 |---|---|---|
 | Always | `AGENTS.md` + `STATE.md` | every session |
+| Before opening the canonical | `docs/CODEMAP.md` (generated region + symbol map) | never read the canonical whole — enter at one symbol |
 | Before any sim/doc edit | `docs/LAWS.md` (current laws quick ref) | the standing game laws |
 | Add a weapon trait / bot | `docs/RECIPES.md` + the canonical `TRAIT / SKILL REGISTRY` | the cheap-class pattern |
 | Engine work | `docs/SPEC.md` · `CONTRACT.md` · `BUILD.md` | only when building the platform |
@@ -25,7 +26,7 @@ A localhost-only Node tool that renders seeded game simulations into publishable
 - **Add a weapon trait / fighter skill** → `docs/RECIPES.md`; pattern = a row field → ONE consumer site → one Tier-0 assertion; update the canonical REGISTRY. Cheap (number at an existing site) vs expensive (moves geometry → re-bake). Expensive = stop and ask first. The laws it must respect: `docs/LAWS.md`.
 - **Add a bot** → `docs/RECIPES.md`; a `FIGHTERS` row + an owner-chosen colour + widen the seven 2-entry arrays; run `.qa/pair-proof.mjs`.
 - **Edit weapon art / polys / scale** → `.qa/inscribe.mjs` gate + `.qa/bake-rows.mjs` re-bake; Tier 1 proofs.
-- **Edit docs** → after any `GAMES.md` edit run `docreflow` then `navgen` (rule 3); refresh `STATE.md` if facts moved; run `node tools/verify.mjs`.
+- **Edit docs** → after any `GAMES.md` edit run `docreflow` then `navgen` (rule 3); after any canonical landing run `gen-codemap`; refresh `STATE.md` if facts moved; run `node tools/verify.mjs`. Order: `docreflow → navgen → gen-codemap → gen-state → verify --quick`.
 - **Check repo health** → `node tools/verify.mjs` (judges + JSON verdict; `--quick` skips the sim, `--battery` adds the full proof battery).
 - **Prove a behaviour-identical edit** → `node .qa/fingerprint.mjs --compare` (8/8 vs `.qa/BASELINE`, exit 0).
 

@@ -2,7 +2,7 @@
 # STATE — current project facts
 
 Contains: the mutable facts of the repo, derived from the canonical and the tree.
-Read when: every session, alongside AGENTS.md. Approx token cost: ~0.6k (computed).
+Read when: every session, alongside AGENTS.md. Approx token cost: ~0.7k (computed).
 
 ## Canonical (the one live game)
 - File: `previews/spinclash-preview.html`
@@ -20,7 +20,7 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.6k (compute
 ## Tooling inventory
 - Root tools (3): `chromecheck.mjs` · `ingest.mjs` · `measure.mjs`
 - scripts/ (1): `run-battery.mjs`
-- tools/ (6, incl. doc/ and lib/): `gen-state.mjs` · `lint-docs.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/load-sim.mjs`
+- tools/ (7, incl. doc/ and lib/): `gen-codemap.mjs` · `gen-state.mjs` · `lint-docs.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/load-sim.mjs`
 - scratch/: gitignored RUNTIME temp dir (bake/gate temp copies, battery logs) — not source; nothing in it is tracked except `.gitkeep`.
 - .qa/ proofs (12): `bake-rows.mjs` · `fingerprint.mjs` · `flip-seeds.mjs` · `flipproof.mjs` · `inscribe.mjs` · `leadproof.mjs` · `lengrow-bake.mjs` · `lengrow-build-proof.mjs` · `lengrow-gate.mjs` · `lengrow-proof.mjs` · `pair-proof.mjs` · `seam-proof.mjs`
 - .qa/ baselines (1): `fp-flailfix-r88.json`
@@ -29,7 +29,8 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.6k (compute
 | file | ~tokens | read policy |
 |---|---:|---|
 | README.md | 263 | router only |
-| AGENTS.md | 1,262 | always |
+| AGENTS.md | 1,327 | always |
+| docs/CODEMAP.md | 1,516 | before opening the canonical |
 | docs/LAWS.md | 2,473 | before any sim/doc edit |
 | docs/RECIPES.md | 1,876 | adding a trait/skill/bot |
 | docs/GAMES.md | 160,662 | GREP ONLY — never load whole |

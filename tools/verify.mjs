@@ -30,6 +30,7 @@ results.push(run('gen-state','tools/gen-state.mjs',['--check']));
 results.push(run('lint-docs','tools/lint-docs.mjs'));
 results.push(run('navgen','tools/doc/navgen.mjs',['--check']));
 results.push(run('docreflow','tools/doc/docreflow.mjs',['--check']));
+results.push(run('gen-codemap','tools/gen-codemap.mjs',['--check']));
 if (!quick) results.push(run('fingerprint','.qa/fingerprint.mjs',['--compare']));
 if (battery) results.push(run('battery','scripts/run-battery.mjs'));
 const ok = results.every(r=>r.ok);

@@ -32,7 +32,7 @@ function facts() {
     ...list(path.join(root, 'tools', 'doc'), /\.mjs$/).map(x => 'doc/' + x),
     ...list(path.join(root, 'tools', 'lib'), /\.mjs$/).map(x => 'lib/' + x)];
   const tok = p => existsSync(p) ? Math.round(readFileSync(p, 'utf8').length / 4) : 0;
-  const POLICY = { 'README.md': 'router only', 'AGENTS.md': 'always', 'docs/LAWS.md': 'before any sim/doc edit',
+  const POLICY = { 'README.md': 'router only', 'AGENTS.md': 'always', 'docs/CODEMAP.md': 'before opening the canonical', 'docs/LAWS.md': 'before any sim/doc edit',
     'docs/RECIPES.md': 'adding a trait/skill/bot', 'docs/GAMES.md': 'GREP ONLY — never load whole',
     'docs/SPEC.md': 'PLANNED engine work only', 'docs/CONTRACT.md': 'PLANNED engine work only', 'docs/BUILD.md': 'PLANNED engine work only' };
   const docs = Object.keys(POLICY).map(f => ({ file: f, policy: POLICY[f], approxTokens: tok(path.join(root, f)) }));

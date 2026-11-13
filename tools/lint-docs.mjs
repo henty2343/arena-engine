@@ -67,7 +67,7 @@ function resolves(ref) {
   return false;
 }
 const refRe = /`([A-Za-z0-9_./\-]+\.(?:mjs|md|json|html|ts|js|svg|csv|txt|sh))`|\]\(([^)\s]+)\)/g;
-const operational = ['README.md','AGENTS.md','STATE.md','docs/LAWS.md','docs/RECIPES.md','docs/SPEC.md','docs/CONTRACT.md','docs/BUILD.md'];
+const operational = ['README.md','AGENTS.md','STATE.md','docs/CODEMAP.md','docs/LAWS.md','docs/RECIPES.md','docs/SPEC.md','docs/CONTRACT.md','docs/BUILD.md'];
 function lintRefs(f, text, off=0) {
   text.split('\n').forEach((line,i) => {
     for (const mm of line.matchAll(refRe)) {
@@ -136,7 +136,7 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
   if (/(?<!not )(?<!never )read this file (first|whole)/i.test(gamesHead)) err('docs/GAMES.md preface tells agents to read it first/whole — it is grep-only');
 
   // Hand-typed token costs drift; the only cost source is STATE.md (Phase I).
-  for (const f of ['AGENTS.md','docs/LAWS.md','docs/RECIPES.md','docs/SPEC.md','docs/CONTRACT.md','docs/BUILD.md','docs/GAMES.md'])
+  for (const f of ['AGENTS.md','docs/CODEMAP.md','docs/LAWS.md','docs/RECIPES.md','docs/SPEC.md','docs/CONTRACT.md','docs/BUILD.md','docs/GAMES.md'])
     if (existsSync(path.join(root,f)) && /Approx token cost:\s*~?\d/.test(rd(f).split('\n').slice(0, 12).join('\n')))
       err(f + ' header has a hand-typed token cost — point to STATE.md §Documentation cost instead');
 
