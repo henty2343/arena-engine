@@ -81,6 +81,27 @@ function lintRefs(f, text, off=0) {
   });
 }
 for (const f of operational) if (existsSync(path.join(root,f))) lintRefs(f, rd(f));
+// Section pointers ("`FILE.md` §Heading words") must name a heading that exists in FILE (Phase I).
+// Tolerant on purpose: the pointer passes if ANY heading contains its first 1-4 words (case-insensitive).
+function lintSectionPointers(f, text) {
+  text.split('\n').forEach((line, i) => {
+    for (const mm of line.matchAll(/`?([A-Za-z0-9_.\/-]+\.md)`?\s+§\s*([A-Za-z][A-Za-z0-9\- ]*)/g)) {
+      const target = ['', 'docs/'].map(d => d + mm[1]).find(p => existsSync(path.join(root, p)))
+        || (mm[1].includes('/') ? null : ['docs/' + mm[1], mm[1]].find(p => existsSync(path.join(root, p))));
+      if (!target) continue;                                  // unresolved file: lintRefs reports it
+      if (HIST.test(line)) continue;
+      const heads = rd(target).split('\n').filter(l => /^#{1,6}\s/.test(l)).map(l => l.toLowerCase());
+      const words = mm[2].trim().split(/\s+/).slice(0, 4);
+      let ok = false;
+      for (let n = words.length; n >= 1 && !ok; n--) {
+        const needle = words.slice(0, n).join(' ').toLowerCase();
+        ok = heads.some(h => h.includes(needle));
+      }
+      if (!ok) err(`${f}:${i + 1} points to "${mm[1]} §${words.join(' ')}" but ${target} has no such heading`);
+    }
+  });
+}
+for (const f of operational) if (existsSync(path.join(root,f))) lintSectionPointers(f, rd(f));
 lintRefs('docs/GAMES.md', currentState);
 if (existsSync(path.join(root,'AGENTS.md'))) {
   if (!rd('README.md').includes('AGENTS.md')) warn('README does not point to the AGENTS.md entry point');

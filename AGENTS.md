@@ -29,7 +29,7 @@ A localhost-only Node tool that renders seeded game simulations into publishable
 - **Check repo health** → `node tools/verify.mjs` (judges + JSON verdict; `--quick` skips the sim, `--battery` adds the full proof battery).
 - **Prove a behaviour-identical edit** → `node .qa/fingerprint.mjs --compare` (8/8 vs `.qa/BASELINE`, exit 0).
 
-## Standing rules (owner-enforced — full text in README.md §Standing rules)
+## Standing rules (owner-enforced — this list is the canonical text; README and copilot-instructions only point here)
 
 1. **Discuss before writing.** Proposals first; nothing lands without the owner's "go".
 2. **`measure.mjs` NEVER runs without the owner's explicit go.** Long runs are his machine's job.
