@@ -1,4 +1,4 @@
-/* scratch/docreflow.mjs — readability reflow for GAMES.md's monster paragraphs
+/* tools/doc/docreflow.mjs — readability reflow for GAMES.md's monster paragraphs
  * (2026-10-23 hygiene pass, owner pick "hygiene"). Several Measured-facts
  * entries are single 4–13 KB lines: unreadable in any editor or viewer.
  *
@@ -11,7 +11,7 @@
  *      following entry — the first attempt merged two entries because they are
  *      adjacent lines with no blank between them)
  *
- * usage: node scratch/docreflow.mjs [file] [--check] [--max N]
+ * usage: node tools/doc/docreflow.mjs [file] [--check] [--max N]
  *        --check = report what WOULD change, write nothing (idempotency proof) */
 import { readFileSync, writeFileSync } from 'node:fs';
 

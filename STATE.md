@@ -26,7 +26,7 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.6k.
 | file | ~tokens |
 |---|---:|
 | README.md | 259 |
-| AGENTS.md | 1,247 |
+| AGENTS.md | 1,257 |
 | docs/LAWS.md | 2,468 |
 | docs/RECIPES.md | 1,871 |
 | docs/GAMES.md | 160,537 |
