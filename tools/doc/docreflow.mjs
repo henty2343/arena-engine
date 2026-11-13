@@ -19,9 +19,9 @@ const args = process.argv.slice(2);
 const FILE = args.find(a => !a.startsWith('--')) || 'docs/GAMES.md';
 const CHECK = args.includes('--check');
 const mi = args.indexOf('--max');
-const MAX = mi >= 0 ? +args[mi + 1] : 1100;      // target paragraph length, chars
+const MAX = mi >= 0 ? +args[mi + 1] : 600;      // target paragraph length, chars
 const MIN_BREAK = 200;                            // never break a short tail off
-const BIG = 3500;                                 // only reflow lines above this, bytes
+const BIG = 600;   // B3-REFLOW: lower threshold - most long lines were never eligible                                 // only reflow lines above this, bytes
 
 const src = readFileSync(FILE, 'utf8');
 const nl = src.includes('\r\n') ? '\r\n' : '\n';
@@ -40,9 +40,9 @@ const secs = lines.map((l, i) => (l.startsWith('## ') ? [i, l] : null)).filter(B
 function inSection(i, names) {
   let cur = null;
   for (const [j, t] of secs) { if (j <= i) cur = t; else break; }
-  return cur !== null && names.some(n => cur.startsWith(n));
+  return cur !== null && (names.some(n => cur.startsWith(n)) || /^## 20\d\d-\d\d-\d\d/.test(cur));
 }
-const SECTIONS = ['## Measured facts', '## Game #1'];
+const SECTIONS = ['## Measured facts', '## Current state', '## Weapon art', '## Design principles', '## Open design questions', '## Testing recipe'];
 
 function safePoints(t) {
   const pts = [];
@@ -51,9 +51,9 @@ function safePoints(t) {
     const c = t[i];
     if (c === '`') { code = !code; continue; }
     if (code) continue;
-    if (c === '"' && !quote) { quote = true; continue; }
-    if (c === '"' && quote) { quote = false; continue; }
-    if (quote) continue;
+    /* B3-REFLOW: quote state is no longer tracked. An odd double-quote count (nested
+     * owner quotes) used to make the rest of the line unbreakable. A break may now fall
+     * inside a quote; content identity is still proven by the three whole-file proofs. */
     if (c === '(' || c === '[') depth++;
     else if (c === ')' || c === ']') depth--;
     else if (depth === 0 && (c === '.' || c === ':') && i > MIN_BREAK && t[i + 1] === ' ') {
@@ -91,7 +91,23 @@ for (let i = 0; i < lines.length; i++) {
   const eligible = !inFence && !l.startsWith('|') && !l.startsWith('#') &&
     Buffer.byteLength(l) > BIG && inSection(i, SECTIONS);
   if (eligible) {
-    const parts = reflow(l);
+    let parts = reflow(l);
+    /* B3-REFLOW: iterate to a fixed point. Bracket/code state resets per line, so a part
+     * can expose NEW break points the whole-line pass suppressed; one pass is therefore
+     * not idempotent at a lower MAX. Iterate until no part splits, so --check stays green. */
+    if (parts.length > 1) {
+      let stable = false;
+      for (let pass = 0; pass < 16; pass++) {
+        const next = []; let grew = false;
+        for (const q of parts) { const a = reflow(q); if (a.length > 1) grew = true; next.push(...a); }
+        parts = next;
+        if (!grew) { stable = true; break; }
+      }
+      if (!stable) {
+        console.log(`  line ${i + 1}: ${l.length} chars - no fixed point, left alone`);
+        outLines.push(l); continue;
+      }
+    }
     if (parts.length > 1) {
       for (const q of parts) {
         if ((q.match(/\*\*/g) || []).length % 2 || (q.match(/`/g) || []).length % 2) {
@@ -112,7 +128,7 @@ for (let i = 0; i < lines.length; i++) {
       console.log(`  line ${i + 1}: ${(Buffer.byteLength(l) / 1024).toFixed(0)} KB → ${parts.length} paragraphs`);
       continue;
     }
-    if (safePoints(l).length === 0) skippedFence = true;
+    if (safePoints(l).length === 0) { skippedFence = true; console.log(`  line ${i + 1}: ${l.length} chars - no safe break point, left alone`); }
   }
   outLines.push(l);
 }
