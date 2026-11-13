@@ -102,24 +102,24 @@ body {
     tickHz: 120,
     size: 1000,            // arena bounds (the platform's fixed square)
     gravity: 1400,         // floaty but lively: big slow arcs, still enough contact (owner: bounce more, not faster). 2026-10-21 feel tune at owner word ("increase the bounce a little bit"): 1500 → 1400 — the same launch speeds now bounce ~7% higher and hang ~4% longer (rise = v²/2g) with no speed increase; this is the lever that cannot strangle (raising floorMinBounce instead would collide with the temporary cap or demand a faster one)
-    wallRest: 0.9,         // walls absorb 10% of the normal component per contact (owner option 1, 2026-10-21, from the measured menu): the bleed that keeps the horizontal ratchet from filling the new ceiling's headroom — cap 1200 alone measured p50 807 / 13.2% of ticks above 1100; with the bleed, p50 766 / 9.9%. Doctrine amendment: walls are no longer perfectly elastic — the trampoline floor stays the only energy source, and shot that eats a little also reads physically; top/side bounces are slightly softer than the old perfect elasticity
+    wallRest: 0.9,         // walls absorb 10% of the normal component per contact (owner option 1, 2026-10-21): the bleed that keeps the horizontal ratchet from filling the ceiling's headroom. DOCTRINE AMENDMENT: walls are no longer perfectly elastic — the trampoline floor stays the only energy source, and a shot that eats a little also reads physically.
     floorMinBounce: 1050,  // trampoline floor: every floor touch sends bots back toward mid-arena
     bodyR: 64,
     hp: 100,
     launchSpeed: 430,
-    maxSpeed: 1200,        // chaos ceiling (owner option 1, 2026-10-21, from the measured menu; was the TEMPORARY observer cap 1100, owner: "so i can watch it easier"): raised so aligned stacks (a floor launch met by a vertical parry shove or knock from mid-arena) can reach the upper rim — the highlight the owner asked for ("i feel like i want to see more but not exaggerating scenarios where bots touch the upper rim … too much of it is boring"). Measured at birth: top-rim touches 0.95 → 3.05 per battle (spread 0–9, so clean battles stay clean), pace p50 743 → 766 (+3%), p90 1098 ≈ the old cap — the fast tail feels like yesterday's maximum. The cap-1600 version of this experiment was rejected same-day ("its going a bit too fast for the eye to understand now": 40 top touches/battle, p50 1053). Balance-pass verdict on the number stays open; must stay above floorMinBounce or bounces get strangled
+    maxSpeed: 1200,        // chaos ceiling (owner option 1, 2026-10-21; was the TEMPORARY observer cap 1100, owner: "so i can watch it easier"): raised so aligned stacks (a floor launch met by a vertical parry shove or knock from mid-arena) can reach the upper rim — the highlight the owner asked for, without every battle doing it. A cap-1600 version was rejected the same day as too fast for the eye. The number stays open to the balance pass; it MUST stay above floorMinBounce or bounces get strangled.
     hitKnock: 130,
-    parryPush: 700,        // parry-loop fix, option 1 (owner decision 2026-10-19: "1"): 150 was a nudge too weak to end a point-blank episode — blades re-touched every latch reset and machine-gunned parries in the bottom-centre cradle. 3.5x separates the pair decisively on one parry. Tunable dial; direction stays the body-centre line per law. Raised 525 -> 700 at owner word 2026-10-21 ("maybe make a bit more seperation on parry … as natural and smooth transition as possible"): harder shoves end grapples before wedges form (fewer pins, fewer nudges) and mask the residual nudge inside the clang's separation motion. Velocity impulse — smooth by construction, no teleport class
+    parryPush: 700,        // parry-loop fix, option 1 (owner decision 2026-10-19): 150 was a nudge too weak to end a point-blank episode — blades re-touched every latch reset and machine-gunned parries in the bottom-centre cradle. Raised 525 -> 700 at owner word 2026-10-21 ("maybe make a bit more seperation on parry … as natural and smooth transition as possible"): harder shoves end grapples before wedges form. Velocity impulse — smooth by construction, no teleport class; direction stays the body-centre line per law.
     nudgePx: 12,           // pin-escape nudge cap in px-at-the-weapon-head (nz <= nudgePx / REACH), gated to ONE add per tick per fighter (owner 2026-10-21): the old uncapped one-substep teleport read as a ~36px one-frame warp on long weapons; the cap+gate spread the escape over ~3-12 ticks at <=6px-head per drawn frame — a smooth sweep whose buried depth stays sub-ink (<=2-3px) while it lasts. No pending ledger, no drain: adds happen only on stalled substeps, so nothing feeds a grapple (the whip's failure mode)
     parryPad: 4,           // blade-vs-blade hysteresis margin: parry fires at exact touch (gap <= 0); a sustained press counts once until the blades clear this
-    parryCarryKill: 0.65,  // carry-kill at the clang (owner k-pick 2026-10-27, eyes-first, numbers owed): at the parry tick both bodies' existing velocity is scaled by (1 - this) BEFORE the shove is added, so the clang absorbs most of the flight and the post-clang motion is shove + reversed orbit — the recoil becomes visible on the head's screen path at the clang instead of being masked by body carry (the 99797 axe case: rim-bounce carry outvoted the reversed orbit for ~1s). Magnitude-only, same law every clang, open-space flight untouched (applies only at the parry tick)
+    parryCarryKill: 0.65,  // carry-kill at the clang (owner k-pick 2026-10-27): at the parry tick both bodies' existing velocity is scaled by (1 - this) BEFORE the shove is added, so the clang absorbs most of the flight and the post-clang motion is shove + reversed orbit — the recoil reads on the head's screen path instead of being masked by body carry. Magnitude-only, same law every clang, open-space flight untouched (parry tick only).
     clinchRamp: 48,        // clinch spring (owner pick 1 of the bind-prevention menu, 2026-10-27, eyes-first, numbers owed): ticks for the sustained-clash separation force to ramp zero->full while the blade latch stays shut (blades inside the pad); smoothstep-shaped, so the onset has no jerk
     clinchDecay: 3,        // ramp-ticks shed per tick once the blades clear the pad (48 -> 0 in 16 ticks, ~0.13s): the push fades out smoothly, never switches off
     clinchAcc: 2200,       // px/s^2 peak separation acceleration at full ramp: holding the bind ~0.3s past full ramp adds a parryPush-worth of velocity, spread over time instead of one impulse; the chaos ceiling caps the result like any velocity
-    clinchFloor: 1500,     // bindfix-r35 (owner go 2026-10-31, seed-32542 crossbow×staff bind): the separation acceleration FLOOR while the blade latch is shut. The smoothstep ramp alone starts near zero and only overtakes the press that holds a vertical/rim stack (gravity 1400 plus the resolver/body cycle re-pressing each tick) at clinchT ~31 of 48 — the first ~25 ticks of such a bind read as a dead lock (owner: "looks very ugly and bad, and should not be possible"). With the floor, a bind pushes itself apart from its FIRST tick at >=1500 px/s^2; mature binds (sm -> 1, 2200) are untouched, and the decay after release stays pure ramp so the push still fades smoothly. Chosen by a four-variant sweep (none / floor / floor+torque-latched nudge / floor+spin-aligned nudge) over 12 forced crossbow+staff cells + 20 naturals: the floor ALONE cleared the owner's seed but introduced 247-596 tick open-space cross-tracking monsters; paired with the spin-aligned nudge (see the pin-escape comment in bladeVsBlade) every monster dies and only mild 48-69t residues remain (one of them an axe×flail chain wrap, a different texture, pre-existing)
+    clinchFloor: 1500,     // bindfix-r35 — the separation acceleration FLOOR while the blade latch is shut. The smoothstep ramp alone starts near zero and only overtakes the press holding a vertical/rim stack at clinchT ~31 of 48, so the first ~25 ticks read as a dead lock (owner: "looks very ugly and bad, and should not be possible"). With the floor a bind pushes itself apart from its FIRST tick; mature binds are untouched and the decay after release stays pure ramp. The floor ALONE cleared the owner's seed but bred open-space cross-tracking monsters — it is only safe PAIRED with the spin-aligned nudge (see the pin-escape comment in bladeVsBlade). ref: bindfix-r35
     parryGate: 16,         // law 2's flutter gate (owner option 1, 2026-10-21): after a parry fires, the latch cannot re-arm for this many ticks even if the blades clear parryPad — contacts inside the gate stay fully solid (resolver + approach-velocity kill) but fire no parry, collapsing the 4-clang vibrato bursts into clang-bind-separate; measured re-parry gaps are bimodal (flutter <=16 ticks, legit p10 81), so 16 cuts clean
     reArmPad: 12,          // blade must clear body by this to hit again
-    reArmDeep: 85,         // px of peak clearance that counts as a genuine disengagement — the DEEP-DISENGAGE GATE (law 4's re-arm-side sanctioned extension, owner option 1 2026-10-23 "do 1", from the seed-24267 thrash volley: a javelin left and re-entered the body 3× in 95 ticks — three fresh LEGAL hits whose HP/flash stutter "looks very ugly"). Re-arm now needs clear > reArmPad AND (peak clearance since the latch >= reArmDeep OR >= reArmWait ticks since it). Calibrated 48 at first from the naturals' thrash class (684 consecutive same-attacker blade-hit pairs over 40 naturals: 662 genuine re-hits cleared >=80px, interval median 394 ticks; the 4-pair class sat <=21px at 13–28 ticks) — but the gatecheck reconstruction (substep truth off auditSubs) showed the owner's episode ITSELF rocks the middle band: true peaks 69–79px, every re-arm out the deep branch ~5 ticks after the hit, round 1 byte-identical. The threshold therefore sits ABOVE the middle band: at 85 the episode's first two re-hits fall to the wait branch (hits 95/114 ticks apart — distinct pokes), at proven zero cost — the [80,85) band is empty at both thresholds, middle-band fast pairs (48–80px, interval <90t) went 8 → 0, and every surviving <90t pair clears >=91px (genuine fast exchanges, kept by design; knock already forces 696/701 natural re-hits past 120px). The gate rides the LATCH (bladeStuck) — the knock-only contacts of the projectile-rule era (retired at allcut-r62; every touch cuts now) obeyed identically — and solidity is untouched: the resolver still runs every substep — this gates EVENTS only, exactly like law 2's parryGate. Pinned/hovering fights now poke at the reArmWait cadence instead of buzzing (rework-window material, recorded not judged). Birth records: scratch/thrashdiag.mjs (population) + scratch/gatecheck.mjs (episode reconstruction + threshold proof, numbers in scratch/gatecheck-partB.txt)
+    reArmDeep: 85,         // px of peak clearance that counts as a genuine disengagement — the DEEP-DISENGAGE GATE (law 4's re-arm-side sanctioned extension, owner option 1 2026-10-23). Re-arm needs clear > reArmPad AND (peak clearance since the latch >= reArmDeep OR >= reArmWait ticks since it). The threshold sits ABOVE the middle band on purpose: substep-truth reconstruction showed the owner's own thrash episode rocks 69-79px, so a lower gate would re-admit the stutter it was built to kill, while genuine fast exchanges clear >=91px and are kept. The gate rides the LATCH (bladeStuck) and gates EVENTS only — the resolver still runs every substep and solidity is untouched, exactly like law 2's parryGate. Pinned fights poke at the reArmWait cadence instead of buzzing. ref: allcut-r62
     reArmWait: 90,         // ticks (0.75s at 120Hz) — the time half of the deep-disengage OR: a shallowly hovering blade re-hits at most once per reArmWait, which reads as distinct pokes instead of a buzzsaw
     roundsToWin: 2,        // best of 3
     revealTicks: 285,      // dice-roll reveal length (~2.4s — was 165/~1.4s; owner +1s tune 2026-10-19: the extra second splits between a slower roll cadence and a longer end hold, see the VS dials)
@@ -127,7 +127,7 @@ body {
     hitSlowMs: 150,        // slowmo-r63: the non-kill hit beat — a brief SLOW-MOTION window, ~150ms wall at 1× playback. Wall-clock-anchored like the freeze was: 4× fast-forward shortens it, the ¼× 's' mode stretches it. Windows MAX-merge, never stack (the freeze's own merge semantics): a hit inside slow REFRESHES the window, so a dense exchange reads as one sustained intensity slow instead of N stutters. Dial PROVISIONAL — the owner's eye judges.
     hitSlowRate: 0.25,     // slowmo-r63: the sim rate inside the window — ¼×, deliberately the proven 's'-mode number: v0.8.2's render interpolation was built to make exactly this rate buttery ("make the slow mo nice and smooth" — owner). The kill beat keeps its HARD FREEZE (koStopMs) by the same ruling ("keep ko hard freeze").
     koStopMs: 400,         // the killing blow's dramatic beat (~48 ticks) — freezes on the impact pose, THEN the K.O. card runs its koTicks
-    flipMs: 180,           // edge-leading flip TRANSITION duration in wall ms (owner decision 2026-10-22, replacing the glint: "i thought something else, like a fast transition not an instant snap"; raised 90 → 180 same day at owner playtest: "its still too snappy"). Renderer-only: the art's lateral coordinate animates old→edge-on→mirrored as from·cos(π·p), reading as the blade spinning about its own spine, while the sim's hitbox is already at its new (true) pose — the disclosed owner-accepted trade (record in GAMES.md): for ~flipMs per flagged parry the DRAWN art is between two legal poses; the window moves with this dial. Contained: damage events freeze into their full true contact pose (the stills latch the real ±1), the hitbox debug overlay always draws sim truth, the sim/laws/audits never see it (fingerprints byte-identical). Past the 133ms flutter gate a mid-sweep re-parry lands the first flip and starts a second continuous one (two clangs = two flips, never a mid-air jump — the sweep's `from` side is stored, not read live). Fires for ANY `lead` weapon.
+    flipMs: 180,           // edge-leading flip TRANSITION duration in wall ms (owner decision 2026-10-22, replacing the glint; raised 90 -> 180 at owner playtest). Renderer-only: the art's lateral coordinate animates old->edge-on->mirrored as from*cos(pi*p), reading as the blade spinning about its own spine, while the sim's hitbox is already at its new (true) pose. THE DISCLOSED OWNER-ACCEPTED TRADE: for ~flipMs per flagged parry the DRAWN art is between two legal poses. Contained — damage events freeze into their full true contact pose, the hitbox overlay always draws sim truth, and the sim/laws/audits never see it. Past the flutter gate a mid-sweep re-parry lands the first flip and starts a second continuous one (two clangs = two flips, never a mid-air jump). Fires for ANY `lead` weapon.
     maxSub: 512,           // emergency brake — the sizing rule below should never hit it; the perception audit flags any tick where it engages
     subMargin: 1200,       // px/s of slack for in-tick impulses (knock, push, bounces, spin gains) when sizing substeps
     omegaCap: 140,         // sim-stability ceiling only — NOT a gameplay cap
@@ -145,19 +145,15 @@ body {
    * skill numbers; grow() is the sim truth it states (skill grows on every
    * damaging hit). */
   const FIGHTERS = [
-    /* skill = the fighter's SKILL (platform term; a weapon's is its TRAIT — owner ruling M2, two
-     * languages). spin/dmg are additive numbers applied on every damaging hit; they STACK with the
-     * held weapon's trait on the same axis (Speedy + staff = +1.00 spin/hit). `short` is the
-     * AUTHORED legend label (owner ruling: authored, never derived).
-     * NO COMBOS (owner ruling 2026-10-31, retiring `skill.lenSteps` at nocombo-r34): a skill and a
-     * trait may meet ONLY by adding on a shared axis — neither reaches into the other's mechanic.
-     * lenSteps (a fighter adding ladder steps to the spear's cap) was the one violation: it made
-     * one bot's spear different from everyone's, and the owner ruled it a mistake ("if i ever did
-     * that, its a mistake on my side"). Every cap is therefore uniform (LEN_STEPS), every skill
-     * must be universal (live on all 22 weapons) or contextual (class-independent), and a bot's
-     * identity survives the dice roll by construction. The carrier measurement that picked Speedy
-     * for lenSteps survives in GAMES.md as history, and one lesson from it stays live: any
-     * damage-coupled growth is self-limiting, because the holder's own damage sets the hit budget. */
+    /* skill = the fighter's SKILL (a weapon's is its TRAIT — owner ruling M2, two languages).
+   * spin/dmg are additive numbers applied on every damaging hit; they STACK with the held
+   * weapon's trait on the same axis. `short` is the AUTHORED legend label, never derived.
+   * NO COMBOS (nocombo-r34): a skill and a trait may meet ONLY by adding on a shared axis —
+   * neither reaches into the other's mechanic. Every cap is therefore uniform (LEN_STEPS),
+   * every skill must be universal (live on all 22 weapons) or contextual (class-independent),
+   * and a bot's identity survives the dice roll by construction. One lesson stays live: any
+   * damage-coupled growth is self-limiting, because the holder's own damage sets the hit
+   * budget. ref: nocombo-r34 */
     { id: 'speedy', name: 'Speedy', skill: { spin: 0.30, dmg: 0.0 }, short: '+SPD / Hit', line: 'Spins faster each hit' },
     { id: 'heavy',  name: 'Heavy',  skill: { spin: 0.00, dmg: 0.9 }, short: '+DMG / Hit', line: 'Stronger each hit' },
   ];
@@ -205,16 +201,12 @@ body {
 
   // @@core/poly-builder
   /* ---- v1.0 poly builder: shapes -> drawn polys + covering circles ----
-   * Weapons below are authored as plain polygons in spine-local (d, l)
-   * units, pre-weaponScale. The covering circles (the hitbox) are the baked
-   * CIRCLES_V2 under the weaponScale loop — union-inscribed in THESE polys'
-   * drawn ink by .qa/inscribe.mjs --regen and permanently gated by the same
-   * script (owner directive 2026-10-19: events only on visible contact). The
-   * old runtime cover() packer is gone: its 1.2u margin did not survive the
-   * x1.3 weaponScale (+0.1..0.26px poke) and its min-r-4 floor left whole
-   * strips and tips uncovered (misses to 13.1px). Shapes flagged vis are
-   * paint only (the flag was unreachable until 2026-10-28 — build() now
-   * passes it through; see build() and the sigil-legibility block). */
+   * Weapons below are authored as plain polygons in spine-local (d, l) units, pre-weaponScale.
+   * The covering circles (the hitbox) are the baked CIRCLES_V2 under the weaponScale loop —
+   * union-inscribed in THESE polys' drawn ink by .qa/inscribe.mjs --regen and permanently
+   * gated by the same script (owner directive: events only on visible contact). The old
+   * runtime cover() packer is gone: its margin did not survive the x1.3 weaponScale and its
+   * min-r floor left strips and tips uncovered. Shapes flagged vis are paint only. */
   const KW = '#7a4a2a', KS = '#8fa3b5', KP = '#eaf6ff', KD = '#4f3220', KG = '#d4a73a', KB = '#9fe0ff';
   const KC = '@carrier';   // SIGIL slot (owner decision 2026-10-23 — the carrier-mark doctrine: exactly ONE diegetic element per weapon wears the wielding fighter's cast color; recolor-first, never on KP, interior-ink preferred). NOT a real paint: a KC-tagged shape renders in COLS[carrier] through drawWeapon's swap (falling back to KG for callers with no carrier, like the contact-sheet tool) — and as an invalid CSS color it fails visibly if ever drawn unswapped.
   function build(shapes) {
@@ -304,14 +296,13 @@ body {
     [KP, [[31.78,-31.17],[41.38,-26.28],[33.89,-28.54],[31.4,-30.42]]],
     [KP, [[59.97,-29.42],[55.08,-19.82],[57.34,-27.31],[59.22,-29.8]]],
   ]);
-  /* FLAIL (2026-10-22) — spine-local, pre-weaponScale, radial hold, grip d 0 under the disc, tip d 110.4 = len.
-   * Segments in the order they are listed (shape index -> FLAIL_CH.segs):
-   *   S0 haft   shapes 0-2  wood haft d0-26 (plain) · gold guard collar d19-28.6 · steel eye boss d28-36.5   (rigid with the spine)
-   *   S1 link   shape  3    open ring d28.5-51.5, hole d32.7-47.3                                            (hinged at J0)
-   *   S2 link   shape  4    edge-on bar d45.5-70.5, passes through ring and ball eye                         (hinged at J1)
-   *   S3 head   shapes 5-6  spiked ball centre d84, spikes to d110.4 / l±24 · gold rivet (paint only)        (hinged at J2)
-   * Joints (spine-local d): J0 32 (haft eye) · J1 46 · J2 60 · ball centre 84. Link pitch 14 / 14 / 24.
-   * (Comment reconciled to the shipped numbers 2026-10-22 — it had drifted, describing a pre-final proportion pass.) */
+  /* FLAIL — spine-local, pre-weaponScale, radial hold, grip d 0 under the disc, tip d 110.4 = len.
+   * Segments in listed order (shape index -> FLAIL_CH.segs):
+   *   S0 haft  shapes 0-2  wood haft d0-26 · gold guard collar d19-28.6 · steel eye boss d28-36.5  (rigid)
+   *   S1 link  shape  3    open ring d28.5-51.5, hole d32.7-47.3                                 (hinged J0)
+   *   S2 link  shape  4    edge-on bar d45.5-70.5, through ring and ball eye                     (hinged J1)
+   *   S3 head  shapes 5-6  spiked ball centre d84, spikes to d110.4 / l±24 · gold rivet (paint)  (hinged J2)
+   * Joints (spine-local d): J0 32 (haft eye) · J1 46 · J2 60 · ball centre 84. Link pitch 14 / 14 / 24. */
   const INGR_FLAIL = build([
     [KW, [[0,-5.08],[6.15,-5.38],[12.31,-5.69],[18.46,-5.85],[26,-5.69],[26,5.69],[18.46,5.92],[12.31,5.69],[6.15,5.38],[0,5.15]]],
     [KD, [[16.15,-7],[17.23,-8],[23.08,-7.85],[24.23,-6.85],[24.23,7.08],[23.08,8.08],[17.23,8.08],[16.15,7.15]]],
@@ -325,20 +316,17 @@ body {
     [KC, [[91.98,0],[91.35,3.11],[89.34,5.49],[86.72,6.93],[83.85,7.66],[80.77,7.43],[78.06,5.78],[76.54,3.02],[76.29,0],[76.86,-2.89],[78.25,-5.6],[80.72,-7.56],[83.85,-8.03],[86.78,-7.07],[89.15,-5.31],[91.04,-2.98]]],
   ]);
   const FLAIL_CH = { segs: [[0,2],[3,3],[4,4],[5,9]], j: [32, 46, 60, 84], ext: { pitch: 1, unit: 28, every: 4, max: 3, ring: 3, bar: 4 } };   // shape-index range per segment · joint d J0, J1, J2, ball centre (px after the boot block below)
-  /* ext (links-r87, replaces the pitch stretch + growMax): the chain grows by ADDING LINKS, never by stretching art.
-   * One growth unit = a ring + bar pair (shapes `ring` 3 and `bar` 4, copied `unit` = 28u further out in S2's frame — the
-   * same ring/bar thread overlap as the base links), so S2 (J1..J2) lengthens by 28u per unit and every later joint rides
-   * outward with it. The head segment S3 is untouched (pitch 24u, art unscaled — nothing stretches). One unit per `every`
-   * hits (lenStep), at most `max` units (LEN_STEPS 12 / 4 = 3). Hitbox: the S1+S2 baked circles are cloned per unit.
-   * --- historical note, superseded: growMax (longchain-r86): the art-connectivity ceiling for pitch growth. S1's open ring
-   * ends at e = 51.5 − 32 = 19.5 (unscaled) while J1 rides at 14·mul — the ring carries the
-   * joint only up to mul ≤ 19.5/14 = 1.3929 (the bar→ball-eye thread tolerates more; the ring
-   * is the binding link). trait.len 0.025 tops at 1 + 0.025×LEN_STEPS = 1.30 — inside, with
-   * the boot gate below making any future bump past the ceiling a loud failure. */
-  /* NUNCHAKU (2026-10-22) — spine-local, pre-weaponScale, radial hold, grip d 0 under the disc, tip d 112 = len.
-   *   S0 grip   shapes 0-1  plain wood grip stick d0-34 · steel eye boss d30-39                          (rigid with the spine)
-   *   S1 free   shapes 2-6  open ring link d36-51 (hole d40-47) · edge-on bar d47-61 · wood stick d58-112 · gold band d58-64 · steel cap d102-112  (hinged at J0)
-   * Joints (spine-local d): J0 40 (hinge, under the eye boss / ring hole) · tip 112. Chain run d36-61; free part (J0..tip) 72 of 112 (64%). */
+  /* ext (links-r87) — the chain grows by ADDING LINKS, never by stretching art. One growth unit =
+   * a ring + bar pair (shapes `ring` 3 and `bar` 4, copied `unit` = 28u further out in S2's frame,
+   * the same ring/bar thread overlap as the base links), so S2 (J1..J2) lengthens by 28u per unit
+   * and every later joint rides outward with it. The head segment S3 is untouched (pitch 24u, art
+   * unscaled — nothing stretches). One unit per `every` hits (lenStep), at most `max` units
+   * (LEN_STEPS 12 / 4 = 3). Hitbox: the S1+S2 baked circles are cloned per unit. ref: links-r87 */
+  /* NUNCHAKU — spine-local, pre-weaponScale, radial hold, grip d 0 under the disc, tip d 112 = len.
+   *   S0 grip  shapes 0-1  wood grip stick d0-34 · steel eye boss d30-39                           (rigid)
+   *   S1 free  shapes 2-6  open ring d36-51 (hole d40-47) · edge-on bar d47-61 · wood stick d58-112
+   *                        · gold band d58-64 · steel cap d102-112                              (hinged J0)
+   * Joints: J0 40 (under the eye boss / ring hole) · tip 112. Free part (J0..tip) 72 of 112 (64%). */
   const INGR_NUNCHAKU = build([
     [KW, [[0,-6.31],[7.69,-6.54],[16.92,-6.85],[26.15,-7.15],[33.85,-7.38],[33.85,7.38],[26.15,7.23],[16.92,6.92],[7.69,6.62],[0,6.38]]],
     [KS, [[30.77,-8],[35.38,-8],[38.85,-5.85],[40.77,-3.08],[40.77,3.08],[38.85,5.85],[35.38,8],[30.77,8]]],
@@ -406,8 +394,12 @@ body {
     [KP, [[43.95,-29.65],[43.65,-32.62],[43.1,-36.34],[42.45,-40.05],[41.7,-43.77],[40.95,-47.48],[40.23,-46.92],[40.62,-43.77],[41.31,-40.05],[42,-36.34],[42.58,-32.62],[42.85,-29.65]]],
     [KC, [[[44.98,-7.85],[51.25,-5.32],[53.55,-11.02],[47.28,-13.56]],[[33.02,-7.85],[26.75,-5.32],[24.45,-11.02],[30.72,-13.56]],[[35.62,-6.92],[35.62,-13.38],[42.38,-13.38],[42.38,-6.92]]]],
   ]);
-  /* JAVELIN (2026-10-22, redesign: longer head) — spine-local, pre-weaponScale, tangential hold, grip d LT/2 on the rim, head at d LT. Thrown spear, bilaterally symmetric about l = 0 (no lead): gold tail ferrule d0-6 (flat cut) · plain wood shaft d6-67 (11.5u) · dark-wood grip binding d51-62.4 (marks the rim grip, d LT/2 = 56.7) · gold socket collar d64-68 · long slim steel leaf head d68-113.44 (~40% of len, half-spread 8.5u — length, not width) with a near-white bevel sliver d72-110 (paint only).
-   * observed: base current (CFG.flipMs present, WEAPON_IDS ended 'knives'); INGR_JAVELIN is built before `LT` is declared, so the tip is the literal 113.44 (LT = 113.4419, tip never exceeds it); no CIRCLES_V2 row on purpose — ghost until baked [AMENDED 2026-10-28, pre-skills truth-up: BAKED since — CIRCLES_V2 now carries all 22 WEAPON_IDS (verified by count: 22 rows, UNBAKED empty, no ART PREVIEW watermark draws). The sentence it amends records the delivery moment, not the shipped file.]; owner-requested javelin flight art (drawJavelin, replacing the pre-wired drawArrow call) is the one sanctioned renderer edit outside the original brief. */
+  /* JAVELIN — spine-local, pre-weaponScale, tangential hold, grip d LT/2 on the rim, head at d LT.
+   * Thrown spear, bilaterally symmetric about l = 0 (no lead): gold tail ferrule d0-6 · wood shaft
+   * d6-67 · dark-wood grip binding d51-62.4 (marks the rim grip) · gold socket collar d64-68 ·
+   * long slim steel leaf head d68-113.44 (~40% of len, half-spread 8.5u — length, not width) with
+   * a near-white bevel sliver d72-110 (paint only). INGR_JAVELIN is built before `LT` is declared,
+   * so the tip is the literal 113.44 (LT = 113.4419; the tip never exceeds it). */
   const INGR_JAVELIN = build([
     [KS, [[0,-3.23],[1.08,-4.15],[6.92,-4.54],[9.23,-4.31],[9.23,4.38],[6.92,4.62],[1.08,4.23],[0,3.31]]],
     [KW, [[8.46,-3.85],[20,-4.15],[30.77,-4.46],[43.08,-4.69],[56.92,-4.92],[67.69,-4.62],[73.85,-4.15],[76.15,-3.85],[76.15,3.92],[73.85,4.23],[67.69,4.69],[56.92,5],[43.08,4.77],[30.77,4.54],[20,4.23],[8.46,3.92]]],
@@ -418,8 +410,16 @@ body {
     [KC, [[45.38,-5],[46.31,-5.62],[67.08,-5.62],[68,-5],[68,5.08],[67.08,5.69],[46.31,5.69],[45.38,5.08]]],
     [KD, [[[48.46,-5.62],[49.85,-5.62],[51.08,5.69],[49.69,5.69]],[[54.62,-5.62],[56,-5.62],[57.23,5.69],[55.85,5.69]],[[60.77,-5.62],[62.15,-5.62],[63.38,5.69],[62,5.69]]]],
   ]);
-  /* TOME (2026-10-22, redesign 9 — grimoire, more book) — spine-local, pre-weaponScale, tangential hold, binding/grip d len/2 = 39 on the rim, mouth toward −l. Shallow open book, bilateral about d 39: dark-wood cover band (9.5u, centreline slope 0.10, ends d 4/74) framing the +l side and ends · eight near-white PAGE leaves (left + right per layer, gutter gap, four nested layers with half-spans 32/29/26/23 and fore-edges protruding 2.5/1.7/0.9/0.1 past the cover, swept in a quarter-sine droop toward the chord ends) · four dark-wood printed text lines on the front leaves (paint only, flagged vis) · wood spine block d 33-45 at the gutter (the grip, +l-most at l +6) bound by a gold strap d 31.5-46.5 with a light-blue gem (paint only) · gold end bands d 3-8 / 70-75 on the cover. |l| extent ≈ +6…-14.3.
-   * observed: base current (CFG.flipMs present, WEAPON_IDS ended 'javelin', drawShot has k === 'page'); INGR_TOME is built before `LT` is declared and needs no reference to it (len 78 ≪ LT); KP reads as PAPER here (owner's named palette extension); the text lines are KD paint flagged vis (not body) — they read as printed lines under the renderer's 3px ink; total |l| extent ≈ 20 sits slightly over the ~18 guide because the spine block bulges to +6 — kept so the grip reads as a binding; `off` tuned 14 → 10 (the fore-edge reaches l ≈ -14.3 at the chord ends but only ≈ −9 beside the gutter where the page leaves); `len: 78` kept; no CIRCLES_V2 row on purpose — ghost until baked (watermark ART PREVIEW — HITBOXES UNBAKED: tome, gate n=0 MISS-FAIL expected) [AMENDED 2026-10-28, pre-skills truth-up: BAKED since — CIRCLES_V2 now carries all 22 WEAPON_IDS (verified by count: 22 rows, UNBAKED empty, no ART PREVIEW watermark draws). The sentence it amends records the delivery moment, not the shipped file.]; page leaf tips taper below 4u — expected disclosed miss band; no `lead` field (pages-outward is radial). */
+  /* TOME — spine-local, pre-weaponScale, tangential hold, binding/grip d len/2 = 39 on the rim,
+   * mouth toward -l. Shallow open book, bilateral about d 39: dark-wood cover band framing the +l
+   * side and ends · eight near-white PAGE leaves (four nested layers, half-spans 32/29/26/23,
+   * fore-edges protruding past the cover, quarter-sine droop toward the chord ends) · four
+   * dark-wood printed text lines (KD paint flagged vis, not body) · wood spine block d33-45 at
+   * the gutter (the grip) bound by a gold strap with a light-blue gem (paint) · gold end bands.
+   * KP reads as PAPER here (owner's named palette extension). Total |l extent ~20 sits slightly
+   * over the ~18 guide because the spine block bulges to +6 — kept so the grip reads as a binding.
+   * Page leaf tips taper below 4u: an expected, disclosed miss band. No `lead` (pages-outward is
+   * radial). */
   const INGR_TOME = build([
     [KD, [[4,0],[21.5,1.75],[39,3.5],[56.5,1.75],[74,0],[74,-9.5],[56.5,-7.75],[39,-6],[21.5,-7.75],[4,-9.5]]],
     [KP, [[35,-0.4],[31.5,-0.75],[28,-1.1],[24.5,-1.45],[21,-1.8],[17.5,-2.15],[14,-2.5],[10.5,-2.85],[7,-3.2],[7,-14.3],[10.5,-13.9],[14,-13.4],[17.5,-12.81],[21,-12.14],[24.5,-11.39],[28,-10.59],[31.5,-9.76],[35,-8.9]]],
@@ -440,7 +440,20 @@ body {
     [KD, [[3,1],[8,1.4],[8,-10.1],[3,-10.5]]],
     [KD, [[75,-10.5],[70,-10.1],[70,1.4],[75,1]]],
   ]);
-  /* SCROLL (2026-10-23, redesign 9 — handles, red ribbon, torn aged edges and open seam) — spine-local, pre-weaponScale, tangential hold, ribbon grip d len/2 = 38 on the rim. One closed rolled scroll with spindle, bilateral about d 38 (ribbon slant aside): a KT cream-tan barrel d 12–64 with straight even sides (|l| 6, small corner chamfers — no strips, no curves along the edges); a KG disc cap at each roll end (d 9–12 / 64–67, |l| 7.5); a KW spindle (d 1–75, |l| 2.2) showing as a short handle past each cap, tipped with a round KG knob (octagon r 4, centres d 4 / 72); torn, ragged long edges — small irregular notches (≤ 1.3u deep, d 17–60, none under the ribbon) so the roll reads aged and a little open; a thin KD seam line on each half with a short crease dash (vis paint, the lifted sheet edge); a thin KTS paper-layer band near each cap (vis paint, inside the barrel); the slanted KR ribbon band at mid-d kept from the earlier design (authored d 32.5–43.5, |l| 7.2, centroid d 38 — the grip) with a KRD shade stripe (vis). observed: base current (CFG.flipMs present, WEAPON_IDS ended 'tome' before the scroll, drawShot has k === 'scroll'); owner in-session word (final): "a bit bigger" — all coordinates in this block are AUTHORED at len 76 and uniformly scaled ×88/76 right after build (so every d, |l| and u figure in this header is pre-scale-up; real values ×1.158): `len` 76 → 88 (ABOVE the brief's 55–78 band by the owner's word, still ≪ LT ≈ 113.4), `off` 10 → 11 (cap/ribbon surface |l| 7.5 × 1.158 ≈ 8.7 + 2.3); the implementer re-derives the launch-doctrine check on this len/off; owner word before that: make it appear a bit open with small tears like an ancient scroll — the tears are body-outline notches, the opening is the seam/crease paint; earlier: the edges/sides looked bad (the cinched curve and the side strips) — dropped, handles return, ribbon kept; scroll-local off-palette fills KT #ecd5a3, KTS #c9a35a, KR #b8352c, KRD #8f2a24 declared in this zone (owner's reference colours), the six palette consts untouched; the flight shot stays the pre-wired KP roll (renderer out of scope) — implementer may retint it; `len` 76 kept; `off` 11 → 10 (cap/ribbon surface |l| 7.5 + 2.5); non-vis spindle 4.4u wide, barrel 12u, ribbon ≥ 7u, caps 3u × 15u (3u discs ride the ink edge — accepted gold finish); no `lead`/`headLead` (the ribbon slant is paint-level, no head); INGR_SCROLL is built before `LT` is declared (len 76 ≪ LT); no CIRCLES_V2 row on purpose — ghost until baked (watermark ART PREVIEW — HITBOXES UNBAKED: scroll, gate n=0 MISS-FAIL expected) [AMENDED 2026-10-28, pre-skills truth-up: BAKED since — CIRCLES_V2 now carries all 22 WEAPON_IDS (verified by count: 22 rows, UNBAKED empty, no ART PREVIEW watermark draws). The sentence it amends records the delivery moment, not the shipped file.]. */
+  /* SCROLL — spine-local, pre-weaponScale, tangential hold, ribbon grip d len/2 = 38 on the rim.
+   * One closed rolled scroll with spindle, bilateral about d 38 (ribbon slant aside): KT cream-tan
+   * barrel d12-64 with straight even sides (|l| 6, small corner chamfers — no strips, no curves
+   * along the edges) · KG disc cap at each roll end (d9-12 / 64-67, |l| 7.5) · KW spindle d1-75
+   * (|l| 2.2) showing as a short handle past each cap, tipped with a round KG knob · torn ragged
+   * long edges (notches <=1.3u deep, d17-60, none under the ribbon) so the roll reads aged and a
+   * little open · KD seam line + crease dash and KTS paper-layer bands (vis paint) · the slanted
+   * KR ribbon band at mid-d (authored d32.5-43.5, |l| 7.2, centroid d38 — the grip) with a KRD
+   * shade stripe (vis). THE SCALE LAW: every coordinate in this header is AUTHORED at len 76 and
+   * uniformly scaled x88/76 right after build (owner: "a bit bigger"), so real values are x1.158;
+   * `len` 88 sits above the brief's 55-78 band by the owner's word, still well under LT. The tears
+   * are body-outline notches; the opening is the seam/crease paint. Scroll-local off-palette fills
+   * KT/KTS/KR/KRD are declared in this zone (owner's reference colours); the six palette consts
+   * are untouched. No `lead`/`headLead` (the ribbon slant is paint-level, no head). */
   const KT = '#ecd5a3', KTS = '#c9a35a', KR = '#b8352c', KRD = '#8f2a24';   // scroll-local off-palette fills (owner 2026-10-23: ancient-scroll colours + red ribbon from his reference) — declared inside the INGR_SCROLL zone
   const INGR_SCROLL = build([
     [KT, [[20.77,-8.12],[23.35,-6.97],[25.93,-6.7],[28.52,-6.89],[31.09,-6.52],[33.68,-6.29],[36.25,-6.53],[38.84,-6.11],[41.42,-4.98],[44,-4.94],[46.58,-4.93],[49.16,-4.02],[51.75,-4],[54.32,-4.75],[56.91,-5.16],[59.48,-5.62],[62.07,-6.79],[64.65,-7.6],[67.23,-7.71],[67.23,8.12],[64.65,7.12],[62.07,6.56],[59.48,6.65],[56.91,6.81],[54.32,6.56],[51.75,6.12],[49.16,5.88],[46.58,5.45],[44,5.06],[41.42,4.51],[38.84,3.98],[36.25,4.29],[33.68,4.72],[31.09,5.05],[28.52,5.66],[25.93,6.69],[23.35,7.62],[20.77,7.98]]],
@@ -458,7 +471,23 @@ body {
     [KD, [[[3.08,-8.77],[1.85,-8.15],[0.92,-5.38],[0.35,-2.69],[0.35,2.69],[0.92,5.38],[1.85,8.15],[3.08,8.77],[3.85,8.08],[3.85,-8.08]],[[84.15,-8.08],[84.15,8.08],[84.92,8.77],[86.15,8.15],[87.08,5.38],[87.65,2.69],[87.65,-2.69],[87.08,-5.38],[86.15,-8.15],[84.92,-8.77]]]],
   ]);
   for (const pl of INGR_SCROLL.polys) for (const pts of pl.subs) for (const q of pts) { q[0] = 44 + (q[0] - 44) * (88 / 76); q[1] *= 88 / 76; }   // scaled about the grip centre d 44 (was about the origin, which pushed the art centre to d ~51 and left the scroll off-centre on its rim grip — owner 2026-11-09)   // owner 2026-10-23 "a bit bigger": the whole held art scaled ×88/76 about the spine origin (authored coords above stay at 76 — the grip centre lands on d 44 = len/2)
-  /* MAGIC ORB (2026-10-23) — spine-local, pre-weaponScale, radial hold, NO SHAFT: the orb alone at (len, 0), the true-sentinel design (owner 2026-10-22). Three shapes, nothing else: a KB sphere (14-vertex polygon circle, r 16, centre exactly (54, 0)); one flat KG rune band across the equator (d 38.6–69.4, |l| 2.6 = 5.2u wide so it bakes, corners inside the sphere); a small KP specular dot (vis paint, upper-left of the sphere, clear of the band). No shaft, cord, chain, glow, trail or motes — the empty space between body disc and orb IS the design. observed: base current (CFG.flipMs present, WEAPON_IDS ended 'scroll', KT '#ecd5a3' present); owner playtest words 2026-10-23: "too far out, make it closer to the body and just a bit larger", then again "make it closer to the body and increase the size of the orb", then "make it closer to the body" twice more ("a bit more closer", "bit closer", "make it closer") — row `len` 100 → 80 → 72 → 68 → 64 → 60 → 54 (BELOW the brief's 90–110 band by the owner's word; orbit radius, not art length; ≤ LT ≈ 113.4, far edge d 70 also ≤ LT; at weaponScale 1.3 the orb centre orbits ≈ 70px out, its inner edge ≈ 49px vs bodyR 64, so the orb now overlaps the disc by ≈ 15px and draws over it — the owner's call, raise `len` to ≈ 65 for a just-touching look  [AMENDED 2026-10-28, authoring-scale pass — that arithmetic omitted the radial MOUNT OFFSET CFG.bodyR * SPINE_R0 = 61.44px that every radial weapon's art is drawn from (the grip tucks 2.56px under the rim; same constant for all 13 radial weapons, so overlap is not per-weapon data). Measured: the orb centre orbits 61.44 + 70.2 = 131.6px from the body centre, inner edge 110.8 vs rim 64 → 46.8px CLEAR — no overlap, nothing draws over the disc, and `tuck: false` is a no-op for it today. "raise `len` to ≈ 65" was therefore the wrong lever pointing the wrong way: +1 len = +1.3px of orbit, so 65 widens the gap to ≈ 61px. `len` is also floored now (LEN_MIN 54, boot-gated 2026-10-28) and 54 IS the orb's value, so the orb cannot come closer via len at all. Bringing it in needs a MOUNT rule for handle-less art (a per-weapon mount radius, or mounting detached art from the rim instead of from the grip) — owner decision, not a len tweak.]) and sphere r 12 → 13 → 16 (ABOVE the brief's 11–13 band by the owner's word; the shape count is unchanged); INGR_ORB is built before `LT` is declared (centre 54 + r 16 = 70 < 113.44); no `lead`/`headLead` — a sphere has no facing (taxonomy's third case, like the tome's symmetry note); the shaft doctrine, butt rule and grip-binding language do not apply (named exception); no CIRCLES_V2 row on purpose — ghost until baked (watermark ART PREVIEW — HITBOXES UNBAKED: orb, gate n=0 MISS-FAIL expected) [AMENDED 2026-10-28, pre-skills truth-up: BAKED since — CIRCLES_V2 now carries all 22 WEAPON_IDS (verified by count: 22 rows, UNBAKED empty, no ART PREVIEW watermark draws). The sentence it amends records the delivery moment, not the shipped file.]. */
+  /* MAGIC ORB — spine-local, pre-weaponScale, radial hold, NO SHAFT: the orb alone at (len, 0),
+   * the true-sentinel design. Three shapes, nothing else: a KB sphere (14-vertex polygon circle,
+   * r 16, centre exactly (54, 0)) · one flat KG rune band across the equator (d38.6-69.4, |l| 2.6
+   * = 5.2u wide so it bakes, corners inside the sphere) · a small KP specular dot (vis paint).
+   * No shaft, cord, chain, glow, trail or motes — the empty space between body disc and orb IS
+   * the design; the shaft doctrine, butt rule and grip-binding language do not apply (named
+   * exception). No `lead`/`headLead`: a sphere has no facing.
+   * THE MOUNT LAW (corrects an earlier reading in this same header): every radial weapon's art
+   * is drawn from the mount offset CFG.bodyR * SPINE_R0 = 61.44px, not from the body centre. So
+   * the orb centre orbits 61.44 + 70.2 = 131.6px out, inner edge 110.8 vs rim 64 — 46.8px CLEAR.
+   * It does NOT overlap the disc and `tuck: false` is a no-op for it today. "raise len to ~65"
+   * was the wrong lever pointing the wrong way (+1 len = +1.3px of orbit, widening the gap), and
+   * `len` is floored at LEN_MIN 54 — which IS the orb's value, so it cannot come closer via len
+   * at all. Bringing it in needs a MOUNT rule for handle-less art (a per-weapon mount radius, or
+   * mounting detached art from the rim instead of the grip) — an owner decision, not a len tweak.
+   * Owner playtest words that set the number: "too far out, make it closer to the body and just
+   * a bit larger", then "a bit more closer" — len walked 100 -> 54, sphere r 12 -> 16. */
   const INGR_ORB = build([
     [KB, [[70,0],[69.7,3.12],[68.78,6.12],[67.31,8.89],[65.32,11.32],[62.89,13.31],[60.12,14.78],[57.12,15.7],[54,16],[50.88,15.7],[47.88,14.78],[45.11,13.31],[42.68,11.32],[40.69,8.89],[39.22,6.12],[38.3,3.12],[38,0],[38.3,-3.12],[39.22,-6.12],[40.69,-8.89],[42.68,-11.32],[45.11,-13.31],[47.88,-14.78],[50.88,-15.7],[54,-16],[57.12,-15.7],[60.12,-14.78],[62.89,-13.31],[65.32,-11.32],[67.31,-8.89],[68.78,-6.12],[69.7,-3.12]]],
     [KC, [[38.25,-2.6],[69.75,-2.6],[70,0],[69.75,2.6],[38.25,2.6],[38,0]]],
@@ -472,50 +501,37 @@ body {
     const k = LT / maxD(P);
     for (const pl of P.polys) for (const pts of pl.subs) for (const q of pts) { q[0] *= k; q[1] *= k; }
   }
-  /* Length ceiling (owner 2026-10-21, generic-handheld grammar: "a max length
-   * of weapons, where a weapon can not be longer than this, per default ...
-   * about the lenght of spear,axe hammer ... it looks good for the eye"): no
-   * spine is longer than LT, the shared heavy-four length. The crossbow was
-   * the one weapon past it (len 116) — "fix the crossbow": uniformly
-   * downscaled to LT here (proportions and grip centring untouched); its
-   * baked CIRCLES_V2 covering takes the same factor at boot below (a uniform
-   * scale of an inscribed covering stays inscribed — the gate proves it).
-   * Skills that grow length later are a mechanics topic, not this rule.
-   * AMENDED 2026-10-28 (balance pass item 2, owner: "length stays the same,
-   * capped at spears length"): the ceiling is NAMED FOR THE SPEAR — the heavy
-   * four are equalized to one shared number, so the spear sits exactly at it
-   * and nothing exceeds it. LT's numeric source stays the mace's tip (113.44,
-   * within 0.06 units of the spear's authored 113.38) because lengths were
-   * ruled unchanged. A FLOOR joined it the same day (the orb's 54, shortest
-   * shipped weapon) and both ends are now a boot GATE, not a convention — see
-   * LEN_MIN and the length-band guard in the weaponScale loop below. */
+  /* Length ceiling (owner 2026-10-21, generic-handheld grammar: "a max length of weapons, where
+   * a weapon can not be longer than this, per default ... about the lenght of spear,axe hammer
+   * ... it looks good for the eye"): no spine is longer than LT, the shared heavy-four length.
+   * The crossbow was the one weapon past it (len 116) — "fix the crossbow": uniformly downscaled
+   * to LT here (proportions and grip centring untouched); its baked CIRCLES_V2 covering takes
+   * the same factor at boot below, because a uniform scale of an inscribed covering stays
+   * inscribed. AMENDED 2026-10-28: the ceiling is NAMED FOR THE SPEAR — the heavy four are
+   * equalized to one shared number, so the spear sits exactly at it and nothing exceeds it.
+   * LT's numeric source stays the mace's tip (113.44, within 0.06u of the spear's authored
+   * 113.38) because lengths were ruled unchanged. A FLOOR joined it the same day (the orb's 54)
+   * and both ends are a boot GATE, not a convention — see LEN_MIN and the length-band guard in
+   * the weaponScale loop below. */
   const KX = LT / 116;
-  /* WEAPON DEFAULTS (owner 2026-10-28, authoring-scale pass item 2: "my goal is to make it
-   * easier to scale as at one point we are introducing new weapon and if all have similar
-   * dimenasion/starting points its a lot easier to design"). omega and dmg were written out
-   * identically on all 22 rows — 44 literals of pure copy-paste that a new weapon's author had
-   * to remember to reproduce, and getting one wrong silently moves balance (a forgotten field
-   * reads undefined -> NaN spin; a stale 5 resurrects the pre-2026-10-28 damage build). They
-   * are POLICY constants, not per-weapon design: uniform spin rate and uniform base damage are
-   * owner rulings (2026-10-28: base dmg 1 against hp 100, "just a test ... we can always change
-   * it"). Spread first, so a weapon that ever needs a different rate overrides in place:
+  /* WEAPON DEFAULTS (owner 2026-10-28, authoring-scale pass): omega and dmg are POLICY
+   * constants, not per-weapon design — uniform spin rate and uniform base damage are owner
+   * rulings. They were once written out identically on all 22 rows, and getting one wrong
+   * silently moves balance (a forgotten field reads undefined -> NaN spin). Spread first, so a
+   * weapon that ever needs a different rate overrides in place:
    *   myWeapon: { ...WDEF, name: 'X', omega: 4, len: 90, ... }
-   * A new weapon now declares only what is actually special about it: name, len (inside the
+   * A new weapon declares only what is actually special about it: name, len (inside the
    * LEN_MIN..LT band, boot-gated), hold when tangential, trait, line, shot when it launches,
-   * poly. `tuck` joined the derived set the same day — see the render pass: a tangential chord
-   * never tucks (its art straddles the rim), so the field is read off hold and only handle-less
-   * RADIAL art (the orb) still opts out by name. Behaviour-identical landing: the resolved table
-   * is byte-for-byte the same, fingerprints 8/8 unchanged (.qa/fp-dmg1-r21.json). */
-  /* VOCABULARY (owner ruling 2026-10-28, "we cahnge it to trait for the weapons"): a weapon row’s growth
-   * rate is its TRAIT, renamed from `ability`. Reason: `skill` is CONTRACT/SPEC’s platform term for what makes
-   * a PLAYER behave differently (a set of optional, passive hooks), and "skill"/"ability" are near synonyms in
-   * ordinary game vocabulary — the pair collided in the docs and in prose ("weapon skills"). The discipline that
-   * goes with it: never the bare nouns — always FIGHTER SKILL and WEAPON TRAIT.
-   * Under the axis-placement ruling a trait is any class-dependent rate on the row (the spin/dmg growth axis
-   * today; length growth and shot multipliers later), while a fighter’s skill takes only axes live on all 22
-   * weapons. Identifier-only rename: behaviour-identical, NO stamp bump (the stone->shot precedent), and
-   * fingerprint-neutral because the field NAME never enters hashed sim state — only its values do, via
-   * f.spin/f.dmg in grow(). Dated records (GAMES.md, git history) keep the old word by design. */
+   * poly. `tuck` is derived too: a tangential chord never tucks (its art straddles the rim), so
+   * the field is read off hold and only handle-less RADIAL art (the orb) opts out by name. */
+  /* VOCABULARY (owner ruling 2026-10-28): a weapon row's growth rate is its TRAIT, renamed from
+   * `ability`, because `skill` is the platform term for what makes a PLAYER behave differently
+   * and the pair collided in prose. THE DISCIPLINE: never the bare nouns — always FIGHTER SKILL
+   * and WEAPON TRAIT. Under the axis-placement ruling a trait is any class-dependent rate on
+   * the row, while a fighter's skill takes only axes live on all 22 weapons. Identifier-only
+   * rename: behaviour-identical, no stamp bump, fingerprint-neutral because the field NAME
+   * never enters hashed sim state — only its values do, via f.spin/f.dmg in grow(). Dated
+   * records keep the old word by design. */
   const WDEF = { omega: 3.5, dmg: 1 };
   for (const pl of INGR_XBOW.polys) for (const pts of pl.subs) for (const q of pts) { q[0] *= KX; q[1] *= KX; }
   // @@data/registry
