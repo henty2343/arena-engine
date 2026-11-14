@@ -12,7 +12,7 @@ Before touching the sim or game docs:
 For adding a weapon trait / fighter skill / bot:
 - docs/RECIPES.md
 
-Treat docs/GAMES.md as a grep-only design archive. Never read it whole.
+Treat docs/GAMES.md and docs/history/ as a grep-only design archive. Never read them whole.
 
 The canonical game file is:
 - previews/spinclash-preview.html

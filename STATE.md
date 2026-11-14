@@ -2,7 +2,7 @@
 # STATE — current project facts
 
 Contains: the mutable facts of the repo, derived from the canonical and the tree.
-Read when: every session, alongside AGENTS.md. Approx token cost: ~0.7k (computed).
+Read when: every session, alongside AGENTS.md. Approx token cost: ~0.8k (computed).
 
 ## Canonical (the one live game)
 - File: `previews/spinclash-preview.html`
@@ -20,7 +20,7 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.7k (compute
 ## Tooling inventory
 - Root tools (3): `chromecheck.mjs` · `ingest.mjs` · `measure.mjs`
 - scripts/ (1): `run-battery.mjs`
-- tools/ (9, incl. doc/ and lib/): `gen-codemap.mjs` · `gen-state.mjs` · `lint-docs.mjs` · `lint-markers.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/load-sim.mjs` · `lib/strip-comments.mjs`
+- tools/ (10, incl. doc/ and lib/): `gen-codemap.mjs` · `gen-state.mjs` · `lint-docs.mjs` · `lint-markers.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/docset.mjs` · `lib/load-sim.mjs` · `lib/strip-comments.mjs`
 - scratch/: gitignored RUNTIME temp dir (bake/gate temp copies, battery logs) — not source; nothing in it is tracked except `.gitkeep`.
 - .qa/ proofs (13): `bake-rows.mjs` · `fingerprint.mjs` · `flip-seeds.mjs` · `flipproof.mjs` · `inscribe.mjs` · `leadproof.mjs` · `lengrow-bake.mjs` · `lengrow-build-proof.mjs` · `lengrow-gate.mjs` · `lengrow-proof.mjs` · `pair-proof.mjs` · `seam-proof.mjs` · `strip-hash.mjs`
 - .qa/ baselines (1): `fp-flailfix-r88.json`
@@ -28,18 +28,22 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.7k (compute
 ## Documentation cost (chars/4 estimate)
 | file | ~tokens | read policy |
 |---|---:|---|
-| README.md | 263 | router only |
-| AGENTS.md | 1,354 | always |
+| README.md | 288 | router only |
+| AGENTS.md | 1,434 | always |
 | docs/CODEMAP.md | 1,515 | before opening the canonical |
 | docs/LAWS.md | 3,989 | before any sim/doc edit |
 | docs/RECIPES.md | 1,876 | adding a trait/skill/bot |
-| docs/GAMES.md | 168,385 | GREP ONLY — never load whole |
+| docs/GAMES.md | 50,170 | GREP ONLY — never load whole |
 | docs/SPEC.md | 12,988 | PLANNED engine work only |
 | docs/CONTRACT.md | 4,226 | PLANNED engine work only |
 | docs/BUILD.md | 4,525 | PLANNED engine work only |
+| docs/history/chronicle-722-747.md | 21,598 | GREP ONLY — frozen era |
+| docs/history/mf-1-pre667.md | 45,547 | GREP ONLY — frozen era |
+| docs/history/mf-2-667-721.md | 52,445 | GREP ONLY — frozen era |
 
 ## Design state (canonical source: LAWS.md; history: GAMES.md §Current state)
 - The current laws, the weapon-trait count and the law-to-probe table are design facts, NOT generated here.
   `docs/LAWS.md` is the sole authority for them; the open queue and owner quotes are in `docs/GAMES.md` §Current state. `tools/lint-docs.mjs` checks the count and the table.
+- The record is split: `docs/GAMES.md` is the live file; 3 frozen era file(s) live in `docs/history/`. The nav block in GAMES indexes every file by key + line.
 - Implemented: the SpinClash harness (this canonical + bare-Node tools).
 - Planned (no code yet): the engine — `docs/BUILD.md` Phases 0–8 (PLANNED).

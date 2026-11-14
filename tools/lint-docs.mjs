@@ -9,6 +9,7 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { historyFiles } from './lib/docset.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [], warnings = [];
 const err = m => errors.push(m); const warn = m => warnings.push(m);
@@ -19,8 +20,12 @@ const basePtr = path.join(root, '.qa', 'BASELINE');
 if (!existsSync(basePtr)) err('.qa/BASELINE pointer is missing');
 else { const b = readFileSync(basePtr,'utf8').trim();
   if (!existsSync(path.join(root,'.qa',b))) err(`.qa/BASELINE points to missing file: ${b}`); }
-for (const f of ['docs/GAMES.md'])
-  if (!rd(f).includes(md5)) err(`${f} lacks the current canonical md5 ${md5} (stale slot?)`);
+// B3C: the record set is docs/GAMES.md + docs/history/*.md. The current canonical md5 must be
+// carried by AT LEAST ONE of them (the landing entry may live in a frozen era file).
+const HIST_FILES = historyFiles(root);
+const RECORD_SET = ['docs/GAMES.md', ...HIST_FILES];
+if (!RECORD_SET.some(f => existsSync(path.join(root, f)) && rd(f).includes(md5)))
+  err(`no file in the GAMES record set (docs/GAMES.md + docs/history/, ${RECORD_SET.length} file(s)) carries the current canonical md5 ${md5} (stale slot?)`);
 const games = rd('docs/GAMES.md');
 const csEnd = games.indexOf('## Measured facts');
 const currentState = games.slice(0, csEnd>0?csEnd:games.length);
@@ -144,11 +149,19 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
   if (/^\s*-\s*(Lines|md5|Build stamp)\s*:/mi.test(readmeSlim)) err('README repeats a mutable fact (Lines/md5/Build stamp) — link STATE.md instead');
 
   // GAMES.md's preface must not tell agents to read it whole (Phase I).
-  const gamesHead = rd('docs/GAMES.md').split('\n').slice(0, 25).join('\n');
-  if (/(?<!not )(?<!never )read this file (first|whole)/i.test(gamesHead)) err('docs/GAMES.md preface tells agents to read it first/whole — it is grep-only');
+  for (const f of ['docs/GAMES.md', ...HIST_FILES]) {
+    const head = rd(f).split('\n').slice(0, 25).join('\n');
+    if (/(?<!not )(?<!never )read this file (first|whole)/i.test(head)) err(`${f} preface tells agents to read it first/whole — it is grep-only`);
+  }
+  // B3C: every frozen era file must be routed to from GAMES, and every history path GAMES
+  // names must exist. (lintRefs only scans §Current state, so the nav block needs this.)
+  for (const f of HIST_FILES)
+    if (!games.includes(f)) err(`${f} is not named in docs/GAMES.md — the nav block must route to every era file`);
+  for (const mm of games.matchAll(/`(docs\/history\/[A-Za-z0-9_.\-]+\.md)`/g))
+    if (!existsSync(path.join(root, mm[1]))) err(`docs/GAMES.md references missing history file: ${mm[1]}`);
 
   // Hand-typed token costs drift; the only cost source is STATE.md (Phase I).
-  for (const f of ['AGENTS.md','docs/CODEMAP.md','docs/LAWS.md','docs/RECIPES.md','docs/SPEC.md','docs/CONTRACT.md','docs/BUILD.md','docs/GAMES.md'])
+  for (const f of ['AGENTS.md','docs/CODEMAP.md','docs/LAWS.md','docs/RECIPES.md','docs/SPEC.md','docs/CONTRACT.md','docs/BUILD.md','docs/GAMES.md', ...HIST_FILES])
     if (existsSync(path.join(root,f)) && /Approx token cost:\s*~?\d/.test(rd(f).split('\n').slice(0, 12).join('\n')))
       err(f + ' header has a hand-typed token cost — point to STATE.md §Documentation cost instead');
 

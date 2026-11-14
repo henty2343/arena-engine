@@ -17,16 +17,16 @@ A localhost-only Node tool that renders seeded game simulations into publishable
 | Before any sim/doc edit | `docs/LAWS.md` (current laws quick ref) | the standing game laws |
 | Add a weapon trait / bot | `docs/RECIPES.md` + the canonical `TRAIT / SKILL REGISTRY` | the cheap-class pattern |
 | Engine work | `docs/SPEC.md` · `CONTRACT.md` · `BUILD.md` | only when building the platform |
-| History / a past decision | `docs/GAMES.md` dated entries (git history for older) | grep by `#NNN` or symbol — NEVER read whole |
+| History / a past decision | `docs/GAMES.md` (live) + `docs/history/` (frozen eras) | grep by `#NNN`, `^### <n>` or symbol — NEVER read whole |
 
-`docs/GAMES.md` is ~155k tokens. **Never load it whole.** Grep for the entry number (`#721`), a symbol, or a section heading, and read only that region. `STATE.md` carries the current md5/stamp/line-count/baseline so you never hunt for them.
+`docs/GAMES.md` is the live record; older eras were moved verbatim into `docs/history/`. **Never load any of them whole** — costs are in `STATE.md`. Grep for the entry number (`grep -n '^### 721' docs/history/`), a symbol, or a heading, and read only that region. The nav block in `docs/GAMES.md` indexes every file by key + line. `STATE.md` carries the current md5/stamp/line-count/baseline so you never hunt for them.
 
 ## Task → file map
 
 - **Add a weapon trait / fighter skill** → `docs/RECIPES.md`; pattern = a row field → ONE consumer site → one Tier-0 assertion; update the canonical REGISTRY. Cheap (number at an existing site) vs expensive (moves geometry → re-bake). Expensive = stop and ask first. The laws it must respect: `docs/LAWS.md`.
 - **Add a bot** → `docs/RECIPES.md`; a `FIGHTERS` row + an owner-chosen colour + widen the seven 2-entry arrays; run `.qa/pair-proof.mjs`.
 - **Edit weapon art / polys / scale** → `.qa/inscribe.mjs` gate + `.qa/bake-rows.mjs` re-bake; Tier 1 proofs.
-- **Edit docs** → after any `GAMES.md` edit run `docreflow` then `navgen` (rule 3); after any canonical landing run `gen-codemap`; refresh `STATE.md` if facts moved; run `node tools/verify.mjs`. Order: `docreflow → navgen → gen-codemap → gen-state → verify --quick`.
+- **Edit docs** → after any `GAMES.md` or `docs/history/` edit run `docreflow` then `navgen` (rule 3; both cover the whole record set); after any canonical landing run `gen-codemap`; refresh `STATE.md` if facts moved; run `node tools/verify.mjs`. Order: `docreflow → navgen → gen-codemap → gen-state → verify --quick`.
 - **Check repo health** → `node tools/verify.mjs` (judges + JSON verdict; `--quick` skips the sim, `--battery` adds the full proof battery).
 - **Prove a behaviour-identical edit** → `node .qa/fingerprint.mjs --compare` (8/8 vs `.qa/BASELINE`, exit 0).
 
@@ -34,7 +34,7 @@ A localhost-only Node tool that renders seeded game simulations into publishable
 
 1. **Discuss before writing.** Proposals first; nothing lands without the owner's "go".
 2. **`measure.mjs` NEVER runs without the owner's explicit go.** Long runs are his machine's job.
-3. **After any GAMES.md edit: `docreflow` FIRST, then `navgen`.** Both idempotent.
+3. **After any GAMES.md or `docs/history/` edit: `docreflow` FIRST, then `navgen`.** Both idempotent, both cover the whole record set.
 4. **Behaviour-identical edits prove fingerprints 8/8** vs `.qa/BASELINE`; the canonical md5 must not move unless sanctioned + recorded. 8/8 can be VACUOUS — establish coverage first.
 5. **One canonical.** `previews/spinclash-preview.html` is the single source; do not split it, do not repoint tool defaults.
 6. **Terminology:** a fighter has a SKILL, a weapon has a TRAIT. Always "fighter skill" / "weapon trait".
@@ -54,5 +54,5 @@ A localhost-only Node tool that renders seeded game simulations into publishable
 - Current game laws, the weapon-trait count, and which probe checks each law → `docs/LAWS.md` (sole authority; on conflict it wins). The fuller design record, owner quotes and open queue → `docs/GAMES.md` §Current state.
 - Landing recipes (add trait / skill / bot, stamp discipline) → `docs/RECIPES.md`.
 - Agent workflow / loading order → this file. Platform rules → `docs/SPEC.md`.
-- Decisions, owner quotes, measured history → `docs/GAMES.md` dated entries (git history for older).
+- Decisions, owner quotes, measured history → `docs/GAMES.md` (live) and `docs/history/` (frozen eras; git history for older).
 - `tools/lint-docs.mjs` fails the build if these drift (dead refs, stale md5, trait-count disagreement, retired rules stated as live, a broken law-to-probe table).

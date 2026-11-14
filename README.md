@@ -7,11 +7,11 @@
 - Canonical game (the only live code): `previews/spinclash-preview.html`
 - Current game laws: [`docs/LAWS.md`](./docs/LAWS.md)
 - Landing recipes: [`docs/RECIPES.md`](./docs/RECIPES.md)
-- Design history / provenance: grep [`docs/GAMES.md`](./docs/GAMES.md); never read it whole
+- Design history / provenance: grep [`docs/GAMES.md`](./docs/GAMES.md) (live) and `docs/history/` (frozen eras); never read whole
 - Platform/engine rules (PLANNED engine): [`docs/SPEC.md`](./docs/SPEC.md), only for engine/platform work
 
 ## Non-negotiables
 - Propose before writing code.
 - Do not run `measure.mjs` without the owner's explicit go.
 - Do not split the canonical.
-- After any `docs/GAMES.md` edit, run `node tools/doc/docreflow.mjs` then `node tools/doc/navgen.mjs`, then `node tools/gen-state.mjs`.
+- After any `docs/GAMES.md` or `docs/history/` edit, run `node tools/doc/docreflow.mjs` then `node tools/doc/navgen.mjs`, then `node tools/gen-state.mjs` (both doc tools cover the whole record set).

@@ -7,6 +7,7 @@ import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { historyFiles } from './lib/docset.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CANON = path.join(root, 'previews', 'spinclash-preview.html');
 function facts() {
@@ -35,11 +36,15 @@ function facts() {
   const POLICY = { 'README.md': 'router only', 'AGENTS.md': 'always', 'docs/CODEMAP.md': 'before opening the canonical', 'docs/LAWS.md': 'before any sim/doc edit',
     'docs/RECIPES.md': 'adding a trait/skill/bot', 'docs/GAMES.md': 'GREP ONLY — never load whole',
     'docs/SPEC.md': 'PLANNED engine work only', 'docs/CONTRACT.md': 'PLANNED engine work only', 'docs/BUILD.md': 'PLANNED engine work only' };
-  const docs = Object.keys(POLICY).map(f => ({ file: f, policy: POLICY[f], approxTokens: tok(path.join(root, f)) }));
+  // B3C: the frozen era files join the cost table (sorted glob — a new era needs no edit here).
+  const hist = historyFiles(root);
+  const policy = { ...POLICY };
+  for (const f of hist) policy[f] = 'GREP ONLY — frozen era';
+  const docs = Object.keys(policy).map(f => ({ file: f, policy: policy[f], approxTokens: tok(path.join(root, f)) }));
   return { canonical:'previews/spinclash-preview.html', md5, lines, stamp, baseline, baselineOk,
     labelNote, archivedBaselines: archived.length,
     counts:{proofs:proofs.length,baselines:baselines.length,rootTools:rootTools.length,scripts:scripts.length,tools:tools.length},
-    proofs, baselines, rootTools, scripts, tools, docs, approxCanonicalTokens: Math.round(html.length/4) };
+    proofs, baselines, rootTools, scripts, tools, docs, historyFiles: hist, approxCanonicalTokens: Math.round(html.length/4) };
 }
 function render(f, cost = '~0.7k') {
   const L = [];
@@ -70,6 +75,7 @@ function render(f, cost = '~0.7k') {
   L.push('## Design state (canonical source: LAWS.md; history: GAMES.md §Current state)');
   L.push('- The current laws, the weapon-trait count and the law-to-probe table are design facts, NOT generated here.');
   L.push('  `docs/LAWS.md` is the sole authority for them; the open queue and owner quotes are in `docs/GAMES.md` §Current state. `tools/lint-docs.mjs` checks the count and the table.');
+  if (f.historyFiles.length) L.push(`- The record is split: \`docs/GAMES.md\` is the live file; ${f.historyFiles.length} frozen era file(s) live in \`docs/history/\`. The nav block in GAMES indexes every file by key + line.`);
   L.push('- Implemented: the SpinClash harness (this canonical + bare-Node tools).');
   L.push('- Planned (no code yet): the engine — `docs/BUILD.md` Phases 0–8 (PLANNED).'); L.push('');
   return L.join('\n');
