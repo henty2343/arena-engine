@@ -28,14 +28,15 @@ The living record of game design: what exists and what is decided next. Platform
 | section | from line | size |
 |---|---|---|
 | The documents | 11 | 1 KB |
-| Current state | 145 | 136 KB |
-| Weapon art — the closed convention (locked 2026-10-18, CLOSED 2026-10- | 447 | 10 KB |
-| Design principles for all games | 470 | 2 KB |
-| Open design questions | 480 | 15 KB |
-| Measured facts | 502 | 1 KB |
-| Testing recipe (headless) | 513 | 21 KB |
-| 2026-11-14 — #748 · BATCH 3C — GAMES.md SPLITS BY ERA INTO `docs/histo | 561 | 3 KB |
-| 2026-11-14 — #749 · BATCH 3 FOLLOW-UPS — THE INDEX TITLES, THE 14 KB L | 571 | 2 KB |
+| Current state | 146 | 136 KB |
+| Weapon art — the closed convention (locked 2026-10-18, CLOSED 2026-10- | 448 | 10 KB |
+| Design principles for all games | 471 | 2 KB |
+| Open design questions | 481 | 15 KB |
+| Measured facts | 503 | 1 KB |
+| Testing recipe (headless) | 514 | 21 KB |
+| 2026-11-14 — #748 · BATCH 3C — GAMES.md SPLITS BY ERA INTO `docs/histo | 562 | 3 KB |
+| 2026-11-14 — #749 · BATCH 3 FOLLOW-UPS — THE INDEX TITLES, THE 14 KB L | 572 | 2 KB |
+| 2026-11-14 — #750 · BATCH 3 FOLLOW-UP — THE 3,000-BYTE LINE CAP (no ca | 580 | 2 KB |
 
 **Frozen eras** (`docs/history/` — grep only, never load whole; the key is what the entry index below uses)
 
@@ -575,4 +576,13 @@ This is the only coverage of the chrome's pairing path; `pair-proof.mjs` loads t
 - **HANDOFF POINTERS.** AGENTS "Where truth lives" and the README router now point at `docs/handoff/HANDOFF.md`, the repo-hosted process authority (outside every lint glob; never place it in `docs/history/`). Both handoff files were updated in this same commit.
 - **Canonical untouched:** md5 `5de162de46eb4fa3204e3ee636f2aff3`, stamp `links-r87` — so no battery was required and `measure.mjs` was NOT run. Token costs: see STATE.md §Documentation cost.
 - **Deviations flagged to the owner:** a FROZEN era file was edited (whitespace-only; the rejoin, non-whitespace, word, byte, heading and line-count proofs ran in memory before anything was written); delivered as a new-file-only patch holding one gated self-deleting one-shot rather than a diff of the changed files, so the regenerated files were produced on the owner's machine (`git add -A` required).
+- **Rollback:** `git revert` this commit.
+## 2026-11-14 — #750 · BATCH 3 FOLLOW-UP — THE 3,000-BYTE LINE CAP (no canonical change)
+
+- **THE LINE CAP (B3E).** `tools/lint-docs.mjs` now fails any line over 3,000 bytes (`Buffer.byteLength`, not characters) in `docs/GAMES.md` and every `docs/history/*.md`. It is check-only: no record file is touched, and a new era file is covered automatically through `tools/lib/docset.mjs`. Why: the 14,343-byte mf-2 line was the one thing `docreflow` could not break, and after #749 nothing kept it from coming back. When this landed the longest record-set line was 2,699 bytes (GAMES), so the cap changes nothing in today's record.
+- **WHAT IT DOES NOT GUARD.** The cap is per line. Measured on a copy of the 26-line mf-2 region: re-joining the first 2 lines (1,120 bytes) or the first 5 (2,789 bytes) stays green; re-joining 6 (3,348 bytes) or all 26 (14,343 bytes) fails. A small re-join is therefore NOT caught. That is a limit of a size cap, not a fix.
+- **NEGATIVE CONTROLS (`lint-docs` only, one mutation each, on throwaway copies).** C0 clean PASS; C1 a 3,001-byte line appended to mf-1 FAIL; C2 exactly 3,000 bytes PASS; C3 3,001 bytes appended to GAMES FAIL; C4 1,501 two-byte characters (3,002 bytes) FAIL; C5 1,500 two-byte characters (3,000 bytes) PASS; re-join of 2 or 5 lines PASS, of 6 or 26 lines FAIL.
+- **HANDOFF.** Both handoff files now record `4cc98d5` as the #749 landing (confirmed on origin) and describe the cap. Both were updated in this same commit.
+- **Canonical untouched:** md5 `5de162de46eb4fa3204e3ee636f2aff3`, stamp `links-r87` — so no battery was required and `measure.mjs` was NOT run. Token costs: see STATE.md §Documentation cost.
+- **Deviations flagged to the owner:** a new lint rule now applies to FROZEN era files (check-only; no era file is edited); delivered as a new-file-only patch holding one gated self-deleting one-shot rather than a diff of the changed files, so the regenerated files were produced on the owner's machine (`git add -A` required). The law-table follow-ups are NOT part of this commit.
 - **Rollback:** `git revert` this commit.

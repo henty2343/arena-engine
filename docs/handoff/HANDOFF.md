@@ -15,8 +15,9 @@ generated and authoritative for all numbers.
 
 Status 2026-11-14: Batch 1 DONE. Batch 2 DONE. Batch 3 (a)(b)(c)(d) ALL DONE — Batch 3 CLOSED.
   3a = 0ddd7f5 #746 · 3b = 9e017bb #742 · 3d = f756e21 #747 · 3c = 68e29f9 #748
-Follow-ups: the #749 patch (index titles, mf-2 line re-paragraphed, AGENTS/README pointers, #749 entry) is DONE;
-  its commit hash is not known to this file (a file cannot contain its own commit) — verify origin.
+Follow-ups: #749 = 4cc98d5 (index titles, mf-2 line re-paragraphed, AGENTS/README pointers, #749 entry), confirmed on origin.
+  #750 (this file's last update): the 3,000-byte line-cap lint (B3E) plus the record of that hash. Its own commit hash is not
+  known to this file (a file cannot contain its own commit) - verify origin.
 Next: Batch 4 (tool layout, §7) or the optional law-table follow-ups.
 Delivery: ONE patch (§6) — read §6.7 first: the owner copies patches out of CHAT.
 
@@ -35,6 +36,9 @@ State after the #749 patch (BASE 24ce531; re-measure, do not trust): canonical, 
 lint-docs, docset, LAWS, CODEMAP all unchanged from the 3c block above. As built by the one-shot: GAMES 8f602745ee4a583af935884330415bb0 ·
 mf-2 7a268c717d727216e5c93782d3e6a985 · STATE bb6c529358ff5a58ded571f9a2efba28 · AGENTS bd170ac0d1655b07e446140c3f46adca ·
 README 1cb73e7751c2999f9f763e2b74c9b54d · navgen b27164470bbe5d5303839d5bbc408bdb. The two handoff files are not listed (a file cannot hold its own md5).
+State after the #750 patch (BASE 4cc98d5; re-measure, do not trust): canonical, chronicle, mf-1, mf-2, LAWS, CODEMAP, navgen, docreflow,
+gen-state, docset, AGENTS, README, copilot all unchanged from the blocks above. As built by the one-shot: GAMES 61cb9bcebea89bc34dbe298b8b4d09a5 ·
+lint-docs 182019c42f8a34de2582d3bcdd853678 · STATE a4eb9e2574fb78195e8fdb3848cc2f24. The two handoff files are not listed (a file cannot hold its own md5).
 
 ## 0. The record is a SET (since 3c)
 
@@ -99,7 +103,7 @@ Enter the record by grepping the SET: `grep -rn '^### 721' docs/GAMES.md docs/hi
 nav block's Frozen eras table + entry index (file + line). All record files are GREP ONLY.
 The old worst line (mf-2 line 526 at 68e29f9, 14,343 bytes, entry #721's AT THIS LANDING sub-paragraph) was re-paragraphed by
 #749 into 26 soft-wrapped lines, each <= 560 bytes; its bold spans now CROSS soft newlines (valid CommonMark, not render-checked).
-No line in the record set exceeds 3,000 bytes. Do not re-join them. Grep for the sub-paragraph; never hand-copy a line number.
+No line in the record set exceeds 3,000 bytes, and since #750 lint-docs ENFORCES that cap (B3E, check-only). Do not re-join the 26 lines. Grep for the sub-paragraph; never hand-copy a line number.
 Law-to-probe table (LAWS §Law-to-probe table): 25 rows; 2 probed, 13 partial, 7 owner-run only,
 3 unprobed. The 7 owner-run rows (contact 3/4/5; shot 1s/3s/5s/6s) are audited ONLY by measure.mjs.
 The 3 unprobed: B1 best-of-3, B2 K.O.-only rounds, U1 uniform base stats. .qa/fingerprint.mjs is a
@@ -189,6 +193,7 @@ Batch 3 CLOSED. Optional items — propose first, wait for "go", ONE patch:
 - Law-table follow-ups (owner's call): runnable assertions for B1/B2/U1 and the 7 owner-run-only
   laws; touches .qa/ probes; needs a proposal.
 - Handoff follow-ups (AGENTS/README docs/handoff pointers, #749 entry): DONE in #749.
+- Line-cap lint: DONE in #750 (lint-docs B3E; 3,000 bytes per line over GAMES + docs/history/*.md; check-only).
 Batch 4 — tool layout: one home tools/ with proof/, doc/, measure/, lib/; rename .qa visibly;
 tools/manifest.json read by verify + run-battery; propose an owner-go flag for measure.mjs; move
 SPEC/CONTRACT/BUILD to docs/planned/; RECIPES "Traps" -> short rules; AGENTS = the one workflow home.
@@ -218,7 +223,7 @@ contract. Leave record content alone.
 - Tags on origin: games-presplit-3c -> f756e21 (pre-split monolith), canonical-prediet-2c (the fixed
   2c base — compare, don't retag), canonical-precomments, docs-precleanup{,2,3}, item3-closed,
   pre-phase-a, scratch-precleanup.
-- Dated chronicle entry per landing is convention (last #748; next #749); REQUIRED only when the
+- Dated chronicle entry per landing is convention (last #750; next #751); REQUIRED only when the
   canonical md5 moves. Append to GAMES, then regenerate; docreflow may re-wrap it (whitespace-only).
 - Law table: renaming a quoted assert fails lint until the anchor is updated (by design). New law =
   new row; ids C1-C6, S1-S6 required, unique; status in {probed, partial, owner-run only, unprobed};
@@ -228,7 +233,9 @@ contract. Leave record content alone.
   §Current state; lint checks both.
 - New lint check => negative controls (one mutation per control + a passing control). 3c ran 9 + C9.
 - Stale-but-historical: chronicle says lengrow-bake --verify exits 2 (true then, now 0) — leave it.
-- mf-2's old 14 KB line is 26 soft-wrapped lines since #749 (bold spans cross newlines on purpose); NOTHING GUARDS THIS: re-joining two of the lines leaves verify --quick green (docreflow reports no safe break point and exits 0; measured in a control). Do not re-join.
+- mf-2's old 14 KB line is 26 soft-wrapped lines since #749 (bold spans cross newlines on purpose). Since #750 lint-docs B3E fails any record-set line over 3,000 bytes, so a FULL re-join fails.
+  The cap is per line, so a PARTIAL re-join slips through (measured in controls on a copy): 2 or 5 re-joined lines stay green (1,120 / 2,789 bytes), 6 (3,348) or 26 (14,343) fail. Do not re-join.
+- Line cap (B3E): LINE_CAP = 3000 BYTES (Buffer.byteLength, so 1,501 two-byte characters fail), applied to docs/GAMES.md + docs/history/*.md via the docset glob. Check-only; never edit an era file to satisfy it except whitespace-only. Run docreflow before lint if a new GAMES entry trips it.
 - Cosmetic: .qa/fingerprint.mjs (~line 33) mentions many dated checkpoints; one live baseline. Harmless.
 - Sandbox: the execution tool can vanish for whole turns; /tmp gets wiped between calls — re-bootstrap
   and WRITE RECEIPTS INTO YOUR REPLY IMMEDIATELY. Dropped tool output (`execute error`) = UNVERIFIED.
@@ -253,9 +260,8 @@ New-chat prompt (the whole thing):
 
 ## 10. Where we are / next action
 
-Landed through the #749 patch (index titles, mf-2 line re-paragraphed, AGENTS/README handoff pointers, #749 entry) on top of
-24ce531 (Batch 3c + the handoff-hosting commit). This file cannot name the #749 commit hash: verify origin HEAD; anything beyond
-24ce531 + one commit means more landed — re-baseline from STATE.md and say what moved.
+Landed through the #750 patch (the 3,000-byte line-cap lint B3E + the #749 hash record) on top of 4cc98d5 (#749). This file cannot name the
+#750 commit hash: verify origin HEAD; anything beyond 4cc98d5 + one commit means more landed — re-baseline from STATE.md and say what moved.
 First: run the FRESHNESS CHECK, then §2. If the invariant hashes differ, STOP and tell the owner.
 Then propose the next item from §7 — Batch 4 (tool layout) or the law-table follow-ups — and WAIT for "go".
 After "go": the whole job in one pass (edits, regen, proofs, controls, fresh-clone proof), delivered per §6 + §6.7/§6.8,

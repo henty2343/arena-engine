@@ -153,6 +153,10 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
     const head = rd(f).split('\n').slice(0, 25).join('\n');
     if (/(?<!not )(?<!never )read this file (first|whole)/i.test(head)) err(`${f} preface tells agents to read it first/whole — it is grep-only`);
   }
+  // B3E: line cap. A record-set line over LINE_CAP bytes defeats docreflow and editors (the old 14 KB mf-2 line). Check only; era files are never modified.
+  const LINE_CAP = 3000;
+  for (const f of RECORD_SET) if (existsSync(path.join(root, f)))
+    rd(f).split('\n').forEach((l, i) => { const b = Buffer.byteLength(l); if (b > LINE_CAP) err(`${f}:${i + 1} is ${b} bytes, over the ${LINE_CAP}-byte line cap - re-wrap it (whitespace only in era files)`); });
   // B3C: every frozen era file must be routed to from GAMES, and every history path GAMES
   // names must exist. (lintRefs only scans §Current state, so the nav block needs this.)
   for (const f of HIST_FILES)

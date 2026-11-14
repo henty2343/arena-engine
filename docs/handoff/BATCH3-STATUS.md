@@ -10,10 +10,22 @@ Status as of 2026-11-14: (a) DONE (0ddd7f5, #746) · (b) DONE (9e017bb, #742) ·
 HANDOFF §7. The Batch 2 ledger is the appendix below, carried verbatim. STATE.md and docs/CODEMAP.md
 are authoritative for every number.
 
-Follow-ups: the #749 patch landed the optional doc items (index titles, the mf-2 14 KB line, AGENTS/README pointers, the #749
-entry) — see the first ledger below; its commit hash is not known to this file. Next: Batch 4 or the law-table follow-ups.
+Follow-ups: #749 = 4cc98d5 landed the optional doc items (index titles, the mf-2 14 KB line, AGENTS/README pointers, the #749 entry).
+#750 (this commit) added the 3,000-byte line-cap lint and recorded that hash - see the first ledger below; its own hash is not known
+to this file. Next: Batch 4 or the law-table follow-ups.
 
-## #749 follow-ups — ledger (this commit)
+## #750 line cap + hash record - ledger (this commit)
+
+What: (1) lint-docs B3E - any line over 3,000 bytes in docs/GAMES.md or docs/history/*.md fails (Buffer.byteLength; check-only; no record file edited; a new era file is covered through docset). (2) Both handoff files record 4cc98d5 as the #749 landing. (3) #750 appended to GAMES. Every other file, including the canonical, LAWS, CODEMAP and the record files, is untouched.
+Why: the #749 finding - nothing guarded the 26-line mf-2 paragraph against a re-join, and a 14 KB line defeats docreflow and editors.
+Approved: "go" on the read-only proposal ("a and c as you recommended").
+Deviations (flagged at delivery): (1) a new lint rule applies to FROZEN era files (check-only). (2) NOT a diff of the changed files: a new-file-only patch holding one gated self-deleting one-shot (tools/doc/land-750.mjs, HANDOFF §6.8); the regenerated files are produced on the owner's machine, so `git add -A` is required. (3) The law-table follow-ups (B1/B2/U1 + 7 owner-run-only laws) are NOT in this commit; the earlier "A and C" wording was read as the combined hash-record + line-cap patch.
+Findings: the cap catches a re-join only once the joined line passes 3,000 bytes. On a copy of the 26-line region, 2 and 5 re-joined lines stay green (1,120 / 2,789 bytes); 6 (3,348) and 26 (14,343) fail. Multibyte text is counted in bytes (1,501 two-byte characters = 3,002 bytes = FAIL).
+Controls (lint-docs only, throwaway copies, one mutation each): C0 clean PASS; C1 3,001 B in mf-1 FAIL; C2 3,000 B PASS; C3 3,001 B in GAMES FAIL; C4 3,002 B multibyte FAIL; C5 3,000 B multibyte PASS; re-join 2 / 5 PASS, 6 / 26 FAIL.
+Not verified: no rendered-markdown check; battery and measure.mjs not run (canonical untouched). Command results and per-file md5s are in the delivery message and in the HANDOFF state block.
+Rollback: `git revert` this commit.
+
+## #749 follow-ups — ledger (commit 4cc98d5)
 
 What: the optional items of HANDOFF §7 as ONE commit. (1) navgen rowTitle(): the 54 numbered entries of mf-2 show `NNN — <heading text>` in the entry index instead of a bare number; every other row is unchanged. (2) mf-2 line 526 (entry #721's AT THIS LANDING sub-paragraph, 14,343 bytes, the only line over 3,000 bytes in the record set) became 26 lines, each ≤ 560 bytes, by turning existing spaces into newlines — no byte added or removed, no blank line. (3) AGENTS "Where truth lives" and the README router point at docs/handoff/HANDOFF.md. (4) #749 appended to GAMES. Both handoff files updated. Canonical, LAWS, CODEMAP, docreflow, gen-state, lint-docs, docset untouched.
 Why: the index is the front door to two era files and showed 54 bare numbers; the 14 KB line was unreadable in an editor and the one thing docreflow could not break; the hosting patch deferred the pointers and the entry to stay new-file-only.
@@ -147,7 +159,7 @@ Rollback: `git revert 0ddd7f5`.
 
 ## What is next
 
-Batch 3 CLOSED; its follow-up patch (#749) is DONE. Per HANDOFF §7: (1) optional law-table follow-ups (B1/B2/U1 + 7 owner-run-only
+Batch 3 CLOSED; its follow-ups (#749, #750) are DONE. Per HANDOFF §7: (1) optional law-table follow-ups (B1/B2/U1 + 7 owner-run-only
 laws; .qa/ probes); (2) Batch 4 tool layout (docset.mjs is a dependency of four tools; keep the repo-root contract). Propose first;
 wait for "go"; ONE patch per HANDOFF §6 + §6.7/§6.8, updating both handoff files in the same commit.
 
