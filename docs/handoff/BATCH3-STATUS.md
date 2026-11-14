@@ -8,7 +8,7 @@ tools; an unlisted file there fails lint). Freshness: `git log -1 --format='%h %
 Status as of 2026-11-14: (a) DONE (0ddd7f5, #746) · (b) DONE (9e017bb, #742) · (d) DONE (f756e21, #747)
 · (c) DONE (68e29f9, #748). Nothing remains in Batch 3. Its follow-ups: #749 DONE (4cc98d5) · #750 DONE (4f38866) ·
 #751 DONE (63bb91c) · #752 DONE (361cbcb, the law-table completion + the probe registry) ·
-#753 DONE (this commit, the RENDERED-FRAME proof).
+#753 DONE (477c34a, the RENDERED-FRAME proof) · #754 DONE (this commit, the measure.mjs header + the owner-go solidity run).
 Next: the S3 RULING (the owner's), then Batch 4's tool moves — HANDOFF §7.
 The Batch 2 ledger is the appendix below, carried verbatim. STATE.md and docs/CODEMAP.md
 are authoritative for every number.
@@ -25,7 +25,16 @@ pose (C3 → `partial`) and MEASURES law 3s, which does NOT hold on the current 
 `owner-run only`; the owner's ruling is open).
 Next: the S3 RULING, or Batch 4's tool moves.
 
-## #753 rendered-frame proof - ledger (this commit)
+## #754 measure.mjs header + the owner-go solidity run - ledger (this commit)
+
+What: (1) measure.mjs's header comment (lines 148-149 only) said "The owner never runs this; the assistant does, when told to" and pointed at .qa/projectile-fix.mjs, which does not exist in the repo; it now says the owner runs it, an agent runs it only on an explicit owner go for that one run, and names the runnable .qa probes. Comment-only; node --check passes; no code token moved. (2) The one owner-go `node measure.mjs --solidity` run is recorded in HANDOFF s7. (3) HANDOFF s1 carries the one-run exception. Both handoff files updated; nothing else is touched (no canonical, tool, GAMES, STATE or generated file).
+Why: the header contradicted the standing ban and named a missing file; and the run gave the first audit result since the weapons pass.
+Approved: "ok can you update it and also run soliditty then?" - an explicit owner go for both.
+Deviations (flagged at delivery): (1) measure.mjs was EXECUTED, against HANDOFF s1 - by the owner's explicit go, for that one run. (2) A tool file (measure.mjs) was edited, comment-only. (3) No GAMES entry and no regen: the canonical did not move, so none is required; the measured result lives in HANDOFF s7 until the owner decides where it belongs.
+Not verified: WHY the audit is red (the chain-pose integrity check failing is the lead, not a proof); the exit code was not captured; the full report was not committed.
+Rollback: `git revert` this commit.
+
+## #753 rendered-frame proof - ledger (commit 477c34a)
 
 What: (1) New `.qa/frame-proof.mjs` - 4 assertions on the two RENDERED-FRAME laws, the last two `owner-run only` rows. The repo already defines a rendered frame as the tick-entry pose (the v0.8.2 pose amendment: the renderer interpolates, but in audit language "rendered frame" means the tick pose - the sim's ground truth), so the last rendered-frame law IS headlessly assertable, with the canonical's OWN geometry (`geom.parryGap`, `geom.bladeCircles`) - the same functions `measure.mjs` calls. (2) C3 → `partial`: the band's worst (18.041px measured over 68,275 rendered fight-ticks across 31 cells) stays inside the envelope the law itself records (20.754px) and the visible band ticks (43 = 0.0630%) stay under the owner's 2% rate; the named MIRROR class is reproduced per occurrence (2, worst 9.056px) and excluded from the band, as the owner excludes it. (3) S3 stays `owner-run only` and is REPORTED: a faithful reproduction of the owner's own law-3s pass measures blade 85 · body 757 · rim 2,422 · pair 6,745 (worst 73.099px) over 17,079 shot-bearing frames, in named classes (a nail at rest, two shots crossing, the boomerang's covering circle, an impaled skewer). The probe gates only the GROWTH of those counters (a ratchet, the fingerprint.mjs tradition) - it does not assert the law. (4) The probe is registered in `tools/manifest.json` (battery + citable), so the battery grew from 12 steps to 13 and the law table's citable set reads it from the same registry. (5) #753 appended to GAMES. Both handoff files updated. The canonical, CODEMAP, the three record files, AGENTS, README and every other tool are untouched.
 Why: a law nothing can fail is a law nothing protects, and the last two were exactly that - only measure.mjs saw them, and agents never run it. The rendered-frame definition the repo already owns is what makes them assertable without a renderer and without pixels.

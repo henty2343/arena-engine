@@ -27,10 +27,12 @@ Follow-ups: #749 = 4cc98d5 (index titles, mf-2 line re-paragraphed, AGENTS/READM
   #752 = 361cbcb (the law-table COMPLETION + the probe registry — new .qa/contact-proof.mjs (C4, C5)
   and .qa/shot-proof.mjs (S1, S5, S6) assert the last five laws that had no agent-runnable proof, and
   tools/manifest.json becomes the single registry run-battery and lint-docs read) — confirmed on origin.
-  #753 (this file's last update): the RENDERED-FRAME proof — new .qa/frame-proof.mjs proves C3's band
+  #753 = 477c34a: the RENDERED-FRAME proof — new .qa/frame-proof.mjs proves C3's band
   at the tick-entry pose (C3 → `partial`) and MEASURES law 3s, which does NOT hold on the current build
-  (S3 stays `owner-run only`; the owner's ruling is open). Its own commit hash is not known to this file
-  (a file cannot contain its own commit) - verify origin.
+  (S3 stays `owner-run only`; the owner's ruling is open). Landed as 477c34a.
+  #754 (this file's last update): measure.mjs's header now says who really runs it (it named .qa/projectile-fix.mjs,
+  which does not exist, and said the assistant runs it), and the ONE owner-go --solidity run is recorded in s7. Its own
+  commit hash is not known to this file (a file cannot contain its own commit) - verify origin.
 Next: the S3 RULING (the owner's) or Batch 4's tool MOVES — §7.
 Delivery: ONE patch (§6) — read §6.7 first: the owner copies patches out of CHAT.
 
@@ -111,7 +113,8 @@ Token effect (STATE.md authoritative): GAMES 168,385 -> 50,170 (-70.2%); eras 45
 ## 1. Ground rules (owner-enforced — non-negotiable)
 
 - PROPOSE BEFORE WRITING; wait for the owner's explicit "go". Read-only checks need no go.
-- NEVER run measure.mjs. Read-only grep is permitted; execution is not.
+- NEVER run measure.mjs. Read-only grep is permitted; execution is not. EXCEPTION (owner, 2026-11-14): the owner may give an
+  explicit go for ONE run; it covers that run only and never carries over (one --solidity run was authorised that way, s7).
 - DO NOT SPLIT THE CANONICAL previews/spinclash-preview.html (rule 5). Owner-only decision.
 - Removals are TAGGED first (`git tag <name> HEAD`). Never force-push. Pushes are the owner's.
 - Terminology: a fighter has a SKILL, a weapon has a TRAIT. Never the bare nouns.
@@ -257,6 +260,22 @@ Batch 3 CLOSED. Optional items — propose first, wait for "go", ONE patch:
   classes. NOTE the owner's own 6px band calibration no longer holds on the curated gauntlet (15.505px
   measured) - the second law channel that has drifted since the last sanctioned run (the re-proof is
   owed on the owner's machine, GAMES §Current state).
+- THE OWNER-GO --solidity RUN (2026-11-14; canonical md5 5de162de..., unchanged; node 22.23.4, 1 core, jobs 1, 675.9s wall,
+  109 battles; this tier carries no determinism replay; the exit code was not captured; the full report is NOT in the repo).
+  The audit is RED while every agent probe is GREEN on the same canonical (contact-proof 5/5, shot-proof 6/6, law-proof 12/12,
+  frame-proof 4/4), so the two instruments disagree. READ THE HARNESS'S OWN INTEGRITY CHECK FIRST: `harness chain-pose
+  integrity` FAILED, and measure.mjs's own comment names that failure as the cause of the 2026-10-27 red set (chain-weapon
+  recomputes degrading to a rigid spine). So the red on laws 1, 2, 4, 5, 1s, 2s is LIKELY a harness-side drift, NOT yet
+  proven so. Measured: law 1 phantom hits 111/7,293 - law 2 parries without touch 117/2,868 - law 4 replica mismatches
+  1,335 - law 5 unexplained sign changes 10 (flip violations 0/2,868) - law 1s 495/2,849 - law 2s 116/1,837 - law 4s double
+  departures 60 (57 addGone twice, 3 gone-yet-in-flight), lost without an event 0. PASS: law 6, 5s, 6s.
+  LAW 3: worst 27.399px (flail+hammer seed 101 t15936 round 3), visible 614/1,243,128 = 0.05%; the 6px bound FAILS and the
+  worst is ABOVE the 20.754px envelope the law records and frame-proof gates (frame-proof's own worst is 18.041px over 31
+  cells that include flail+hammer at seed 101). That is an UNEXPLAINED disagreement between the two instruments on a cell
+  both cover - NOT yet investigated; until it is, C3's `partial` rests on frame-proof alone. LAW 3s: blade 1,888 - body
+  19,609 - rim 54,605 - pair 1,061,228 over 439,143 frames (worst 74.971px): a DIFFERENT sample from frame-proof's
+  85/757/2,422/6,745 over 17,079 (the tier adds the 40 naturals), so the two are not comparable. Law 3s is red either way.
+  The S3 ruling and the band calibration remain the owner's.
 - Handoff follow-ups (AGENTS/README docs/handoff pointers, #749 entry): DONE in #749.
 - Line-cap lint: DONE in #750 (lint-docs B3E; 3,000 bytes per line over GAMES + docs/history/*.md; check-only).
 Batch 4 — tool layout: the REGISTRY half is DONE in #752 (tools/manifest.json is the single list of every

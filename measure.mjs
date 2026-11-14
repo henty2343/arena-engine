@@ -145,8 +145,10 @@
  * cost is dominated by the handful of battles that exhaust BUDGET_SEC 420 (a
  * capped battle is ≈7x a typical one). Coverage was NOT cut to chase a sandbox
  * number; the tradeoff levers are recorded in GAMES.md (Testing recipe).
- * The owner never runs this; the assistant does, when told to.
- * Fast targeted checks go through .qa/projectile-fix.mjs instead.
+ * WHO RUNS IT: the OWNER, on their own machine. An agent NEVER runs this file unless the
+ * owner gives an explicit go for that one run (HANDOFF section 1; tools/manifest.json
+ * marks it ownerOnly). Agents take their fast checks from the .qa probes the registry
+ * lists as runnable (frame-proof.mjs reproduces this file's law 3 / 3s passes).
  */
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
