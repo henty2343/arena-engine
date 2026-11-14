@@ -1573,15 +1573,14 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     G.events.push(e);
   }
 
-  /* `slot` is the SIDE (0 = the left spawn, 1 = the right spawn); `idx` is the CAST IDENTITY (the
-   * row in FIGHTERS). They were ONE field while the only pairing was [0, 1]; the split is what lets
-   * a match pick 2 of N cast members without touching a single law.
-   *   SLOT-keyed (means "left/right" or "the other side"): SPAWN, the roll order ws[]/w0/w1, the
-   *     launch direction sign, G.wins / G.winner / G.roundWinner, `1 - f.slot`, fs[0]/fs[1],
-   *     view / flashV / flipAnim / koStill.pose, the C0/C1 circle scratch, `fs[st.o]`, and every
-   *     event actor ref (by / to / o / winner / loser).
-   *   IDX-keyed (means "who is this"): COLS, TINTS, SKILL_SHORT, FIGHTERS[idx].skill,
-   *     meta.fighters (the roster table).
+  /* `slot` is the SIDE (0 = left spawn, 1 = right spawn); `idx` is the CAST IDENTITY (the row
+   * in FIGHTERS). They were ONE field while the only pairing was [0, 1]; the split is what lets a
+   * match pick 2 of N cast members without touching a single law.
+   *   SLOT-keyed (means left/right or the other side): SPAWN, the roll order ws[]/w0/w1, the launch
+   *     direction sign, G.wins / G.winner / G.roundWinner, `1 - f.slot`, fs[0]/fs[1], view / flashV /
+   *     flipAnim / koStill.pose, the C0/C1 circle scratch, `fs[st.o]`, and every event actor ref
+   *     (by / to / o / winner / loser).
+   *   IDX-keyed (means which actor): COLS, TINTS, SKILL_SHORT, FIGHTERS[idx].skill, meta.fighters.
    * The two coincide exactly while cast is [0, 1], which is why the default pairing is inert. */
   function newFighter(castIdx, slot) {
     return {
@@ -1599,24 +1598,23 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       cycleIdx: 0,
       figT: 0, figWait: 0, figPoof: 0, figObj: null, figLive: 0,   // bloom-r73 — transfiguration state (the bloom, the immunity, the poof ring, the rotation pick; bloomfix-r76: figLive the arrival grace)                         // shot-kind cycle position (the row's `cycle`; strict rotation — the tome trio today, phase 3, 2026-10-25; renamed off spellIdx at the 2026-10-28 launcher consolidation, which made the cycle row data)
       skew: null,                          // SKEWER state (skewer-r46): null, or { phase 'carry'|'pin', t, dur, sx/sy, dx/dy, spinBase, bleedAcc, nx/ny, cutArm, anchor } — the javelin's impalement; reset every round (the LAW)
-      /* CHAIN state (flail 2026-10-22, N-segment generic) — present on every fighter (inert unless the weapon has a
-       * chain), reset by flailInit. FIXED SIZE for the cap np <= 3 (the boot throws past it):
-       * u/pu = chain pose now / at tick start (6 numbers, spine-local unit directions of links S1..S3; slots past
-       * 2*np stay at rest and are never read; pu feeds render blending),
-       * x,y,vx,vy = world position + velocity of the np chain particles (flail: joint J1, joint J2, ball centre),
-       * qx,qy = per-substep scratch, vmax = fastest particle at tick start (substep budget). */
+      /* CHAIN state (N-segment generic) — present on every fighter, inert unless the weapon has a
+   * chain, reset by flailInit. FIXED SIZE for the cap np <= 3 (boot throws past it):
+   * u/pu = chain pose now / at tick start (spine-local unit directions of links S1..S3; slots past
+   * 2*np stay at rest and are never read; pu feeds render blending),
+   * x,y,vx,vy = world position + velocity of the np chain particles (flail: J1, J2, ball centre),
+   * qx,qy = per-substep scratch, vmax = fastest particle at tick start (substep budget). */
       fl: { u: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], pu: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0], x: [0, 0, 0, 0, 0, 0, 0, 0, 0], y: [0, 0, 0, 0, 0, 0, 0, 0, 0], vx: [0, 0, 0, 0, 0, 0, 0, 0, 0], vy: [0, 0, 0, 0, 0, 0, 0, 0, 0], qx: [0, 0, 0, 0, 0, 0, 0, 0, 0], qy: [0, 0, 0, 0, 0, 0, 0, 0, 0], vmax: 0 },   // links-r87: sized for the grown flail (np <= CH_MAXNP 9 particles, 18 pose slots)
     };
   }
 
-  /* PAIRING (pair-r31, owner go 2026-10-28): the CAST is the roster (FIGHTERS); the PAIRING is
-   * which two of them play this match, and on which side. `cast` is [leftCastIdx, rightCastIdx] —
-   * slot-ordered, so `G.cast[slot]` maps a side to its actor. The shipped default is the whole cast
-   * in list order, which is what every battle so far has played, so the default pairing is
-   * byte-identical in behaviour to the pre-pairing build (fingerprints prove it). A repeated entry
-   * is a legal MIRROR pairing (the same bot on both sides) — nothing in the sim needs the two to
-   * differ. Guarded at boot AND on every construction: a bad index would read undefined out of
-   * FIGHTERS far from here. */
+  /* PAIRING (pair-r31): the CAST is the roster (FIGHTERS); the PAIRING is which two play this
+   * match, and on which side. `cast` is [leftCastIdx, rightCastIdx] — slot-ordered, so
+   * `G.cast[slot]` maps a side to its actor. The shipped default is the whole cast in list order,
+   * behaviour-identical to the pre-pairing build. A repeated entry is a legal MIRROR pairing (the
+   * same bot on both sides) — nothing in the sim needs the two to differ. Guarded at boot AND on
+   * every construction: a bad index would read undefined out of FIGHTERS far from here.
+   * ref: pair-r31 */
   const DEFAULT_CAST = [0, 1];
   function checkCast(cast) {
     if (!Array.isArray(cast) || cast.length !== 2) throw new Error(`cast must be an array of exactly 2 FIGHTERS indices (a pairing fills two slots), got ${JSON.stringify(cast)}`);
@@ -1722,14 +1720,11 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
 
   function startFight(G) {
     const r = G.rng;
-    /* Core contact law rule 6: every round opens counter-rotating. ONE seeded
-     * roll per round picks fighter 0's direction; fighter 1 always gets the
-     * opposite. Rolled, not fixed per cast (owner decision, 2026-10-16 —
-     * "imagine in the future a roster of 50 bots, it annoying to keep track
-     * of to keep it even"): stateless, self-balancing at any roster size,
-     * and mirror duels cannot open same-direction. Draw order per round is
-     * fixed: 2 weapon draws, 1 direction draw, 2 launch draws (one angle per
-     * fighter). */
+    /* Core contact law rule 6: every round opens counter-rotating. ONE seeded roll per round
+   * picks fighter 0's direction; fighter 1 always gets the opposite. Rolled, not fixed per cast
+   * (owner decision 2026-10-16, for a future roster of many bots): stateless, self-balancing at
+   * any roster size, and mirror duels cannot open same-direction. Draw order per round is fixed:
+   * 2 weapon draws, 1 direction draw, 2 launch draws (one angle per fighter). */
     const dir0 = r() < 0.5 ? -1 : 1;
     for (const f of G.fighters) {
       const a = r() * TAU;
@@ -1780,15 +1775,11 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       }
     }
     for (const st of G.shots) { st.px = st.x; st.py = st.y; }
-    /* Substep sizing (v0.5.1 tunneling bug -> v0.8-step1 rule): relative
-     * travel per substep <= HALF the narrowest contact window (rA+rB of the
-     * thinnest inscribed circles). The old formula carried +parryPad/2 of
-     * slack: harmless while the thinnest circles were needle tips, fatal for
-     * path coverings, where one leapfrogged step buries a contact cluster
-     * deeper than the resolver can unwind. The velocity budget uses REACH =
-     * the DRAWN outer radius from the body centre, so tip speed is never
-     * under-budgeted. measure.mjs verifies the bound per substep and flags
-     * any maxSub engagement. */
+    /* Substep sizing: relative travel per substep <= HALF the narrowest contact window (rA+rB
+   * of the thinnest inscribed circles). The old formula carried +parryPad/2 of slack: harmless
+   * while the thinnest circles were needle tips, fatal for path coverings, where one leapfrogged
+   * step buries a contact cluster deeper than the resolver can unwind. The velocity budget uses
+   * REACH = the DRAWN outer radius from the body centre, so tip speed is never under-budgeted. */
     const delta = (MINR[fs[0].weapon] + MINR[fs[1].weapon]) / 2;
     let relV = CFG.subMargin;
     for (const f of fs) {
@@ -1797,13 +1788,11 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       relV += Math.hypot(f.vel.x, f.vel.y) + (WEAPONS[f.weapon].chain && f.fl.vmax > tipV ? f.fl.vmax : tipV);   // flail: a whipped chain can outrun omega*REACH — budget its fastest particle
     }
     let k = Math.ceil((relV * dt) / delta);
-    /* Projectile budget (v0.7): a shot is killed on contact, never resolved,
-     * so its detection guarantee is the same shape as the blades' — relative
-     * travel per substep <= HALF the narrowest shot window. The narrowest is
-     * shot-vs-blade-swat (shot r + the foe weapon's thinnest inscribed
-     * circle), and shot speed against the foe's blade tip is the largest
-     * relative velocity in the sim (GAMES.md, law 3's projectile extension).
-     * subMargin covers in-tick impulses exactly as the blade budget does. */
+    /* Projectile budget: a shot is killed on contact, never resolved, so its detection guarantee
+   * is the same shape as the blades' — relative travel per substep <= HALF the narrowest shot
+   * window. The narrowest is shot-vs-blade-swat (shot r + the foe weapon's thinnest inscribed
+   * circle), and shot speed against the foe's blade tip is the largest relative velocity in the
+   * sim (law 3's projectile extension). subMargin covers in-tick impulses as the blade budget does. */
     let kProjF = 0;
     for (const f of fs) {
       if (!f.alive) continue;
@@ -1903,19 +1892,20 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   }
 
   // @@sim/chain
-  /* ---- CHAIN weapons (flail 2026-10-22, N-segment generic): a taut jointed chain under the game's own physics ----
-   * np = ch.np point particles hang off the eye (j[0], fixed to the weapon); flail: Q1 = joint J1, Q2 = joint J2,
-   * B = ball centre. Per substep, in world space, exactly like the bodies: gravity + the same integrator, then a
-   * position-based solve of np rigid rods (pitches ch.len) with the eye as the only anchor, then velocity =
-   * displacement / dt (so every impulse the bodies get — wall bounce, floor trampoline, parry shove, hit knock,
-   * the spin flip — reaches the chain as a real whip, no scripted lag). Gravity cancels while the bot is in free
-   * fall, so a steady spin leaves the chain streaming outward with a small drag lean (CFG.flailDrag); a parry
-   * flip throws the head through. The head particle is heavier than the links (ch.iw, boot). The chain never
-   * pushes the body (one-way coupling, like every weapon) and never enters the own disc: every chord is kept
-   * clear of it, so the tuck clip never hides a hitbox. Pure arithmetic on fighter state — no random draw, no
-   * allocation. Contact stays honest: the hit/parry/swat laws read the chain through bladeCircles(…, f.fl.u),
-   * and the chain pose rides rigidly through the resolver (flailSync) — blades stay solids to each other, head
-   * included. */
+  /* ---- CHAIN weapons: a taut jointed chain under the game's own physics ----
+   * np = ch.np point particles hang off the eye (j[0], fixed to the weapon); flail: Q1 = J1,
+   * Q2 = J2, B = ball centre. Per substep, in world space, exactly like the bodies: gravity + the
+   * same integrator, then a position-based solve of np rigid rods (pitches ch.len) with the eye as
+   * the only anchor, then velocity = displacement / dt — so every impulse the bodies get (wall
+   * bounce, floor trampoline, parry shove, hit knock, the spin flip) reaches the chain as a real
+   * whip, no scripted lag. Gravity cancels in free fall, so a steady spin leaves the chain
+   * streaming outward with a small drag lean (CFG.flailDrag); a parry flip throws the head
+   * through. The head particle is heavier than the links (ch.iw, boot).
+   * THE COUPLING IS ONE-WAY: the chain never pushes the body, and it never enters the own disc —
+   * every chord is kept clear of it, so the tuck clip never hides a hitbox. Pure arithmetic on
+   * fighter state: no random draw, no allocation. Contact stays honest — the hit/parry/swat laws
+   * read the chain through bladeCircles(..., f.fl.u), and the pose rides rigidly through the
+   * resolver (flailSync), so blades stay solids to each other, head included. */
   function flailPose(f) {                // chain particles at the chain pose f.fl.u on the current weapon pose
     const W = WEAPONS[f.weapon], ch = W.chain, F = f.fl;
     const mul = chainGrow(f.weapon, f.lenStep);   // longchain-r86: the SAME factor chainFrames reads — the sim pose can never disagree with the drawn/hitbox frames
@@ -2066,12 +2056,11 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     if (rv > 60 && G.bounceT !== G.t) { G.bounceT = G.t; emit(G, 'bounce', { x: a.pos.x + nx * CFG.bodyR, y: a.pos.y + ny * CFG.bodyR, intensity: Math.min(1, rv / 1600) }); }   // v0.8-step1b: once per tick (was per substep: event churn fed GC pauses that read as slow-motion in the preview)
   }
 
-  /* growth: fighter skill + weapon trait, both on every damaging hit — one shared block
-   * for blade hits and shot landings alike. Spin is bounded by CFG.omegaCap (dormant
-   * today); damage is uncapped; length advances one pre-baked ladder step and stops at
-   * the UNIFORM ladder top (LEN_STEPS — per-fighter caps were retired with skill.lenSteps
-   * at nocombo-r34, owner no-combos ruling), which is the de facto ceiling; there is no
-   * lenCap constant. All three axes reset with the round, by owner law. */
+  /* growth: fighter skill + weapon trait, both on every damaging hit — one shared block for
+   * blade hits and shot landings alike. Spin is bounded by CFG.omegaCap (dormant today); damage
+   * is uncapped; length advances one pre-baked ladder step and stops at the UNIFORM ladder top
+   * (LEN_STEPS), which is the de facto ceiling — there is no lenCap constant. All three axes
+   * reset with the round, by owner law. ref: nocombo-r34 */
   function grow(G, f) {
     const sk = FIGHTERS[f.idx].skill, ab = WEAPONS[f.weapon].trait;
     const spinGain = sk.spin + ab.spin;
@@ -2082,23 +2071,20 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       if (f.skew) f.skew.spinBase = (f.skew.spinBase < 0 ? -1 : 1) * Math.min(CFG.omegaCap, Math.abs(f.skew.spinBase) + spinGain);   // skewer-r46: growth landed while impaled goes to the RESTORED spin, not to the crawl
     }
     if (dmgGain) f.dmg += dmgGain;
-    /* length growth (the spear's trait, owner 2026-10-28). The RATE is a weapon-row field, so
-     * under M2 that half is data and needs no hook. The CAP is UNIFORM (LEN_STEPS) since
-     * nocombo-r34 (2026-10-31): the per-fighter cap from `skill.lenSteps` was retired with the
-     * owner's no-combos ruling — a skill may add on a shared axis, never reach into a trait's
-     * mechanics. Clamped at the ladder top because past it there is no baked geometry, and the
-     * inscription-gate proof only covers the ladder's range. */
+    /* length growth (the spear's trait). The RATE is a weapon-row field, so under M2 that half is
+   * data and needs no hook. The CAP is UNIFORM (LEN_STEPS) since nocombo-r34: a skill may add on a
+   * shared axis, never reach into a trait's mechanics. Clamped at the ladder top because past it
+   * there is no baked geometry, and the inscription-gate proof only covers the ladder's range.
+   * ref: nocombo-r34 */
     if (ab.len && f.lenStep < LEN_STEPS) { const n0 = WEAPONS[f.weapon].chain ? chainGrow(f.weapon, f.lenStep) : 0; f.lenStep++; if (n0 !== undefined && WEAPONS[f.weapon].chain) chainRemap(f, n0, chainGrow(f.weapon, f.lenStep)); }
-    /* shot-radius growth (the staff's trait, shotgrow-r33, owner pick 2026-10-31). UNCAPPED by
-     * design: growth-uncapped is the doctrine, the arena rim is the physical wall (rim death
-     * reads dr + st.r) and the per-round reset in rollWeapons is the balance bound — the same
-     * philosophy as the spear's "no lenCap". For every row without shotR this never fires, so
-     * f.shotStep stays 0 and the birth radius is exactly W.shot.r (pow(x, 0) === 1). For the
-     * staff the trigger was born as the orb landing alone (under the retired projectile rule a
-     * launcher's shot landings were its only damaging hits); since allcut-r62 EVERY damaging hit
-     * — spine touches included — advances the shared counter, which is exactly the owner's aim:
-     * launchers gain growth in the early melee they used to only survive. */
-    if (ab.shotR || ab.cycle || ab.mult || ab.fan || (WEAPONS[f.weapon].shot && WEAPONS[f.weapon].shot.hex)) f.shotStep++;   // returngrow-r37: the shared counter serves every shot-growth axis (bendspark-r61: the wand's bend joins it) — hexfam-r68: the gate's ab.turn term RETIRES with the axis and shot.hex takes its place: the FAMILY FLIGHT LAW is itself a growth axis (the hex deepens off this counter), so every spell row feeds it — for the wand the gate opens on exactly the same hits as before (bit-identical counter timeline); the scroll joins the counter for the first time (its hex must deepen too). cycle caps at READ time (CYCLE_STEPS), shotR stays uncapped (the rim is its wall)
+    /* shot-radius growth (the staff's trait, shotgrow-r33). UNCAPPED by design: growth-uncapped
+   * is the doctrine, the arena rim is the physical wall (rim death reads dr + st.r) and the
+   * per-round reset in rollWeapons is the balance bound — the same philosophy as the spear's
+   * "no lenCap". For every row without shotR this never fires, so f.shotStep stays 0 and the birth
+   * radius is exactly W.shot.r (pow(x, 0) === 1). Since allcut-r62 EVERY damaging hit — spine
+   * touches included — advances the shared counter, so launchers gain growth in the early melee
+   * they used to only survive. ref: shotgrow-r33, allcut-r62 */
+    if (ab.shotR || ab.cycle || ab.mult || ab.fan || (WEAPONS[f.weapon].shot && WEAPONS[f.weapon].shot.hex)) f.shotStep++;   // returngrow-r37: the shared counter serves every shot-growth axis — bendspark-r61 joined the wand's bend, and hexfam-r68 retired the gate's ab.turn term in favour of shot.hex: the FAMILY FLIGHT LAW is itself a growth axis (the hex deepens off this counter), so every spell row feeds it. For the wand the gate opens on exactly the same hits as before (bit-identical counter timeline); the scroll joins it for the first time. cycle caps at READ time (CYCLE_STEPS), shotR stays uncapped (the rim is its wall). ref: returngrow-r37, bendspark-r61, hexfam-r68
     G.stats.hits++;
   }
 
@@ -2108,23 +2094,15 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     if (!b.alive) return;
     const gap = bladeBodyGap(bladeCircles(a.pos.x, a.pos.y, a.wAngle, a.weapon, a.slot === 0 ? C0 : C1, a.fl.u, leadFlip(a.weapon, a.spin), a.lenStep), b.pos.x, b.pos.y);
     if (a.bladeStuck) {
-      /* DEEP-DISENGAGE GATE (law 4's re-arm-side sanctioned extension, owner
-       * option 1 2026-10-23 "do 1"; the trigger side — one damage per touch —
-       * is unchanged). reArmPad clearance alone let a rocked blade machine-gun
-       * fresh legal hits (seed 24267: 3 hits in 95 ticks — "looks very ugly").
-       * Re-arm now needs pad clearance AND either a genuine disengagement
-       * (peak clearance since the latch >= reArmDeep 85px — above the whole
-       * middle band: the episode rocks 69–79px peaks, naturals' genuine
-       * re-hits clear >=91px fast / >=120px typical) or reArmWait 90 ticks out
-       * (a rocked or hovering blade re-hits at most once per 0.75s — a poke
-       * rhythm, never a buzzsaw). Peak is updated BEFORE the check so a
-       * single-substep exit that blows straight through the band still re-arms
-       * on the spot. A buried blade can never re-arm (clear > pad fails), so a
-       * latched touch stays exactly one touch. The damage gate rode the latch —
-       * even the knock-only contacts of the retired projectile rule (allcut-r62:
-       * every touch cuts now) obeyed it identically; solidity is untouched — the resolver runs every substep
-       * regardless, this gates EVENTS only, the same division of labour as law
-       * 2's parryGate. measure.mjs's law-4 replica mirrors this exact block. */
+      /* DEEP-DISENGAGE GATE (law 4's re-arm-side sanctioned extension; the trigger side — one
+   * damage per touch — is unchanged). reArmPad clearance alone let a rocked blade machine-gun
+   * fresh legal hits. Re-arm now needs pad clearance AND either a genuine disengagement (peak
+   * clearance since the latch >= reArmDeep, set ABOVE the whole middle band a rocked blade
+   * occupies) or reArmWait ticks out — a poke rhythm, never a buzzsaw. Peak is updated BEFORE the
+   * check so a single-substep exit that blows straight through the band still re-arms on the
+   * spot. A buried blade can never re-arm (clear > pad fails), so a latched touch stays exactly
+   * one touch. Solidity is untouched: the resolver runs every substep regardless — this gates
+   * EVENTS only, the same division of labour as law 2's parryGate. ref: allcut-r62 */
       const clear = gap - CFG.bodyR;
       if (clear > a.bladeClearPeak) a.bladeClearPeak = clear;
       if (clear > CFG.reArmPad && (a.bladeClearPeak >= CFG.reArmDeep || G.t - a.bladeLatchTick >= CFG.reArmWait)) a.bladeStuck = false;
@@ -2134,28 +2112,19 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     a.bladeStuck = true;
     a.bladeLatchTick = G.t; a.bladeClearPeak = 0;
 
-    /* ALLCUT — EVERY weapon cuts on body touch (owner ruling 2026-11-02: "all
-     * weapons from now on deals damage if they touch the opponets body… i
-     * realized launchers are boring to watch in the beginning as they have a
-     * hard time hitting the opponents and gaining growth"). This RETIRES the
-     * PROJECTILE-WEAPON rule (owner decision 2026-10-19: "ranged weapons
-     * (shooting projectiles), their weapons do not damage, only their
-     * projetiles" — which restated and widened the v0.7.2 tangential-only rule
-     * of 2026-10-17) AND its last remnant, the shield's tangential no-damage
-     * clause ("parries only" — open question 4 answered in mechanism; its
-     * balance question stays open). The knock-only contact class is GONE: every
-     * fresh latched touch is a damaging hit — HP, knock, hitstop, flash, the
-     * hit event and grow() — for launchers and the shield exactly as for melee.
-     * The contact stays solid on the same re-arm latch as ever (law 3's
-     * solidity — bodies cannot walk through the spine). The projectile remains
-     * the launcher's growth ENGINE but is no longer its only damage. Disclosed,
-     * not balanced (#674): launcher spines chip at the base WDEF dmg 1 in
-     * close, waking every dormant launcher-side trigger — the shield's
-     * trait.dmg 0.7 fires for the first time ever, the wand's bend deepens on
-     * spine touches too, and shield+shield loses its cannot-KO stall. Blade-vs-
-     * blade parries and swats are untouched. measure.mjs law 4's replica
-     * mirrors the gate-free law; its law 7s is RETIRED with the rule (edited
-     * per the owner-go rule, never run here). */
+    /* ALLCUT — EVERY weapon cuts on body touch (owner ruling 2026-11-02: "all weapons from now
+   * on deals damage if they touch the opponets body… i realized launchers are boring to watch in
+   * the beginning as they have a hard time hitting the opponents and gaining growth").
+   * This RETIRES the PROJECTILE-WEAPON rule (ranged weapons deal no spine damage) AND its last
+   * remnant, the shield's tangential no-damage clause. The knock-only contact class is GONE:
+   * every fresh latched touch is a damaging hit — HP, knock, hitstop, flash, the hit event and
+   * grow() — for launchers and the shield exactly as for melee. The contact stays solid on the
+   * same re-arm latch as ever (law 3's solidity: bodies cannot walk through the spine). The
+   * projectile remains the launcher's growth ENGINE but is no longer its only damage.
+   * DISCLOSED, not balanced: launcher spines chip at the base WDEF dmg in close, waking every
+   * dormant launcher-side trigger — the shield's trait.dmg fires for the first time, the wand's
+   * bend deepens on spine touches too, and shield+shield loses its cannot-KO stall. Blade-vs-blade
+   * parries and swats are untouched. ref: allcut-r62 */
     const kx = b.pos.x - a.pos.x, ky = b.pos.y - a.pos.y;
     const kd = Math.hypot(kx, ky) || 1;
     b.vel.x += (kx / kd) * CFG.hitKnock;
@@ -2179,34 +2148,27 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   }
 
   // @@sim/blade-vs-blade
-  /* ---- blade-vs-blade: the core contact law's solid pair (2026-10-16) ----
-   * Runs EVERY substep — no cooldown may skip it (the v0.5.1 cooldown skip
-   * was the tunneling ghost window: 100% of measured interpenetration lived
-   * inside it). Three jobs per substep, in order:
-   *   1. latch release — once the blades clear parryPad AND the flutter gate
-   *      (law 2's named re-arm gate, owner option 1 2026-10-21) has expired,
-   *      the next touch is fresh again (hysteresis; same pattern as
-   *      bladeStuck/reArmPad);
-   *   2. resolver — any overlap is pushed out along the TRUE contact normal
-   *      (bodies move, weapons ride rigidly), then body-vs-body and arena
-   *      are re-honoured position-only, and the approaching velocity is
-   *      killed: rendered frames never show interpenetration;
-   *   3. parry — a fresh exact touch (entry gap <= 0, rising edge of the
-   *      latch) flips BOTH spins (rule 5), shoves the bodies apart and emits
-   *      the event with the ENTRY poses, so the audit can recompute the touch
-   *      from exactly what triggered it. Every fresh contact is one parry;
-   *      the latch — not a timer — prevents re-fires during a sustained
-   *      press; the only other gate is the flutter gate on the RE-ARM (a
-   *      named law-2 extension: inside it the pair stays solid, no parry). */
-  /* Clinch spring (bind-prevention 2026-10-27, owner eyes-first): while the
-   * blade latch stays shut — blades inside the pad, a sustained interlock —
-   * a separation force ramps zero->full over CFG.clinchRamp ticks
-   * (smoothstep: no onset jerk) and pushes the two bodies apart along their
-   * own axis; it fades over clinchDecay once the blades clear. A force,
-   * never an impulse: the bind pushes itself apart for exactly as long as
-   * it exists, and open-space play (latch open, clinchT 0) feels nothing.
-   * The locked blades are the visible cause of the push — attributable,
-   * same ramp every time, no snapping, no warping. */
+  /* ---- blade-vs-blade: the core contact law's solid pair ----
+   * Runs EVERY substep — no cooldown may skip it (a cooldown skip was the tunneling ghost
+   * window: all measured interpenetration lived inside it). Three jobs per substep, in order:
+   *   1. latch release — once the blades clear parryPad AND the flutter gate (law 2's named
+   *      re-arm gate) has expired, the next touch is fresh again (hysteresis, the same pattern
+   *      as bladeStuck/reArmPad);
+   *   2. resolver — any overlap is pushed out along the TRUE contact normal (bodies move,
+   *      weapons ride rigidly), then body-vs-body and arena are re-honoured position-only, and
+   *      the approaching velocity is killed: rendered frames never show interpenetration;
+   *   3. parry — a fresh exact touch (entry gap <= 0, rising edge of the latch) flips BOTH spins
+   *     (rule 5), shoves the bodies apart and emits the event with the ENTRY poses, so the audit
+   *     can recompute the touch from exactly what triggered it. Every fresh contact is one
+   *     parry; the latch — not a timer — prevents re-fires during a sustained press. Inside the
+   *     flutter gate the pair stays solid, no parry. */
+  /* Clinch spring (bind-prevention): while the blade latch stays shut — blades inside the pad,
+   * a sustained interlock — a separation force ramps zero->full over CFG.clinchRamp ticks
+   * (smoothstep: no onset jerk) and pushes the two bodies apart along their own axis; it fades
+   * over clinchDecay once the blades clear. A FORCE, never an impulse: the bind pushes itself
+   * apart for exactly as long as it exists, and open-space play (latch open, clinchT 0) feels
+   * nothing. The locked blades are the visible cause of the push — attributable, same ramp every
+   * time, no snapping, no warping. */
   function clinchForce(G, f, sdt) {
     const L = G.clinchT / CFG.clinchRamp;
     if (L <= 0) return;
@@ -2262,22 +2224,17 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     const eas = a.spin, ebs = b.spin;       // entry SPINS, signed and pre-flip: the edge-leading mirror the audit recomputes is the ENTRY one (the parry's recoil flips them after this capture)
 
     if (egap < 0) {
-      /* resolver, v0.8-step1: MULTI-CONTACT accumulation. A single deepest
-       * pair jams whenever two contacts carry opposing normals — a blade
-       * wedged in a concave mouth, or two wide heads crossing in an X (the
-       * axe's failure mode at the step-1 baseline: 9.9px rendered depth,
-       * seeds 7/8). Each iteration pushes along the overlap-weighted sum of
-       * ALL contacting circle pairs; opposed laterals cancel and the axial
-       * components add, which is exactly the direction that opens scissors.
-       * Single-contact cases reduce to the old behaviour (sum = deepest).
-       * Iteration cap stays for the pathological wall-pin (GAMES.md caveat). */
-      /* v0.8-step1b perf: one prefiltered sequential-impulse loop. The old
-       * loop re-ran parryGap (a second full circle-pair scan) every iteration
-       * — during a sustained clash at high spin that made clash ticks the
-       * hottest code in the sim and the browser frame budget slipped into
-       * slow-motion (owner report, seed 69737). The sequential pass already
-       * knows its deepest contact; it IS the gap. Axis prefilter skips the
-       * hypot for every pair that cannot reach. */
+      /* resolver: MULTI-CONTACT accumulation. A single deepest pair jams whenever two contacts
+   * carry opposing normals — a blade wedged in a concave mouth, or two wide heads crossing in
+   * an X. Each iteration pushes along the overlap-weighted sum of ALL contacting circle pairs;
+   * opposed laterals cancel and the axial components add, which is exactly the direction that
+   * opens scissors. Single-contact cases reduce to the old behaviour (sum = deepest). The
+   * iteration cap stays for the pathological wall-pin. */
+      /* perf: one prefiltered sequential-impulse loop. The old loop re-ran parryGap (a second full
+   * circle-pair scan) every iteration — during a sustained clash at high spin that made clash
+   * ticks the hottest code in the sim and the browser frame budget slipped into slow-motion.
+   * The sequential pass already knows its deepest contact; it IS the gap. The axis prefilter
+   * skips the hypot for every pair that cannot reach. */
       let gap = egap, nx = pg.nx, ny = pg.ny, gapPrev = egap, nudged = false;
       /* adaptive iterations (v0.8-step1d; stall test corrected 2026-10-28):
        * progress is `deep` RISING toward 0, so a stall is `deep - gapPrev <
@@ -2387,124 +2344,85 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   }
 
   // @@sim/projectiles
-  /* ---- projectiles (v0.7 as the sling's shot; generalised v0.9–v1.0 into
-   * the shot system; owner decisions 2026-10-16/17/19) ----
-   * Firing: one release per full revolution — spin rate IS fire rate, no
-   * cooldown and no ammo stat.
-   * LAUNCH-POINT doctrine (owner decision 2026-10-19: "when the weapon is
-   * radial, shoot from the tip, when it is the opposite, shoot from the
-   * middle, like bow and crossbow"): a RADIAL-hold launcher releases at the
-   * spine TIP (t = 1, staff/wand — 'tip'); a TANGENTIAL-hold launcher
-   * releases at the spine MIDDLE (t = 0.5, the grip point on the rim). There
-   * the DIRECTION splits per weapon: shooting weapons (bow, crossbow —
-   * 'radial') send the shot radially OUT of the grip, offset by shot.off so
-   * the head starts at the belly (the nocked arrow's tail on the string) — a
-   * bow shoots where its belly faces, not along its limbs; thrown weapons
-   * (boomerang, shuriken — no flag) leave tangentially in the spin direction.
-   * Every shot carries the thrower's CURRENT dmg at launch (one damage number
-   * per fighter) and flies without gravity or drag; the boomerang alone ORBITS, and the spell
-   * rows curve on the FAMILY FLIGHT LAW (hexfam-r68 — bornBend derives the bend off shot.hex +
-   * the row's speed). Per-shot contact rules (GAMES.md "Projectile weapons"):
-   *   - vs enemy body: a damaging hit (law 1); the shot is consumed by it,
-   *     so one-damage-per-touch (law 4) is automatic;
-   *   - vs enemy blade: SWAT — destroyed, nothing else happens: no parry
-   *     event, no spin flip on either fighter (the named rule-5 exception;
-   *     readable on the reveal card and in the legend); catchonly-r56: the
-   *     returning boomerang is EXEMPT — the loop is immune to swats (owner:
-   *     "i want the boomerang to be immune to swats"), blades pass through it;
-   *   - vs rim: dies (law 1 — walls never damage); the sanctioned exceptions
-   *     are the shuriken star's ETERNAL RICOCHET (shot.ricochet, ricolaw-r41 —
-   *     the rim never kills a star; it mirrors forever at row speed), the
-   *     boomerang's pierce (shot.returns, freeloop-r38 — it flies past the
-   *     wall and loops home back through it), and the crossbow's NAIL
-   *     (shot.pin, pinlaw-r44 — the bolt sticks just inside the rim as a shot
-   *     AT REST: the foe's body touch is the law-4 hit that consumes it, the
-   *     foe's blade swats it off, an enemy shot crosses it out, the OWNER
-   *     walks through his own nails, and the roll clears them);
-   *   - vs another shot: both cancel — ENEMY shots only (multgrow-r42, owner
-   *     ruling 2026-11-01, option A): owner-blindness is game-wide — a shot
-   *     never crosses its OWN side's shots, period; friendly fire does not
-   *     exist; the returning boomerang is the standing exemption, one-sided
-   *     since snapfix-r57 (owner: "i want other projectiles hitting the
-   *     boomerang to be destroyed, but not the boomerang"): an enemy
-   *     projectile that touches the loop DIES on it while the loop flies on;
-   *     loop vs loop is a normal BOTH-DIE cross again (catchghost-r58, owner:
-   *     "what happens if both bots have boomerang and they collide? i want them
-   *     to both get destroyed" — r56's mutual pass reversed), triggered arc
-   *     against arc; blades still pass through the loop with no effect at
-   *     all (the swat test skips it). (History: ricolaw-r41 exempted own-star pairs for the swarm;
-   *     multgrow-r42 generalized the exemption when the bow's rain made
-   *     same-owner crossings a self-annihilation pathology);
-   *   - vs its OWNER (returning shots only): catchonly-r56 — the catch is
-   *     BACK (nocatch-r55 reverted at the owner's eye: "no it look bad,
-   *     revert it") and it is now the ONLY thing that ends a returning
-   *     flight: PURE TOUCH on the drawn arc (touchorbit-r53 window,
-   *     chaosorbit-r54 arc read), armed once the throw has cleared the body
-   *     with BOTH the pivot disc and the arc by CATCH_ARM — the arc-aware arm
-   *     is what killed the departure-tick self-catch the owner caught by eye
-   *     ("the boomerang was immediately consumed when it was thrown"). The
-   *     cycle-growth step rides the catch again; the banked spin rethrows
-   *     instantly after it (instantthrow-r59 — the r54
-   *     hand-rest beat was removed);
-   *   - no friendly fire: a shot is never tested against its owner's body,
-   *     blade or SHOTS (owner-blindness, the last extended by multgrow-r42),
-   *     so it can never self-destruct, self-swat or self-cross —
-   *     the catch above is the sanctioned exception, and it deals nothing;
-   *   - law 3 turns asymmetric: a shot has no body behind it to push, so it
-   *     LOSES every collision (destroyed, never separated) and never overlaps
-   *     blade, body, rim or another shot on a rendered frame — detection
-   *     guaranteed by the projectile substep budget in stepPhysics.
-   * Drawn shape vs hitbox: disc-shaped shots are drawn at exactly shot.r;
-   * arrows/bolts (shot.len, kept as fingerprint-hashed flight state) trail behind the
-   * hitbox circle, which sits at the head. The returning boomerang is the third case
-   * (chaosorbit-r54): the copy art's OWN covering circles (boomCircles) are the hitbox —
-   * body, blade, cross and catch all read the drawn arc, so what the eye sees is what touches.
-   * VOCABULARY (renamed 2026-10-28 at owner word "renmae now"; the old generic
-   * was 'stone', a legacy of the removed sling): the sim-level name for any
-   * projectile is 'shot' — G.shots, G.shotSid, G.auditShots, the
-   * shotFire/shotRim/shotCross events, W.shot data, the hit event's shot:true
-   * flag — which now MATCHES the audience word, so one concept carries one name
-   * through every layer. Per-shot on-screen names stay (arrow, bolt, knife, orb,
-   * spark, boomerang, star, javelin, page, scroll) via shot.what. The old
-   * 'stone' vocabulary survives only in dated records (git history, the
-   * 2026-10-28 chainlaw output, GAMES.md's dated entries) and in the frozen bench
-   * page's snapshots — that page left the tree at the 2026-10-28 checkpoint clean
-   * (the owner holds a copy; its generator and smoke stay, dormant) and it was
-   * never hand-edited. Behaviour-identical: no stamp bump; the
-   * fingerprints re-baselined (.qa/fp-pause-after.json -> .qa/fp-shotvocab.json)
-   * because event keys are hash inputs, with neutrality proven by identical
-   * cellscan/natscan/projectile-fix numbers. */
+  /* ---- projectiles: the shot system ----
+   * Firing: one release per full revolution — spin rate IS fire rate, no cooldown, no ammo stat.
+   * LAUNCH-POINT doctrine (owner decision 2026-10-19): a RADIAL-hold launcher releases at the
+   * spine TIP (t = 1, staff/wand — 'tip'); a TANGENTIAL-hold launcher releases at the spine
+   * MIDDLE (t = 0.5, the grip point on the rim). There the DIRECTION splits per weapon: shooting
+   * weapons (bow, crossbow — 'radial') send the shot radially OUT of the grip, offset by shot.off
+   * so the head starts at the belly — a bow shoots where its belly faces, not along its limbs;
+   * thrown weapons (boomerang, shuriken — no flag) leave tangentially in the spin direction.
+   * Every shot carries the thrower's CURRENT dmg at launch and flies without gravity or drag;
+   * the boomerang alone ORBITS, and the spell rows curve on the FAMILY FLIGHT LAW (hexfam-r68 —
+   * bornBend derives the bend off shot.hex + the row's speed).
+   * PER-SHOT CONTACT RULES:
+   *   - vs enemy body: a damaging hit (law 1); the shot is consumed by it, so one-damage-per-touch
+   *     (law 4) is automatic;
+   *   - vs enemy blade: SWAT — destroyed, nothing else happens: no parry event, no spin flip on
+   *     either fighter (the named rule-5 exception). catchonly-r56: the returning boomerang is
+   *     EXEMPT — the loop is immune to swats, blades pass through it;
+   *   - vs rim: dies (law 1 — walls never damage). Sanctioned exceptions: the shuriken star's
+   *     ETERNAL RICOCHET (shot.ricochet, ricolaw-r41 — the rim never kills a star; it mirrors
+   *     forever at row speed), the boomerang's pierce (shot.returns, freeloop-r38 — it flies past
+   *     the wall and loops home back through it), and the crossbow's NAIL (shot.pin, pinlaw-r44 —
+   *     the bolt sticks just inside the rim as a shot AT REST: the foe's body touch is the law-4
+   *     hit that consumes it, the foe's blade swats it off, an enemy shot crosses it out, the
+   *     OWNER walks through his own nails, and the roll clears them);
+   *   - vs another shot: both cancel — ENEMY shots only (multgrow-r42): owner-blindness is
+   *     game-wide, a shot never crosses its OWN side's shots, friendly fire does not exist. The
+   *     returning boomerang is the standing exemption, ONE-SIDED since snapfix-r57: an enemy
+   *     projectile that touches the loop DIES on it while the loop flies on; loop vs loop is a
+   *     normal BOTH-DIE cross again (catchghost-r58, owner: "what happens if both bots have
+   *     boomerang and they collide? i want them to both get destroyed"), triggered arc against
+   *     arc; blades still pass through the loop with no effect at all;
+   *   - vs its OWNER (returning shots only): catchonly-r56 — the catch is the ONLY thing that ends
+   *     a returning flight: PURE TOUCH on the drawn arc, armed once the throw has cleared the
+   *     body with BOTH the pivot disc and the arc by CATCH_ARM (the arc-aware arm is what killed
+   *     the departure-tick self-catch). The cycle-growth step rides the catch; the banked spin
+   *     rethrows instantly after it (instantthrow-r59);
+   *   - no friendly fire: a shot is never tested against its owner's body, blade or SHOTS, so it
+   *     can never self-destruct, self-swat or self-cross — the catch above is the sanctioned
+   *     exception, and it deals nothing;
+   *   - law 3 turns asymmetric: a shot has no body behind it to push, so it LOSES every collision
+   *     (destroyed, never separated) and never overlaps blade, body, rim or another shot on a
+   *     rendered frame — detection guaranteed by the projectile substep budget in stepPhysics.
+   * DRAWN SHAPE vs HITBOX: disc shots are drawn at exactly shot.r; arrows/bolts (shot.len, kept
+   * as fingerprint-hashed flight state) trail behind the hitbox circle, which sits at the head.
+   * The returning boomerang is the third case: the copy art's OWN covering circles (boomCircles)
+   * are the hitbox — body, blade, cross and catch all read the drawn arc, so what the eye sees is
+   * what touches.
+   * VOCABULARY: the sim-level name for any projectile is 'shot' (G.shots, G.shotSid,
+   * G.auditShots, the shotFire/shotRim/shotCross events, W.shot, the hit event's shot:true flag),
+   * matching the audience word. Per-shot on-screen names stay via shot.what. The old 'stone'
+   * vocabulary survives only in dated records.
+   * ref: hexfam-r68, catchonly-r56, ricolaw-r41, freeloop-r38, pinlaw-r44, multgrow-r42,
+   *      snapfix-r57, catchghost-r58, touchorbit-r53, chaosorbit-r54, instantthrow-r59 */
   const CS = [];          // foe-blade circle scratch for shot tests
 
-  /* LAUNCHER CONSOLIDATION (2026-10-28, owner-approved pre-skills cleanup): KNIFE_VOLLEY,
-   * SPELL_CYCLE and COPYW are gone, and with them the last four `f.weapon === ...` tests in
-   * fireShots. The launcher is now data-driven through W.shot: `revs` (revolutions per
-   * volley, default 1), `volley` ([d, l, degrees] anchors, WORLD px — see the knives row:
-   * deliberately outside the weaponScale loop), `cycle` (kind rotation, state f.cycleIdx)
-   * and `copy` (spawn at the art centre). Per-weapon shot behaviour now lives on the row
-   * next to its trait, which is where the skills pass will read it. Behaviour-identical:
-   * fingerprints 8/8 unchanged, and cellscan / natscan / projectile-fix numbers unchanged. */
-  /* fan-r43 (the knives' GROWING FAN, owner rulings 2026-11-01: "the knives sounds good, try and
-   * do that first" + eye-approve of the rate-0.5 probe, "it looks good already implement it"): the
-   * row's static 3-anchor volley is the tier-0 form; each fan tier adds ONE knife per side,
-   * launched from that side's outer anchor, spread ±(22 + k*FAN_SPREAD) degrees. Tier
-   * t = min(floor(shotStep * trait.fan), FAN_STEPS) — quantized so every growth is a visible step.
-   * Rows without trait.fan get the row array ITSELF back — bit-identical; the volley branch is
-   * knives-only, so no other launcher's cadence, geometry or hashes are touched. The row's three
-   * anchors are never mutated (the static fan identity — the bow owns the stream, the knives the fan). */
-  /* bendspark-r61 → hexfam-r68 — THE BEND's ONE consumer site: the birth turn of a spell. THE
-   * FAMILY FLIGHT LAW (owner ruling 2026-11-02: "from now on all magic/spell users should adopt
-   * the same mechanig as wand currently have, it looks good"): the bend is no longer the wand's
-   * trait — it is what MAGIC DOES. Every shot.hex row derives the SAME ladder off its own speed:
-   * (HEXFAM.base + HEXFAM.grow × min(f.shotStep, TURN_STEPS)) × speed ÷ HEXFAM.ref — the wand's
-   * blessed r62/r65 numbers ARE the standard (ref = the wand's 800 ⇒ the wand stays
-   * BIT-IDENTICAL, k = 1 exactly), and the radius language is speed-independent: every spell
-   * births on the ~889px arc and hunts down to the ~333px floor. The SIGN is a fresh G.rng roll
-   * PER THROW — the pure-chaos doctrine: magic never aims. Non-hex rows (every steel launcher)
-   * take the falsy branch: zero turn AND ZERO rng draws, so their streams stay byte-identical
-   * (the r61 law, now gated on the family flag). Birth snapshot only — in-flight shots never
-   * re-bend (the effR doctrine); the dormant curve branch in shotStep does the rest, and the
-   * r65 hex seek splits its authority exactly as before (row-generic since it was written). */
+  /* LAUNCHER CONSOLIDATION: KNIFE_VOLLEY, SPELL_CYCLE and COPYW are gone, and with them the
+   * last four `f.weapon === ...` tests in fireShots. The launcher is data-driven through W.shot:
+   * `revs` (revolutions per volley, default 1), `volley` ([d, l, degrees] anchors, WORLD px — see
+   * the knives row: deliberately outside the weaponScale loop), `cycle` (kind rotation, state
+   * f.cycleIdx) and `copy` (spawn at the art centre). Per-weapon shot behaviour lives on the row
+   * next to its trait. */
+  /* fan-r43 — the knives' GROWING FAN: the row's static 3-anchor volley is the tier-0 form;
+   * each fan tier adds ONE knife per side, launched from that side's outer anchor, spread
+   * ±(22 + k*FAN_SPREAD) degrees. Tier t = min(floor(shotStep * trait.fan), FAN_STEPS) — quantized
+   * so every growth is a visible step. Rows without trait.fan get the row array ITSELF back —
+   * bit-identical; the volley branch is knives-only, so no other launcher's cadence, geometry or
+   * hashes are touched. The row's three anchors are never mutated (the static fan identity — the
+   * bow owns the stream, the knives the fan). ref: fan-r43 */
+  /* bendspark-r61 -> hexfam-r68 — THE BEND's ONE consumer site: the birth turn of a spell.
+   * THE FAMILY FLIGHT LAW: the bend is not the wand's trait, it is what MAGIC DOES. Every
+   * shot.hex row derives the SAME ladder off its own speed:
+   * (HEXFAM.base + HEXFAM.grow × min(f.shotStep, TURN_STEPS)) × speed ÷ HEXFAM.ref — ref is the
+   * wand's own speed, so the wand stays BIT-IDENTICAL (k = 1 exactly), and the radius language is
+   * speed-independent: every spell births on the same wide arc and hunts down to the same floor.
+   * The SIGN is a fresh G.rng roll PER THROW — the pure-chaos doctrine: magic never aims.
+   * Non-hex rows (every steel launcher) take the falsy branch: zero turn AND ZERO rng draws, so
+   * their streams stay byte-identical. Birth snapshot only — in-flight shots never re-bend (the
+   * effR doctrine); the dormant curve branch in shotStep does the rest, and the hex seek splits
+   * its authority exactly as before. ref: bendspark-r61, hexfam-r68, hexspark-r65 */
   function bornBend(G, W, f) {
     if (!W.shot.hex) return 0;   // the family gate: steel flies straight; only hexed rows are born bent
     const bend = (HEXFAM.base + HEXFAM.grow * Math.min(f.shotStep, TURN_STEPS)) * (W.shot.speed / HEXFAM.ref);
@@ -2545,14 +2463,14 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     }
     G.pools.length = w;
   }
-  /* kindling-r82 — KINDLING / THE EMBER SPILL's machinery. The spell SHEDS coals in flight:
-   * fireShots stamps the birth-snapshot cadence (st.eiv — the effR doctrine: the stacks at the
-   * CAST), shotStep counts and calls spawnEmber; each coal snapshots its life/r/dmg AT THE DROP.
+  /* kindling-r82 — THE EMBER SPILL's machinery. The spell SHEDS coals in flight: fireShots
+   * stamps the birth-snapshot cadence (st.eiv — the effR doctrine: the stacks at the CAST),
+   * shotStep counts and calls spawnEmber; each coal snapshots its life/r/dmg AT THE DROP.
    * emberStep ticks the coals down; the foe's centre within r + half a body POPS one — a single
    * honest bite that CONSUMES the coal. THE GROWTH BRAKE (owner law): a pop is a zone event like
    * the pool's burn beat — no grow, no hex deepening, no slow-mo, no counter but its own (the
-   * emberPop event is its own punctuation); growth rides the METEOR's hit alone, "otherwise i
-   * think it is going to snowball very quickly". Expired coals die in place. */
+   * emberPop event is its own punctuation); growth rides the METEOR's hit alone. Expired coals
+   * die in place. ref: kindling-r82, kindlingfix-r83 */
   function spawnEmber(G, fs, st) {
     const f = fs[st.o];
     const gl = Math.min(f.shotStep, EMBER.steps);
@@ -2610,16 +2528,14 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     }
     return v;
   }
-  /* touchorbit-r53 — THE THROW SOLVE (the owner's solo prototype, ported near-verbatim): the
-   * boomerang's flight is an ARENA-CENTRED ELLIPSE through the release point. a is forced past
-   * the release radius (the orbit always reaches beyond the throw — and past the rim on its far
-   * arc), b is forced inside it, and of the four (orientation × traversal sense) solutions
-   * chaosorbit-r54 draws one AT RANDOM (owner: "i dont want ai aiming, it should be pure
-   * randomness, pure chaos" — the touchorbit-r53 best-tangent aim at the foe is retired whole).
-   * The per-throw jitter rides G.rng (the sim never touches Math.random) ⇒ an orbit FAMILY,
-   * deterministic per seed. The returned spread also overrides vx/vy (the true release tangent)
-   * and speed (the honest periapsis maximum speed·peak — the number the law-3 budget, the knock
-   * and om all read). */
+  /* touchorbit-r53 — THE THROW SOLVE: the boomerang's flight is an ARENA-CENTRED ELLIPSE
+   * through the release point. a is forced past the release radius (the orbit always reaches
+   * beyond the throw — and past the rim on its far arc), b is forced inside it, and of the four
+   * (orientation × traversal sense) solutions chaosorbit-r54 draws one AT RANDOM — pure chaos,
+   * no aiming at the foe. The per-throw jitter rides G.rng (the sim never touches Math.random),
+   * so the orbit FAMILY is deterministic per seed. The returned spread also overrides vx/vy (the
+   * true release tangent) and speed (the honest periapsis maximum speed*peak — the number the
+   * law-3 budget, the knock and om all read). ref: touchorbit-r53, chaosorbit-r54 */
   function orbitThrow(G, W, x, y, cyc) {
     const half = CFG.size / 2, ob = W.shot.orbit, rng = G.rng;
     const px = x - half, py = y - half;
@@ -2645,15 +2561,14 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     };
   }
 
-  /* chaosorbit-r54 — THE DRAWN ARC IS THE HITBOX. The flying boomerang is a COPY of the weapon art
-   * (the copy rule): a ~100px arc pivoted at copyCtr and oriented along its velocity — while its
-   * hitbox was the bare r=10 pivot disc. The eye watched the arc sit INSIDE a body for a quarter
-   * second with nothing dealt (owner catch, seed 3593: "the boomerang is clearly inside speedy but
-   * no damage is dealt"), and every later pass of a latched throw read dead for the same reason.
-   * The weapon-poly doctrine (draw and hitbox cannot drift apart) extended to the copy flight:
-   * these are the row's OWN covering circles, transformed exactly as drawPolySet's copy path
-   * transforms the art (offset by -copyCtr, rotated by the velocity heading). Body, blade, cross
-   * and catch tests all read them — what the eye sees is what touches. */
+  /* chaosorbit-r54 — THE DRAWN ARC IS THE HITBOX. The flying boomerang is a COPY of the weapon
+   * art (the copy rule): an arc pivoted at copyCtr and oriented along its velocity. While its
+   * hitbox was the bare pivot disc, the eye watched the arc sit INSIDE a body with nothing dealt,
+   * and every later pass of a latched throw read dead for the same reason. The weapon-poly
+   * doctrine (draw and hitbox cannot drift apart) extended to the copy flight: these are the
+   * row's OWN covering circles, transformed exactly as drawPolySet's copy path transforms the
+   * art (offset by -copyCtr, rotated by the heading). Body, blade, cross and catch tests all read
+   * them — what the eye sees is what touches. ref: chaosorbit-r54 */
   // @@sim/copy-rule
   /* ---- the copy rule's shared geometry — the flying copy of a thrown weapon (boomerang/star/javelin) is pivoted at the art
    * centroid and tumbles at COPYSPIN. The sim spawns, sweeps and catches with these and the renderer draws with the same
@@ -2691,12 +2606,11 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   const BOOM_CS2 = [];   // second scratch bank (catchghost-r58): the loop-pair cross tests arc against arc
   function boomCircles(G, st, out) {
     const w = G.fighters[st.o].weapon, ctr = copyCtr(w);
-    /* snapfix-r57 — THE HITBOX FOLLOWS THE DRAWN TUMBLE (owner screenshot: Speedy flashing from a
-     * hit while the drawn arc visibly sat away from him, "there is a gap between"): drawShot's copy
-     * path orients the flying arc by COPYSPIN (phaseT·0.05 — the countable tumble), NOT by the
-     * velocity heading; the chaosorbit-r54 hitbox read the heading, so the invisible arc could
-     * touch a body while the drawn arc pointed somewhere else — damage with a gap. The hitbox now
-     * reads the EXACT angle the renderer reads: what flashes is what touches. */
+    /* snapfix-r57 — THE HITBOX FOLLOWS THE DRAWN TUMBLE: drawShot's copy path orients the flying
+   * arc by COPYSPIN (phaseT*0.05 — the countable tumble), NOT by the velocity heading. While the
+   * hitbox read the heading, the invisible arc could touch a body while the drawn arc pointed
+   * somewhere else — damage with a gap. The hitbox now reads the EXACT angle the renderer reads:
+   * what flashes is what touches. ref: snapfix-r57, chaosorbit-r54 */
     const ang = COPYSPIN.boom ? G.phaseT * COPYSPIN.boom : Math.atan2(st.vy, st.vx);
     const c = Math.cos(ang), s = Math.sin(ang);
     out.length = 0;
@@ -2712,12 +2626,11 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     for (let ci = 0; ci < BC.length; ci += 3) { const d = Math.hypot(px - BC[ci], py - BC[ci + 1]) - BC[ci + 2] - pr; if (d < g) g = d; }
     return g;
   }
-  /* shotGap (chaosorbit-r54's generic shot-vs-shot arc-side helper) stays retired since
-   * catchonly-r56 — but this note's "the plain disc distance is the whole law" went stale at
-   * snapfix-r57/catchghost-r58: the cross test DOES have an arc side again, inline in its two
-   * returns branches (the one-sided test via boomGap, the pair test arc-against-arc through
-   * BOOM_CS/BOOM_CS2). The plain-disc distance is the whole law for every OTHER pair.
-   * (review-r60 comment correction; no code moved.) */
+  /* shotGap (the generic shot-vs-shot arc-side helper) stays retired since catchonly-r56 — but
+   * "the plain disc distance is the whole law" is NOT true for the boomerang: the cross test does
+   * have an arc side again, inline in its two returns branches (the one-sided test via boomGap,
+   * the pair test arc-against-arc through BOOM_CS/BOOM_CS2). The plain-disc distance is the whole
+   * law for every OTHER pair. ref: catchonly-r56, snapfix-r57, catchghost-r58, review-r60 */
 
   function fireShots(G, fs, sdt) {
     for (const f of fs) {
@@ -2725,13 +2638,13 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       const W = WEAPONS[f.weapon];
       if (!W.shot) continue;
       f.fireAcc += Math.abs(f.spin) * chillMul(f) * bloomMul(f) * sdt;   // affinity-r66 → chillfix-r71: fireAcc counts the ACTUAL swung revolutions — bloomfix-r77: a bloomed swing is a slow swing, the bank follows honestlyUAL swept angle (wAngle advances by spin×chill), so the cast cadence slows only as the swing slows — per-rev honesty, not a second slow on the body
-      /* SHOT-CADENCE MULTIPLIER SEAM (seam-r30, owner-authorized hook target). The weapon row and
-       * the fighter's skill BOTH contribute and they ADD (owner ruling: stacking adds); the result
-       * divides the accumulator's `need`, so an effective 2 fires the same volley twice as often.
-       * Cadence rather than extra projectiles per release, because `revs` already owns "how much
-       * spin per volley" and a fan already exists as `shot.volley` — a third way to mean "more
-       * shots" would be one too many. Guarded positive at boot. NO ROW DECLARES IT YET: this is the
-       * seam, not a carrier, so the sim is behaviour-identical until something uses it. */
+      /* SHOT-CADENCE MULTIPLIER SEAM (seam-r30). The weapon row and the fighter's skill BOTH
+   * contribute and they ADD (owner ruling: stacking adds); the result divides the accumulator's
+   * `need`, so an effective 2 fires the same volley twice as often. Cadence rather than extra
+   * projectiles per release, because `revs` already owns how much spin per volley and a fan
+   * already exists as `shot.volley` — a third way to mean more shots would be one too many.
+   * Guarded positive at boot. NO ROW DECLARES IT YET: this is the seam, not a carrier, so the sim
+   * is behaviour-identical until something uses it. ref: seam-r30 */
       const smul = 1 + (W.shot.mult || 0) + ((FIGHTERS[f.idx].skill && FIGHTERS[f.idx].skill.shotMult) || 0) + ((W.trait && W.trait.mult) || 0) * Math.min(f.shotStep, MULT_STEPS);   // multgrow-r42: the capped rain term — additive on the seam's axis per the stacking doctrine; shotStep serves the launchers like shotR/cycle serve melee
       const need = TAU * (W.shot.revs || 1) / (smul > 0 ? smul : 1);   // revolutions of accumulated spin per volley (knives 3, everyone else 1), scaled by the multiplier
       /* the birth radius (shotgrow-r33) — trait.shotR's ONE consumer site. A row without shotR
@@ -2741,19 +2654,16 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
        * audit's stored `sr` and the rim/swat/cross tests all read one constant radius per shot. */
       const effR = W.shot.r * Math.pow(1 + ((W.trait && W.trait.shotR) || 0), f.shotStep);
       /* the loop CYCLE growth (the boomerang's Return trait, returngrow-r37): speed and turn scale
-       * TOGETHER, so the loop radius (speed/turn) stays LOCKED while the period (2π/turn) shrinks —
-       * the throw reaches just as far and comes home sooner. Capped at CYCLE_STEPS at read time
-       * (the first capped growth axis: a faster loop has no physical wall — see the const).
-       * pow(x, 0) === 1 keeps every non-cycle row bit-identical. Birth snapshot only — the effR
-       * doctrine: in-flight shots never change. */
+   * TOGETHER, so the loop radius (speed/turn) stays LOCKED while the period shrinks — the throw
+   * reaches just as far and comes home sooner. Capped at CYCLE_STEPS at READ time (the first
+   * capped growth axis: a faster loop has no physical wall). pow(x, 0) === 1 keeps every non-cycle
+   * row bit-identical. Birth snapshot only — the effR doctrine: in-flight shots never change.
+   * ref: returngrow-r37 */
       const cyc = W.trait && W.trait.cycle ? Math.pow(1 + W.trait.cycle, Math.min(f.shotStep, CYCLE_STEPS)) : 1;
-    /* r38 SINGLETON (owner: "only 1 boomerang flying" — REAFFIRMED 2026-11-01, r59: "i know there
-     * is only one boomerang at a time from the same bot, but maybe when balancing we introduce
-     * more"): one returning shot per owner at a time — while it is out the gate holds and the
-     * accumulator KEEPS BANKING. The chaosorbit-r54 hand-rest gate was removed at
-     * instantthrow-r59 (the owner reversed his r54 eye: "just instantly throw
-     * it").
-     * Non-returns rows short-circuit on the falsy flag — bit-identical. */
+    /* SINGLETON (owner: "only 1 boomerang flying", reaffirmed at r59): one returning shot per
+   * owner at a time — while it is out the gate holds and the accumulator KEEPS BANKING. The
+   * hand-rest gate was removed at instantthrow-r59 ("just instantly throw it"). Non-returns rows
+   * short-circuit on the falsy flag — bit-identical. ref: freeloop-r38, instantthrow-r59 */
       if (f.figT > 0 && f.weapon === 'wand') f.fireAcc = Math.min(f.fireAcc, need);   // bloom-r73 — the bloomed wand banks exactly ONE comet; the poof instant answers with a single honest throw
       while (f.figT <= 0 && f.fireAcc >= need && !(W.shot.returns && G.shots.some(s => s.o === f.slot && s.returns))) {   // the singleton gate — instantthrow-r59: the banked revolution fires on the substep after the catch
         f.fireAcc -= need;
@@ -2793,7 +2703,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
               vx: bvx, vy: bvy,
               r: pR, speed: W.shot.speed * cyc, len: W.shot.len || 0,
               kind: kind, turn: bornBend(G, W, f) * cyc, bounce: W.shot.bounce || 0,   // bendspark-r61: the birth turn now comes off bornBend (row base + shared-counter growth, per-throw rng sign) — the old expression multiplied the row base by the SPIN SIGN (the retired pre-orbit boomerang semantics); no other row declares shot.turn, so every non-wand spawn stays exactly 0
-              ...(W.shot.ricochet ? { ricochet: true } : null), ...(W.shot.pin ? { pin: true } : null), ...(W.shot.skewer ? { skewer: true } : null), ...(W.shot.hex ? { hex: true } : null),   // hexspark-r65: the hex flag rides the restored flagfix line — and per the r64 STANDING LAW a spawn-line edit re-runs the whole flag battery (smoke-r64) with this landing. ricolaw-r41: `bounce` is a FROZEN HASH FIELD (fingerprint.mjs hashes it by name — always 0 since the budget law retired); the ricochet flag is row-owned flight state like the returns spread. flagfix-r64: these three spreads were COMMENT TEXT from r61 to r63 — the bendspark-r61 edit's new_text ran the comment marker past them, swallowing the flag law for the shuriken's eternal ricochet, the crossbow's nails and the javelin's skewer; restored as code on their own line (found at the owner's eye: "looks like all our pin logic doesnt work anymore")
+              ...(W.shot.ricochet ? { ricochet: true } : null), ...(W.shot.pin ? { pin: true } : null), ...(W.shot.skewer ? { skewer: true } : null), ...(W.shot.hex ? { hex: true } : null),   // hexspark-r65: the hex flag rides this spawn line — per the r64 STANDING LAW a spawn-line edit re-runs the whole flag battery with the landing. ricolaw-r41: `bounce` is a FROZEN HASH FIELD (fingerprint.mjs hashes it by name — always 0 since the budget law retired); the ricochet flag is row-owned flight state like the returns spread. flagfix-r64: these three spreads were swallowed by a comment marker from r61 to r63 and are restored as code on their own line — keep them here. ref: hexspark-r65, ricolaw-r41, flagfix-r64, pinlaw-r44, skewer-r46
               ...(W.shot.returns ? orbitThrow(G, W, sx2, sy2, cyc) : null),   // touchorbit-r53 flight state ONLY on returning rows — every other shot's hashed fields stay byte-identical; chaosorbit-r54: the solve reads no foe (pure chaos)
               dmg: f.dmg, born: G.t, x0: sx2, y0: sy2,
             });
@@ -2811,7 +2721,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
                     vx: svx, vy: svy,
                     r: pR, speed: W.shot.speed * cyc, len: W.shot.len || 0,
                     kind: kind, turn: bornBend(G, W, f) * cyc, bounce: W.shot.bounce || 0,   // bendspark-r61: the birth turn now comes off bornBend (row base + shared-counter growth, per-throw rng sign) — the old expression multiplied the row base by the SPIN SIGN (the retired pre-orbit boomerang semantics); no other row declares shot.turn, so every non-wand spawn stays exactly 0
-              ...(W.shot.ricochet ? { ricochet: true } : null), ...(W.shot.pin ? { pin: true } : null), ...(W.shot.skewer ? { skewer: true } : null), ...(W.shot.hex ? { hex: true } : null),   // hexspark-r65: the hex flag rides the restored flagfix line — and per the r64 STANDING LAW a spawn-line edit re-runs the whole flag battery (smoke-r64) with this landing. ricolaw-r41: `bounce` is a FROZEN HASH FIELD (fingerprint.mjs hashes it by name — always 0 since the budget law retired); the ricochet flag is row-owned flight state like the returns spread. flagfix-r64: these three spreads were COMMENT TEXT from r61 to r63 — the bendspark-r61 edit's new_text ran the comment marker past them, swallowing the flag law for the shuriken's eternal ricochet, the crossbow's nails and the javelin's skewer; restored as code on their own line (found at the owner's eye: "looks like all our pin logic doesnt work anymore")
+              ...(W.shot.ricochet ? { ricochet: true } : null), ...(W.shot.pin ? { pin: true } : null), ...(W.shot.skewer ? { skewer: true } : null), ...(W.shot.hex ? { hex: true } : null),   // hexspark-r65: the hex flag rides this spawn line — per the r64 STANDING LAW a spawn-line edit re-runs the whole flag battery with the landing. ricolaw-r41: `bounce` is a FROZEN HASH FIELD (fingerprint.mjs hashes it by name — always 0 since the budget law retired); the ricochet flag is row-owned flight state like the returns spread. flagfix-r64: these three spreads were swallowed by a comment marker from r61 to r63 and are restored as code on their own line — keep them here. ref: hexspark-r65, ricolaw-r41, flagfix-r64, pinlaw-r44, skewer-r46
                     ...(W.shot.returns ? orbitThrow(G, W, x, y, cyc) : null),   // touchorbit-r53 flight state ONLY on returning rows — every other shot's hashed fields stay byte-identical; chaosorbit-r54: the solve reads no foe (pure chaos)
                     dmg: f.dmg, born: G.t, x0: x, y0: y,          // launched with the thrower's current damage
                   });
@@ -2895,13 +2805,13 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   }
 
   /* skewer-r46 — THE JAVELIN'S SKEWER. Victim state f.skew = { phase 'carry'|'pin', t, dur,
-   * sx/sy (carry start), dx/dy (rim dest — along the FLIGHT LINE, javelincarry-r52), spinBase (the EXACT spin restore), bleedAcc, nx/ny
-   * (inward normal), cutArm, anchor (the impaling shot ref) }; the shot carries st.skewVictim
-   * (ref) + st.skewCarry (the swat-exempt grace flag). The pin reuses the NAIL machinery
-   * (pinned, speed 0, pnx/pny, snapped just inside the rim — the budget reads speed, the art
-   * reads the frozen flight line). Release: killShot's hook — ANY destruction of the anchor
-   * frees (the victim's blade cut, an enemy cross, ...), and the roll resets f.skew wholesale
-   * (the round-reset LAW). No pin clock: the crawl is the timer. */
+   * sx/sy (carry start), dx/dy (rim dest — along the FLIGHT LINE), spinBase (the EXACT spin
+   * restore), bleedAcc, nx/ny (inward normal), cutArm, anchor (the impaling shot ref) }; the shot
+   * carries st.skewVictim + st.skewCarry (the swat-exempt grace flag). The pin reuses the NAIL
+   * machinery (pinned, speed 0, pnx/pny, snapped just inside the rim — the budget reads speed,
+   * the art reads the frozen flight line). Release: killShot's hook — ANY destruction of the
+   * anchor frees, and the roll resets f.skew wholesale (the round-reset LAW). No pin clock: the
+   * crawl is the timer. ref: skewer-r46, javelincarry-r52 */
   function startSkewer(G, st, foe) {
     const half = CFG.size / 2;
     const sp = Math.hypot(st.vx, st.vy) || 1;
@@ -2985,12 +2895,12 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     emit(G, 'bleedTick', { to: f.slot, dealt: SKEWER.bleedDmg, hp: f.hp, kill: kill, x: f.pos.x, y: f.pos.y });
   }
 
-  /* affinity-r66 — THE TRIO STATUSES: two shallow victim fields (f.dot, f.chill), the SLOT LAW in
-   * applyPoison/applyChill, and dotStep mirroring skewBleed exactly (per-TICK rhythm, hp clamp,
-   * death + deathSeq, honest events — the proven DoT path). chillMul is the tempo multiplier the
-   * weapon-swing site reads (chillfix-r71, owner ruling: the slow never touches the body — the bot
-   * never drags or falls; the cadence follows the swing because casting is per-rev); it returns
-   * EXACTLY 1 with no chill, so every non-tome match stays bit-identical (x * 1 === x). */
+  /* affinity-r66 — THE TRIO STATUSES: two shallow victim fields (f.dot, f.chill), the SLOT LAW
+   * in applyPoison/applyChill, and dotStep mirroring skewBleed exactly (per-TICK rhythm, hp clamp,
+   * death + deathSeq, honest events). chillMul is the tempo multiplier the weapon-swing site reads
+   * (chillfix-r71: the slow NEVER touches the body — the bot never drags or falls; the cadence
+   * follows the swing because casting is per-rev); it returns EXACTLY 1 with no chill, so every
+   * non-tome match stays bit-identical. ref: affinity-r66, chillfix-r71 */
   function applyPoison(G, f) {
     const d = f.dot;
     if (d && d.k === 'poison') { d.n = Math.min(d.n + 1, TRIO.steps); d.ttl = TRIO.poisonTtl; }   // same status: DEEPEN + refresh
@@ -3060,16 +2970,16 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
         st.arc += om * sdt;
         st.age += sdt;
       } else if (st.turn) {                              // any other curving row — the wand's BENT SPARK since bendspark-r61 (dormant since the pre-orbit boomerang retired): the constant-rate heading rotation, speed magnitude unchanged (the substep budget reads st.speed and never sees the bend)
-        /* hexspark-r65 — THE HEX: the birth bend keeps authority (1−h), a SEEK authority h curves the
-         * spark toward the hexed foe. h = min(own.shotStep, TURN_STEPS)/TURN_STEPS, LIVE — not frozen at
-         * birth: when the hex deepens, ALL sparks in the air turn hostile at once (the snowball the owner
-         * asked to SEE). AUTHORITY IS CONSERVED: |(1−h)·turn + h·|turn|·s| ≤ |turn| ≤ the r62 cap, so the
-         * never-orbit law (333px radius floor — orbiting is the boomerang's soul) holds BY CONSTRUCTION,
-         * and st.turn itself is never rewritten (frozen at birth, the r61 law). spellform-r69: h now has a
-         * FLOOR (SEEK_H0 0.3) at the owner's flight-tuning ruling (*"i just want it to hit the opponent
-         * more"*) — the h=0 byte-identity with the r62 bend is RETIRED BY THAT RULING (he owns the flight;
-         * the wand bends and hunts with the family). NO new rng draws: the seek reads positions, so every
-         * rng stream (the wand's included) stays untouched. */
+        /* hexspark-r65 — THE HEX: the birth bend keeps authority (1-h), a SEEK authority h curves the
+   * spark toward the hexed foe. h = min(own.shotStep, TURN_STEPS)/TURN_STEPS, LIVE — not frozen at
+   * birth: when the hex deepens, ALL sparks in the air turn hostile at once (the snowball the
+   * owner asked to SEE). AUTHORITY IS CONSERVED: |(1-h)*turn + h*|turn|*s| <= |turn| <= the row
+   * cap, so the never-orbit law (the radius floor — orbiting is the boomerang's soul) holds BY
+   * CONSTRUCTION, and st.turn itself is never rewritten (frozen at birth). spellform-r69: h has a
+   * FLOOR (SEEK_H0) at the owner's flight-tuning ruling — the h=0 byte-identity with the old bend
+   * is RETIRED BY THAT RULING (he owns the flight; the wand bends and hunts with the family).
+   * NO new rng draws: the seek reads positions, so every rng stream stays untouched.
+   * ref: hexspark-r65, spellform-r69, bendspark-r61 */
         let tv = st.turn;
         if (st.hex) {
           const own = G.fighters[st.o];
@@ -3087,7 +2997,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
         st.vy = st.vx * ts + st.vy * tc; st.vx = nvx;
       }
       if (st.skewCarry) { const sv = st.skewVictim, k = sv.skew;
-        if (k.phase === 'carry') {                           // the sinkalign-r50 SINK (owner: "it is already moving towards the centre of the bot… we can fix this by making it smooth"): the stuck spear slides from the impact point to the body centre on a SMOOTHSTEP of the carry progress (zero velocity at both ends — it sticks first, then buries). javelincarry-r52: the facing is NEVER touched here — vx/vy stay the throw's flight vector through the carry, the arrival and the drive (no turn to the rim; the r50 slerp/lerp turns are retired at the owner's eye)
+        if (k.phase === 'carry') {                           // the sinkalign-r50 SINK (owner: "it is already moving towards the centre of the bot… we can fix this by making it smooth"): the stuck spear slides from the impact point to the body centre on a SMOOTHSTEP of the carry progress (zero velocity at both ends — it sticks first, then buries). javelincarry-r52: the facing is NEVER touched here — vx/vy stay the throw's flight vector through the carry, the arrival and the drive (no turn to the rim). ref: sinkalign-r50, javelincarry-r52
           const a0 = Math.min(1, k.t / k.dur), a = a0 * a0 * (3 - 2 * a0);
           st.skewOx = k.ox0 * (1 - a); st.skewOy = k.oy0 * (1 - a);
           st.x = sv.pos.x + st.skewOx; st.y = sv.pos.y + st.skewOy;
@@ -3157,12 +3067,12 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       }
       shots[w++] = st;
     }
-    /* pinlaw-r44 perf surgery: partition the NAILS to the tail of the compacted window, then let
-     * the outer loop BREAK at the first one — nail×nail pairs are exempt by law ("nails do not
-     * fight nails"), so the outer pass only needs flier×flier and flier×nail: O(n²) → O(fliers×n)
-     * at 444 nails, and the no-cap ruling stands. The swap partition is a no-op when nothing is
-     * pinned (every non-crossbow cell keeps its exact shot order — bit-identical); among nails
-     * the order shift is invisible (static art on the rim). */
+    /* pinlaw-r44 perf: partition the NAILS to the tail of the compacted window, then let the outer
+   * loop BREAK at the first one — nail x nail pairs are exempt by law ("nails do not fight nails"),
+   * so the outer pass only needs flier x flier and flier x nail: O(n^2) -> O(fliers x n), and the
+   * no-cap ruling stands. The swap partition is a no-op when nothing is pinned (every
+   * non-crossbow cell keeps its exact shot order — bit-identical); among nails the order shift is
+   * invisible (static art on the rim). ref: pinlaw-r44 */
     { let nMov = 0;
       for (let pi = 0; pi < w; pi++) if (!shots[pi].pinned) { const psw = shots[nMov]; shots[nMov] = shots[pi]; shots[pi] = psw; nMov++; } }
     for (let i = 0; i < w; i++) {                        // shot-vs-shot cancels both (owner rule)
@@ -3173,7 +3083,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
         const B = shots[j];
         if (B.dead) continue;
         if (A.o === B.o) continue;   // multgrow-r42 (owner ruling 2026-11-01, option A "a, do that"): owner-blindness extends to shot-vs-shot — NO friendly fire, period. Subsumes ricolaw-r41's star-only exemption (same intent, now every shot class): the bow probe found cadence growth made consecutive launches self-annihilate under the old cross rule (~90% of fires at uncapped rate 1.0 died on the volley's own arrows). Enemy pairs still cancel both below below
-        if (A.pinned && B.pinned) continue;   // pinlaw-r44: NAILS DO NOT FIGHT NAILS — a static pair can never visibly resolve, and two enemy bolts pinned side by side annihilating would read as a bug (the owner's own r41 bug-look doctrine); with the tail partition below this line is belt-and-braces — the outer loop breaks at the first nail, so nail×nail pairs are never even reached (the landing smoke found the O(n²) wall at 444+ nails; the no-cap ruling stands, the partition is the engineering answer). A nail still ends on a body, a blade, or an IN-FLIGHT enemy shot
+        if (A.pinned && B.pinned) continue;   // pinlaw-r44: NAILS DO NOT FIGHT NAILS — a static pair can never visibly resolve, and two enemy bolts pinned side by side annihilating would read as a bug. With the tail partition below this line is belt-and-braces: the outer loop breaks at the first nail, so nail x nail pairs are never even reached (the partition is the engineering answer to the O(n^2) wall; the no-cap ruling stands). A nail still ends on a body, a blade, or an IN-FLIGHT enemy shot. ref: pinlaw-r44
         let xTouch;
         if (A.returns && B.returns) {   // catchghost-r58 (owner: "what happens if both bots have boomerang and they collide? i want them to both get destroyed"): loop meets loop is a normal cross again — r56's mutual pass REVERSED — and it triggers on the DRAWN ARCS (both hitboxes are their blade sweeps), arc circle against arc circle
           const BC = boomCircles(G, A, BOOM_CS), DC = boomCircles(G, B, BOOM_CS2);
@@ -3194,14 +3104,12 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
           }
           A.dead = true; B.dead = true;
           killShot(G, A, 'cross', null, 0); killShot(G, B, 'cross', null, 0);
-          /* break (2026-10-28, owner go) — without it the inner loop keeps testing the now-dead A
-           * against later shots, so killShot(A,'cross') fires twice: a duplicate shotCross event
-           * and a double G.stats.crossed++. Measured on the 484-cell baseline: 3 in 415,580 shots,
-           * all boomerang cells — the roster's largest shot (r 10) and its only curving one
-           * (turn 2.6), so a returning boomerang meets a freshly launched one. DISCLOSED trade-off:
-           * A now cancels ONE opponent per tick, so a third shot touching only the dead A survives
-           * (it did not before). Law 4s caught this exactly as designed; the defect was here, not
-           * in measure.mjs's addGone, which already dedupes and reports. */
+          /* break — without it the inner loop keeps testing the now-dead A against later shots, so
+   * killShot(A,'cross') fires twice: a duplicate shotCross event and a double G.stats.crossed++.
+   * It showed only in boomerang cells — the roster's largest shot and its only curving one, so a
+   * returning boomerang meets a freshly launched one. DISCLOSED trade-off: A now cancels ONE
+   * opponent per tick, so a third shot touching only the dead A survives (it did not before).
+   * Law 4s caught this exactly as designed. */
           break;
         }
       }

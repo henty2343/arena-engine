@@ -4,10 +4,10 @@
 Contains: region map, top-level symbol index and no-read data ranges for `previews/spinclash-preview.html`.
 Read when: before opening the canonical. Token cost: see STATE.md §Documentation cost.
 
-Built from md5 `29520663e72f3d7702eb0a5b880e5ab1` · stamp `links-r87` · 4,857 lines.
+Built from md5 `0b7fd414aec732cba127e353c4dac21a` · stamp `links-r87` · 4,765 lines.
 **Line numbers are valid only at that md5.** Symbol names are the durable handle — grep the name.
 
-Canonical ≈ 107,449 tokens; script block 0 carries 901 comment spans ≈ 51,808 tokens.
+Canonical ≈ 105,839 tokens; script block 0 carries 901 comment spans ≈ 50,198 tokens.
 
 ## Regions
 
@@ -20,23 +20,23 @@ Canonical ≈ 107,449 tokens; script block 0 carries 901 comment spans ≈ 51,80
 | data/flail-chain | 836–908 | 1,528 | 895 |
 | core/weapon-geometry | 909–980 | 1,256 | 398 |
 | data/len-growth | 981–1536 | 15,129 | 7,390 |
-| sim/rng | 1537–1760 | 3,894 | 1,849 |
-| sim/physics | 1761–1904 | 2,410 | 1,194 |
-| sim/chain | 1905–2180 | 4,695 | 2,318 |
-| sim/blade-vs-blade | 2181–2388 | 3,392 | 1,550 |
-| sim/projectiles | 2389–2656 | 5,024 | 1,293 |
-| sim/copy-rule | 2657–3216 | 13,269 | 5,877 |
-| render/header | 3217–3248 | 446 | 88 |
-| render/actors | 3249–3454 | 3,745 | 1,934 |
-| render/reveal | 3455–3487 | 593 | 353 |
-| render/fx | 3488–3638 | 3,005 | 852 |
-| render/canvas | 3639–3698 | 776 | 396 |
-| render/app-state | 3699–3716 | 203 | 124 |
-| render/draw | 3717–3948 | 3,467 | 1,642 |
-| render/shot-art | 3949–4664 | 12,470 | 7,691 |
-| app/loop | 4665–4733 | 1,270 | 410 |
-| app/input | 4734–4752 | 266 | 190 |
-| app/api | 4753–4774 | 477 | 349 |
+| sim/rng | 1537–1755 | 3,814 | 1,847 |
+| sim/physics | 1756–1893 | 2,360 | 1,193 |
+| sim/chain | 1894–2149 | 4,325 | 2,313 |
+| sim/blade-vs-blade | 2150–2345 | 3,285 | 1,547 |
+| sim/projectiles | 2346–2571 | 4,316 | 1,282 |
+| sim/copy-rule | 2572–3124 | 12,973 | 5,875 |
+| render/header | 3125–3156 | 446 | 88 |
+| render/actors | 3157–3362 | 3,745 | 1,934 |
+| render/reveal | 3363–3395 | 593 | 353 |
+| render/fx | 3396–3546 | 3,005 | 852 |
+| render/canvas | 3547–3606 | 776 | 396 |
+| render/app-state | 3607–3624 | 203 | 124 |
+| render/draw | 3625–3856 | 3,467 | 1,642 |
+| render/shot-art | 3857–4572 | 12,470 | 7,691 |
+| app/loop | 4573–4641 | 1,270 | 410 |
+| app/input | 4642–4660 | 266 | 190 |
+| app/api | 4661–4682 | 477 | 349 |
 
 ## GENERATED DATA — do not read
 
@@ -47,7 +47,7 @@ Baked numeric blocks. Reading them costs thousands of tokens and teaches nothing
 
 Lines over 800 chars (mostly baked rows):
 
-130 · 361 · 461 · 647 · 737 · 747 · 810 · 813 · 818 · 820 · 823 · 825 · 827 · 830 · 1027–1034 · 1096–1097 · 2796 · 2814 · 3948
+130 · 361 · 461 · 647 · 737 · 747 · 810 · 813 · 818 · 820 · 823 · 825 · 827 · 830 · 1027–1034 · 1096–1097 · 3856
 
 ## Symbol index
 
