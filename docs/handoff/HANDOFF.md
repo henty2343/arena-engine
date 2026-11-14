@@ -1,8 +1,8 @@
-# HANDOFF v10 — arena-engine: make the repo token-friendly for AI agents
+# HANDOFF v11 — arena-engine: make the repo token-friendly for AI agents
 
 LOCATION: docs/handoff/HANDOFF.md — REPO-HOSTED. This file and BATCH3-STATUS.md live in the repo and
 are updated IN THE SAME COMMIT as every landing, so they are current as of HEAD by construction.
-Chat attachments of older handoffs (v7, v8, v9) are OBSOLETE. If any attached or pasted copy contradicts
+Chat attachments of older handoffs (v7, v8, v9, v10) are OBSOLETE. If any attached or pasted copy contradicts
 this file, THIS FILE WINS. Never put handoff files in docs/history/ — that folder is the frozen
 record, globbed by the doc tools; an extra file there fails lint (control C5).
 
@@ -14,7 +14,7 @@ FRESHNESS CHECK (run first, every session):
 THE FIRST TWO HASHES MUST MATCH. This file is updated in the same commit as every landing, so the
 commit that last updated it IS origin HEAD — that equality is the freshness invariant. If they differ,
 either this file is stale or something else landed: re-baseline from STATE.md and say what moved. Never
-trust this file over the repo. As of the #751 landing the origin HEAD was 63bb91c.
+trust this file over the repo. As of the #752 landing the origin HEAD was 361cbcb.
 The REPO outranks every prose document, including this one. STATE.md and docs/CODEMAP.md are
 generated and authoritative for all numbers.
 
@@ -24,10 +24,10 @@ Follow-ups: #749 = 4cc98d5 (index titles, mf-2 line re-paragraphed, AGENTS/READM
   #750 = 4f38866 (the 3,000-byte line-cap lint B3E plus the record of the #749 hash) — confirmed on origin.
   #751 = 63bb91c (the law-table follow-up — new .qa/law-proof.mjs asserts B1/B2/U1, the three laws
   that had NO assertion anywhere; the LAWS table now has no `unprobed` row) — confirmed on origin.
-  #752 (this file's last update): the law-table COMPLETION + the probe registry — new
-  .qa/contact-proof.mjs (C4, C5) and .qa/shot-proof.mjs (S1, S5, S6) assert the last five laws that
-  had no agent-runnable proof, and tools/manifest.json becomes the single registry every tool reads.
-  Its own commit hash is not known to this file (a file cannot contain its own commit) - verify origin.
+  #752 = 361cbcb (the law-table COMPLETION + the probe registry — new .qa/contact-proof.mjs (C4, C5)
+  and .qa/shot-proof.mjs (S1, S5, S6) assert the last five laws that had no agent-runnable proof, and
+  tools/manifest.json becomes the single registry run-battery and lint-docs read) — confirmed on origin.
+  This file was last updated by the commit AFTER 361cbcb, which is why it can name that hash.
 Next: the rendered-frame laws (C3, S3) or Batch 4's tool MOVES (the registry half is done) — §7.
 Delivery: ONE patch (§6) — read §6.7 first: the owner copies patches out of CHAT.
 
@@ -57,9 +57,9 @@ LAWS a58eb28b72cf7347c66b767584ad35b8 · run-battery 4ee58ec2b1044c3b57a7c416c68
 STATE e3484d7d7cd0c7d9c88836c1aaf472f9. On origin: verify --quick PASS (6 checks), strip-hash PASS with the
 three invariants unchanged, and the probe 12/12. The two handoff files are not listed (a file cannot hold its
 own md5).
-State after the #752 patch (BASE c2bcf57 — the #751 landing plus its handoff refresh; re-measure, do not
-trust): canonical, CODEMAP, chronicle, mf-1, mf-2, AGENTS, README, navgen, docreflow, lint-markers, docset
-unchanged. As built: contact-proof 388eeea0a06cf6dab1dff40a46fe5518 · shot-proof 96b2f0169bf73160e32555a6e448e925 ·
+State after the #752 patch (BASE c2bcf57, LANDED AS 361cbcb; re-measure, do not trust): canonical, CODEMAP,
+chronicle, mf-1, mf-2, AGENTS, README, navgen, docreflow, lint-markers, docset unchanged. Re-measured in a
+fresh clone AFTER the push and byte-identical to what was built. As built: contact-proof 388eeea0a06cf6dab1dff40a46fe5518 · shot-proof 96b2f0169bf73160e32555a6e448e925 ·
 manifest.json 8db66e1aa0a4c3fd0c50235f20b50c4a · manifest.mjs dfa3b95c2d591d778c1e7c195548eabd ·
 run-battery b2b9707d8b4c1d9a68c378e590448807 · lint-docs 19065ad69de0e96c48ce4798991fc86b ·
 gen-state 15481648e3cae178c02a45d8b0edf7dc · LAWS f3f4c0be5b32c908c68f1eced6a870b1 ·
@@ -67,6 +67,11 @@ GAMES e7570b01a58072d192c33f5315742f6b · STATE 05f1fb0ec3fe1a411d98e246308e3dce
 are not listed (a file cannot hold its own md5). Receipts: verify --quick PASS (6 checks); the proof battery
 PASS — 12/12 steps matched their expected exit code (lengrow-gate 1 BY DESIGN, the other eleven 0), canonical
 md5 and line count identical before and after the run.
+Post-push re-measurement (fresh clone of origin at 361cbcb): all twelve shipped files are byte-identical to
+what was built — the pushed commit's diff is byte-identical to the delivered patch (md5
+f5e552e4e7c78b6396bbc5c29d4d4f4f); `verify --quick` PASS (6 checks); `strip-hash` PASS with the three
+invariants unchanged (c2cd01ef... / e9b6f8d6... / 600097a7...); contact-proof 5/5, shot-proof 6/6, law-proof
+12/12 on origin; canonical md5 5de162de... / 4716 lines; the record-set era files unchanged.
 
 ## 0. The record is a SET (since 3c)
 
@@ -132,8 +137,9 @@ nav block's Frozen eras table + entry index (file + line). All record files are 
 The old worst line (mf-2 line 526 at 68e29f9, 14,343 bytes, entry #721's AT THIS LANDING sub-paragraph) was re-paragraphed by
 #749 into 26 soft-wrapped lines, each <= 560 bytes; its bold spans now CROSS soft newlines (valid CommonMark, not render-checked).
 No line in the record set exceeds 3,000 bytes, and since #750 lint-docs ENFORCES that cap (B3E, check-only). Do not re-join the 26 lines. Grep for the sub-paragraph; never hand-copy a line number.
-Law-to-probe table (LAWS §Law-to-probe table): 25 rows; as of #752: 7 probed, 16 partial, 2 owner-run only,
-0 unprobed. The ONLY owner-run rows are C3 (visible rendered interpenetration) and S3 (no overlap on a
+Law-to-probe table (LAWS §Law-to-probe table): 25 rows; as of #752: 8 probed, 15 partial, 2 owner-run only,
+0 unprobed. RE-COUNT the rows before quoting this tally — a carried tally was wrong once (it said 7/16/2 at
+the #752 landing; the table is 8/15/2). The ONLY owner-run rows are C3 (visible rendered interpenetration) and S3 (no overlap on a
 rendered frame) — both RENDERED-FRAME laws, audited only by measure.mjs, which agents never run. B1/B2/U1
 were asserted by .qa/law-proof.mjs (#751); C4/C5 by .qa/contact-proof.mjs and S1/S5/S6 by .qa/shot-proof.mjs
 (#752). .qa/fingerprint.mjs is a change detector on the default cast with no spear, not a per-law assertion.
@@ -290,7 +296,7 @@ contract. Leave record content alone.
 Per patch: what changed, before/after token costs, exact verification commands WITH results, anything
 NOT verified, the patch + §6.4 commands + BASE hash, next proposed step. Wait for "go". Flag
 deviations in the same message. Quote only measured numbers.
-HOSTING RULE (introduced in v9, still in force in v10): docs/handoff/HANDOFF.md and docs/handoff/BATCH3-STATUS.md
+HOSTING RULE (introduced in v9, still in force in v11): docs/handoff/HANDOFF.md and docs/handoff/BATCH3-STATUS.md
 are part of the repo.
 Every landing patch UPDATES BOTH FILES in the same commit (state, hashes, ledgers, next action).
 There is no attachment step anymore — do not ask the owner to swap chat files. After the owner
@@ -308,10 +314,12 @@ New-chat prompt (the whole thing):
 ## 10. Where we are / next action
 
 Landed through the #752 patch (the law-table completion — new .qa/contact-proof.mjs and .qa/shot-proof.mjs
-asserting C4/C5/S1/S5/S6 — plus tools/manifest.json, the probe registry every tool now reads), on top of
-c2bcf57 (the handoff refresh) and 63bb91c (#751). This file was last updated by the commit AFTER #752.
-Verify origin HEAD against the hash that last updated this file; if they differ, more landed — re-baseline
-from STATE.md and say what moved.
+asserting C4/C5/S1/S5/S6 — plus tools/manifest.json, the probe registry run-battery and lint-docs read),
+which is 361cbcb3bf9527a7b603f204dcfe5d1b9d438ca4 on origin, on top of c2bcf57 (the handoff refresh) and
+63bb91c (#751). This file was last updated by the commit AFTER 361cbcb — that is the patch below. The
+freshness check's two hashes always match ON ORIGIN, because this file is updated in the same commit as
+every landing. Verify origin HEAD against the hash that last updated this file; if they differ, more
+landed — re-baseline from STATE.md and say what moved.
 First: run the FRESHNESS CHECK, then §2. If the invariant hashes differ, STOP and tell the owner.
 Then propose the next item from §7 — the two RENDERED-FRAME laws (C3, S3: a render-frame probe is the only
 way to close them) or Batch 4's tool MOVES — and WAIT for "go".

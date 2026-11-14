@@ -1,13 +1,13 @@
 # BATCH 3 — GAMES.md usability and docs authority: STATUS — COMPLETE
 
-LOCATION: docs/handoff/BATCH3-STATUS.md — REPO-HOSTED alongside HANDOFF.md (v10+). Updated in the same
+LOCATION: docs/handoff/BATCH3-STATUS.md — REPO-HOSTED alongside HANDOFF.md (v11+). Updated in the same
 commit as every landing; current as of HEAD by construction. Chat attachments of older copies are
 OBSOLETE; the repo outranks them. Never move these files into docs/history/ (globbed by the doc
 tools; an unlisted file there fails lint). Freshness: `git log -1 --format='%h %s' -- docs/handoff/`.
 
 Status as of 2026-11-14: (a) DONE (0ddd7f5, #746) · (b) DONE (9e017bb, #742) · (d) DONE (f756e21, #747)
 · (c) DONE (68e29f9, #748). Nothing remains in Batch 3. Its follow-ups: #749 DONE (4cc98d5) · #750 DONE (4f38866) ·
-#751 DONE (63bb91c) · #752 DONE (this commit — the law-table completion + the probe registry).
+#751 DONE (63bb91c) · #752 DONE (361cbcb, the law-table completion + the probe registry).
 Next: the two rendered-frame laws, then Batch 4's tool moves — HANDOFF §7.
 The Batch 2 ledger is the appendix below, carried verbatim. STATE.md and docs/CODEMAP.md
 are authoritative for every number.
@@ -16,12 +16,12 @@ Follow-ups: #749 = 4cc98d5 landed the optional doc items (index titles, the mf-2
 #750 = 4f38866 added the 3,000-byte line-cap lint and recorded that hash - see the ledger below; its own hash is not known
 to this file. #751 = 63bb91c is the LAW-TABLE FOLLOW-UP: new .qa/law-proof.mjs asserts the three laws that had NO
 assertion anywhere (B1/B2/U1), so the LAWS table now has no `unprobed` row - see the ledger below.
-#752 (this commit) is the LAW-TABLE COMPLETION + THE PROBE REGISTRY: .qa/contact-proof.mjs (C4, C5) and
+#752 = 361cbcb is the LAW-TABLE COMPLETION + THE PROBE REGISTRY: .qa/contact-proof.mjs (C4, C5) and
 .qa/shot-proof.mjs (S1, S5, S6) assert the last five laws that had no agent-runnable proof, and
 tools/manifest.json becomes the single registry that run-battery and lint-docs read (verify.mjs is NOT a reader yet - it stays at 6 checks).
 Next: the two rendered-frame laws (C3, S3) or Batch 4's tool moves.
 
-## #752 law-table completion + the probe registry - ledger (this commit)
+## #752 law-table completion + the probe registry - ledger (commit 361cbcb)
 
 What: (1) Two new probes: `.qa/contact-proof.mjs` asserts C4 (one damage per touch; the re-arm gates) and C5 (a parry recoils BOTH weapons' spins); `.qa/shot-proof.mjs` asserts S1 (damage only on shot-touches-body), S5 (the substep budget is honoured every tick) and S6 (every shot is born at its hold-derived launch point). All five were `owner-run only` - audited ONLY by measure.mjs, which agents never run - so a break in any of them failed nothing an agent could run. They are now `probed` (C4, C5, S5) or `partial` (S1, S6). After this the LAWS table has NO `unprobed` row and only TWO `owner-run only` rows: C3 and S3, both rendered-frame laws. (2) `tools/manifest.json` is the new PROBE REGISTRY - every proof and tool in one list: what it asserts, whether the battery runs it, whether a law row may cite it, whether an agent may run it. `tools/lib/manifest.mjs` loads it and checks it is COMPLETE (every proof on disk registered; every entry's file exists). `scripts/run-battery.mjs` takes its steps and expected exit codes from it; `tools/lint-docs.mjs` takes the law table's citable probe set from it. (3) `tools/gen-state.mjs` adds one STATE line naming the registry. (4) #752 appended to GAMES. Both handoff files updated. The canonical, CODEMAP, the three record files, AGENTS, README and every other tool are untouched.
 Why: the law table's citable probe set was derived by REGEX-PARSING run-battery.mjs's SOURCE - a reformatted array changed the law table's verdict without anyone touching a law - and the proof inventory lived in three hand-kept lists. Adding two more probes was the moment to make the inventory data instead of a pattern in somebody's code, and to give an agent one small file that says which proof stands behind which law.
@@ -31,7 +31,8 @@ Findings: (1) The re-arm gate can be read back EXACTLY from the fighter's own co
 Controls (measured): 9 negative controls, all behaved as intended. Six mutate a COPY of the canonical and each one must FAIL its intended check: (1) the deep-disengage half of the re-arm gate opens early -> "C4 every re-arm satisfies the deep-disengage gate" fails; (2) the latch stops blocking -> "C4 a fighter never deals two damaging blade hits in one tick" + "C4 every hit after the first is preceded by a re-arm" fail; (3) only one weapon recoils on a parry -> "C5 every parry flips BOTH weapons spins" fails; (4) a shot damages without touching -> both S1 checks fail; (5) the substep cap is set to 4 -> "S5 the emergency brake never engaged" fails; (6) the launch point moves off its hold -> "S6 every hold-derived row launches where its hold says" fails. Three mutate the registry in a copied tree: an unregistered proof, an entry pointing at a missing file, and a law row citing an unregistered probe -> lint-docs fails with the intended message each time. Passing control: the unmutated tree is 5/5 and 6/6.
 Receipts: verify --quick PASS (6 checks) in the build tree AND in a fresh clone of the base commit after `git apply --index`; the proof battery PASS - 12/12 steps matched their expected exit code (lengrow-gate 1 BY DESIGN, the other eleven 0), canonical md5 and line count identical before and after the run; per-file md5 identical between the build tree and the fresh clone; the staged diff byte-identical in both (its md5 cannot be written here - a file cannot contain the md5 of the patch that carries it; the advisory md5 goes in the delivery message); strip-hash PASS against canonical-prediet-2c with the three invariant hashes unchanged; the canonical, CODEMAP, the three frozen record files, AGENTS and README untouched by the patch.
 Not verified: no rendered-markdown check; measure.mjs NOT run (permanently banned); the canonical was untouched, so no canonical-specific proof was required.
-Rollback: `git revert` this commit.
+Post-push re-measurement (fresh clone of origin at 361cbcb): all twelve shipped files are byte-identical to what was built - the pushed commit's diff is byte-identical to the delivered patch (md5 f5e552e4e7c78b6396bbc5c29d4d4f4f); `verify --quick` PASS (6 checks); `strip-hash` PASS with the three invariants unchanged (c2cd01ef... / e9b6f8d6... / 600097a7...); contact-proof 5/5, shot-proof 6/6, law-proof 12/12 on origin; canonical md5 5de162de... / 4716 lines; the record-set era files unchanged. The law table on origin tallies 8 probed / 15 partial / 2 owner-run only / 0 unprobed - COUNT the rows, do not carry a tally.
+Rollback: `git revert 361cbcb`.
 
 ## #751 law-table follow-up - ledger (commit 63bb91c)
 
