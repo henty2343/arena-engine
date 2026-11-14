@@ -1,23 +1,23 @@
 # BATCH 3 — GAMES.md usability and docs authority: STATUS — COMPLETE
 
-LOCATION: docs/handoff/BATCH3-STATUS.md — REPO-HOSTED alongside HANDOFF.md (v9+). Updated in the same
+LOCATION: docs/handoff/BATCH3-STATUS.md — REPO-HOSTED alongside HANDOFF.md (v10+). Updated in the same
 commit as every landing; current as of HEAD by construction. Chat attachments of older copies are
 OBSOLETE; the repo outranks them. Never move these files into docs/history/ (globbed by the doc
 tools; an unlisted file there fails lint). Freshness: `git log -1 --format='%h %s' -- docs/handoff/`.
 
 Status as of 2026-11-14: (a) DONE (0ddd7f5, #746) · (b) DONE (9e017bb, #742) · (d) DONE (f756e21, #747)
 · (c) DONE (68e29f9, #748). Nothing remains in Batch 3. Its follow-ups: #749 DONE (4cc98d5) · #750 DONE (4f38866) ·
-#751 DONE (this commit, the law-table follow-up). Next: the second law-table patch, then Batch 4 — HANDOFF §7.
+#751 DONE (63bb91c, the law-table follow-up). Next: the second law-table patch, then Batch 4 — HANDOFF §7.
 The Batch 2 ledger is the appendix below, carried verbatim. STATE.md and docs/CODEMAP.md
 are authoritative for every number.
 
 Follow-ups: #749 = 4cc98d5 landed the optional doc items (index titles, the mf-2 14 KB line, AGENTS/README pointers, the #749 entry).
 #750 = 4f38866 added the 3,000-byte line-cap lint and recorded that hash - see the ledger below; its own hash is not known
-to this file. #751 (this commit) is the LAW-TABLE FOLLOW-UP: new .qa/law-proof.mjs asserts the three laws that had NO
+to this file. #751 = 63bb91c is the LAW-TABLE FOLLOW-UP: new .qa/law-proof.mjs asserts the three laws that had NO
 assertion anywhere (B1/B2/U1), so the LAWS table now has no `unprobed` row - see the first ledger below.
 Next: the second law-table patch (the 5 sim-logic owner-run-only laws) or Batch 4.
 
-## #751 law-table follow-up - ledger (this commit)
+## #751 law-table follow-up - ledger (commit 63bb91c)
 
 What: (1) New `.qa/law-proof.mjs` - 12 assertions on the three laws that had NO assertion anywhere: **B1** (best of 3, first to 2 round wins), **B2** (a round ends only on a K.O.) and **U1** (uniform base: omega 3.5, damage 1, hp 100). All three were `unprobed` in the law-to-probe table; they are now `probed`, and the table has **no `unprobed` row left**. (2) The probe is registered in `scripts/run-battery.mjs` as a battery step - the law-table lint requires every cited runnable probe to be a battery step. (3) `docs/LAWS.md` gained one legend line. (4) #751 appended to GAMES. Both handoff files updated. The canonical, CODEMAP, the three record files, AGENTS, README and every tool except run-battery are untouched.
 Why: a law nothing can fail is a law nothing protects. These three are pure SIM logic, so the house loader (`tools/lib/load-sim.mjs` - the pattern fingerprint / leadproof / lengrow-build-proof use) can assert them headlessly in seconds, with no rendering and no measure.mjs.
@@ -27,7 +27,8 @@ Findings: (1) The three unprobed laws are decided by one line each in the canoni
 Controls (the probe only, on throwaway copies of the canonical, one mutation each): C0 clean PASS 12/12; C1 `WDEF.omega 3.5 -> 3.6` fails exactly the 2 U1 assertions (10 pass); C2 `roundsToWin 2 -> 3` fails the 4 B1 threshold assertions plus the U1 config assertion that pins roundsToWin; C3 the battle-end condition changed to `wins >= 1` fails ALL 7 B1 assertions; C4 an injected 5,000-tick round timer fails both B2 assertions (B1 and U1 unaffected); C5 the `ko` event emission removed fails "the round ends only on a K.O." while the no-timer assertion still PASSES - the two checks are independent.
 Receipts (this session, build clone at BASE 4f38866): the probe passes 12/12 in 5.0 s; `verify --quick` PASS (6 checks); `strip-hash` PASS with the three invariants unchanged (c2cd01ef... / e9b6f8d6... / 600097a7...) and canonical md5 5de162de...; `verify --battery` PASS - 10 steps, every step matched its expected exit code (law-proof exit 0 in 5.0 s; lengrow-gate exit 1 BY DESIGN), canonical before == after; mojibake census clean on every patched file (the only signature characters anywhere in the repo sit on HANDOFF.md's own rule line, which NAMES them, and that line is unchanged from HEAD); per-file md5s are in the HANDOFF state block and in the delivery message.
 Not verified: no rendered-markdown check; measure.mjs NOT run (permanently banned); the battery ran, but the canonical was untouched so no canonical-specific proof was required.
-Rollback: `git revert` this commit.
+Post-push re-measurement (fresh clone of origin at 63bb91c): the five shipped files are byte-identical to what was built (per-file md5sum -c 5/5 OK), `verify --quick` PASS (6 checks), `strip-hash` PASS with the three invariants unchanged (c2cd01ef... / e9b6f8d6... / 600097a7...), the probe 12/12 on origin, canonical md5 5de162de... and the record-set era files unchanged.
+Rollback: `git revert 63bb91c`.
 
 ## #750 line cap + hash record - ledger (commit 4f38866)
 

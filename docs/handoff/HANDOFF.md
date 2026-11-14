@@ -1,15 +1,20 @@
-# HANDOFF v9 — arena-engine: make the repo token-friendly for AI agents
+# HANDOFF v10 — arena-engine: make the repo token-friendly for AI agents
 
 LOCATION: docs/handoff/HANDOFF.md — REPO-HOSTED. This file and BATCH3-STATUS.md live in the repo and
 are updated IN THE SAME COMMIT as every landing, so they are current as of HEAD by construction.
-Chat attachments of older handoffs (v7, v8) are OBSOLETE. If any attached or pasted copy contradicts
+Chat attachments of older handoffs (v7, v8, v9) are OBSOLETE. If any attached or pasted copy contradicts
 this file, THIS FILE WINS. Never put handoff files in docs/history/ — that folder is the frozen
 record, globbed by the doc tools; an extra file there fails lint (control C5).
 
 FRESHNESS CHECK (run first, every session):
-    git log -1 --format='%h %s' -- docs/handoff/HANDOFF.md   # the landing that last updated this file
+    git fetch origin && git rev-parse --short origin/main     # origin HEAD (short)
+    git log -1 --format='%h' -- docs/handoff/HANDOFF.md       # the landing that last updated this file
     node tools/verify.mjs --quick                            # expect VERIFY PASS — 6 checks
     node .qa/strip-hash.mjs --base canonical-prediet-2c      # expect PASS + the three hashes (§5)
+THE FIRST TWO HASHES MUST MATCH. This file is updated in the same commit as every landing, so the
+commit that last updated it IS origin HEAD — that equality is the freshness invariant. If they differ,
+either this file is stale or something else landed: re-baseline from STATE.md and say what moved. Never
+trust this file over the repo. As of the #751 landing the origin HEAD was 63bb91c.
 The REPO outranks every prose document, including this one. STATE.md and docs/CODEMAP.md are
 generated and authoritative for all numbers.
 
@@ -17,10 +22,10 @@ Status 2026-11-14: Batch 1 DONE. Batch 2 DONE. Batch 3 (a)(b)(c)(d) ALL DONE —
   3a = 0ddd7f5 #746 · 3b = 9e017bb #742 · 3d = f756e21 #747 · 3c = 68e29f9 #748
 Follow-ups: #749 = 4cc98d5 (index titles, mf-2 line re-paragraphed, AGENTS/README pointers, #749 entry), confirmed on origin.
   #750 = 4f38866 (the 3,000-byte line-cap lint B3E plus the record of the #749 hash) — confirmed on origin.
-  #751 (this file's last update): the law-table follow-up — new .qa/law-proof.mjs asserts B1/B2/U1, the three laws
-  that had NO assertion anywhere; the LAWS table now has no `unprobed` row. Its own commit hash is not known to
-  this file (a file cannot contain its own commit) - verify origin.
-Next: Batch 4 (tool layout, §7) or the second law-table patch (the 5 sim-logic owner-run-only laws — §7).
+  #751 = 63bb91c (the law-table follow-up — new .qa/law-proof.mjs asserts B1/B2/U1, the three laws
+  that had NO assertion anywhere; the LAWS table now has no `unprobed` row) — confirmed on origin.
+  This file was last updated by the commit AFTER 63bb91c, which is why it can name that hash.
+Next: the second law-table patch (the 5 sim-logic owner-run-only laws — §7) or Batch 4 (tool layout, §7).
 Delivery: ONE patch (§6) — read §6.7 first: the owner copies patches out of CHAT.
 
 State at the 3c landing (re-measure, do not trust): HEAD 68e29f9, parent f756e21; canonical md5
@@ -41,11 +46,14 @@ README 1cb73e7751c2999f9f763e2b74c9b54d · navgen b27164470bbe5d5303839d5bbc408b
 State after the #750 patch (BASE 4cc98d5; re-measure, do not trust): canonical, chronicle, mf-1, mf-2, LAWS, CODEMAP, navgen, docreflow,
 gen-state, docset, AGENTS, README, copilot all unchanged from the blocks above. As built by the one-shot: GAMES 61cb9bcebea89bc34dbe298b8b4d09a5 ·
 lint-docs 182019c42f8a34de2582d3bcdd853678 · STATE a4eb9e2574fb78195e8fdb3848cc2f24. The two handoff files are not listed (a file cannot hold its own md5).
-State after the #751 patch (BASE 4f38866; re-measure, do not trust): canonical, CODEMAP, chronicle, mf-1, mf-2,
-AGENTS, README, navgen, docreflow, gen-state, lint-docs, docset, LAWS-instruments all unchanged from the blocks
-above. As built: law-proof e0ac0b51139165f4081e5a7ed54a8252 · GAMES 09079f3450e7fed25122c51b026f6b9b ·
+State after the #751 patch (BASE 4f38866, LANDED AS 63bb91c; re-measure, do not trust): canonical, CODEMAP,
+chronicle, mf-1, mf-2, AGENTS, README, navgen, docreflow, gen-state, lint-docs and docset all unchanged from the
+blocks above. Re-measured in a fresh clone AFTER the push and byte-identical to what was built: law-proof
+e0ac0b51139165f4081e5a7ed54a8252 · GAMES 09079f3450e7fed25122c51b026f6b9b ·
 LAWS a58eb28b72cf7347c66b767584ad35b8 · run-battery 4ee58ec2b1044c3b57a7c416c68c1afd ·
-STATE e3484d7d7cd0c7d9c88836c1aaf472f9. The two handoff files are not listed (a file cannot hold its own md5).
+STATE e3484d7d7cd0c7d9c88836c1aaf472f9. On origin: verify --quick PASS (6 checks), strip-hash PASS with the
+three invariants unchanged, and the probe 12/12. The two handoff files are not listed (a file cannot hold its
+own md5).
 
 ## 0. The record is a SET (since 3c)
 
@@ -268,24 +276,29 @@ contract. Leave record content alone.
 Per patch: what changed, before/after token costs, exact verification commands WITH results, anything
 NOT verified, the patch + §6.4 commands + BASE hash, next proposed step. Wait for "go". Flag
 deviations in the same message. Quote only measured numbers.
-HOSTING RULE (v9): docs/handoff/HANDOFF.md and docs/handoff/BATCH3-STATUS.md are part of the repo.
+HOSTING RULE (introduced in v9, still in force in v10): docs/handoff/HANDOFF.md and docs/handoff/BATCH3-STATUS.md
+are part of the repo.
 Every landing patch UPDATES BOTH FILES in the same commit (state, hashes, ledgers, next action).
 There is no attachment step anymore — do not ask the owner to swap chat files. After the owner
 confirms a push, re-measure origin in a fresh clone and deliver the updated handoff files as part of
 the NEXT patch (or as a docs-only patch if nothing else is pending).
 New-chat prompt (the whole thing):
     Clone https://github.com/henty2343/arena-engine.git and read docs/handoff/HANDOFF.md and
-    docs/handoff/BATCH3-STATUS.md fully. Run the freshness check at the top of HANDOFF.md. The repo
-    outranks any attached or pasted notes. Then propose the next item from HANDOFF §7 and wait for
-    my explicit "go". Hard rules: never run measure.mjs; one patch per delivery, pasted in chat,
-    gated per HANDOFF §6.7; pushes are mine (VS Code + Git Bash on Windows).
+    docs/handoff/BATCH3-STATUS.md fully. Run the freshness check at the top of HANDOFF.md — origin HEAD
+    and the commit that last updated docs/handoff/HANDOFF.md MUST MATCH; if they differ, something else
+    landed, re-baseline from STATE.md and say what moved. The repo outranks any attached or pasted notes.
+    Then propose the next item from HANDOFF §7 and wait for my explicit "go". Hard rules: never run
+    measure.mjs; one patch per delivery, pasted in chat, gated per HANDOFF §6.7; pushes are mine
+    (VS Code + Git Bash on Windows).
 
 ## 10. Where we are / next action
 
 Landed through the #751 patch (the law-table follow-up: new .qa/law-proof.mjs asserting B1/B2/U1, the LAWS
-table with no `unprobed` row) on top of 4f38866 (#750, the 3,000-byte line-cap lint B3E). This file cannot name
-the #751 commit hash: verify origin HEAD; anything beyond 4f38866 + one commit means more landed — re-baseline
-from STATE.md and say what moved. (Origin HEAD at the #751 build: 4f388665a04e9fba298633ce6f244bd92394e6ec.)
+table with no `unprobed` row), which is 63bb91c588d67989bdffd323806b2c695828f95b on origin, on top of 4f38866
+(#750, the 3,000-byte line-cap lint B3E). This file was last updated by the commit AFTER 63bb91c — that is
+the patch below. The freshness check's two hashes always match ON ORIGIN, because this file is updated in
+the same commit as every landing. Verify origin HEAD against the hash that last updated this file; if they
+differ, more landed — re-baseline from STATE.md and say what moved.
 First: run the FRESHNESS CHECK, then §2. If the invariant hashes differ, STOP and tell the owner.
 Then propose the next item from §7 — the SECOND law-table patch (the 5 sim-logic owner-run-only laws: C4, C5,
 S1, S5, S6) or Batch 4 (tool layout) — and WAIT for "go".
