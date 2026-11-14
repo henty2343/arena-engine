@@ -22,7 +22,7 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.8k (compute
 - scripts/ (1): `run-battery.mjs`
 - tools/ (10, incl. doc/ and lib/): `gen-codemap.mjs` · `gen-state.mjs` · `lint-docs.mjs` · `lint-markers.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/docset.mjs` · `lib/load-sim.mjs` · `lib/strip-comments.mjs`
 - scratch/: gitignored RUNTIME temp dir (bake/gate temp copies, battery logs) — not source; nothing in it is tracked except `.gitkeep`.
-- .qa/ proofs (13): `bake-rows.mjs` · `fingerprint.mjs` · `flip-seeds.mjs` · `flipproof.mjs` · `inscribe.mjs` · `leadproof.mjs` · `lengrow-bake.mjs` · `lengrow-build-proof.mjs` · `lengrow-gate.mjs` · `lengrow-proof.mjs` · `pair-proof.mjs` · `seam-proof.mjs` · `strip-hash.mjs`
+- .qa/ proofs (14): `bake-rows.mjs` · `fingerprint.mjs` · `flip-seeds.mjs` · `flipproof.mjs` · `inscribe.mjs` · `law-proof.mjs` · `leadproof.mjs` · `lengrow-bake.mjs` · `lengrow-build-proof.mjs` · `lengrow-gate.mjs` · `lengrow-proof.mjs` · `pair-proof.mjs` · `seam-proof.mjs` · `strip-hash.mjs`
 - .qa/ baselines (1): `fp-flailfix-r88.json`
 
 ## Documentation cost (chars/4 estimate)
@@ -31,9 +31,9 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.8k (compute
 | README.md | 321 | router only |
 | AGENTS.md | 1,498 | always |
 | docs/CODEMAP.md | 1,515 | before opening the canonical |
-| docs/LAWS.md | 3,989 | before any sim/doc edit |
+| docs/LAWS.md | 4,205 | before any sim/doc edit |
 | docs/RECIPES.md | 1,876 | adding a trait/skill/bot |
-| docs/GAMES.md | 52,285 | GREP ONLY — never load whole |
+| docs/GAMES.md | 53,058 | GREP ONLY — never load whole |
 | docs/SPEC.md | 12,988 | PLANNED engine work only |
 | docs/CONTRACT.md | 4,226 | PLANNED engine work only |
 | docs/BUILD.md | 4,525 | PLANNED engine work only |

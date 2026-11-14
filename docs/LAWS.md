@@ -119,6 +119,7 @@ whether an assert really covers a law — that is the **Status** column, written
   The table says where the audit text is, not whether it last passed (GAMES dated entries record the sanctioned runs).
 - **unprobed** — no assertion anywhere; at most `.qa/fingerprint.mjs`, which is a change detector for ALL laws on the
   default cast with no spear (it proves "did not move", never "is right") and so is not repeated per row.
+  No row is currently `unprobed`: every live law below carries either a runnable probe or a `measure.mjs` audit.
 
 | ID | Law | Runnable probe | Owner-run audit | Status | Scope |
 |---|---|---|---|---|---|
@@ -134,12 +135,12 @@ whether an assert really covers a law — that is the **Status** column, written
 | S4 | 4s every shot has exactly one proven departure | `.qa/seam-proof.mjs::DEPARTURE ACCOUNTING` | `measure.mjs::projectile law 4s: every shot accounted for` | partial | ricochet stars only |
 | S5 | 5s substep budget audit | — | `measure.mjs::projectile law 5s: substep budget honored every tick` | owner-run only | |
 | S6 | 6s launch doctrine (hold-derived launch point) | — | `measure.mjs::projectile law 6s: every shot is born at its hold-derived launch point` | owner-run only | |
-| B1 | Best of 3, first to 2 round wins | — | — | unprobed | no assertion on the win threshold |
-| B2 | Rounds end on K.O. only (no timer) | — | — | unprobed | |
+| B1 | Best of 3, first to 2 round wins | `.qa/law-proof.mjs::B1 the battle ends on the second round win`; `.qa/law-proof.mjs::B1 the battle takes at most three rounds (best of 3)` | — | probed | the shipped phase machine, driven from both sides: the battle ends exactly on a side's second round win, never at one win or 1-1, in at most three rounds |
+| B2 | Rounds end on K.O. only (no timer) | `.qa/law-proof.mjs::B2 the fight phase has no timer`; `.qa/law-proof.mjs::B2 the round ends only on a K.O.` | — | probed | a 20,000-tick window with no K.O. cannot be ended by a timer, and every exit from the fight phase is a K.O. exit |
 | B3 | 1v1 only | `.qa/pair-proof.mjs::malformed casts are construction errors` | — | partial | cast-length guard only |
 | B4 | `(seed)` fully determines a battle | `.qa/pair-proof.mjs::replay identically`; `.qa/fingerprint.mjs::FNV-1a` | — | partial | default cast, fixed cells vs `.qa/BASELINE` |
 | B5 | Hidden forcing via `newGame(seed, {weapons})` | `.qa/lengrow-build-proof.mjs::the roll armed the spear fighter` | — | partial | spear cells only; other probes use it without asserting it |
-| U1 | Uniform base: omega 3.5, damage 1, hp 100 | — | — | unprobed | change detector only |
+| U1 | Uniform base: omega 3.5, damage 1, hp 100 | `.qa/law-proof.mjs::U1 every weapon carries the uniform base (omega 3.5, damage 1)`; `.qa/law-proof.mjs::U1 every fighter starts a round on the uniform base (spin 3.5, damage 1, hp 100)` | — | probed | every weapon row on the shared base (none overrides it), and the round-level spin/damage/hp read off the live fight |
 | G1 | Every damaging hit grows the attacker (skill + trait) | `.qa/seam-proof.mjs::F1 every damaging hit grows`; `.qa/pair-proof.mjs::damage-per-hit = the weapon trait` | — | partial | dagger spin axis; damage per hit on the default pairing |
 | G2 | Fighter skills: Speedy +0.30 SPD, Heavy +0.9 DMG | `.qa/seam-proof.mjs::Speedy stacks to 2.3`; `.qa/pair-proof.mjs::damage-per-hit = the weapon trait` | — | partial | Speedy via the dagger stack; Heavy via damage per hit |
 | G3 | Firing is physics: one shot per full revolution | `.qa/seam-proof.mjs::CADENCE BAND LAW` | — | partial | bow only |

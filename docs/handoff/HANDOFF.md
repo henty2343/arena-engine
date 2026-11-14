@@ -16,9 +16,11 @@ generated and authoritative for all numbers.
 Status 2026-11-14: Batch 1 DONE. Batch 2 DONE. Batch 3 (a)(b)(c)(d) ALL DONE — Batch 3 CLOSED.
   3a = 0ddd7f5 #746 · 3b = 9e017bb #742 · 3d = f756e21 #747 · 3c = 68e29f9 #748
 Follow-ups: #749 = 4cc98d5 (index titles, mf-2 line re-paragraphed, AGENTS/README pointers, #749 entry), confirmed on origin.
-  #750 (this file's last update): the 3,000-byte line-cap lint (B3E) plus the record of that hash. Its own commit hash is not
-  known to this file (a file cannot contain its own commit) - verify origin.
-Next: Batch 4 (tool layout, §7) or the optional law-table follow-ups.
+  #750 = 4f38866 (the 3,000-byte line-cap lint B3E plus the record of the #749 hash) — confirmed on origin.
+  #751 (this file's last update): the law-table follow-up — new .qa/law-proof.mjs asserts B1/B2/U1, the three laws
+  that had NO assertion anywhere; the LAWS table now has no `unprobed` row. Its own commit hash is not known to
+  this file (a file cannot contain its own commit) - verify origin.
+Next: Batch 4 (tool layout, §7) or the second law-table patch (the 5 sim-logic owner-run-only laws — §7).
 Delivery: ONE patch (§6) — read §6.7 first: the owner copies patches out of CHAT.
 
 State at the 3c landing (re-measure, do not trust): HEAD 68e29f9, parent f756e21; canonical md5
@@ -39,6 +41,11 @@ README 1cb73e7751c2999f9f763e2b74c9b54d · navgen b27164470bbe5d5303839d5bbc408b
 State after the #750 patch (BASE 4cc98d5; re-measure, do not trust): canonical, chronicle, mf-1, mf-2, LAWS, CODEMAP, navgen, docreflow,
 gen-state, docset, AGENTS, README, copilot all unchanged from the blocks above. As built by the one-shot: GAMES 61cb9bcebea89bc34dbe298b8b4d09a5 ·
 lint-docs 182019c42f8a34de2582d3bcdd853678 · STATE a4eb9e2574fb78195e8fdb3848cc2f24. The two handoff files are not listed (a file cannot hold its own md5).
+State after the #751 patch (BASE 4f38866; re-measure, do not trust): canonical, CODEMAP, chronicle, mf-1, mf-2,
+AGENTS, README, navgen, docreflow, gen-state, lint-docs, docset, LAWS-instruments all unchanged from the blocks
+above. As built: law-proof e0ac0b51139165f4081e5a7ed54a8252 · GAMES 09079f3450e7fed25122c51b026f6b9b ·
+LAWS a58eb28b72cf7347c66b767584ad35b8 · run-battery 4ee58ec2b1044c3b57a7c416c68c1afd ·
+STATE e3484d7d7cd0c7d9c88836c1aaf472f9. The two handoff files are not listed (a file cannot hold its own md5).
 
 ## 0. The record is a SET (since 3c)
 
@@ -190,13 +197,28 @@ Batch 3 CLOSED. Optional items — propose first, wait for "go", ONE patch:
 - Index titles: DONE in #749 (navgen rowTitle(); the 54 numbered rows now carry the heading text).
 - The 14,343-byte line: DONE in #749 (26 soft-wrapped lines ≤ 560 bytes; the frozen era file edit was flagged).
 - AGENTS grep hint: DONE in 3c.
-- Law-table follow-ups (owner's call): runnable assertions for B1/B2/U1 and the 7 owner-run-only
-  laws; touches .qa/ probes; needs a proposal.
+- Law-table follow-ups: PARTLY DONE in #751 (new `.qa/law-proof.mjs`; B1/B2/U1 now `probed`; the LAWS table
+  has NO `unprobed` row left). STILL OPEN: the 7 owner-run-only laws (C3, C4, C5, S1, S3, S5, S6). C3 and S3
+  are RENDERED-FRAME laws (visible interpenetration / no overlap on a rendered frame) — without a render path
+  they cannot honestly be claimed, and measure.mjs is never run. The other FIVE (C4, C5, S1, S5, S6) are pure
+  SIM logic and look headlessly assertable; their sites were LOCATED (read-only greps), not asserted:
+  re-arm gates (`reArmPad`/`reArmDeep`/`reArmWait`), parry recoil (`CFG.parryPush`, canonical :2331-2332),
+  shot->body hit (`shotHitBody` :2767 + the one-hit-per-passage latch :3038), the substep brake
+  (`CFG.maxSub` :1830 + `G.auditSubs` :1881), the shot birth (`G.shots.push` :2701/:2719). A second patch
+  would design each assertion and flip the Status column from `owner-run only` — note the lint REQUIRES that
+  status to carry no runnable anchor, so the Status and the Scope column must change with it.
 - Handoff follow-ups (AGENTS/README docs/handoff pointers, #749 entry): DONE in #749.
 - Line-cap lint: DONE in #750 (lint-docs B3E; 3,000 bytes per line over GAMES + docs/history/*.md; check-only).
 Batch 4 — tool layout: one home tools/ with proof/, doc/, measure/, lib/; rename .qa visibly;
 tools/manifest.json read by verify + run-battery; propose an owner-go flag for measure.mjs; move
 SPEC/CONTRACT/BUILD to docs/planned/; RECIPES "Traps" -> short rules; AGENTS = the one workflow home.
+  MEASURED BLAST RADIUS (2026-11-14, read-only counts — re-measure before quoting): renaming `.qa/` needs a path
+  substitution in 43 refs in mf-1 + 23 in the chronicle + 9 in mf-2 (75 in the three FROZEN era files) + 26 in
+  live GAMES.md; moving SPEC/CONTRACT/BUILD needs 10 in GAMES.md + 2 in mf-1 + 1 in LAWS.md + 5 in AGENTS/README
+  + 2 each in gen-state.mjs (cost-table keys) and lint-docs.mjs (operational lists). Those are NON-whitespace
+  edits to frozen historical text — a bigger doctrine collision than #749's whitespace-only era edit. The
+  cheap, high-value half needs NO moves: a tools/manifest.json that verify + run-battery read, replacing the
+  hardcoded STEPS/EXPECTED maps and the brittle regex lint-docs.mjs:196 uses to find the battery steps.
 tools/lib/docset.mjs is a dependency of four tools and resolves paths from the repo root — keep that
 contract. Leave record content alone.
 
@@ -260,9 +282,12 @@ New-chat prompt (the whole thing):
 
 ## 10. Where we are / next action
 
-Landed through the #750 patch (the 3,000-byte line-cap lint B3E + the #749 hash record) on top of 4cc98d5 (#749). This file cannot name the
-#750 commit hash: verify origin HEAD; anything beyond 4cc98d5 + one commit means more landed — re-baseline from STATE.md and say what moved.
+Landed through the #751 patch (the law-table follow-up: new .qa/law-proof.mjs asserting B1/B2/U1, the LAWS
+table with no `unprobed` row) on top of 4f38866 (#750, the 3,000-byte line-cap lint B3E). This file cannot name
+the #751 commit hash: verify origin HEAD; anything beyond 4f38866 + one commit means more landed — re-baseline
+from STATE.md and say what moved. (Origin HEAD at the #751 build: 4f388665a04e9fba298633ce6f244bd92394e6ec.)
 First: run the FRESHNESS CHECK, then §2. If the invariant hashes differ, STOP and tell the owner.
-Then propose the next item from §7 — Batch 4 (tool layout) or the law-table follow-ups — and WAIT for "go".
+Then propose the next item from §7 — the SECOND law-table patch (the 5 sim-logic owner-run-only laws: C4, C5,
+S1, S5, S6) or Batch 4 (tool layout) — and WAIT for "go".
 After "go": the whole job in one pass (edits, regen, proofs, controls, fresh-clone proof), delivered per §6 + §6.7/§6.8,
 with both handoff files updated in the same patch.

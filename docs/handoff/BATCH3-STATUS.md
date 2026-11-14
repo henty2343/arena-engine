@@ -6,15 +6,30 @@ OBSOLETE; the repo outranks them. Never move these files into docs/history/ (glo
 tools; an unlisted file there fails lint). Freshness: `git log -1 --format='%h %s' -- docs/handoff/`.
 
 Status as of 2026-11-14: (a) DONE (0ddd7f5, #746) · (b) DONE (9e017bb, #742) · (d) DONE (f756e21, #747)
-· (c) DONE (68e29f9, #748). Nothing remains in Batch 3. Next: optional doc items, then Batch 4 —
-HANDOFF §7. The Batch 2 ledger is the appendix below, carried verbatim. STATE.md and docs/CODEMAP.md
+· (c) DONE (68e29f9, #748). Nothing remains in Batch 3. Its follow-ups: #749 DONE (4cc98d5) · #750 DONE (4f38866) ·
+#751 DONE (this commit, the law-table follow-up). Next: the second law-table patch, then Batch 4 — HANDOFF §7.
+The Batch 2 ledger is the appendix below, carried verbatim. STATE.md and docs/CODEMAP.md
 are authoritative for every number.
 
 Follow-ups: #749 = 4cc98d5 landed the optional doc items (index titles, the mf-2 14 KB line, AGENTS/README pointers, the #749 entry).
-#750 (this commit) added the 3,000-byte line-cap lint and recorded that hash - see the first ledger below; its own hash is not known
-to this file. Next: Batch 4 or the law-table follow-ups.
+#750 = 4f38866 added the 3,000-byte line-cap lint and recorded that hash - see the ledger below; its own hash is not known
+to this file. #751 (this commit) is the LAW-TABLE FOLLOW-UP: new .qa/law-proof.mjs asserts the three laws that had NO
+assertion anywhere (B1/B2/U1), so the LAWS table now has no `unprobed` row - see the first ledger below.
+Next: the second law-table patch (the 5 sim-logic owner-run-only laws) or Batch 4.
 
-## #750 line cap + hash record - ledger (this commit)
+## #751 law-table follow-up - ledger (this commit)
+
+What: (1) New `.qa/law-proof.mjs` - 12 assertions on the three laws that had NO assertion anywhere: **B1** (best of 3, first to 2 round wins), **B2** (a round ends only on a K.O.) and **U1** (uniform base: omega 3.5, damage 1, hp 100). All three were `unprobed` in the law-to-probe table; they are now `probed`, and the table has **no `unprobed` row left**. (2) The probe is registered in `scripts/run-battery.mjs` as a battery step - the law-table lint requires every cited runnable probe to be a battery step. (3) `docs/LAWS.md` gained one legend line. (4) #751 appended to GAMES. Both handoff files updated. The canonical, CODEMAP, the three record files, AGENTS, README and every tool except run-battery are untouched.
+Why: a law nothing can fail is a law nothing protects. These three are pure SIM logic, so the house loader (`tools/lib/load-sim.mjs` - the pattern fingerprint / leadproof / lengrow-build-proof use) can assert them headlessly in seconds, with no rendering and no measure.mjs.
+Approved: "go do what you think is best, you are the ai agent and the repo is meant for that" - a blanket delegation, after the read-only proposal in which BOTH of the owner's proposed items were found ALREADY LANDED (#749 / #750) and the law-table follow-up was recommended instead.
+Deviations (flagged at delivery): (1) the law table's Status column changed on three rows (`unprobed` -> `probed`); Status is hand-written judgement and the lint cannot judge coverage - the probe's assertions are the evidence behind it. (2) The five sim-logic owner-run-only laws (C4, C5, S1, S5, S6) are NOT in this commit: their sites were LOCATED, not asserted, and moving a row off `owner-run only` requires the Status AND the Scope column to change together (the lint requires that status to carry no runnable anchor). (3) C3 and S3 stay `owner-run only` - they are rendered-frame laws and there is no render path (measure.mjs is never run), so claiming them would be dishonest. (4) Batch 4 is NOT in this commit: its measured blast radius is 75 path substitutions inside the three FROZEN era files plus 26 in live GAMES.md - non-whitespace edits to frozen historical text, a bigger doctrine collision than #749's whitespace-only era edit.
+Findings: (1) The three unprobed laws are decided by one line each in the canonical - the battle-end check `G.wins[0] >= CFG.roundsToWin || G.wins[1] >= CFG.roundsToWin`, the fight phase's only exit `checkKO(G)`, and the shared base `WDEF = { omega: 3.5, dmg: 1 }` with `CFG.hp: 100`. (2) A round can be ended WITHOUT touching sim code: staging `f.alive = false; f.hp = 0` BEFORE the first fight-phase tick makes the shipped `checkKO()` credit the win, and the dead fighter is skipped by `stepPhysics`, so the probe never races a natural knock-out. (3) The fight phase survives a 20,000-tick window with no K.O. and no phase change - no timer can end a round. (4) The natural fight runs 12,684 ticks (2 K.O. exits, 0 non-K.O. exits); the vacuity floor is set at 2,000. (5) The WEAPONS table has 22 rows, not the 13 a first quick count suggested - every row spreads the shared `WDEF` and none overrides omega or dmg (the in-table `dmg:` values are all `trait.dmg` growth rates).
+Controls (the probe only, on throwaway copies of the canonical, one mutation each): C0 clean PASS 12/12; C1 `WDEF.omega 3.5 -> 3.6` fails exactly the 2 U1 assertions (10 pass); C2 `roundsToWin 2 -> 3` fails the 4 B1 threshold assertions plus the U1 config assertion that pins roundsToWin; C3 the battle-end condition changed to `wins >= 1` fails ALL 7 B1 assertions; C4 an injected 5,000-tick round timer fails both B2 assertions (B1 and U1 unaffected); C5 the `ko` event emission removed fails "the round ends only on a K.O." while the no-timer assertion still PASSES - the two checks are independent.
+Receipts (this session, build clone at BASE 4f38866): the probe passes 12/12 in 5.0 s; `verify --quick` PASS (6 checks); `strip-hash` PASS with the three invariants unchanged (c2cd01ef... / e9b6f8d6... / 600097a7...) and canonical md5 5de162de...; `verify --battery` PASS - 10 steps, every step matched its expected exit code (law-proof exit 0 in 5.0 s; lengrow-gate exit 1 BY DESIGN), canonical before == after; mojibake census clean on every patched file (the only signature characters anywhere in the repo sit on HANDOFF.md's own rule line, which NAMES them, and that line is unchanged from HEAD); per-file md5s are in the HANDOFF state block and in the delivery message.
+Not verified: no rendered-markdown check; measure.mjs NOT run (permanently banned); the battery ran, but the canonical was untouched so no canonical-specific proof was required.
+Rollback: `git revert` this commit.
+
+## #750 line cap + hash record - ledger (commit 4f38866)
 
 What: (1) lint-docs B3E - any line over 3,000 bytes in docs/GAMES.md or docs/history/*.md fails (Buffer.byteLength; check-only; no record file edited; a new era file is covered through docset). (2) Both handoff files record 4cc98d5 as the #749 landing. (3) #750 appended to GAMES. Every other file, including the canonical, LAWS, CODEMAP and the record files, is untouched.
 Why: the #749 finding - nothing guarded the 26-line mf-2 paragraph against a re-join, and a 14 KB line defeats docreflow and editors.
@@ -159,8 +174,14 @@ Rollback: `git revert 0ddd7f5`.
 
 ## What is next
 
-Batch 3 CLOSED; its follow-ups (#749, #750) are DONE. Per HANDOFF §7: (1) optional law-table follow-ups (B1/B2/U1 + 7 owner-run-only
-laws; .qa/ probes); (2) Batch 4 tool layout (docset.mjs is a dependency of four tools; keep the repo-root contract). Propose first;
+Batch 3 CLOSED; its follow-ups (#749, #750, #751) are DONE. Per HANDOFF §7, what remains: (1) the SECOND law-table
+patch — the 5 sim-logic owner-run-only laws (C4 re-arm gates, C5 parry recoil, S1 shot->body, S5 substep budget,
+S6 launch doctrine); their sites are LOCATED (canonical :2331-2332, :2767, :3038, :1830, :1881, :2701/:2719) but not
+asserted, and each one needs its own assertion design plus a Status/Scope change off `owner-run only` (C3 and S3 stay
+owner-run-only: rendered-frame laws, no render path). (2) Batch 4 tool layout — measured blast radius: 75 path
+substitutions in the three FROZEN era files + 26 in live GAMES.md; docset.mjs is a dependency of four tools and its
+repo-root contract must be kept. The cheap half (a tools/manifest.json read by verify + run-battery, replacing the
+hardcoded STEPS/EXPECTED maps and lint-docs.mjs:196's regex) needs NO moves. Propose first;
 wait for "go"; ONE patch per HANDOFF §6 + §6.7/§6.8, updating both handoff files in the same commit.
 
 ## APPENDIX — BATCH2-STATUS.md, carried forward verbatim

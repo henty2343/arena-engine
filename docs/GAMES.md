@@ -28,15 +28,16 @@ The living record of game design: what exists and what is decided next. Platform
 | section | from line | size |
 |---|---|---|
 | The documents | 11 | 1 KB |
-| Current state | 146 | 136 KB |
-| Weapon art — the closed convention (locked 2026-10-18, CLOSED 2026-10- | 448 | 10 KB |
-| Design principles for all games | 471 | 2 KB |
-| Open design questions | 481 | 15 KB |
-| Measured facts | 503 | 1 KB |
-| Testing recipe (headless) | 514 | 21 KB |
-| 2026-11-14 — #748 · BATCH 3C — GAMES.md SPLITS BY ERA INTO `docs/histo | 562 | 3 KB |
-| 2026-11-14 — #749 · BATCH 3 FOLLOW-UPS — THE INDEX TITLES, THE 14 KB L | 572 | 2 KB |
-| 2026-11-14 — #750 · BATCH 3 FOLLOW-UP — THE 3,000-BYTE LINE CAP (no ca | 580 | 2 KB |
+| Current state | 147 | 136 KB |
+| Weapon art — the closed convention (locked 2026-10-18, CLOSED 2026-10- | 449 | 10 KB |
+| Design principles for all games | 472 | 2 KB |
+| Open design questions | 482 | 15 KB |
+| Measured facts | 504 | 1 KB |
+| Testing recipe (headless) | 515 | 21 KB |
+| 2026-11-14 — #748 · BATCH 3C — GAMES.md SPLITS BY ERA INTO `docs/histo | 563 | 3 KB |
+| 2026-11-14 — #749 · BATCH 3 FOLLOW-UPS — THE INDEX TITLES, THE 14 KB L | 573 | 2 KB |
+| 2026-11-14 — #750 · BATCH 3 FOLLOW-UP — THE 3,000-BYTE LINE CAP (no ca | 581 | 2 KB |
+| 2026-11-14 — #751 · LAW-TABLE FOLLOW-UP — THE THREE UNPROBED LAWS GET  | 590 | 3 KB |
 
 **Frozen eras** (`docs/history/` — grep only, never load whole; the key is what the entry index below uses)
 
@@ -585,4 +586,13 @@ This is the only coverage of the chrome's pairing path; `pair-proof.mjs` loads t
 - **HANDOFF.** Both handoff files now record `4cc98d5` as the #749 landing (confirmed on origin) and describe the cap. Both were updated in this same commit.
 - **Canonical untouched:** md5 `5de162de46eb4fa3204e3ee636f2aff3`, stamp `links-r87` — so no battery was required and `measure.mjs` was NOT run. Token costs: see STATE.md §Documentation cost.
 - **Deviations flagged to the owner:** a new lint rule now applies to FROZEN era files (check-only; no era file is edited); delivered as a new-file-only patch holding one gated self-deleting one-shot rather than a diff of the changed files, so the regenerated files were produced on the owner's machine (`git add -A` required). The law-table follow-ups are NOT part of this commit.
+- **Rollback:** `git revert` this commit.
+## 2026-11-14 — #751 · LAW-TABLE FOLLOW-UP — THE THREE UNPROBED LAWS GET RUNNABLE ASSERTIONS (no canonical change)
+
+- **THE THREE LAWS.** `docs/LAWS.md`'s law-to-probe table carried three rows whose "Runnable probe" cell was empty: **B1** (best of 3, first to 2 round wins), **B2** (a round ends only on a K.O.) and **U1** (uniform base: omega 3.5, damage 1, hp 100). All three were `unprobed` — no assertion anywhere, not even `measure.mjs`. New `.qa/law-proof.mjs` asserts all three from the sim itself, and the table has **no `unprobed` row left**. The table's Status and Scope columns are hand-written judgement (the lint checks anchors and cell shape, not coverage); the probe's assertions are the evidence behind them.
+- **HOW THE ROUNDS ARE ENDED.** The probe stages each kill as GAME STATE (`f.alive = false`, `f.hp = 0`) BEFORE the first fight-phase tick runs, then lets the shipped `tick()` drive it: the sim's own `checkKO()` credits the win, sets the ko phase and evaluates the battle-end condition. No sim code is patched, transformed or re-implemented, and the dead fighter is skipped by `stepPhysics`, so the only K.O. in that tick is the staged one — the probe never races a natural knock-out.
+- **WHAT IT ASSERTS (12 assertions, ~5 s, Tier 0).** B1: the battle does not end on the first round win, does not end at one win apiece, ends exactly on a side's second round win, takes at most three rounds, names the side that took its second win, and credits every round's K.O. to the survivor — checked from BOTH sides, because a threshold that only holds for the left fighter is not a threshold. B2: the fight phase survives a 20,000-tick window with no K.O. and no phase change (so no timer can end a round), and every exit from the fight phase in a natural 12,684-tick fight is a K.O. exit (2 K.O. exits, 0 non-K.O. exits). U1: all 22 weapon rows carry the shared base (omega 3.5, damage 1 — none overrides it), and every fighter starts a round on spin 3.5 / damage 1 / hp 100, read off the live fight.
+- **WIRING.** The probe is registered in `scripts/run-battery.mjs` as a battery step — the law-table lint requires every cited runnable probe to be a battery step — and it is read-only: it writes nothing and never touches the canonical. `tools/gen-state.mjs` discovers it on its own (no tool edit).
+- **Canonical untouched:** md5 `5de162de46eb4fa3204e3ee636f2aff3`, stamp `links-r87` — so the canonical battery was not required and `measure.mjs` was NOT run. The proof battery WAS run, to prove the new step's registration. Token costs: see STATE.md §Documentation cost.
+- **Deviations flagged to the owner:** the law table's Status column changed on three rows (`unprobed` → `probed`); the Status judgement is the owner's, the lint cannot judge coverage. C3 and S3 stay `owner-run only` — they are rendered-frame laws, and without a render path they cannot be honestly claimed. The seven other owner-run-only laws are untouched and stay open.
 - **Rollback:** `git revert` this commit.
