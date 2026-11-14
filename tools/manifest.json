@@ -1,0 +1,175 @@
+{
+  "version": 1,
+  "note": "THE PROBE REGISTRY - the single list of every proof and tool in this repo. Read it before running anything: it says what each file asserts, whether the battery runs it, whether a law row may cite it, and whether an agent may run it. Consumers: tools/lib/manifest.mjs (loader + completeness check), scripts/run-battery.mjs (the battery steps), tools/lint-docs.mjs (the law table citable set). Adding a proof = adding one line here. Flags: battery = the proof battery runs it; citable = a law row may cite file::anchor against it; runnable = an agent may RUN it safely (false when it writes); ownerOnly = the owner's alone, agents NEVER run it (measure.mjs is permanently banned - HANDOFF section 1).",
+  "probes": [
+    {
+      "name": "inscribe",
+      "file": ".qa/inscribe.mjs",
+      "exit": 0,
+      "battery": true,
+      "citable": true,
+      "runnable": false,
+      "about": "The permanent inscription gate. It can REGENERATE the inscribed rows - a proof in its gate mode, an editor otherwise."
+    },
+    {
+      "name": "lengrow-build-proof",
+      "file": ".qa/lengrow-build-proof.mjs",
+      "exit": 0,
+      "battery": true,
+      "citable": true,
+      "about": "The length-growth ladder is built at boot from the shipped art and the round transition resets it."
+    },
+    {
+      "name": "pair-proof",
+      "file": ".qa/pair-proof.mjs",
+      "exit": 0,
+      "battery": true,
+      "citable": true,
+      "about": "The slot/idx split: identities and sides never mix (X1, B3, B4, G1, G2, T2)."
+    },
+    {
+      "name": "flipproof",
+      "file": ".qa/flipproof.mjs",
+      "exit": 0,
+      "battery": true,
+      "citable": true,
+      "about": "The drawn flip is the drawn flip - the art transition, not the spin recoil."
+    },
+    {
+      "name": "leadproof",
+      "file": ".qa/leadproof.mjs",
+      "exit": 0,
+      "battery": true,
+      "citable": true,
+      "about": "The edge-leading mirror: covering circles versus drawn art, the entry-pose gap, the swat touch class."
+    },
+    {
+      "name": "seam-proof",
+      "file": ".qa/seam-proof.mjs",
+      "exit": 0,
+      "battery": true,
+      "citable": true,
+      "about": "The growth seams and boot guards: every damaging hit grows, traits reset per round, a new trait axis needs an authored brief."
+    },
+    {
+      "name": "law-proof",
+      "file": ".qa/law-proof.mjs",
+      "exit": 0,
+      "battery": true,
+      "citable": true,
+      "about": "B1 best of 3 / first to 2 round wins, B2 a round ends only on a K.O., U1 the uniform base (omega 3.5, damage 1, hp 100)."
+    },
+    {
+      "name": "contact-proof",
+      "file": ".qa/contact-proof.mjs",
+      "exit": 0,
+      "battery": true,
+      "citable": true,
+      "about": "C4 one damage per touch and the re-arm gates, C5 a parry recoils BOTH weapons' spins."
+    },
+    {
+      "name": "shot-proof",
+      "file": ".qa/shot-proof.mjs",
+      "exit": 0,
+      "battery": true,
+      "citable": true,
+      "about": "S1 damage only on shot-touches-body, S5 the substep budget is honoured every tick, S6 every shot is born at its hold-derived launch point."
+    },
+    {
+      "name": "chromecheck",
+      "file": "chromecheck.mjs",
+      "exit": 0,
+      "battery": true,
+      "citable": true,
+      "about": "The renderer harness: boots both script blocks against DOM stubs and checks the drawn chrome (the PAIRING section backs X1)."
+    },
+    {
+      "name": "lengrow-gate",
+      "file": ".qa/lengrow-gate.mjs",
+      "exit": 1,
+      "battery": true,
+      "citable": true,
+      "about": "The inscribed-covering gate. EXITS 1 BY DESIGN: a uniform stretch breaks the inscribed gate at k=1.0778 (+7.8%), proving the pre-baked ladder is required."
+    },
+    {
+      "name": "lengrow-bake-verify",
+      "file": ".qa/lengrow-bake.mjs",
+      "args": [
+        "--verify"
+      ],
+      "exit": 0,
+      "battery": true,
+      "citable": true,
+      "runnable": false,
+      "about": "Verifies the baked LEN_CIRCLES ladder against the shipped art. Without --verify this file REGENERATES the canonical - never run it bare."
+    },
+    {
+      "name": "fingerprint",
+      "file": ".qa/fingerprint.mjs",
+      "args": [
+        "--compare"
+      ],
+      "exit": 0,
+      "battery": false,
+      "citable": true,
+      "about": "The change detector: hashes the full per-tick sim state over 8 cells and judges it against .qa/BASELINE. Proves 'did not move', never 'is right'."
+    },
+    {
+      "name": "strip-hash",
+      "file": ".qa/strip-hash.mjs",
+      "args": [
+        "--base",
+        "canonical-prediet-2c"
+      ],
+      "exit": 0,
+      "battery": false,
+      "citable": true,
+      "about": "The comment-only proof: no code token moved, so no law moved. The three invariant hashes."
+    },
+    {
+      "name": "lengrow-proof",
+      "file": ".qa/lengrow-proof.mjs",
+      "exit": 0,
+      "battery": false,
+      "citable": true,
+      "about": "The length-growth ladder's own read-only proof."
+    },
+    {
+      "name": "flip-seeds",
+      "file": ".qa/flip-seeds.mjs",
+      "exit": 0,
+      "battery": false,
+      "citable": false,
+      "about": "Seed generator for the flip family - a diagnostic, not an assertion."
+    },
+    {
+      "name": "bake-rows",
+      "file": ".qa/bake-rows.mjs",
+      "exit": 0,
+      "battery": false,
+      "citable": false,
+      "runnable": false,
+      "about": "The re-derived row-splice baker used by lengrow-bake - a writer, never a proof."
+    },
+    {
+      "name": "measure",
+      "file": "measure.mjs",
+      "exit": 0,
+      "battery": false,
+      "citable": false,
+      "runnable": false,
+      "ownerOnly": true,
+      "about": "THE OWNER'S AUDIT - renders frames and audits the rendering laws. AGENTS NEVER RUN IT (permanently banned, HANDOFF section 1). The law table's owner-run column cites it."
+    },
+    {
+      "name": "ingest",
+      "file": "ingest.mjs",
+      "exit": 0,
+      "battery": false,
+      "citable": false,
+      "runnable": false,
+      "ownerOnly": true,
+      "about": "The roster/tooling ingester - it writes back. The owner's alone."
+    }
+  ]
+}

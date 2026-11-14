@@ -120,21 +120,23 @@ whether an assert really covers a law — that is the **Status** column, written
 - **unprobed** — no assertion anywhere; at most `.qa/fingerprint.mjs`, which is a change detector for ALL laws on the
   default cast with no spear (it proves "did not move", never "is right") and so is not repeated per row.
   No row is currently `unprobed`: every live law below carries either a runnable probe or a `measure.mjs` audit.
+  Only C3 and S3 remain `owner-run only` - both are RENDERED-FRAME laws (visible interpenetration, no overlap on a
+  rendered frame) and measure.mjs is their only auditor.
 
 | ID | Law | Runnable probe | Owner-run audit | Status | Scope |
 |---|---|---|---|---|---|
 | C1 | Damage requires touch (body disc = collision circle) | `.qa/inscribe.mjs::A poking circle fires hits across`; `.qa/leadproof.mjs::hit gContact` | `measure.mjs::contact law 1: damage only on weapon-touches-body` | partial | covering circles vs drawn art; hit recompute for lead-flag weapons only |
 | C2 | Parry requires weapon-on-weapon touch | `.qa/inscribe.mjs::A poking circle fires hits across`; `.qa/leadproof.mjs::parry entry gap` | `measure.mjs::contact law 2: parry only on exact weapon-weapon touch` | partial | covering fidelity; entry-pose gap for lead-flag weapons only |
 | C3 | Weapons are solids to each other | — | `measure.mjs::contact law 3: VISIBLE rendered interpenetration` | owner-run only | the disclosed RED band is stated in law 3 above |
-| C4 | One damage per touch; re-arm gates | — | `measure.mjs::contact law 4: one damage per touch` | owner-run only | |
-| C5 | Parry recoils both weapons | — | `measure.mjs::contact law 5: every parry recoils both spins` | owner-run only | `flipproof` checks the drawn flip, not the spin recoil |
+| C4 | One damage per touch; re-arm gates | `.qa/contact-proof.mjs::C4 a fighter never deals two damaging blade hits in one tick`; `.qa/contact-proof.mjs::C4 every re-arm satisfies the deep-disengage gate` | `measure.mjs::contact law 4: one damage per touch` | probed | the sim law in full: no double touch, one damage per latch, and the re-arm gate read back off the fighter's own peak and latch counters |
+| C5 | Parry recoils both weapons | `.qa/contact-proof.mjs::C5 every parry flips BOTH weapons spins` | `measure.mjs::contact law 5: every parry recoils both spins` | probed | both spin signs flip on every parry; `flipproof` checks the drawn flip, not the spin recoil |
 | C6 | Counter-rotation from the bell | `.qa/pair-proof.mjs::rule 6 holds per SIDE` | `measure.mjs::contact law 6: every round opens counter-rotating` | partial | per side under every pairing, not swept over weapons |
-| S1 | 1s damage only on shot-touches-body | — | `measure.mjs::projectile law 1s: shot damage only on shot-touches-body` | owner-run only | |
+| S1 | 1s damage only on shot-touches-body | `.qa/shot-proof.mjs::S1 every shot that damaged the body was touching it`; `.qa/shot-proof.mjs::S1 the probe recomputes the touch itself (non-returning rows)` | `measure.mjs::projectile law 1s: shot damage only on shot-touches-body` | partial | every shot hit was a touch and the gap is recomputed from the event's own coordinates; the returning boomerang's ARC gap is the sim's own number (sign only) |
 | S2 | 2s swats only on exact shot-blade touch | `.qa/leadproof.mjs::swat touch gap` | `measure.mjs::projectile law 2s: swats only on exact shot-blade touch` | partial | lead-flag weapons only |
 | S3 | 3s shots never overlap blade/body/rim/shot | — | `measure.mjs::projectile law 3s: shots never overlap blade/body/rim/shot on a rendered frame` | owner-run only | |
 | S4 | 4s every shot has exactly one proven departure | `.qa/seam-proof.mjs::DEPARTURE ACCOUNTING` | `measure.mjs::projectile law 4s: every shot accounted for` | partial | ricochet stars only |
-| S5 | 5s substep budget audit | — | `measure.mjs::projectile law 5s: substep budget honored every tick` | owner-run only | |
-| S6 | 6s launch doctrine (hold-derived launch point) | — | `measure.mjs::projectile law 6s: every shot is born at its hold-derived launch point` | owner-run only | |
+| S5 | 5s substep budget audit | `.qa/shot-proof.mjs::S5 the emergency brake never engaged`; `.qa/shot-proof.mjs::S5 the budget was never under-allocated` | `measure.mjs::projectile law 5s: substep budget honored every tick` | probed | the chosen substep count against the cap and against the blade and projectile requirement, on every audited tick |
+| S6 | 6s launch doctrine (hold-derived launch point) | `.qa/shot-proof.mjs::S6 every hold-derived row launches where its hold says`; `.qa/shot-proof.mjs::S6 every volley shot is born at one of its anchors` | `measure.mjs::projectile law 6s: every shot is born at its hold-derived launch point` | partial | every shot row recomputed exactly from the launch event's own pose, except the volley row: matched against the whole anchor set, so a shot born at the right anchor of the WRONG tier would pass |
 | B1 | Best of 3, first to 2 round wins | `.qa/law-proof.mjs::B1 the battle ends on the second round win`; `.qa/law-proof.mjs::B1 the battle takes at most three rounds (best of 3)` | — | probed | the shipped phase machine, driven from both sides: the battle ends exactly on a side's second round win, never at one win or 1-1, in at most three rounds |
 | B2 | Rounds end on K.O. only (no timer) | `.qa/law-proof.mjs::B2 the fight phase has no timer`; `.qa/law-proof.mjs::B2 the round ends only on a K.O.` | — | probed | a 20,000-tick window with no K.O. cannot be ended by a timer, and every exit from the fight phase is a K.O. exit |
 | B3 | 1v1 only | `.qa/pair-proof.mjs::malformed casts are construction errors` | — | partial | cast-length guard only |

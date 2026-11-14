@@ -10,6 +10,7 @@ import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { historyFiles } from './lib/docset.mjs';
+import { citableProbes, manifestErrors } from './lib/manifest.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [], warnings = [];
 const err = m => errors.push(m); const warn = m => warnings.push(m);
@@ -20,6 +21,10 @@ const basePtr = path.join(root, '.qa', 'BASELINE');
 if (!existsSync(basePtr)) err('.qa/BASELINE pointer is missing');
 else { const b = readFileSync(basePtr,'utf8').trim();
   if (!existsSync(path.join(root,'.qa',b))) err(`.qa/BASELINE points to missing file: ${b}`); }
+// The probe registry must cover every proof that exists on disk, and every entry must point at a
+// file that exists. Without this the registry goes stale silently: a new proof nobody registers is
+// invisible to the battery AND to the law table.
+for (const e of manifestErrors(root)) err(e);
 // B3C: the record set is docs/GAMES.md + docs/history/*.md. The current canonical md5 must be
 // carried by AT LEAST ONE of them (the landing entry may live in a frozen era file).
 const HIST_FILES = historyFiles(root);
@@ -192,10 +197,11 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
   const start = lines.findIndex(l => /^##\s+Law-to-probe table/.test(l));
   if (start < 0) { err('docs/LAWS.md has no "## Law-to-probe table" section'); return; }
   let end = lines.findIndex((l, i) => i > start && /^##\s/.test(l)); if (end < 0) end = lines.length;
-  const battery = existsSync(path.join(root,'scripts/run-battery.mjs')) ? rd('scripts/run-battery.mjs') : '';
-  const runnable = new Set([...battery.matchAll(/\["[^"]+",\s*\["([^"]+\.mjs)"/g)].map(x => x[1]));
-  runnable.add('.qa/fingerprint.mjs');
-  if (runnable.size < 5) err('law table lint could not read the battery steps from scripts/run-battery.mjs');
+  /* The citable probe set comes from tools/manifest.json - the probe registry - so the law table and
+   * the proof battery read the SAME list. (It used to be derived by regex-parsing run-battery.mjs's
+   * source: a reformatted array changed the law table's verdict without anyone touching a law.) */
+  const runnable = citableProbes(root);
+  if (!runnable || runnable.size < 5) err('law table lint could not read the citable probe set from tools/manifest.json');
   const STATUS = new Set(['probed','partial','owner-run only','unprobed']);
   const seen = new Set(); let rows = 0;
   const anchors = cell => [...cell.matchAll(/`([^`]+?)::([^`]+?)`/g)].map(x => ({ file: x[1], anchor: x[2] }));
@@ -211,7 +217,7 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
     if (!STATUS.has(c[4])) err(`${at} ${id}: status "${c[4]}" is not one of ${[...STATUS].join(' / ')}`);
     const run = anchors(c[2]), own = anchors(c[3]);
     for (const a of run) {
-      if (!runnable.has(a.file)) err(`${at} ${id}: runnable probe ${a.file} is not a battery step or fingerprint.mjs`);
+      if (!runnable.has(a.file)) err(`${at} ${id}: runnable probe ${a.file} is not a citable probe in tools/manifest.json`);
     }
     for (const a of own) if (a.file !== 'measure.mjs') err(`${at} ${id}: owner-run audit must cite measure.mjs, not ${a.file}`);
     for (const a of [...run, ...own]) {

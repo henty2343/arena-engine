@@ -2,7 +2,7 @@
 # STATE — current project facts
 
 Contains: the mutable facts of the repo, derived from the canonical and the tree.
-Read when: every session, alongside AGENTS.md. Approx token cost: ~0.8k (computed).
+Read when: every session, alongside AGENTS.md. Approx token cost: ~0.9k (computed).
 
 ## Canonical (the one live game)
 - File: `previews/spinclash-preview.html`
@@ -20,10 +20,11 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.8k (compute
 ## Tooling inventory
 - Root tools (3): `chromecheck.mjs` · `ingest.mjs` · `measure.mjs`
 - scripts/ (1): `run-battery.mjs`
-- tools/ (10, incl. doc/ and lib/): `gen-codemap.mjs` · `gen-state.mjs` · `lint-docs.mjs` · `lint-markers.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/docset.mjs` · `lib/load-sim.mjs` · `lib/strip-comments.mjs`
+- tools/ (11, incl. doc/ and lib/): `gen-codemap.mjs` · `gen-state.mjs` · `lint-docs.mjs` · `lint-markers.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/docset.mjs` · `lib/load-sim.mjs` · `lib/manifest.mjs` · `lib/strip-comments.mjs`
 - scratch/: gitignored RUNTIME temp dir (bake/gate temp copies, battery logs) — not source; nothing in it is tracked except `.gitkeep`.
-- .qa/ proofs (14): `bake-rows.mjs` · `fingerprint.mjs` · `flip-seeds.mjs` · `flipproof.mjs` · `inscribe.mjs` · `law-proof.mjs` · `leadproof.mjs` · `lengrow-bake.mjs` · `lengrow-build-proof.mjs` · `lengrow-gate.mjs` · `lengrow-proof.mjs` · `pair-proof.mjs` · `seam-proof.mjs` · `strip-hash.mjs`
+- .qa/ proofs (16): `bake-rows.mjs` · `contact-proof.mjs` · `fingerprint.mjs` · `flip-seeds.mjs` · `flipproof.mjs` · `inscribe.mjs` · `law-proof.mjs` · `leadproof.mjs` · `lengrow-bake.mjs` · `lengrow-build-proof.mjs` · `lengrow-gate.mjs` · `lengrow-proof.mjs` · `pair-proof.mjs` · `seam-proof.mjs` · `shot-proof.mjs` · `strip-hash.mjs`
 - .qa/ baselines (1): `fp-flailfix-r88.json`
+- Probe registry: `tools/manifest.json` — every proof and tool in one list: what it asserts, whether the battery runs it, whether a law row may cite it, whether an agent may run it. Read it before running anything; `tools/lib/manifest.mjs` loads it and checks it is complete.
 
 ## Documentation cost (chars/4 estimate)
 | file | ~tokens | read policy |
@@ -31,9 +32,9 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.8k (compute
 | README.md | 321 | router only |
 | AGENTS.md | 1,498 | always |
 | docs/CODEMAP.md | 1,515 | before opening the canonical |
-| docs/LAWS.md | 4,205 | before any sim/doc edit |
+| docs/LAWS.md | 4,559 | before any sim/doc edit |
 | docs/RECIPES.md | 1,876 | adding a trait/skill/bot |
-| docs/GAMES.md | 53,058 | GREP ONLY — never load whole |
+| docs/GAMES.md | 54,160 | GREP ONLY — never load whole |
 | docs/SPEC.md | 12,988 | PLANNED engine work only |
 | docs/CONTRACT.md | 4,226 | PLANNED engine work only |
 | docs/BUILD.md | 4,525 | PLANNED engine work only |

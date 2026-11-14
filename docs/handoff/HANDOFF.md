@@ -24,8 +24,11 @@ Follow-ups: #749 = 4cc98d5 (index titles, mf-2 line re-paragraphed, AGENTS/READM
   #750 = 4f38866 (the 3,000-byte line-cap lint B3E plus the record of the #749 hash) — confirmed on origin.
   #751 = 63bb91c (the law-table follow-up — new .qa/law-proof.mjs asserts B1/B2/U1, the three laws
   that had NO assertion anywhere; the LAWS table now has no `unprobed` row) — confirmed on origin.
-  This file was last updated by the commit AFTER 63bb91c, which is why it can name that hash.
-Next: the second law-table patch (the 5 sim-logic owner-run-only laws — §7) or Batch 4 (tool layout, §7).
+  #752 (this file's last update): the law-table COMPLETION + the probe registry — new
+  .qa/contact-proof.mjs (C4, C5) and .qa/shot-proof.mjs (S1, S5, S6) assert the last five laws that
+  had no agent-runnable proof, and tools/manifest.json becomes the single registry every tool reads.
+  Its own commit hash is not known to this file (a file cannot contain its own commit) - verify origin.
+Next: the rendered-frame laws (C3, S3) or Batch 4's tool MOVES (the registry half is done) — §7.
 Delivery: ONE patch (§6) — read §6.7 first: the owner copies patches out of CHAT.
 
 State at the 3c landing (re-measure, do not trust): HEAD 68e29f9, parent f756e21; canonical md5
@@ -54,6 +57,16 @@ LAWS a58eb28b72cf7347c66b767584ad35b8 · run-battery 4ee58ec2b1044c3b57a7c416c68
 STATE e3484d7d7cd0c7d9c88836c1aaf472f9. On origin: verify --quick PASS (6 checks), strip-hash PASS with the
 three invariants unchanged, and the probe 12/12. The two handoff files are not listed (a file cannot hold its
 own md5).
+State after the #752 patch (BASE c2bcf57 — the #751 landing plus its handoff refresh; re-measure, do not
+trust): canonical, CODEMAP, chronicle, mf-1, mf-2, AGENTS, README, navgen, docreflow, lint-markers, docset
+unchanged. As built: contact-proof 388eeea0a06cf6dab1dff40a46fe5518 · shot-proof 96b2f0169bf73160e32555a6e448e925 ·
+manifest.json 8db66e1aa0a4c3fd0c50235f20b50c4a · manifest.mjs dfa3b95c2d591d778c1e7c195548eabd ·
+run-battery b2b9707d8b4c1d9a68c378e590448807 · lint-docs 19065ad69de0e96c48ce4798991fc86b ·
+gen-state 15481648e3cae178c02a45d8b0edf7dc · LAWS f3f4c0be5b32c908c68f1eced6a870b1 ·
+GAMES e7570b01a58072d192c33f5315742f6b · STATE 05f1fb0ec3fe1a411d98e246308e3dce. The two handoff files
+are not listed (a file cannot hold its own md5). Receipts: verify --quick PASS (6 checks); the proof battery
+PASS — 12/12 steps matched their expected exit code (lengrow-gate 1 BY DESIGN, the other eleven 0), canonical
+md5 and line count identical before and after the run.
 
 ## 0. The record is a SET (since 3c)
 
@@ -119,11 +132,12 @@ nav block's Frozen eras table + entry index (file + line). All record files are 
 The old worst line (mf-2 line 526 at 68e29f9, 14,343 bytes, entry #721's AT THIS LANDING sub-paragraph) was re-paragraphed by
 #749 into 26 soft-wrapped lines, each <= 560 bytes; its bold spans now CROSS soft newlines (valid CommonMark, not render-checked).
 No line in the record set exceeds 3,000 bytes, and since #750 lint-docs ENFORCES that cap (B3E, check-only). Do not re-join the 26 lines. Grep for the sub-paragraph; never hand-copy a line number.
-Law-to-probe table (LAWS §Law-to-probe table): 25 rows; 2 probed, 13 partial, 7 owner-run only,
-3 unprobed. The 7 owner-run rows (contact 3/4/5; shot 1s/3s/5s/6s) are audited ONLY by measure.mjs.
-The 3 unprobed: B1 best-of-3, B2 K.O.-only rounds, U1 uniform base stats. .qa/fingerprint.mjs is a
-change detector on the default cast with no spear, not a per-law assertion. Rows cite file::anchor
-items that lint-docs verifies; Status/Scope are hand-written judgement.
+Law-to-probe table (LAWS §Law-to-probe table): 25 rows; as of #752: 7 probed, 16 partial, 2 owner-run only,
+0 unprobed. The ONLY owner-run rows are C3 (visible rendered interpenetration) and S3 (no overlap on a
+rendered frame) — both RENDERED-FRAME laws, audited only by measure.mjs, which agents never run. B1/B2/U1
+were asserted by .qa/law-proof.mjs (#751); C4/C5 by .qa/contact-proof.mjs and S1/S5/S6 by .qa/shot-proof.mjs
+(#752). .qa/fingerprint.mjs is a change detector on the default cast with no spear, not a per-law assertion.
+Rows cite file::anchor items that lint-docs verifies; Status/Scope are hand-written judgement.
 The canonical is ~105k tokens — never read whole; enter via CODEMAP at one symbol grep. CODEMAP line
 numbers are valid only at the md5 in its header. Doc costs live in STATE.md §Documentation cost;
 never hand-type a token cost (lint rejects it, era files included).
@@ -131,13 +145,15 @@ never hand-type a token cost (lint rejects it, era files included).
 ## 4. Health baseline + proof sequence
 
     node tools/verify.mjs --quick      # VERIFY PASS — 6 checks
-    node tools/verify.mjs --battery    # ~9 min; once per canonical-touching patch
+    node tools/verify.mjs --battery    # ~12 min; once per canonical-touching patch
 
 Quick checks in order: gen-state, lint-docs, navgen, docreflow, gen-codemap, lint-markers.
 After any canonical edit: `node .qa/strip-hash.mjs --base canonical-prediet-2c` + `verify --battery`.
-Battery expected exits: inscribe 0 · lengrow-build-proof 0 · pair-proof 0 · flipproof 0 · leadproof 0 ·
-seam-proof 0 · chromecheck 0 · lengrow-gate 1 (BY DESIGN; normalised stdout md5
-a31a68c4d19d68a2988c792b481be4d5, 23 lines, 10 GATE FAIL rows) · lengrow-bake --verify 0.
+Battery expected exits (the STEP LIST now lives in tools/manifest.json — the probe registry; read it to
+see what proves what): inscribe 0 · lengrow-build-proof 0 · pair-proof 0 · flipproof 0 · leadproof 0 ·
+seam-proof 0 · law-proof 0 · contact-proof 0 · shot-proof 0 · chromecheck 0 · lengrow-gate 1 (BY DESIGN;
+normalised stdout md5 a31a68c4d19d68a2988c792b481be4d5, 23 lines, 10 GATE FAIL rows) ·
+lengrow-bake --verify 0.
 Doc regen after ANY edit to GAMES or docs/history/ (both doc tools cover the set):
 
     node tools/doc/docreflow.mjs && node tools/doc/navgen.mjs && node tools/gen-codemap.mjs \
@@ -205,28 +221,26 @@ Batch 3 CLOSED. Optional items — propose first, wait for "go", ONE patch:
 - Index titles: DONE in #749 (navgen rowTitle(); the 54 numbered rows now carry the heading text).
 - The 14,343-byte line: DONE in #749 (26 soft-wrapped lines ≤ 560 bytes; the frozen era file edit was flagged).
 - AGENTS grep hint: DONE in 3c.
-- Law-table follow-ups: PARTLY DONE in #751 (new `.qa/law-proof.mjs`; B1/B2/U1 now `probed`; the LAWS table
-  has NO `unprobed` row left). STILL OPEN: the 7 owner-run-only laws (C3, C4, C5, S1, S3, S5, S6). C3 and S3
-  are RENDERED-FRAME laws (visible interpenetration / no overlap on a rendered frame) — without a render path
-  they cannot honestly be claimed, and measure.mjs is never run. The other FIVE (C4, C5, S1, S5, S6) are pure
-  SIM logic and look headlessly assertable; their sites were LOCATED (read-only greps), not asserted:
-  re-arm gates (`reArmPad`/`reArmDeep`/`reArmWait`), parry recoil (`CFG.parryPush`, canonical :2331-2332),
-  shot->body hit (`shotHitBody` :2767 + the one-hit-per-passage latch :3038), the substep brake
-  (`CFG.maxSub` :1830 + `G.auditSubs` :1881), the shot birth (`G.shots.push` :2701/:2719). A second patch
-  would design each assertion and flip the Status column from `owner-run only` — note the lint REQUIRES that
-  status to carry no runnable anchor, so the Status and the Scope column must change with it.
+- Law-table follow-ups: DONE. #751 added .qa/law-proof.mjs (B1/B2/U1); #752 added .qa/contact-proof.mjs (C4,
+  C5) and .qa/shot-proof.mjs (S1, S5, S6). The LAWS table has NO `unprobed` row and only TWO
+  `owner-run only` rows left: **C3 and S3**, both RENDERED-FRAME laws (visible interpenetration; no
+  overlap on a rendered frame). There is no render path an agent may use (measure.mjs is permanently
+  banned), so those two cannot honestly be claimed by a headless probe. A render-frame probe is the
+  only way to close them — a proposal, not a patch.
 - Handoff follow-ups (AGENTS/README docs/handoff pointers, #749 entry): DONE in #749.
 - Line-cap lint: DONE in #750 (lint-docs B3E; 3,000 bytes per line over GAMES + docs/history/*.md; check-only).
-Batch 4 — tool layout: one home tools/ with proof/, doc/, measure/, lib/; rename .qa visibly;
-tools/manifest.json read by verify + run-battery; propose an owner-go flag for measure.mjs; move
-SPEC/CONTRACT/BUILD to docs/planned/; RECIPES "Traps" -> short rules; AGENTS = the one workflow home.
+Batch 4 — tool layout: the REGISTRY half is DONE in #752 (tools/manifest.json is the single list of every
+proof and tool; run-battery and lint-docs read it, and lint-docs checks it is complete — adding a probe
+is now one JSON line instead of three hand-kept lists). Still open there: verify.mjs is not yet a reader
+(it stays at 6 checks; lint-docs is the completeness gate). Also still open: one home tools/ with proof/,
+doc/, measure/, lib/; the .qa rename; the measure.mjs owner-go flag; moving SPEC/CONTRACT/BUILD to
+docs/planned/; RECIPES "Traps" -> short rules; AGENTS = the one workflow home.
   MEASURED BLAST RADIUS (2026-11-14, read-only counts — re-measure before quoting): renaming `.qa/` needs a path
   substitution in 43 refs in mf-1 + 23 in the chronicle + 9 in mf-2 (75 in the three FROZEN era files) + 26 in
   live GAMES.md; moving SPEC/CONTRACT/BUILD needs 10 in GAMES.md + 2 in mf-1 + 1 in LAWS.md + 5 in AGENTS/README
   + 2 each in gen-state.mjs (cost-table keys) and lint-docs.mjs (operational lists). Those are NON-whitespace
   edits to frozen historical text — a bigger doctrine collision than #749's whitespace-only era edit. The
-  cheap, high-value half needs NO moves: a tools/manifest.json that verify + run-battery read, replacing the
-  hardcoded STEPS/EXPECTED maps and the brittle regex lint-docs.mjs:196 uses to find the battery steps.
+  registry (done) removes the need to move anything for the inventory to be agent-readable.
 tools/lib/docset.mjs is a dependency of four tools and resolves paths from the repo root — keep that
 contract. Leave record content alone.
 
@@ -293,14 +307,13 @@ New-chat prompt (the whole thing):
 
 ## 10. Where we are / next action
 
-Landed through the #751 patch (the law-table follow-up: new .qa/law-proof.mjs asserting B1/B2/U1, the LAWS
-table with no `unprobed` row), which is 63bb91c588d67989bdffd323806b2c695828f95b on origin, on top of 4f38866
-(#750, the 3,000-byte line-cap lint B3E). This file was last updated by the commit AFTER 63bb91c — that is
-the patch below. The freshness check's two hashes always match ON ORIGIN, because this file is updated in
-the same commit as every landing. Verify origin HEAD against the hash that last updated this file; if they
-differ, more landed — re-baseline from STATE.md and say what moved.
+Landed through the #752 patch (the law-table completion — new .qa/contact-proof.mjs and .qa/shot-proof.mjs
+asserting C4/C5/S1/S5/S6 — plus tools/manifest.json, the probe registry every tool now reads), on top of
+c2bcf57 (the handoff refresh) and 63bb91c (#751). This file was last updated by the commit AFTER #752.
+Verify origin HEAD against the hash that last updated this file; if they differ, more landed — re-baseline
+from STATE.md and say what moved.
 First: run the FRESHNESS CHECK, then §2. If the invariant hashes differ, STOP and tell the owner.
-Then propose the next item from §7 — the SECOND law-table patch (the 5 sim-logic owner-run-only laws: C4, C5,
-S1, S5, S6) or Batch 4 (tool layout) — and WAIT for "go".
+Then propose the next item from §7 — the two RENDERED-FRAME laws (C3, S3: a render-frame probe is the only
+way to close them) or Batch 4's tool MOVES — and WAIT for "go".
 After "go": the whole job in one pass (edits, regen, proofs, controls, fresh-clone proof), delivered per §6 + §6.7/§6.8,
 with both handoff files updated in the same patch.

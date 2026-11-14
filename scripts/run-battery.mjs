@@ -10,6 +10,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { batterySteps } from "../tools/lib/manifest.mjs";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 process.chdir(root);
 const OUT = path.join("scratch", "battery-runs");
@@ -18,24 +19,18 @@ const canon = () => {
   const b = readFileSync(path.join("previews", "spinclash-preview.html"));
   return createHash("md5").update(b).digest("hex") + " / " + (b.toString("utf8").match(/\n/g) || []).length + " lines";
 };
-const STEPS = [
-  ["inscribe",            [".qa/inscribe.mjs"]],
-  ["lengrow-build-proof", [".qa/lengrow-build-proof.mjs"]],
-  ["pair-proof",          [".qa/pair-proof.mjs"]],
-  ["flipproof",           [".qa/flipproof.mjs"]],
-  ["leadproof",           [".qa/leadproof.mjs"]],
-  ["seam-proof",          [".qa/seam-proof.mjs"]],
-  ["law-proof",           [".qa/law-proof.mjs"]],
-  ["chromecheck",         ["chromecheck.mjs"]],
-  ["lengrow-gate",        [".qa/lengrow-gate.mjs"]],
-  ["lengrow-bake-verify", [".qa/lengrow-bake.mjs", "--verify"]],
-];
-const EXPECTED = {
-  "inscribe": 0, "lengrow-build-proof": 0, "pair-proof": 0, "flipproof": 0, "leadproof": 0,
-  "seam-proof": 0, "law-proof": 0, "chromecheck": 0, "lengrow-gate": 1 /* exits 1 BY DESIGN: uniform stretch first breaks the inscribed gate at k=1.0778 (+7.8%), proving the pre-baked ladder is required */, "lengrow-bake-verify": 0,
-};
+/* THE STEPS COME FROM tools/manifest.json - the probe registry - not from a list kept here. The
+ * manifest says which probe runs, with what arguments, and what exit code it must produce. One
+ * place to add a probe, and the law table's citable set is read from the same file. */
+const MANIFEST_STEPS = batterySteps(root);
+if (!MANIFEST_STEPS || !MANIFEST_STEPS.length) {
+  console.error("run-battery: tools/manifest.json is missing, unreadable, or lists no battery steps - refusing to fall back to a hand-maintained list.");
+  process.exit(2);
+}
+const STEPS = MANIFEST_STEPS.map(x => [x.name, x.args]);
+const EXPECTED = Object.fromEntries(MANIFEST_STEPS.map(x => [x.name, x.exit]));
 const before = canon();
-console.log("battery start — canonical " + before);
+console.log("battery start — canonical " + before + " — " + STEPS.length + " steps (tools/manifest.json)");
 const results = [];
 for (const [label, args] of STEPS) {
   const t0 = Date.now();

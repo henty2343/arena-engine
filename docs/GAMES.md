@@ -28,16 +28,17 @@ The living record of game design: what exists and what is decided next. Platform
 | section | from line | size |
 |---|---|---|
 | The documents | 11 | 1 KB |
-| Current state | 147 | 136 KB |
-| Weapon art — the closed convention (locked 2026-10-18, CLOSED 2026-10- | 449 | 10 KB |
-| Design principles for all games | 472 | 2 KB |
-| Open design questions | 482 | 15 KB |
-| Measured facts | 504 | 1 KB |
-| Testing recipe (headless) | 515 | 21 KB |
-| 2026-11-14 — #748 · BATCH 3C — GAMES.md SPLITS BY ERA INTO `docs/histo | 563 | 3 KB |
-| 2026-11-14 — #749 · BATCH 3 FOLLOW-UPS — THE INDEX TITLES, THE 14 KB L | 573 | 2 KB |
-| 2026-11-14 — #750 · BATCH 3 FOLLOW-UP — THE 3,000-BYTE LINE CAP (no ca | 581 | 2 KB |
-| 2026-11-14 — #751 · LAW-TABLE FOLLOW-UP — THE THREE UNPROBED LAWS GET  | 590 | 3 KB |
+| Current state | 148 | 136 KB |
+| Weapon art — the closed convention (locked 2026-10-18, CLOSED 2026-10- | 450 | 10 KB |
+| Design principles for all games | 473 | 2 KB |
+| Open design questions | 483 | 15 KB |
+| Measured facts | 505 | 1 KB |
+| Testing recipe (headless) | 516 | 21 KB |
+| 2026-11-14 — #748 · BATCH 3C — GAMES.md SPLITS BY ERA INTO `docs/histo | 564 | 3 KB |
+| 2026-11-14 — #749 · BATCH 3 FOLLOW-UPS — THE INDEX TITLES, THE 14 KB L | 574 | 2 KB |
+| 2026-11-14 — #750 · BATCH 3 FOLLOW-UP — THE 3,000-BYTE LINE CAP (no ca | 582 | 2 KB |
+| 2026-11-14 — #751 · LAW-TABLE FOLLOW-UP — THE THREE UNPROBED LAWS GET  | 591 | 3 KB |
+| 2026-11-14 — #752 · LAW-TABLE COMPLETION + THE PROBE REGISTRY — THE LA | 600 | 4 KB |
 
 **Frozen eras** (`docs/history/` — grep only, never load whole; the key is what the entry index below uses)
 
@@ -595,4 +596,14 @@ This is the only coverage of the chrome's pairing path; `pair-proof.mjs` loads t
 - **WIRING.** The probe is registered in `scripts/run-battery.mjs` as a battery step — the law-table lint requires every cited runnable probe to be a battery step — and it is read-only: it writes nothing and never touches the canonical. `tools/gen-state.mjs` discovers it on its own (no tool edit).
 - **Canonical untouched:** md5 `5de162de46eb4fa3204e3ee636f2aff3`, stamp `links-r87` — so the canonical battery was not required and `measure.mjs` was NOT run. The proof battery WAS run, to prove the new step's registration. Token costs: see STATE.md §Documentation cost.
 - **Deviations flagged to the owner:** the law table's Status column changed on three rows (`unprobed` → `probed`); the Status judgement is the owner's, the lint cannot judge coverage. C3 and S3 stay `owner-run only` — they are rendered-frame laws, and without a render path they cannot be honestly claimed. The seven other owner-run-only laws are untouched and stay open.
+- **Rollback:** `git revert` this commit.
+## 2026-11-14 — #752 · LAW-TABLE COMPLETION + THE PROBE REGISTRY — THE LAST FIVE ASSERTABLE LAWS GET PROBES (no canonical change)
+
+- **THE FIVE LAWS.** `C4` (one damage per touch; the re-arm gates), `C5` (a parry recoils both weapons), `S1` (damage only on shot-touches-body), `S5` (the substep budget is honoured every tick) and `S6` (every shot is born at its hold-derived launch point) were `owner-run only` — only `measure.mjs` audited them, and agents never run it, so a break in any of the five would have failed NOTHING an agent can run. Two new probes assert them headlessly: `.qa/contact-proof.mjs` (C4, C5) and `.qa/shot-proof.mjs` (S1, S5, S6). After this, only `C3` and `S3` remain `owner-run only`, and both are RENDERED-FRAME laws (visible interpenetration; no overlap on a rendered frame) with no render path to assert them against — that gap is stated, not papered over.
+- **WHAT EACH PROOF CHECKS.** **C4**: no fighter deals two damaging blade touches in one tick; every hit after a fighter's first is preceded by a re-arm (one damage per latch); and every re-arm satisfies the deep-disengage gate, read back off the fighter's own peak and latch counters (`peak > reArmPad` AND (`peak >= reArmDeep` OR `elapsed >= reArmWait`)) — the sim's arithmetic, checked against the sim's own state. **C5**: both spin signs flip on every parry, and the parry event carries both flipped spins. **S1**: every shot that damaged the body was touching it, and for every non-returning row the probe RECOMPUTES the gap from the event's own coordinates (`sx, sy, sr` and the victim's centre) instead of trusting the sim's number.
+**S5**: the emergency brake never engaged (the chosen substep count stayed under `CFG.maxSub`) and the budget was never under-allocated (the chosen count always met the blade and projectile requirement). **S6**: every shot row's launch point is recomputed from the launch event's own fighter pose and the row's hold, using the sim's own `spineFrame`/`copyCtr` geometry.
+- **THE PROBE REGISTRY.** `tools/manifest.json` is now the single list of every proof and tool in the repo: what it asserts, whether the battery runs it, whether a law row may cite it, and whether an agent may run it at all. `tools/lib/manifest.mjs` loads it and checks it is COMPLETE — every proof on disk is registered, every entry points at a file that exists. `scripts/run-battery.mjs` takes its steps and expected exit codes from it, and `tools/lint-docs.mjs` takes the law table's citable probe set from it. That set used to be derived by REGEX-PARSING `run-battery.mjs`'s source, so a reformatted array changed the law table's verdict without anyone touching a law. One file to add a probe to; one file to read to find out what proves what.
+- **WHAT IT DOES NOT COVER.** S1's returning boomerang: the drawn ARC is the hitbox there (`chaosorbit-r54`), so the probe checks the SIGN of the sim's own arc gap instead of recomputing the arc. S6's volley row (the knives): the fan grows with the holder's hit count, so the probe matches each volley shot against the FULL anchor set — a shot born at the right anchor of the WRONG tier would still pass. Every other shot row is recomputed exactly. C3 and S3 stay `owner-run only`.
+- **Canonical untouched:** md5 `5de162de46eb4fa3204e3ee636f2aff3`, stamp `links-r87` — so the canonical battery was not required and `measure.mjs` was NOT run. The proof battery WAS run, to prove the manifest-driven step list and the two new steps: **12 steps, every step matched its expected exit code** (`lengrow-gate` 1 BY DESIGN, the other eleven 0), and the canonical's md5 and line count were identical before and after the run. Token costs: see STATE.md §Documentation cost.
+- **Deviations flagged to the owner:** the law table's Status column changed on five rows (`owner-run only` → `probed`/`partial`); Status is hand-written judgement and the lint cannot judge coverage — the probes are the evidence behind it. The probe battery grew from 9 steps to 12 and its step list moved from code to data, so a probe is registered by editing one JSON file. `tools/manifest.json` now also registers the owner's own tools (`measure.mjs`, `ingest.mjs`) with `ownerOnly: true` — the registry is total, and the flag is what says agents must not run them.
 - **Rollback:** `git revert` this commit.

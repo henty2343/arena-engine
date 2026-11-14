@@ -68,7 +68,8 @@ function render(f, cost = '~0.7k') {
   L.push(`- tools/ (${f.counts.tools}, incl. doc/ and lib/): ${f.tools.map(x => '`'+x+'`').join(' · ')}`);
   L.push('- scratch/: gitignored RUNTIME temp dir (bake/gate temp copies, battery logs) — not source; nothing in it is tracked except `.gitkeep`.');
   L.push(`- .qa/ proofs (${f.counts.proofs}): ${f.proofs.map(x => '`'+x+'`').join(' · ')}`);
-  L.push(`- .qa/ baselines (${f.counts.baselines}): ${f.baselines.map(x => '`'+x+'`').join(' · ')}`); L.push('');
+  L.push(`- .qa/ baselines (${f.counts.baselines}): ${f.baselines.map(x => '`'+x+'`').join(' · ')}`);
+  L.push('- Probe registry: `tools/manifest.json` — every proof and tool in one list: what it asserts, whether the battery runs it, whether a law row may cite it, whether an agent may run it. Read it before running anything; `tools/lib/manifest.mjs` loads it and checks it is complete.'); L.push('');
   L.push('## Documentation cost (chars/4 estimate)');
   L.push('| file | ~tokens | read policy |'); L.push('|---|---:|---|');
   for (const d of f.docs) L.push(`| ${d.file} | ${d.approxTokens.toLocaleString('en-US')} | ${d.policy} |`); L.push('');

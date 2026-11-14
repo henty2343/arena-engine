@@ -7,15 +7,31 @@ tools; an unlisted file there fails lint). Freshness: `git log -1 --format='%h %
 
 Status as of 2026-11-14: (a) DONE (0ddd7f5, #746) · (b) DONE (9e017bb, #742) · (d) DONE (f756e21, #747)
 · (c) DONE (68e29f9, #748). Nothing remains in Batch 3. Its follow-ups: #749 DONE (4cc98d5) · #750 DONE (4f38866) ·
-#751 DONE (63bb91c, the law-table follow-up). Next: the second law-table patch, then Batch 4 — HANDOFF §7.
+#751 DONE (63bb91c) · #752 DONE (this commit — the law-table completion + the probe registry).
+Next: the two rendered-frame laws, then Batch 4's tool moves — HANDOFF §7.
 The Batch 2 ledger is the appendix below, carried verbatim. STATE.md and docs/CODEMAP.md
 are authoritative for every number.
 
 Follow-ups: #749 = 4cc98d5 landed the optional doc items (index titles, the mf-2 14 KB line, AGENTS/README pointers, the #749 entry).
 #750 = 4f38866 added the 3,000-byte line-cap lint and recorded that hash - see the ledger below; its own hash is not known
 to this file. #751 = 63bb91c is the LAW-TABLE FOLLOW-UP: new .qa/law-proof.mjs asserts the three laws that had NO
-assertion anywhere (B1/B2/U1), so the LAWS table now has no `unprobed` row - see the first ledger below.
-Next: the second law-table patch (the 5 sim-logic owner-run-only laws) or Batch 4.
+assertion anywhere (B1/B2/U1), so the LAWS table now has no `unprobed` row - see the ledger below.
+#752 (this commit) is the LAW-TABLE COMPLETION + THE PROBE REGISTRY: .qa/contact-proof.mjs (C4, C5) and
+.qa/shot-proof.mjs (S1, S5, S6) assert the last five laws that had no agent-runnable proof, and
+tools/manifest.json becomes the single registry that run-battery and lint-docs read (verify.mjs is NOT a reader yet - it stays at 6 checks).
+Next: the two rendered-frame laws (C3, S3) or Batch 4's tool moves.
+
+## #752 law-table completion + the probe registry - ledger (this commit)
+
+What: (1) Two new probes: `.qa/contact-proof.mjs` asserts C4 (one damage per touch; the re-arm gates) and C5 (a parry recoils BOTH weapons' spins); `.qa/shot-proof.mjs` asserts S1 (damage only on shot-touches-body), S5 (the substep budget is honoured every tick) and S6 (every shot is born at its hold-derived launch point). All five were `owner-run only` - audited ONLY by measure.mjs, which agents never run - so a break in any of them failed nothing an agent could run. They are now `probed` (C4, C5, S5) or `partial` (S1, S6). After this the LAWS table has NO `unprobed` row and only TWO `owner-run only` rows: C3 and S3, both rendered-frame laws. (2) `tools/manifest.json` is the new PROBE REGISTRY - every proof and tool in one list: what it asserts, whether the battery runs it, whether a law row may cite it, whether an agent may run it. `tools/lib/manifest.mjs` loads it and checks it is COMPLETE (every proof on disk registered; every entry's file exists). `scripts/run-battery.mjs` takes its steps and expected exit codes from it; `tools/lint-docs.mjs` takes the law table's citable probe set from it. (3) `tools/gen-state.mjs` adds one STATE line naming the registry. (4) #752 appended to GAMES. Both handoff files updated. The canonical, CODEMAP, the three record files, AGENTS, README and every other tool are untouched.
+Why: the law table's citable probe set was derived by REGEX-PARSING run-battery.mjs's SOURCE - a reformatted array changed the law table's verdict without anyone touching a law - and the proof inventory lived in three hand-kept lists. Adding two more probes was the moment to make the inventory data instead of a pattern in somebody's code, and to give an agent one small file that says which proof stands behind which law.
+Approved: "ok go, do a proposal, try and do bigger patches, but only if it makes sense" - a blanket delegation. The bigger patch makes sense here because the two halves are causally linked: the registry exists to make the new proofs discoverable.
+Deviations (flagged at delivery): (1) the law table's Status column changed on five rows; Status is hand-written judgement and the lint cannot judge coverage - the probes are the evidence. (2) The proof battery grew from 9 steps to 12 and its step list moved from code to data, so a probe is registered by editing one JSON file. (3) `tools/manifest.json` now also registers the owner's own tools (`measure.mjs`, `ingest.mjs`) with `ownerOnly: true` - the registry is total, and the flag is what says agents must not run them. (4) Batch 4's tool MOVES are NOT in this commit: their measured blast radius is 75 path substitutions inside the three FROZEN era files plus 26 in live GAMES.md - non-whitespace edits to frozen historical text, a bigger doctrine collision than #749's whitespace-only era edit. (5) S1's returning boomerang and S6's volley row are only partly covered, and the Scope column says exactly how.
+Findings: (1) The re-arm gate can be read back EXACTLY from the fighter's own counters: `bladeClearPeak > reArmPad` AND (`bladeClearPeak >= reArmDeep` OR `elapsed >= reArmWait`) - the sim's arithmetic, checked against the sim's own state, so the probe needs no re-implementation of the gate. (2) The round reset (law T1) also clears the latch, and it is NOT a re-arm - the probe must exclude it or it reads as a gate violation. (3) A parry flips both spin SIGNS, but the MAGNITUDE may also change in the same tick (a growth event adds to the spin and keeps its sign), so the assertion is on the sign, not on an exact negation. (4) The shot's hit event carries the shot at its death instant (sx, sy, sr) and the victim's centre, so the probe RECOMPUTES the touch itself instead of trusting the sim's number - 96/96 exact on the non-returning rows. (5) The substep tape carries [chosen, blade-required, projectile-required], so the budget can be checked in BOTH directions: the brake never engaged AND the budget was never under-allocated (the tunneling ghost). (6) The launch point is derivable from the launch event's own fighter pose plus the row's hold, using the sim's own spineFrame/copyCtr geometry - 561 launches recomputed exactly. The volley row's fan grows with the holder's hit count, so it is matched against the FULL anchor set instead (a shot at the right anchor of the WRONG tier would still pass).
+Controls (measured): 9 negative controls, all behaved as intended. Six mutate a COPY of the canonical and each one must FAIL its intended check: (1) the deep-disengage half of the re-arm gate opens early -> "C4 every re-arm satisfies the deep-disengage gate" fails; (2) the latch stops blocking -> "C4 a fighter never deals two damaging blade hits in one tick" + "C4 every hit after the first is preceded by a re-arm" fail; (3) only one weapon recoils on a parry -> "C5 every parry flips BOTH weapons spins" fails; (4) a shot damages without touching -> both S1 checks fail; (5) the substep cap is set to 4 -> "S5 the emergency brake never engaged" fails; (6) the launch point moves off its hold -> "S6 every hold-derived row launches where its hold says" fails. Three mutate the registry in a copied tree: an unregistered proof, an entry pointing at a missing file, and a law row citing an unregistered probe -> lint-docs fails with the intended message each time. Passing control: the unmutated tree is 5/5 and 6/6.
+Receipts: verify --quick PASS (6 checks) in the build tree AND in a fresh clone of the base commit after `git apply --index`; the proof battery PASS - 12/12 steps matched their expected exit code (lengrow-gate 1 BY DESIGN, the other eleven 0), canonical md5 and line count identical before and after the run; per-file md5 identical between the build tree and the fresh clone; the staged diff byte-identical in both (its md5 cannot be written here - a file cannot contain the md5 of the patch that carries it; the advisory md5 goes in the delivery message); strip-hash PASS against canonical-prediet-2c with the three invariant hashes unchanged; the canonical, CODEMAP, the three frozen record files, AGENTS and README untouched by the patch.
+Not verified: no rendered-markdown check; measure.mjs NOT run (permanently banned); the canonical was untouched, so no canonical-specific proof was required.
+Rollback: `git revert` this commit.
 
 ## #751 law-table follow-up - ledger (commit 63bb91c)
 
@@ -175,14 +191,15 @@ Rollback: `git revert 0ddd7f5`.
 
 ## What is next
 
-Batch 3 CLOSED; its follow-ups (#749, #750, #751) are DONE. Per HANDOFF §7, what remains: (1) the SECOND law-table
-patch — the 5 sim-logic owner-run-only laws (C4 re-arm gates, C5 parry recoil, S1 shot->body, S5 substep budget,
-S6 launch doctrine); their sites are LOCATED (canonical :2331-2332, :2767, :3038, :1830, :1881, :2701/:2719) but not
-asserted, and each one needs its own assertion design plus a Status/Scope change off `owner-run only` (C3 and S3 stay
-owner-run-only: rendered-frame laws, no render path). (2) Batch 4 tool layout — measured blast radius: 75 path
-substitutions in the three FROZEN era files + 26 in live GAMES.md; docset.mjs is a dependency of four tools and its
-repo-root contract must be kept. The cheap half (a tools/manifest.json read by verify + run-battery, replacing the
-hardcoded STEPS/EXPECTED maps and lint-docs.mjs:196's regex) needs NO moves. Propose first;
+Batch 3 CLOSED; its follow-ups (#749, #750, #751, #752) are DONE. Per HANDOFF §7, what remains: (1) the TWO
+rendered-frame laws — C3 (visible rendered interpenetration) and S3 (no overlap on a rendered frame). They are the
+last `owner-run only` rows, and there is no render path an agent may use (measure.mjs is permanently banned), so
+closing them honestly needs a render-frame probe — a proposal, not a patch. (2) Batch 4's tool MOVES — one home
+tools/ with proof/, doc/, measure/, lib/; the .qa rename; the measure.mjs owner-go flag; SPEC/CONTRACT/BUILD to
+docs/planned/; RECIPES "Traps" -> short rules; AGENTS as the one workflow home. Measured blast radius: 75 path
+substitutions in the three FROZEN era files + 26 in live GAMES.md, i.e. non-whitespace edits to frozen historical
+text; docset.mjs is a dependency of four tools and its repo-root contract must be kept. The REGISTRY half of that
+item is DONE in #752, so the inventory is already agent-readable without a single file moving. Propose first;
 wait for "go"; ONE patch per HANDOFF §6 + §6.7/§6.8, updating both handoff files in the same commit.
 
 ## APPENDIX — BATCH2-STATUS.md, carried forward verbatim
