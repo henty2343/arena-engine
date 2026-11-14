@@ -32,10 +32,11 @@ Follow-ups: #749 = 4cc98d5 (index titles, mf-2 line re-paragraphed, AGENTS/READM
   (S3 stays `owner-run only`; the owner's ruling is open). Landed as 477c34a.
   #754 = 46ffcd7: measure.mjs's header now says who really runs it (it named .qa/projectile-fix.mjs,
   which does not exist, and said the assistant runs it), and the ONE owner-go --solidity run is recorded in s7. Landed as 46ffcd7.
-  #755 (this file's last update): Batch 4a - RECIPES "Traps" became seven short rules, AGENTS became the one home for
-  the workflow (orient, propose, change, prove, deliver) and README now points to it. Its own commit hash is not known to
+  #755: Batch 4a - RECIPES "Traps" became seven short rules, AGENTS became the one home for
+  the workflow (orient, propose, change, prove, deliver) and README now points to it. Landed as ffc90ef.
+  #756 (this file's last update): the measure.mjs STRIDE FIX - measure.mjs read the sim's chain-pose tape at the pre-links-r87 width (6 slots, stride 13; the sim's fl.u is 18 wide, the tape 37), so ~90% of substep rows came back null and every chain recompute degraded to the rigid spine: the cause of the failed `harness chain-pose integrity` check. New .qa/stride-proof.mjs asserts it. Its own commit hash is not known to
   this file (a file cannot contain its own commit) - verify origin.
-Next: the read-only measure-vs-frame-proof discrepancy check, the S3 RULING (the owner's), or the rest of Batch 4's tool MOVES — §7.
+Next: the owner's re-run of --solidity on the fixed stride (owner-go, one run), frame-proof's 2,500-tick horizon (§7), the S3 and band RULINGS (the owner's), or the rest of Batch 4's tool MOVES — §7.
 Delivery: ONE patch (§6) — read §6.7 first: the owner copies patches out of CHAT.
 
 State at the 3c landing (re-measure, do not trust): HEAD 68e29f9, parent f756e21; canonical md5
@@ -97,6 +98,11 @@ blocks above, including the canonical, CODEMAP, LAWS, GAMES, the three record fi
 AGENTS 47addf2e5d592e3daa6c339f275425a1 · README 29e4e43ddd68f49531841df91097c2ac · RECIPES 0f0cda7df5dc64089d71089a4207cc9f · STATE 1e080656c5956a02f7fd109183ac1d5e. The two handoff files are not listed (a file
 cannot hold its own md5). Receipts: verify --quick PASS (6 checks); no new lint check, so no negative controls; the
 battery was not run (the canonical is untouched).
+
+State after the #756 patch (BASE ffc90ef; re-measure, do not trust): everything not named here is unchanged from the
+blocks above, including the canonical, CODEMAP, LAWS, GAMES, the record files, AGENTS, README and every other probe. As built:
+measure.mjs 9d186ea1c27036535d21c3b81cff10b4 · stride-proof a0ceb8cc088f6f29d7a91474049219c0 · manifest.json 4e6bb049ba98e31361a860aa7877e43b · STATE 91cc15c19b31749142bdd22ef579d891. The two handoff files are not listed (a file
+cannot hold its own md5). Receipts: verify --quick PASS (6 checks); stride-proof 4/4 (18,170 substep rows, all resolved by measure.mjs's own flAt; the pre-links-r87 control resolves 2,060 of them and fails P1); node --check measure.mjs OK. measure.mjs was NOT run; the battery was not run (canonical untouched).
 
 ## 0. The record is a SET (since 3c)
 
@@ -185,7 +191,7 @@ Quick checks in order: gen-state, lint-docs, navgen, docreflow, gen-codemap, lin
 After any canonical edit: `node .qa/strip-hash.mjs --base canonical-prediet-2c` + `verify --battery`.
 Battery expected exits (the STEP LIST now lives in tools/manifest.json — the probe registry; read it to
 see what proves what): inscribe 0 · lengrow-build-proof 0 · pair-proof 0 · flipproof 0 · leadproof 0 ·
-seam-proof 0 · law-proof 0 · contact-proof 0 · shot-proof 0 · frame-proof 0 · chromecheck 0 ·
+seam-proof 0 · law-proof 0 · contact-proof 0 · shot-proof 0 · frame-proof 0 · stride-proof 0 · chromecheck 0 ·
 lengrow-gate 1 (BY DESIGN;
 normalised stdout md5 a31a68c4d19d68a2988c792b481be4d5, 23 lines, 10 GATE FAIL rows) ·
 lengrow-bake --verify 0.
@@ -279,11 +285,11 @@ Batch 3 CLOSED. Optional items — propose first, wait for "go", ONE patch:
   departures 60 (57 addGone twice, 3 gone-yet-in-flight), lost without an event 0. PASS: law 6, 5s, 6s.
   LAW 3: worst 27.399px (flail+hammer seed 101 t15936 round 3), visible 614/1,243,128 = 0.05%; the 6px bound FAILS and the
   worst is ABOVE the 20.754px envelope the law records and frame-proof gates (frame-proof's own worst is 18.041px over 31
-  cells that include flail+hammer at seed 101). That is an UNEXPLAINED disagreement between the two instruments on a cell
-  both cover - NOT yet investigated; until it is, C3's `partial` rests on frame-proof alone. LAW 3s: blade 1,888 - body
+  cells that include flail+hammer at seed 101). READ-ONLY INVESTIGATION DONE (2026-11-14): the disagreement is COVERAGE, not geometry. frame-proof stops every cell at TICK_BUDGET 2,500 ticks (~21s); measure.mjs runs whole battles (flail+hammer seed 101 ends at t18,707, 17,537 fight ticks), so frame-proof never reaches t15936. Re-computed with the live pose and geom.parryGap, the cell's worst overlap is 27.39923px at t15936 round 3 - measure.mjs's number exactly - and it is BAND class (no parry in the previous tick, neither weapon lead/headLead), above the 6px bound AND the 20.754px envelope. Law 3 is a real red on the current sim; C3's `partial` and frame-proof's envelope gate rest on the first 2,500 ticks only (frame-proof's horizon is an open item: a full-battle or late-battle cell would re-baseline it). LAW 3s: blade 1,888 - body
   19,609 - rim 54,605 - pair 1,061,228 over 439,143 frames (worst 74.971px): a DIFFERENT sample from frame-proof's
   85/757/2,422/6,745 over 17,079 (the tier adds the 40 naturals), so the two are not comparable. Law 3s is red either way.
   The S3 ruling and the band calibration remain the owner's.
+  CHAIN-POSE INTEGRITY ROOT CAUSE (found 2026-11-14, FIXED in #756): measure.mjs had STRF = 13 and 6 slots per fighter; links-r87 widened fl.u to 18 slots, so the sim's G.auditFl row is 37 wide. On a real tape flAt resolved 7,430 of 76,855 substep rows (flail+hammer) and 7,430 of 60,912 (nunchaku+scythe); the rest returned null, flMissing counted them and the recompute fell back to the rigid spine. This is the likely cause of the red on laws 1, 2, 4, 5, 1s, 2s - NOT proven: that needs the owner's one-run re-measure of --solidity on the fixed harness. Law 3's entry pose reads a pre-tick stash, not the tape; it matched the independent recompute exactly, and the stash now copies all FL_SLOTS slots. Whether the old 6-slot stash changed any law-3 reading on a GROWN chain was not measured.
 - Handoff follow-ups (AGENTS/README docs/handoff pointers, #749 entry): DONE in #749.
 - Line-cap lint: DONE in #750 (lint-docs B3E; 3,000 bytes per line over GAMES + docs/history/*.md; check-only).
 Batch 4 — tool layout: the REGISTRY half is DONE in #752 (tools/manifest.json is the single list of every
@@ -364,14 +370,13 @@ New-chat prompt (the whole thing):
 
 ## 10. Where we are / next action
 
-Landed through the #755 patch (Batch 4a), on top of #754 (46ffcd7) and #753 (the RENDERED-FRAME proof — new .qa/frame-proof.mjs proving C3's band and
+Landed through the #756 patch (the measure.mjs stride fix), on top of #755 (ffc90ef, Batch 4a), #754 (46ffcd7) and #753 (the RENDERED-FRAME proof — new .qa/frame-proof.mjs proving C3's band and
 measuring law 3s), on top of 361cbcb (#752, the law-table completion + the probe registry) and c2bcf57
-(the handoff refresh). This file was last updated by #755 — that is the patch below. The
+(the handoff refresh). This file was last updated by #756 — that is the patch below. The
 freshness check's two hashes always match ON ORIGIN, because this file is updated in the same commit as
 every landing. Verify origin HEAD against the hash that last updated this file; if they differ, more
 landed — re-baseline from STATE.md and say what moved.
 First: run the FRESHNESS CHECK, then §2. If the invariant hashes differ, STOP and tell the owner.
-Then propose the next item from §7 — the S3 RULING (the owner may want the probe's findings turned into a
-sim fix or a law rewrite; the probe reports it either way), the read-only measure-vs-frame-proof discrepancy check, or the rest of Batch 4's tool MOVES — and WAIT for "go".
+Then propose the next item from §7 — the owner's one-run --solidity re-measure on the fixed stride (an owner-go; agents never run measure.mjs), frame-proof's 2,500-tick horizon, the S3 and band-calibration RULINGS (law 3 is a real band red: 27.399px), or the rest of Batch 4's tool MOVES — and WAIT for "go".
 After "go": the whole job in one pass (edits, regen, proofs, controls, fresh-clone proof), delivered per §6 + §6.7/§6.8,
 with both handoff files updated in the same patch.

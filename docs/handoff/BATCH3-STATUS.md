@@ -8,8 +8,8 @@ tools; an unlisted file there fails lint). Freshness: `git log -1 --format='%h %
 Status as of 2026-11-14: (a) DONE (0ddd7f5, #746) · (b) DONE (9e017bb, #742) · (d) DONE (f756e21, #747)
 · (c) DONE (68e29f9, #748). Nothing remains in Batch 3. Its follow-ups: #749 DONE (4cc98d5) · #750 DONE (4f38866) ·
 #751 DONE (63bb91c) · #752 DONE (361cbcb, the law-table completion + the probe registry) ·
-#753 DONE (477c34a, the RENDERED-FRAME proof) · #754 DONE (46ffcd7, the measure.mjs header + the owner-go solidity run) · #755 DONE (this commit, Batch 4a: RECIPES Traps -> short rules + AGENTS as the one workflow home).
-Next: the S3 RULING (the owner's), then Batch 4's tool moves — HANDOFF §7.
+#753 DONE (477c34a, the RENDERED-FRAME proof) · #754 DONE (46ffcd7, the measure.mjs header + the owner-go solidity run) · #755 DONE (ffc90ef, Batch 4a: RECIPES Traps -> short rules + AGENTS as the one workflow home) · #756 DONE (this commit: the measure.mjs stride fix).
+Next: the owner's one-run --solidity re-measure, the S3 and band RULINGS, then Batch 4's tool moves — HANDOFF §7.
 The Batch 2 ledger is the appendix below, carried verbatim. STATE.md and docs/CODEMAP.md
 are authoritative for every number.
 
@@ -25,7 +25,16 @@ pose (C3 → `partial`) and MEASURES law 3s, which does NOT hold on the current 
 `owner-run only`; the owner's ruling is open).
 Next: the S3 RULING, or Batch 4's tool moves.
 
-## #755 Batch 4a - RECIPES traps as rules, AGENTS as the one workflow home - ledger (this commit)
+## #756 measure.mjs stride fix + stride-proof - ledger (this commit)
+
+What: (1) measure.mjs: FL_SLOTS = 18 and STRF = 1 + 2 * FL_SLOTS = 37 replace STRF = 13 and the hard-coded 6 slots (flAt, the entry-pose stash, the two rest-pose constants); a guard exits 2 if G.auditFl is not a whole number of STRF rows. (2) New .qa/stride-proof.mjs (4 checks) lifts measure.mjs's own FL_SLOTS/STRF/flAt text and runs it on real tapes from the shipped sim: fl.u 18 wide and the tape 37 per row (P1), flAt resolves every substep row, 18,170/18,170 (P2), the stash copies FL_SLOTS slots (P3), and a pre-links-r87 control (6 slots, stride 13) resolves 2,060/18,170 and fails. Registered in tools/manifest.json (battery true, citable false), so the battery is 14 steps. (3) STATE.md regenerated. (4) Both handoff files updated, recording the read-only findings: frame-proof's 2,500-tick horizon explains the law-3 disagreement (the cell's worst, 27.399px at t15936, reproduces and is band class), and the stale stride is the chain-pose integrity failure.
+Why: the owner-go --solidity run failed `harness chain-pose integrity` and nothing an agent could run caught the width change.
+Approved: "do a" - the owner named option A after the read-only findings.
+Deviations (flagged at delivery): (1) A code edit to an owner-only tool (measure.mjs), not comment-only; it was syntax-checked (`node --check`) and its changed blocks are exercised by stride-proof, but measure.mjs was NOT run. (2) The proof battery grew from 13 to 14 steps. (3) No GAMES entry and no regen of GAMES/CODEMAP: the canonical did not move.
+Not verified: that laws 1, 2, 4, 5, 1s, 2s go green on the fixed harness (needs the owner's one-run re-measure); the new exit-2 guard has never fired in a real run; the full battery was not run (canonical untouched).
+Rollback: `git revert` this commit.
+
+## #755 Batch 4a - RECIPES traps as rules, AGENTS as the one workflow home - ledger (commit ffc90ef)
 
 What: (1) docs/RECIPES.md: the "Traps that have already bitten" paragraph became seven numbered rules, each a bolded rule plus its why. Every fact is kept (2.15x and ~7x, the 13 renderer sites, curW, koStill, st.o, the rect scan story) and a pointer says where the full stories live (grep pair-r31, shot.mult, cleanup #4). NOT a size win: 7,580 -> 7,523 bytes; the gain is structure. (2) AGENTS.md: a new Workflow section (orient, propose, change, prove, deliver) holding the freshness check, manifest-first before any probe, proof by edit class, and ONE patch in chat with a pointer to HANDOFF s6/s6.7; the Where-truth-lives line names it; 6,060 -> 7,828 bytes. (3) README: the Non-negotiables list became a pointer to AGENTS, so the doc regen order is no longer stated in two places; 1,282 -> 1,268 bytes. (4) STATE.md regenerated (cost table only). (5) Both handoff files updated. Nothing else is touched.
 Why: HANDOFF s7 Batch 4 listed these two as the items that need no frozen-text edit, and the workflow lived in three places (AGENTS, README, HANDOFF).

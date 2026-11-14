@@ -84,6 +84,14 @@
       "about": "The RENDERED-FRAME proof: C3 the weapons are solids to each other (the disclosed band envelope + the visible-tick rate at the tick-entry pose) and the law-3s shot overlaps (reported and ratcheted - the law does not hold on this build)."
     },
     {
+      "name": "stride-proof",
+      "file": ".qa/stride-proof.mjs",
+      "exit": 0,
+      "battery": true,
+      "citable": false,
+      "about": "measure.mjs reads the sim's chain-pose tape at the sim's own width (FL_SLOTS 18, STRF 37): its own flAt resolves every substep row on a real tape, with a pre-links-r87 control that must fail."
+    },
+    {
       "name": "chromecheck",
       "file": "chromecheck.mjs",
       "exit": 0,

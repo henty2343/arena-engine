@@ -212,8 +212,10 @@ function loadSim(file) {
 const STR = 13;                              // snapAudit stride
 const A_X = 1, A_Y = 2, A_ANG = 3, A_STUCK = 4, A_SPIN = 5, A_ALIVE = 6;
 const B_X = 7, B_Y = 8, B_ANG = 9, B_STUCK = 10, B_SPIN = 11, B_ALIVE = 12;
-const STRF = 13;                             // G.auditFl stride: [sub, A's 6 chain-pose slots, B's 6] — one row per SUBSTEP only
-const _flScr = [[1, 0, 1, 0, 1, 0], [1, 0, 1, 0, 1, 0]];
+const FL_SLOTS = 18;                         // the sim's fl.u width (links-r87 widened it from 6: nine segment slots of 2); .qa/stride-proof.mjs asserts it against the live sim
+const STRF = 1 + 2 * FL_SLOTS;               // G.auditFl stride: [sub, A's FL_SLOTS chain-pose slots, B's FL_SLOTS] = 37 — one row per SUBSTEP only (the sim pushes s, ...fl.u, ...fl.u)
+const _flRest = () => Array.from({ length: FL_SLOTS }, (_, q) => (q & 1 ? 0 : 1));   // flailInit's straight-at-rest constant: [1, 0, 1, 0, ...]
+const _flScr = [_flRest(), _flRest()];
 /* The chain pose the sim's contact tests saw at substep `sub` (fighter fi), in
  * reusable scratch — null when the row is absent. Chain weapons place their
  * covering circles on the articulated segment frames; without this pose
@@ -223,8 +225,8 @@ const _flScr = [[1, 0, 1, 0, 1, 0], [1, 0, 1, 0, 1, 0]];
 function flAt(FL, sub, fi) {
   const o = sub * STRF;
   if (sub < 0 || o + STRF > FL.length || FL[o] !== sub) return null;
-  const d = _flScr[fi], b = o + 1 + fi * 6;
-  for (let q = 0; q < 6; q++) d[q] = FL[b + q];
+  const d = _flScr[fi], b = o + 1 + fi * FL_SLOTS;
+  for (let q = 0; q < FL_SLOTS; q++) d[q] = FL[b + q];
   return d;
 }
 const EPS = 1e-9;
@@ -432,7 +434,7 @@ function runMatch(api, seed, weapons) {
   const edgeSeen = [new Set(), new Set()];
   const idxOfSub = new Map();
   const entry = [];                  // shot entry-frame slots (objects reused)
-  const entryFl = [[1, 0, 1, 0, 1, 0], [1, 0, 1, 0, 1, 0]];   // the sub=-1 entry record's chain poses — flailInit's rest constant until the first stash
+  const entryFl = [_flRest(), _flRest()];   // the sub=-1 entry record's chain poses — flailInit's rest constant until the first stash
 
   const gapAt = (S, i, fl0, fl1) => geom.parryGap(
     { x: S[i + A_X], y: S[i + A_Y], ang: S[i + A_ANG], w: curW[0], fl: fl0, fp: geom.leadFlip(curW[0], S[i + A_SPIN]) },
@@ -590,7 +592,7 @@ function runMatch(api, seed, weapons) {
      * 3 and 3s need this stash rather than a lookup. */
     for (let fi = 0; fi < 2; fi++) {
       const f = G.fighters[fi];
-      if (f && f.fl) { const u = f.fl.u, d = entryFl[fi]; for (let q = 0; q < 6; q++) d[q] = u[q]; }
+      if (f && f.fl) { const u = f.fl.u, d = entryFl[fi]; for (let q = 0; q < FL_SLOTS; q++) d[q] = u[q]; }
     }
     tick(G); t++;
     if (G.phase === 'fight') fightTicksHere++;
@@ -748,6 +750,7 @@ function runMatch(api, seed, weapons) {
     const S = G.auditSubs;
     const FL = G.auditFl;              // per-substep chain poses, stride STRF — no row for the sub=-1 entry record
     if (S.length) {
+      if (FL.length % STRF !== 0) { console.error(`measure: G.auditFl length ${FL.length} is not a multiple of STRF ${STRF} - the sim's chain-pose tape width moved; update FL_SLOTS (a stale stride silently degrades every chain recompute to the rigid spine)`); process.exit(2); }
       if (G.t !== lastTickSeen + 1) { havePrev = false; prevParrySubs = null; }   // phase gap: no carry
       lastTickSeen = G.t;
       let kill0Sub = killBy0At;
