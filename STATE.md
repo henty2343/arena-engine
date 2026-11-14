@@ -29,17 +29,17 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.7k (compute
 | file | ~tokens | read policy |
 |---|---:|---|
 | README.md | 263 | router only |
-| AGENTS.md | 1,327 | always |
+| AGENTS.md | 1,354 | always |
 | docs/CODEMAP.md | 1,515 | before opening the canonical |
-| docs/LAWS.md | 2,473 | before any sim/doc edit |
+| docs/LAWS.md | 3,989 | before any sim/doc edit |
 | docs/RECIPES.md | 1,876 | adding a trait/skill/bot |
-| docs/GAMES.md | 167,486 | GREP ONLY — never load whole |
+| docs/GAMES.md | 168,385 | GREP ONLY — never load whole |
 | docs/SPEC.md | 12,988 | PLANNED engine work only |
 | docs/CONTRACT.md | 4,226 | PLANNED engine work only |
 | docs/BUILD.md | 4,525 | PLANNED engine work only |
 
-## Design state (canonical source: GAMES.md §Current state)
-- Weapon-trait count and the open queue are design facts, NOT generated here.
-  Read them in `docs/GAMES.md` §Current state; `tools/lint-docs.mjs` checks every doc agrees.
+## Design state (canonical source: LAWS.md; history: GAMES.md §Current state)
+- The current laws, the weapon-trait count and the law-to-probe table are design facts, NOT generated here.
+  `docs/LAWS.md` is the sole authority for them; the open queue and owner quotes are in `docs/GAMES.md` §Current state. `tools/lint-docs.mjs` checks the count and the table.
 - Implemented: the SpinClash harness (this canonical + bare-Node tools).
 - Planned (no code yet): the engine — `docs/BUILD.md` Phases 0–8 (PLANNED).

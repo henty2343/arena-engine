@@ -67,9 +67,9 @@ function render(f, cost = '~0.7k') {
   L.push('## Documentation cost (chars/4 estimate)');
   L.push('| file | ~tokens | read policy |'); L.push('|---|---:|---|');
   for (const d of f.docs) L.push(`| ${d.file} | ${d.approxTokens.toLocaleString('en-US')} | ${d.policy} |`); L.push('');
-  L.push('## Design state (canonical source: GAMES.md §Current state)');
-  L.push('- Weapon-trait count and the open queue are design facts, NOT generated here.');
-  L.push('  Read them in `docs/GAMES.md` §Current state; `tools/lint-docs.mjs` checks every doc agrees.');
+  L.push('## Design state (canonical source: LAWS.md; history: GAMES.md §Current state)');
+  L.push('- The current laws, the weapon-trait count and the law-to-probe table are design facts, NOT generated here.');
+  L.push('  `docs/LAWS.md` is the sole authority for them; the open queue and owner quotes are in `docs/GAMES.md` §Current state. `tools/lint-docs.mjs` checks the count and the table.');
   L.push('- Implemented: the SpinClash harness (this canonical + bare-Node tools).');
   L.push('- Planned (no code yet): the engine — `docs/BUILD.md` Phases 0–8 (PLANNED).'); L.push('');
   return L.join('\n');

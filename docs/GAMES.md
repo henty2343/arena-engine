@@ -27,138 +27,140 @@ The living record of game design: what exists and what is decided next. Platform
 | section | from line | size |
 |---|---|---|
 | The documents | 11 | 1 KB |
-| Current state | 157 | 135 KB |
-| Weapon art — the closed convention (locked 2026-10-18, CLOSED 2026-10- | 458 | 10 KB |
-| Design principles for all games | 481 | 2 KB |
-| Open design questions | 491 | 15 KB |
-| Measured facts | 513 | 386 KB |
-| Testing recipe (headless) | 1392 | 21 KB |
-| 2026-11-10 (late) — #722 · THE HARNESS CONTRACT + THE FLAIL'S HONEST R | 1440 | 3 KB |
-| 2026-11-10 — #723 · THE STALE-PROOF TRIAGE BEGINS (Item 3; stamp stays | 1450 | 5 KB |
-| 2026-11-11 — #724 · THE HALO FAMILY RETIRED — AND A CORRECTION THAT SU | 1461 | 2 KB |
-| 2026-11-11 — #725 · SEAM-PROOF RE-VERIFIED, AND THE NON-VACUITY NUMBER | 1468 | 2 KB |
-| 2026-11-11 — #726 · ITEM 3 (PAIR-PROOF) COMPLETE AND PROVEN FALSIFIABL | 1474 | 3 KB |
-| 2026-11-11 — #727 · ITEM 3 CLOSED: ITEMS 4, 5 AND 6 RE-SEEDED, EVERY R | 1481 | 10 KB |
-| 2026-11-11 — #728 · LENGROW-BAKE'S "CHAIN CASE" WAS A TOO-BROAD GUARD, | 1500 | 5 KB |
-| 2026-11-11 — #729 · THE FULL BATTERY RE-RUN ON THE SESSION-7 BYTES — A | 1512 | 3 KB |
-| 2026-11-11 — #730 · ITEM 3 IS ON `main` — PR #3 MERGED WITH A MERGE CO | 1521 | 3 KB |
-| 2026-11-11 — #731 · THE POST-CLOSE CLEANUP: THE ONE-SHOT SCRATCH SCAFF | 1530 | 5 KB |
-| 2026-11-11 — #732 · THE CLEANUP LANDED; TWO DANGLING CITATIONS THE PRU | 1541 | 3 KB |
-| 2026-11-11 — #733 · THE DOCS CLEANUP: THE CHRONICLE ARCHIVE, `scratch/ | 1549 | 7 KB |
-| 2026-11-11 — #734 · A `.gitattributes` PINS LF ON CHECKOUT, SO THE WIN | 1562 | 2 KB |
-| 2026-11-12 — #735 · PHASE A OF THE ARCHITECTURE AUDIT LANDED — the dro | 1570 | 3 KB |
-| 2026-11-13 — #736 · PHASE I.5B — REGION MARKERS + COMMENT-ONLY PROOF K | 1591 | 1 KB |
-| 2026-11-13 — #737 · PHASE I.5C.1 — COMMENT DIET: loop/input/APP (canon | 1600 | 1 KB |
-| 2026-11-13 — #738 · PHASE I.5C.2 — COMMENT DIET: circles/chain/geometr | 1609 | 1 KB |
-| 2026-11-13 — #739 · PHASE I.5C.3 — COMMENT DIET: REGISTRY block commen | 1618 | 1 KB |
-| 2026-11-14 — #740 · PHASE I.5C.3B — COMMENT DIET: REGISTRY trailing gi | 1627 | 3 KB |
-| 2026-11-14 — #741 · PHASE I.5C.4 — COMMENT DIET: LENGTH GROWTH (canoni | 1642 | 4 KB |
-| 2026-11-14 — #742 · BATCH 3B — DOCREFLOW REACH: THE LONG-LINE THRESHOL | 1661 | 3 KB |
-| 2026-11-14 — #743 · PHASE I.5C.5A — COMMENT DIET: CONSTS + POLY BUILDE | 1676 | 3 KB |
-| 2026-11-14 — #744 · PHASE I.5C.6 — COMMENT DIET: SIM, all six markers  | 1691 | 3 KB |
-| 2026-11-14 — #745 · PHASE I.5C.7 — COMMENT DIET: RENDERER, all six mar | 1706 | 4 KB |
-| 2026-11-14 — #746 · BATCH 3A — THE MEASURED-FACTS ENTRIES BECOME `###` | 1720 | 3 KB |
+| Current state | 158 | 136 KB |
+| Weapon art — the closed convention (locked 2026-10-18, CLOSED 2026-10- | 460 | 10 KB |
+| Design principles for all games | 483 | 2 KB |
+| Open design questions | 493 | 15 KB |
+| Measured facts | 515 | 386 KB |
+| Testing recipe (headless) | 1394 | 21 KB |
+| 2026-11-10 (late) — #722 · THE HARNESS CONTRACT + THE FLAIL'S HONEST R | 1442 | 3 KB |
+| 2026-11-10 — #723 · THE STALE-PROOF TRIAGE BEGINS (Item 3; stamp stays | 1452 | 5 KB |
+| 2026-11-11 — #724 · THE HALO FAMILY RETIRED — AND A CORRECTION THAT SU | 1463 | 2 KB |
+| 2026-11-11 — #725 · SEAM-PROOF RE-VERIFIED, AND THE NON-VACUITY NUMBER | 1470 | 2 KB |
+| 2026-11-11 — #726 · ITEM 3 (PAIR-PROOF) COMPLETE AND PROVEN FALSIFIABL | 1476 | 3 KB |
+| 2026-11-11 — #727 · ITEM 3 CLOSED: ITEMS 4, 5 AND 6 RE-SEEDED, EVERY R | 1483 | 10 KB |
+| 2026-11-11 — #728 · LENGROW-BAKE'S "CHAIN CASE" WAS A TOO-BROAD GUARD, | 1502 | 5 KB |
+| 2026-11-11 — #729 · THE FULL BATTERY RE-RUN ON THE SESSION-7 BYTES — A | 1514 | 3 KB |
+| 2026-11-11 — #730 · ITEM 3 IS ON `main` — PR #3 MERGED WITH A MERGE CO | 1523 | 3 KB |
+| 2026-11-11 — #731 · THE POST-CLOSE CLEANUP: THE ONE-SHOT SCRATCH SCAFF | 1532 | 5 KB |
+| 2026-11-11 — #732 · THE CLEANUP LANDED; TWO DANGLING CITATIONS THE PRU | 1543 | 3 KB |
+| 2026-11-11 — #733 · THE DOCS CLEANUP: THE CHRONICLE ARCHIVE, `scratch/ | 1551 | 7 KB |
+| 2026-11-11 — #734 · A `.gitattributes` PINS LF ON CHECKOUT, SO THE WIN | 1564 | 2 KB |
+| 2026-11-12 — #735 · PHASE A OF THE ARCHITECTURE AUDIT LANDED — the dro | 1572 | 3 KB |
+| 2026-11-13 — #736 · PHASE I.5B — REGION MARKERS + COMMENT-ONLY PROOF K | 1593 | 1 KB |
+| 2026-11-13 — #737 · PHASE I.5C.1 — COMMENT DIET: loop/input/APP (canon | 1602 | 1 KB |
+| 2026-11-13 — #738 · PHASE I.5C.2 — COMMENT DIET: circles/chain/geometr | 1611 | 1 KB |
+| 2026-11-13 — #739 · PHASE I.5C.3 — COMMENT DIET: REGISTRY block commen | 1620 | 1 KB |
+| 2026-11-14 — #740 · PHASE I.5C.3B — COMMENT DIET: REGISTRY trailing gi | 1629 | 3 KB |
+| 2026-11-14 — #741 · PHASE I.5C.4 — COMMENT DIET: LENGTH GROWTH (canoni | 1644 | 4 KB |
+| 2026-11-14 — #742 · BATCH 3B — DOCREFLOW REACH: THE LONG-LINE THRESHOL | 1663 | 3 KB |
+| 2026-11-14 — #743 · PHASE I.5C.5A — COMMENT DIET: CONSTS + POLY BUILDE | 1678 | 3 KB |
+| 2026-11-14 — #744 · PHASE I.5C.6 — COMMENT DIET: SIM, all six markers  | 1693 | 3 KB |
+| 2026-11-14 — #745 · PHASE I.5C.7 — COMMENT DIET: RENDERER, all six mar | 1708 | 4 KB |
+| 2026-11-14 — #746 · BATCH 3A — THE MEASURED-FACTS ENTRIES BECOME `###` | 1722 | 3 KB |
+| 2026-11-14 — #747 · BATCH 3D — LAWS.md BECOMES THE SOLE AUTHORITY FOR  | 1736 | 3 KB |
 
 **Measured facts — entry index** (88 entries, oldest first; this section is the file's largest, so the index is the way in. "line" = the entry's first line.)
 
 | line | date | entry | KB |
 |---|---|---|---|
-| 517 | 2026-10-28 | Base damage 5 → 1 across the roster, build `dmg1-r21` | 6 |
-| 528 | 2026-10-28 | The length band — floor 54 (the orb), ceiling named for the spear, both ends boot-ga | 4 |
-| 537 | 2026-10-28 | The authoring-scale pass — weapon defaults, a derived tuck, and the placement/reach  | 7 |
-| 548 | 2026-10-28 | The facing pass — the dagger and the staff join the edge-leading mirror, build `lead | <1 |
-| 549 | 2026-10-28 | Pre-skills cleanup — the launcher's four per-weapon special-cases become row data, a | 6 |
-| 561 | 2026-10-28 | The spin ceiling measured — `omegaCap` 140 is dormant, the real ceiling is structura | 4 |
-| 570 | 2026-10-28 | Spell-family sigil legibility — the nucleus becomes a hitbox-sized carrier disc on a | 6 |
-| 582 | 2026-10-28 | The skills model ruled — M2, two languages: a weapon's ability is data, a fighter's  | 3 |
-| 588 | 2026-10-28 | The five M2 rulings — stacking adds, skills are shown in the legend, three hook targ | 4 |
-| 596 | 2026-10-28 | Axis placement ruled — class-dependent axes go on the weapon, universal axes on the  | 3 |
-| 603 | 2026-10-28 | The weapon row's `ability` renamed to `trait` — vocabulary only, behaviour-identical | 5 |
-| 613 | 2026-10-28 | The fighter cast scoped — two generic bots own the two numeric axes, the special tie | 4 |
-| 621 | 2026-10-28 | `measure.mjs` contact law 3 was structurally incapable of passing — one field missin | 4 |
-| 629 | 2026-10-28 | The first sanctioned `measure.mjs` run — the 484-cell baseline split across two mach | <1 |
-| 630 | 2026-10-28 | The 484-cell baseline COMPLETED and `measure.mjs` patched for attribution — the shie | 8 |
-| 649 | 2026-10-28 | Whole-file canonical audit, doc-alignment pass, and the fingerprint arg-order guard | 6 |
-| 658 | 2026-10-28 | The attribution re-runs landed — law 3 is the resolver, law 4s was a sim double-kill | 9 |
-| 674 | 2026-10-28 | Law 3's resolver diagnosed with `--band-dump` — three hypotheses refuted, the real m | 8 |
-| 690 | 2026-10-28 | The length-growth coverage probe — the ladder is safe BECAUSE it is pre-baked, and t | 6 |
-| 700 | 2026-10-28 | The resolver's inverted stall test fixed, with the two comments it had falsified — l | 9 |
-| 716 | 2026-10-28 | The length-growth build landed as `lengrow-r26` — the spear's trait is live, the geo | 10 |
-| 733 | 2026-10-28 | The spear now TRIPLES in length — `lengrow-r28`, per-step re-baked coverings, and th | 12 |
-| 751 | 2026-10-28 | The first special skill — `skill-r29`: a fighter's skill raises the spear's growth c | 7 |
-| 764 | 2026-10-28 | Two skill seams land ahead of the remaining 21 weapons — `seam-r30`, behaviour-ident | 5 |
-| 772 | 2026-10-28 | The pairing step — a match can now pick 2 of N cast members. `pair-r31`, behaviour-i | 6 |
-| 789 | 2026-10-28 | Whole-file code-review cleanup #5 — and the `pair-r31` renderer bug it caught. `revi | 13 |
-| 819 | 2026-10-31 | The staff's orb growth lands as `shotgrow-r33` — the second weapon trait of the pass | 5 |
-| 829 | 2026-10-31 | NO COMBOS — `nocombo-r34`: `skill.lenSteps` retired, the spear's cap uniform at 12 f | 4 |
-| 838 | 2026-10-31 | Bind fix — `bindfix-r35`: latched binds push apart from their first tick, and crosse | 4 |
-| 847 | 2026-10-31 | The dagger's spin growth lands as `spingrow-r36` — the pass's third weapon trait and | 4 |
-| 854 | 2026-10-31 | The boomerang's Return + cycle growth lands as `returngrow-r37` — the pass's fourth  | 6 |
-| 865 | 2026-10-31 | `freeloop-r38` — the boomerang's free-loop redesign | <1 |
-| 867 | 2026-10-31 | `freeloop-r38` REJECTED and REVERTED | <1 |
-| 869 | 2026-11-01 | The Loyal Halo `halo-r39` | <1 |
-| 871 | 2026-11-01 | 667 | 3 |
-| 880 | 2026-11-01 | 668 | 6 |
-| 900 | 2026-11-01 | 669 | 6 |
-| 915 | 2026-11-01 | 670 | 3 |
-| 927 | 2026-11-01 | 672 | 8 |
-| 948 | 2026-11-01 | 673 | 2 |
-| 953 | 2026-11-01 | 674 | 2 |
-| 958 | 2026-11-01 | 675 | 3 |
-| 963 | 2026-11-01 | 676 | 5 |
-| 976 | 2026-11-01 | 677 | 2 |
-| 983 | 2026-11-01 | 678 | 5 |
-| 997 | 2026-11-01 | 679 | 2 |
-| 1005 | 2026-11-01 | 680 | 4 |
-| 1017 | 2026-11-01 | 681 | 3 |
-| 1027 | 2026-11-01 | 682 | 4 |
-| 1034 | 2026-11-01 | 683 | 4 |
-| 1041 | 2026-11-01 | 684 | 4 |
-| 1049 | 2026-11-01 | 685 | 6 |
-| 1058 | 2026-11-01 | 686 | 4 |
-| 1066 | 2026-11-01 | 687 | 3 |
-| 1073 | 2026-11-01 | 688 | 3 |
-| 1081 | 2026-11-01 | 689 | 3 |
-| 1089 | 2026-11-01 | 690 | 4 |
-| 1098 | 2026-11-01 | 691 | 4 |
-| 1107 | 2026-11-02 | 692 | 4 |
-| 1114 | 2026-11-02 | 693 | 4 |
-| 1125 | 2026-11-02 | 694 | 5 |
-| 1137 | 2026-11-02 | 695 | 5 |
-| 1149 | 2026-11-02 | 696 | 5 |
-| 1163 | 2026-11-02 | 697 | 6 |
-| 1180 | 2026-11-02 | 698 | 8 |
-| 1198 | 2026-11-02 | 699 | 1 |
-| 1202 | 2026-11-02 | 700 | 1 |
-| 1206 | 2026-11-02 | 701 | 6 |
-| 1223 | 2026-11-02 | 702 | 4 |
-| 1236 | 2026-11-02 | 703 | <1 |
-| 1238 | 2026-11-02 | 704 | 3 |
-| 1249 | 2026-11-02 | 705 | <1 |
-| 1251 | 2026-11-03 | 706 | 4 |
-| 1262 | 2026-11-03 | 707 | 2 |
-| 1272 | 2026-11-03 | 708 | 3 |
-| 1283 | 2026-11-03 | 709 | 3 |
-| 1292 | 2026-11-03 | 710 | 2 |
-| 1300 | 2026-10-31 | 711 | 4 |
-| 1311 | 2026-10-31 | 712 | 4 |
-| 1321 | 2026-10-31 | 713 | 2 |
-| 1328 | 2026-10-31 | 714 | <1 |
-| 1330 | 2026-10-31 | 715 | 5 |
-| 1341 | 2026-10-31 | 716 | 4 |
-| 1352 | 2026-10-31 | 717 | 2 |
-| 1360 | 2026-10-31 | 718 | 4 |
-| 1369 | 2026-10-31 | 719 | 2 |
-| 1373 | 2026-10-31 | 720 | 3 |
-| 1380 | 2026-11-10 | 721 | 19 |
+| 519 | 2026-10-28 | Base damage 5 → 1 across the roster, build `dmg1-r21` | 6 |
+| 530 | 2026-10-28 | The length band — floor 54 (the orb), ceiling named for the spear, both ends boot-ga | 4 |
+| 539 | 2026-10-28 | The authoring-scale pass — weapon defaults, a derived tuck, and the placement/reach  | 7 |
+| 550 | 2026-10-28 | The facing pass — the dagger and the staff join the edge-leading mirror, build `lead | <1 |
+| 551 | 2026-10-28 | Pre-skills cleanup — the launcher's four per-weapon special-cases become row data, a | 6 |
+| 563 | 2026-10-28 | The spin ceiling measured — `omegaCap` 140 is dormant, the real ceiling is structura | 4 |
+| 572 | 2026-10-28 | Spell-family sigil legibility — the nucleus becomes a hitbox-sized carrier disc on a | 6 |
+| 584 | 2026-10-28 | The skills model ruled — M2, two languages: a weapon's ability is data, a fighter's  | 3 |
+| 590 | 2026-10-28 | The five M2 rulings — stacking adds, skills are shown in the legend, three hook targ | 4 |
+| 598 | 2026-10-28 | Axis placement ruled — class-dependent axes go on the weapon, universal axes on the  | 3 |
+| 605 | 2026-10-28 | The weapon row's `ability` renamed to `trait` — vocabulary only, behaviour-identical | 5 |
+| 615 | 2026-10-28 | The fighter cast scoped — two generic bots own the two numeric axes, the special tie | 4 |
+| 623 | 2026-10-28 | `measure.mjs` contact law 3 was structurally incapable of passing — one field missin | 4 |
+| 631 | 2026-10-28 | The first sanctioned `measure.mjs` run — the 484-cell baseline split across two mach | <1 |
+| 632 | 2026-10-28 | The 484-cell baseline COMPLETED and `measure.mjs` patched for attribution — the shie | 8 |
+| 651 | 2026-10-28 | Whole-file canonical audit, doc-alignment pass, and the fingerprint arg-order guard | 6 |
+| 660 | 2026-10-28 | The attribution re-runs landed — law 3 is the resolver, law 4s was a sim double-kill | 9 |
+| 676 | 2026-10-28 | Law 3's resolver diagnosed with `--band-dump` — three hypotheses refuted, the real m | 8 |
+| 692 | 2026-10-28 | The length-growth coverage probe — the ladder is safe BECAUSE it is pre-baked, and t | 6 |
+| 702 | 2026-10-28 | The resolver's inverted stall test fixed, with the two comments it had falsified — l | 9 |
+| 718 | 2026-10-28 | The length-growth build landed as `lengrow-r26` — the spear's trait is live, the geo | 10 |
+| 735 | 2026-10-28 | The spear now TRIPLES in length — `lengrow-r28`, per-step re-baked coverings, and th | 12 |
+| 753 | 2026-10-28 | The first special skill — `skill-r29`: a fighter's skill raises the spear's growth c | 7 |
+| 766 | 2026-10-28 | Two skill seams land ahead of the remaining 21 weapons — `seam-r30`, behaviour-ident | 5 |
+| 774 | 2026-10-28 | The pairing step — a match can now pick 2 of N cast members. `pair-r31`, behaviour-i | 6 |
+| 791 | 2026-10-28 | Whole-file code-review cleanup #5 — and the `pair-r31` renderer bug it caught. `revi | 13 |
+| 821 | 2026-10-31 | The staff's orb growth lands as `shotgrow-r33` — the second weapon trait of the pass | 5 |
+| 831 | 2026-10-31 | NO COMBOS — `nocombo-r34`: `skill.lenSteps` retired, the spear's cap uniform at 12 f | 4 |
+| 840 | 2026-10-31 | Bind fix — `bindfix-r35`: latched binds push apart from their first tick, and crosse | 4 |
+| 849 | 2026-10-31 | The dagger's spin growth lands as `spingrow-r36` — the pass's third weapon trait and | 4 |
+| 856 | 2026-10-31 | The boomerang's Return + cycle growth lands as `returngrow-r37` — the pass's fourth  | 6 |
+| 867 | 2026-10-31 | `freeloop-r38` — the boomerang's free-loop redesign | <1 |
+| 869 | 2026-10-31 | `freeloop-r38` REJECTED and REVERTED | <1 |
+| 871 | 2026-11-01 | The Loyal Halo `halo-r39` | <1 |
+| 873 | 2026-11-01 | 667 | 3 |
+| 882 | 2026-11-01 | 668 | 6 |
+| 902 | 2026-11-01 | 669 | 6 |
+| 917 | 2026-11-01 | 670 | 3 |
+| 929 | 2026-11-01 | 672 | 8 |
+| 950 | 2026-11-01 | 673 | 2 |
+| 955 | 2026-11-01 | 674 | 2 |
+| 960 | 2026-11-01 | 675 | 3 |
+| 965 | 2026-11-01 | 676 | 5 |
+| 978 | 2026-11-01 | 677 | 2 |
+| 985 | 2026-11-01 | 678 | 5 |
+| 999 | 2026-11-01 | 679 | 2 |
+| 1007 | 2026-11-01 | 680 | 4 |
+| 1019 | 2026-11-01 | 681 | 3 |
+| 1029 | 2026-11-01 | 682 | 4 |
+| 1036 | 2026-11-01 | 683 | 4 |
+| 1043 | 2026-11-01 | 684 | 4 |
+| 1051 | 2026-11-01 | 685 | 6 |
+| 1060 | 2026-11-01 | 686 | 4 |
+| 1068 | 2026-11-01 | 687 | 3 |
+| 1075 | 2026-11-01 | 688 | 3 |
+| 1083 | 2026-11-01 | 689 | 3 |
+| 1091 | 2026-11-01 | 690 | 4 |
+| 1100 | 2026-11-01 | 691 | 4 |
+| 1109 | 2026-11-02 | 692 | 4 |
+| 1116 | 2026-11-02 | 693 | 4 |
+| 1127 | 2026-11-02 | 694 | 5 |
+| 1139 | 2026-11-02 | 695 | 5 |
+| 1151 | 2026-11-02 | 696 | 5 |
+| 1165 | 2026-11-02 | 697 | 6 |
+| 1182 | 2026-11-02 | 698 | 8 |
+| 1200 | 2026-11-02 | 699 | 1 |
+| 1204 | 2026-11-02 | 700 | 1 |
+| 1208 | 2026-11-02 | 701 | 6 |
+| 1225 | 2026-11-02 | 702 | 4 |
+| 1238 | 2026-11-02 | 703 | <1 |
+| 1240 | 2026-11-02 | 704 | 3 |
+| 1251 | 2026-11-02 | 705 | <1 |
+| 1253 | 2026-11-03 | 706 | 4 |
+| 1264 | 2026-11-03 | 707 | 2 |
+| 1274 | 2026-11-03 | 708 | 3 |
+| 1285 | 2026-11-03 | 709 | 3 |
+| 1294 | 2026-11-03 | 710 | 2 |
+| 1302 | 2026-10-31 | 711 | 4 |
+| 1313 | 2026-10-31 | 712 | 4 |
+| 1323 | 2026-10-31 | 713 | 2 |
+| 1330 | 2026-10-31 | 714 | <1 |
+| 1332 | 2026-10-31 | 715 | 5 |
+| 1343 | 2026-10-31 | 716 | 4 |
+| 1354 | 2026-10-31 | 717 | 2 |
+| 1362 | 2026-10-31 | 718 | 4 |
+| 1371 | 2026-10-31 | 719 | 2 |
+| 1375 | 2026-10-31 | 720 | 3 |
+| 1382 | 2026-11-10 | 721 | 19 |
 
 ---
 
 ## Current state
 
-> **Quick reference:** the distilled CURRENT standing laws live in [`LAWS.md`](./LAWS.md) — canonical for the
-> normative law statements, lint-checked to agree with this section. This section is the fuller design record:
-> read `LAWS.md` first, then grep here for detail, provenance and owner quotes. (Added Phase C part 2.)
+> **Quick reference:** [`LAWS.md`](./LAWS.md) is the SOLE AUTHORITY for the current standing laws, the weapon-trait count
+> and the law-to-probe table; where this section disagrees with it, LAWS wins and this text is stale. This section is the
+> fuller design record: read `LAWS.md` first, then grep here for detail, provenance and owner quotes. (Added Phase C part 2;
+> authority flipped to LAWS at #747.)
 
 - **Fresh start, now with a first game.** These docs descend from an earlier, abandoned iteration; its platform philosophy is kept, its game content was cleared. Game #1 has since been designed, built as a preview, and visually locked.
 - Platform: fully specified, **no engine code yet**. Start at Phase 0 in `BUILD.md`.
@@ -1730,3 +1732,18 @@ The audit's Phase 1 was left ~90% done when the prior session dropped (Steps 0.1
 **Delivery note:** shipped as finished files, not an installer, at the owner's request. `strip-hash` could not be run in the authoring sandbox because the tag `canonical-prediet-2c` was never pushed to origin; the three invariant hashes were instead computed directly on the unchanged canonical and matched. Batch 3(b) had already landed as #742 before this entry.
 
 **Owner gate before push:** `node tools/verify.mjs --quick` (6 checks), `node tools/doc/navgen.mjs --check`, `node tools/doc/docreflow.mjs --check`, then `git diff --stat`.
+
+## 2026-11-14 — #747 · BATCH 3D — LAWS.md BECOMES THE SOLE AUTHORITY FOR THE CURRENT LAWS AND THE TRAIT COUNT, AND GAINS A LAW-TO-PROBE TABLE THE LINT CHECKS (docs/tooling only; canonical untouched)
+
+**What landed:** `docs/LAWS.md` is now the sole authority for the current laws, for the weapon-trait count (one pinned line, "14 of 22 weapon traits landed"), and for which probe checks each law. Before this, LAWS called itself derived from GAMES §Current state and the lint read the trait count from the GAMES text. The direction is reversed: `tools/lint-docs.mjs` reads the count from LAWS and checks README, AGENTS, LAWS itself and the explicit "N of 22 weapon traits" phrase in GAMES §Current state against it. The GAMES preface callout, `AGENTS.md` ("Where truth lives" and the lint line) and the `tools/gen-state.mjs` design-state pointer were edited to say the same. No GAMES record was rewritten or removed; the callout is navigation prose.
+
+**A finding recorded here so it is not rediscovered:** the old trait-count check scanned README, AGENTS and LAWS for an "N of 22" statement, but none of those three held one, so for them it guarded nothing. The only live statement of the count was the "CURRENT BUILD" paragraph at the top of GAMES §Current state, which is the line the old check actually read.
+
+**The law-to-probe table:** a new `## Law-to-probe table` section in LAWS, 25 rows: contact laws C1-C6, shot laws S1-S6, and B1-B5 (battle structure), U1 (uniform base), G1-G3 (growth, skills, firing), T1-T3 (weapon traits), X1 (slot/idx). It was built by reading the headers and assert labels of the battery probes (`pair-proof`, `lengrow-build-proof`, `seam-proof`, `flipproof`, `leadproof`, `inscribe`, `chromecheck`) and the verdict lines of `measure.mjs` (read as text, never executed). Status by hand: 2 probed, 13 partial, 7 owner-run only, 3 unprobed. The seven owner-run rows (contact laws 3, 4, 5 and shot laws 1s, 3s, 5s, 6s) are audited only by `measure.mjs`, so no agent-runnable probe fails if one of them breaks.
+The three unprobed rows are best-of-3 (B1), K.O.-only rounds (B2) and the uniform base stats (U1). Every row's `file::anchor` items (36 in total) are checked by the lint: the file must exist and contain the anchor text verbatim, a "runnable" probe must be a battery step or `fingerprint.mjs`, an owner-run audit must cite `measure.mjs`, and C1-C6 and S1-S6 must all have a row.
+
+**What the lint cannot do:** it proves the cited text exists, not that the assert covers the law. The Status and Scope columns are judgement. Several "partial" rows are narrow (lead-flag weapons only, ricochet stars only, bow only, dagger only, default cast only); the Scope column says which.
+
+**Proof:** `lint-docs` passes on the patched tree; nine negative controls were run on throwaway copies and each failed with the intended message (a LAWS count that disagrees with GAMES, a GAMES count that disagrees with LAWS, a stray "9 of 22" in AGENTS, a renamed anchor, a deleted C3 row, an unprobed row carrying an anchor, a runnable probe outside the battery, the pin line removed, the authority header removed). `docs/LAWS.md` grew from 9,972 to 16,089 bytes.
+
+**Not verified:** no battery run and no `measure.mjs` (the canonical is untouched; md5 unchanged). No agent re-read of every probe body: the table rests on header and assert-label reading, and the anchors keep it honest only against renames.

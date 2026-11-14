@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* tools/lint-docs.mjs — documentation consistency gate (machine-readable).
  * Catches: dead live refs, stale canonical md5 slots, trait-count disagreement, retired rules stated
- * as live, missing baseline. Usage: node tools/lint-docs.mjs [--json]. Exit 0 = no errors; 1 = errors.
+ * as live, missing baseline, a broken law-to-probe table (B3D: docs/LAWS.md is the sole authority). Usage: node tools/lint-docs.mjs [--json]. Exit 0 = no errors; 1 = errors.
  * Scope: operational docs lint fully; GAMES.md is the archive (only §Current state linted for live refs);
  * fp-*.json + scratch/ artifacts are exempt (history). Read-only, bare Node.
  */
@@ -24,17 +24,29 @@ for (const f of ['docs/GAMES.md'])
 const games = rd('docs/GAMES.md');
 const csEnd = games.indexOf('## Measured facts');
 const currentState = games.slice(0, csEnd>0?csEnd:games.length);
-const m = currentState.match(/(\d+)\s+of\s+22\s+weapon\s+traits\s+landed/);
+// B3D: docs/LAWS.md is the SOLE AUTHORITY for the weapon-trait count (it was GAMES §Current state before #747).
+const lawsText = existsSync(path.join(root,'docs/LAWS.md')) ? rd('docs/LAWS.md') : '';
+const m = lawsText.match(/(\d+)\s+of\s+22\s+weapon\s+traits\s+landed/);
 const canonicalTraits = m ? parseInt(m[1],10) : null;
-if (canonicalTraits==null) warn('could not read canonical trait count from GAMES §Current state');
-else for (const f of ['README.md','AGENTS.md','docs/LAWS.md']) {
-  if (!existsSync(path.join(root,f))) continue;
-  const txt = rd(f);
-  for (const mm of txt.matchAll(/(\d+)\s+of\s+22/g)) {
+if (canonicalTraits==null) err('docs/LAWS.md does not pin the weapon-trait count ("N of 22 weapon traits landed") — it is the sole authority for it');
+else {
+  for (const f of ['README.md','AGENTS.md','docs/LAWS.md']) {
+    if (!existsSync(path.join(root,f))) continue;
+    const txt = rd(f);
+    for (const mm of txt.matchAll(/(\d+)\s+of\s+22/g)) {
+      const n = parseInt(mm[1],10);
+      if (n!==canonicalTraits && n<=22) {
+        const line = txt.slice(0,mm.index).split('\n').length;
+        err(`${f}:${line} says "${mm[0]}" but docs/LAWS.md pins ${canonicalTraits} of 22`);
+      }
+    }
+  }
+  // The GAMES record is checked only on the explicit "N of 22 weapon traits" phrase (other "of 22" prose there is unrelated).
+  for (const mm of currentState.matchAll(/(\d+)\s+of\s+22\s+weapon\s+traits/g)) {
     const n = parseInt(mm[1],10);
-    if (n!==canonicalTraits && n<=22) {
-      const line = txt.slice(0,mm.index).split('\n').length;
-      err(`${f}:${line} says "${mm[0]}" but GAMES §Current state says ${canonicalTraits} of 22`);
+    if (n!==canonicalTraits) {
+      const line = currentState.slice(0,mm.index).split('\n').length;
+      err(`docs/GAMES.md:${line} (§Current state) says "${mm[0]}" but docs/LAWS.md pins ${canonicalTraits} of 22 — LAWS wins, fix the record`);
     }
   }
 }
@@ -155,6 +167,49 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
   for (const stale of staleTexts) {
     if (readmeSlim.includes(stale)) err('README contains stale/non-router text: ' + stale);
   }
+
+// B3D: the law-to-probe table in docs/LAWS.md. Anchors are checked mechanically; Status is hand-written judgement.
+(function lintLawTable() {
+  if (!lawsText) return;
+  const lines = lawsText.split('\n');
+  const start = lines.findIndex(l => /^##\s+Law-to-probe table/.test(l));
+  if (start < 0) { err('docs/LAWS.md has no "## Law-to-probe table" section'); return; }
+  let end = lines.findIndex((l, i) => i > start && /^##\s/.test(l)); if (end < 0) end = lines.length;
+  const battery = existsSync(path.join(root,'scripts/run-battery.mjs')) ? rd('scripts/run-battery.mjs') : '';
+  const runnable = new Set([...battery.matchAll(/\["[^"]+",\s*\["([^"]+\.mjs)"/g)].map(x => x[1]));
+  runnable.add('.qa/fingerprint.mjs');
+  if (runnable.size < 5) err('law table lint could not read the battery steps from scripts/run-battery.mjs');
+  const STATUS = new Set(['probed','partial','owner-run only','unprobed']);
+  const seen = new Set(); let rows = 0;
+  const anchors = cell => [...cell.matchAll(/`([^`]+?)::([^`]+?)`/g)].map(x => ({ file: x[1], anchor: x[2] }));
+  for (let i = start + 1; i < end; i++) {
+    const row = lines[i]; if (!/^\|/.test(row)) continue;
+    const c = row.split('|').slice(1, -1).map(x => x.trim());
+    if (c[0] === 'ID' || /^[-: ]+$/.test(c[0])) continue;
+    const at = `docs/LAWS.md:${i + 1}`;
+    if (c.length !== 6) { err(`${at} law table row has ${c.length} cells, expected 6 (ID | Law | Runnable probe | Owner-run audit | Status | Scope)`); continue; }
+    rows++;
+    const id = c[0];
+    if (seen.has(id)) err(`${at} law table repeats id ${id}`); seen.add(id);
+    if (!STATUS.has(c[4])) err(`${at} ${id}: status "${c[4]}" is not one of ${[...STATUS].join(' / ')}`);
+    const run = anchors(c[2]), own = anchors(c[3]);
+    for (const a of run) {
+      if (!runnable.has(a.file)) err(`${at} ${id}: runnable probe ${a.file} is not a battery step or fingerprint.mjs`);
+    }
+    for (const a of own) if (a.file !== 'measure.mjs') err(`${at} ${id}: owner-run audit must cite measure.mjs, not ${a.file}`);
+    for (const a of [...run, ...own]) {
+      if (!existsSync(path.join(root, a.file))) { err(`${at} ${id}: ${a.file} does not exist`); continue; }
+      if (!rd(a.file).includes(a.anchor)) err(`${at} ${id}: anchor not found in ${a.file}: "${a.anchor}"`);
+    }
+    if (c[4] === 'unprobed' && (run.length || own.length)) err(`${at} ${id}: status unprobed but cites an anchor`);
+    if (c[4] === 'owner-run only' && (run.length || !own.length)) err(`${at} ${id}: owner-run only needs a measure.mjs anchor and no runnable probe`);
+    if ((c[4] === 'probed' || c[4] === 'partial') && !run.length) err(`${at} ${id}: status ${c[4]} needs a runnable-probe anchor`);
+  }
+  for (const id of ['C1','C2','C3','C4','C5','C6','S1','S2','S3','S4','S5','S6'])
+    if (!seen.has(id)) err(`docs/LAWS.md law table is missing a row for ${id} (contact laws 1-6 = C1-C6, shot laws 1s-6s = S1-S6)`);
+  if (!/SOLE AUTHORITY/.test(lawsText.split('\n').slice(0, 12).join('\n'))) err('docs/LAWS.md header no longer declares it the SOLE AUTHORITY for the current laws');
+  if (!rows) err('docs/LAWS.md law table has no rows');
+})();
 
 const ok = errors.length===0;
 const verdict = { check:'lint-docs', ok, errors, warnings, canonicalMd5:md5, canonicalTraits };

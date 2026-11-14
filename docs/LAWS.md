@@ -2,13 +2,15 @@
 
 Contains: the distilled CURRENT mechanical laws of SPINCLASH — what every weapon/skill/hit rule must satisfy.
 Read when: before any sim or game-doc edit (the "before code" tier). Token cost: see STATE.md §Documentation cost.
-Canonical for: the current-laws quick reference. Derived from `docs/GAMES.md` §Current state (the fuller design
-record, with owner quotes and provenance); the two MUST agree — `tools/lint-docs.mjs` checks the drift-prone parts.
+Canonical for: the current laws — this file is the SOLE AUTHORITY for them, for the weapon-trait count, and for which
+probe checks each law. `docs/GAMES.md` §Current state is the fuller design record (owner quotes, provenance); where it
+disagrees with this file, this file wins and the record is stale. `tools/lint-docs.mjs` checks the trait count and the
+law-to-probe table below.
 Platform rules live in `docs/SPEC.md`; agent workflow in `AGENTS.md`; mutable facts in `STATE.md`.
 
 > These are the laws as of build `links-r87`. Retired rules are NOT listed here — they live in
-> GAMES' dated entries (git history for older). If a law below conflicts with GAMES §Current state, stop and
-> reconcile (that is a lint error), do not silently pick one.
+> GAMES' dated entries (git history for older). If GAMES §Current state disagrees with a law below, this file wins:
+> fix the record. The lint only checks the trait count and the table, so a prose conflict is found by reading, not by `verify`.
 
 ## Battle structure
 
@@ -80,8 +82,9 @@ Platform rules live in `docs/SPEC.md`; agent workflow in `AGENTS.md`; mutable fa
   mechanic. Retired `skill.lenSteps`.
 - **Trait = data, skill = contract hook.** The cheap pattern is a row field → ONE consumer site → one Tier-0 assertion
   (see `docs/RECIPES.md`). No general hook/plugin framework was built — do not add one.
-- **Weapon-trait count and the open queue are design facts** — read them in `docs/GAMES.md` §Current state / `STATE.md`,
-  not here (this file does not pin them).
+- **14 of 22 weapon traits landed** (8 remain: 7 melee blanks + the orb). This line is the pinned count that
+  `tools/lint-docs.mjs` reads; README, AGENTS and GAMES §Current state are checked against it. The open queue and the
+  per-trait history stay in `docs/GAMES.md` §Current state.
 
 ## The slot/idx split (internalise before touching a fighter)
 
@@ -103,6 +106,47 @@ Platform rules live in `docs/SPEC.md`; agent workflow in `AGENTS.md`; mutable fa
   `measure.mjs` NEVER runs without the owner's explicit go. Judge health with `node tools/verify.mjs`.
 - **No balancing during the skills pass** (no win-rate tables); the 484-cell re-run, resolver rework and spear-bearing
   fingerprint cell are deferred to the end.
+
+## Law-to-probe table
+
+Which runnable probe checks each live law, and where its `measure.mjs` audit lives. Built by reading each probe's header
+and assert labels. Every `file::anchor` item below is checked by `tools/lint-docs.mjs`: the file must exist and contain
+the anchor text verbatim (so a renamed assert or a moved audit fails `verify`, not silently). The lint cannot judge
+whether an assert really covers a law — that is the **Status** column, written by hand:
+
+- **probed** — a runnable probe asserts it. **partial** — a runnable probe asserts part of it (see **Scope**).
+- **owner-run only** — only `measure.mjs` audits it. Agents never run it, so no agent-runnable probe fails if the law breaks.
+  The table says where the audit text is, not whether it last passed (GAMES dated entries record the sanctioned runs).
+- **unprobed** — no assertion anywhere; at most `.qa/fingerprint.mjs`, which is a change detector for ALL laws on the
+  default cast with no spear (it proves "did not move", never "is right") and so is not repeated per row.
+
+| ID | Law | Runnable probe | Owner-run audit | Status | Scope |
+|---|---|---|---|---|---|
+| C1 | Damage requires touch (body disc = collision circle) | `.qa/inscribe.mjs::A poking circle fires hits across`; `.qa/leadproof.mjs::hit gContact` | `measure.mjs::contact law 1: damage only on weapon-touches-body` | partial | covering circles vs drawn art; hit recompute for lead-flag weapons only |
+| C2 | Parry requires weapon-on-weapon touch | `.qa/inscribe.mjs::A poking circle fires hits across`; `.qa/leadproof.mjs::parry entry gap` | `measure.mjs::contact law 2: parry only on exact weapon-weapon touch` | partial | covering fidelity; entry-pose gap for lead-flag weapons only |
+| C3 | Weapons are solids to each other | — | `measure.mjs::contact law 3: VISIBLE rendered interpenetration` | owner-run only | the disclosed RED band is stated in law 3 above |
+| C4 | One damage per touch; re-arm gates | — | `measure.mjs::contact law 4: one damage per touch` | owner-run only | |
+| C5 | Parry recoils both weapons | — | `measure.mjs::contact law 5: every parry recoils both spins` | owner-run only | `flipproof` checks the drawn flip, not the spin recoil |
+| C6 | Counter-rotation from the bell | `.qa/pair-proof.mjs::rule 6 holds per SIDE` | `measure.mjs::contact law 6: every round opens counter-rotating` | partial | per side under every pairing, not swept over weapons |
+| S1 | 1s damage only on shot-touches-body | — | `measure.mjs::projectile law 1s: shot damage only on shot-touches-body` | owner-run only | |
+| S2 | 2s swats only on exact shot-blade touch | `.qa/leadproof.mjs::swat touch gap` | `measure.mjs::projectile law 2s: swats only on exact shot-blade touch` | partial | lead-flag weapons only |
+| S3 | 3s shots never overlap blade/body/rim/shot | — | `measure.mjs::projectile law 3s: shots never overlap blade/body/rim/shot on a rendered frame` | owner-run only | |
+| S4 | 4s every shot has exactly one proven departure | `.qa/seam-proof.mjs::DEPARTURE ACCOUNTING` | `measure.mjs::projectile law 4s: every shot accounted for` | partial | ricochet stars only |
+| S5 | 5s substep budget audit | — | `measure.mjs::projectile law 5s: substep budget honored every tick` | owner-run only | |
+| S6 | 6s launch doctrine (hold-derived launch point) | — | `measure.mjs::projectile law 6s: every shot is born at its hold-derived launch point` | owner-run only | |
+| B1 | Best of 3, first to 2 round wins | — | — | unprobed | no assertion on the win threshold |
+| B2 | Rounds end on K.O. only (no timer) | — | — | unprobed | |
+| B3 | 1v1 only | `.qa/pair-proof.mjs::malformed casts are construction errors` | — | partial | cast-length guard only |
+| B4 | `(seed)` fully determines a battle | `.qa/pair-proof.mjs::replay identically`; `.qa/fingerprint.mjs::FNV-1a` | — | partial | default cast, fixed cells vs `.qa/BASELINE` |
+| B5 | Hidden forcing via `newGame(seed, {weapons})` | `.qa/lengrow-build-proof.mjs::the roll armed the spear fighter` | — | partial | spear cells only; other probes use it without asserting it |
+| U1 | Uniform base: omega 3.5, damage 1, hp 100 | — | — | unprobed | change detector only |
+| G1 | Every damaging hit grows the attacker (skill + trait) | `.qa/seam-proof.mjs::F1 every damaging hit grows`; `.qa/pair-proof.mjs::damage-per-hit = the weapon trait` | — | partial | dagger spin axis; damage per hit on the default pairing |
+| G2 | Fighter skills: Speedy +0.30 SPD, Heavy +0.9 DMG | `.qa/seam-proof.mjs::Speedy stacks to 2.3`; `.qa/pair-proof.mjs::damage-per-hit = the weapon trait` | — | partial | Speedy via the dagger stack; Heavy via damage per hit |
+| G3 | Firing is physics: one shot per full revolution | `.qa/seam-proof.mjs::CADENCE BAND LAW` | — | partial | bow only |
+| T1 | Weapon traits reset every round | `.qa/lengrow-build-proof.mjs::the round transition resets lenStep to 0`; `.qa/seam-proof.mjs::traits reset every round (the LAW)` | — | probed | every growth axis with a probe: length, orb size, spin, cycle, rain |
+| T2 | No combos: additive stacking only | `.qa/pair-proof.mjs::no skill reaches into a trait`; `.qa/lengrow-build-proof.mjs::no fighter carries lenSteps` | — | partial | the retired hook is gone; additivity itself via G1 |
+| T3 | Trait = data, one consumer site | `.qa/seam-proof.mjs::GUARD FIRES: a new trait axis with no authored brief` | — | partial | boot guards only; "one consumer site" is a review convention |
+| X1 | Slot/idx split | `.qa/pair-proof.mjs::every event actor ref`; `.qa/pair-proof.mjs::every cast-keyed table read is indexed by an IDENTITY`; `chromecheck.mjs::PAIRING section` | — | probed | fingerprints are blind to it (default cast), so these probes carry it |
 
 ## Retired rules (kept as provenance, NOT current)
 
