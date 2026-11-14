@@ -10,7 +10,20 @@ Status as of 2026-11-14: (a) DONE (0ddd7f5, #746) · (b) DONE (9e017bb, #742) ·
 HANDOFF §7. The Batch 2 ledger is the appendix below, carried verbatim. STATE.md and docs/CODEMAP.md
 are authoritative for every number.
 
-## Handoff hosting — ledger (this commit)
+Follow-ups: the #749 patch landed the optional doc items (index titles, the mf-2 14 KB line, AGENTS/README pointers, the #749
+entry) — see the first ledger below; its commit hash is not known to this file. Next: Batch 4 or the law-table follow-ups.
+
+## #749 follow-ups — ledger (this commit)
+
+What: the optional items of HANDOFF §7 as ONE commit. (1) navgen rowTitle(): the 54 numbered entries of mf-2 show `NNN — <heading text>` in the entry index instead of a bare number; every other row is unchanged. (2) mf-2 line 526 (entry #721's AT THIS LANDING sub-paragraph, 14,343 bytes, the only line over 3,000 bytes in the record set) became 26 lines, each ≤ 560 bytes, by turning existing spaces into newlines — no byte added or removed, no blank line. (3) AGENTS "Where truth lives" and the README router point at docs/handoff/HANDOFF.md. (4) #749 appended to GAMES. Both handoff files updated. Canonical, LAWS, CODEMAP, docreflow, gen-state, lint-docs, docset untouched.
+Why: the index is the front door to two era files and showed 54 bare numbers; the 14 KB line was unreadable in an editor and the one thing docreflow could not break; the hosting patch deferred the pointers and the entry to stay new-file-only.
+Approved: "go" after the read-only proposal.
+Deviations (flagged at delivery): (1) a FROZEN era file was edited, whitespace-only; the rejoin, non-whitespace, word, byte, heading and line-count proofs run in memory before anything is written. (2) NOT a diff of the changed files: a new-file-only patch holding one gated self-deleting one-shot (tools/doc/land-749.mjs, HANDOFF §6.8), because replacing a 14 KB line is about 29 KB of diff to transcribe; the regenerated files are produced on the owner's machine, so `git add -A` is required. (3) Bold spans in the re-paragraphed line now cross soft newlines: valid CommonMark, NOT render-checked.
+Findings: docreflow could not split that line because every break point sits inside a bold span; no tool compares a frozen era file with its pre-edit self, so the one-shot's in-memory proofs are the only guard on the edit, and nothing guards the result against a later re-join (control: joining two of the 26 lines keeps verify --quick green).
+Not verified here: no rendered-markdown check; battery and measure.mjs not run (canonical untouched). Command results, negative controls and per-file md5s are in the delivery message and in the HANDOFF state block.
+Rollback: `git revert` this commit.
+
+## Handoff hosting — ledger (commit 24ce531)
 
 What: HANDOFF.md (v9) and this file moved INTO the repo at docs/handoff/, as two NEW files. No tool,
 record, canonical or generated file changed. Why: after 3(c) landed, the owner's chat still attached
@@ -134,13 +147,9 @@ Rollback: `git revert 0ddd7f5`.
 
 ## What is next
 
-Batch 3 CLOSED. Per HANDOFF §7: (1) recommended ONE patch — navgen index titles for the 54 numbered
-entries + verbatim re-paragraphing of the 14,343-byte line in mf-2 (FROZEN era file — flag; soft
-newlines at existing spaces are proof-safe, never blank lines, keep every line <= 600 bytes) +
-the deferred AGENTS/README docs/handoff pointers + the #749 entry; (2) optional law-table follow-ups
-(B1/B2/U1 + 7 owner-run-only laws; .qa/ probes); (3) Batch 4 tool layout (docset.mjs is a dependency
-of four tools; keep the repo-root contract). Propose first; wait for "go"; ONE patch per HANDOFF §6
-+ §6.7, updating both handoff files in the same commit.
+Batch 3 CLOSED; its follow-up patch (#749) is DONE. Per HANDOFF §7: (1) optional law-table follow-ups (B1/B2/U1 + 7 owner-run-only
+laws; .qa/ probes); (2) Batch 4 tool layout (docset.mjs is a dependency of four tools; keep the repo-root contract). Propose first;
+wait for "go"; ONE patch per HANDOFF §6 + §6.7/§6.8, updating both handoff files in the same commit.
 
 ## APPENDIX — BATCH2-STATUS.md, carried forward verbatim
 

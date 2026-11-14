@@ -55,4 +55,5 @@ A localhost-only Node tool that renders seeded game simulations into publishable
 - Landing recipes (add trait / skill / bot, stamp discipline) → `docs/RECIPES.md`.
 - Agent workflow / loading order → this file. Platform rules → `docs/SPEC.md`.
 - Decisions, owner quotes, measured history → `docs/GAMES.md` (live) and `docs/history/` (frozen eras; git history for older).
+- Process authority for AI sessions (handoff, ledgers, delivery rules) → `docs/handoff/HANDOFF.md` and `docs/handoff/BATCH3-STATUS.md` (repo-hosted; the repo outranks any chat attachment; they sit outside every lint glob and never go in `docs/history/`).
 - `tools/lint-docs.mjs` fails the build if these drift (dead refs, stale md5, trait-count disagreement, retired rules stated as live, a broken law-to-probe table).

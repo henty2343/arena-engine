@@ -8,6 +8,7 @@
 - Current game laws: [`docs/LAWS.md`](./docs/LAWS.md)
 - Landing recipes: [`docs/RECIPES.md`](./docs/RECIPES.md)
 - Design history / provenance: grep [`docs/GAMES.md`](./docs/GAMES.md) (live) and `docs/history/` (frozen eras); never read whole
+- Session handoff (process authority, repo-hosted; outranks any chat note): [`docs/handoff/HANDOFF.md`](./docs/handoff/HANDOFF.md)
 - Platform/engine rules (PLANNED engine): [`docs/SPEC.md`](./docs/SPEC.md), only for engine/platform work
 
 ## Non-negotiables

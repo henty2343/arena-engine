@@ -76,6 +76,22 @@ const title = l => {
   t = t.replace(/\s*\(20\d\d-\d\d-\d\d[\s\S]*$/, '').replace(/\s*\(owner[\s\S]*$/, '');
   return t.replace(/\s*[—\-·,]+\s*$/, '').trim().slice(0, 84);
 };
+/* B3E (#749): a numbered heading "### NNN - (date) text" is cut by title() at the date paren and
+ * left a bare number in the index. For those titles only, keep the number and the heading's own separator and
+ * append the heading text after the date group: word-boundary cut at 84 chars, never an open code span, pipes
+ * escaped. Every other title is unchanged. */
+const rowTitle = l => {
+  const t = title(l);
+  if (!/^\d+$/.test(t)) return t;
+  const m = l.match(/^### (\d+)(\s+\S+\s+)\((?:20\d\d-\d\d-\d\d|owner)[^)]*\)\s*(.*)$/);
+  if (!m) return t;
+  const lead = m[1] + m[2], room = 84 - lead.length;
+  let r = m[3].split('**')[0].trim();
+  if (r.length > room) { r = r.slice(0, room); const sp = r.lastIndexOf(' '); if (sp > room * 0.6) r = r.slice(0, sp); }
+  if ((r.match(/\x60/g) || []).length % 2) r = r.slice(0, r.lastIndexOf('\x60'));
+  r = r.replace(/[\s,:;.\-\u2014\u00b7]+$/, '').replace(/\|/g, '\\|');
+  return r ? lead + r : t;
+};
 const dateOf = blk => (blk.match(/\((20\d\d-\d\d-\d\d)/) || [, 'undated'])[1];
 const kbOf = blk => { const k = Buffer.byteLength(blk) / 1024; return k >= 1 ? String(Math.round(k)) : '<1'; };
 
@@ -118,7 +134,7 @@ function build(ls) {
     if (ents.length) nfiles++;
     for (const [a, b] of ents) {
       const blk = s.lines.slice(a, b + 1).join('\n');
-      rows.push(`| ${s.key} | ${a + 1} | ${dateOf(blk)} | ${title(s.lines[a])} | ${kbOf(blk)} |`);
+      rows.push(`| ${s.key} | ${a + 1} | ${dateOf(blk)} | ${rowTitle(s.lines[a])} | ${kbOf(blk)} |`);
     }
   }
   o.push('', `**Measured facts — entry index** (${rows.length} entries in ${nfiles} file(s), oldest first; this is the largest part of the record, so the index is the way in. "file" = the key above, GAMES = this file; "line" = the entry's first line in that file.)`, '', '| file | line | date | entry | KB |', '|---|---|---|---|---|');

@@ -15,7 +15,9 @@ generated and authoritative for all numbers.
 
 Status 2026-11-14: Batch 1 DONE. Batch 2 DONE. Batch 3 (a)(b)(c)(d) ALL DONE — Batch 3 CLOSED.
   3a = 0ddd7f5 #746 · 3b = 9e017bb #742 · 3d = f756e21 #747 · 3c = 68e29f9 #748
-Next: the small optional doc items (§7), then Batch 4.
+Follow-ups: the #749 patch (index titles, mf-2 line re-paragraphed, AGENTS/README pointers, #749 entry) is DONE;
+  its commit hash is not known to this file (a file cannot contain its own commit) — verify origin.
+Next: Batch 4 (tool layout, §7) or the optional law-table follow-ups.
 Delivery: ONE patch (§6) — read §6.7 first: the owner copies patches out of CHAT.
 
 State at the 3c landing (re-measure, do not trust): HEAD 68e29f9, parent f756e21; canonical md5
@@ -28,6 +30,11 @@ navgen 6154479b122dc81f8a3441bc2b9c8afb · docreflow 88363bddef65dc779ad4c51d2d2
 gen-state 5dd8bf7d11ba6fee7c282e7e36c64056 · lint-docs daf5ae8f6125e6a92c9be80c399897c6 ·
 docset 03e418e846c71122e7c86106d33c8cfd · LAWS 1588876f4abcdaa3f04d8ad97738d188 (unchanged) ·
 CODEMAP b334d3553a938801e25df32efe2e62f9 (unchanged).
+
+State after the #749 patch (BASE 24ce531; re-measure, do not trust): canonical, chronicle, mf-1, docreflow, gen-state,
+lint-docs, docset, LAWS, CODEMAP all unchanged from the 3c block above. As built by the one-shot: GAMES 8f602745ee4a583af935884330415bb0 ·
+mf-2 7a268c717d727216e5c93782d3e6a985 · STATE bb6c529358ff5a58ded571f9a2efba28 · AGENTS bd170ac0d1655b07e446140c3f46adca ·
+README 1cb73e7751c2999f9f763e2b74c9b54d · navgen b27164470bbe5d5303839d5bbc408bdb. The two handoff files are not listed (a file cannot hold its own md5).
 
 ## 0. The record is a SET (since 3c)
 
@@ -90,9 +97,9 @@ docs/LAWS.md (sole authority for the current laws, the trait count, the law-to-p
 docs/RECIPES.md.
 Enter the record by grepping the SET: `grep -rn '^### 721' docs/GAMES.md docs/history/` — or use the
 nav block's Frozen eras table + entry index (file + line). All record files are GREP ONLY.
-The worst line: docs/history/mf-2-667-721.md line 526 at 68e29f9 (14,157 chars / 14,343 BYTES), the
-`**AT THIS LANDING — canonical links-r87 …**` sub-paragraph of entry #721. Every break point sits
-inside a bold span, so docreflow leaves it. Grep, never hand-copy the line number.
+The old worst line (mf-2 line 526 at 68e29f9, 14,343 bytes, entry #721's AT THIS LANDING sub-paragraph) was re-paragraphed by
+#749 into 26 soft-wrapped lines, each <= 560 bytes; its bold spans now CROSS soft newlines (valid CommonMark, not render-checked).
+No line in the record set exceeds 3,000 bytes. Do not re-join them. Grep for the sub-paragraph; never hand-copy a line number.
 Law-to-probe table (LAWS §Law-to-probe table): 25 rows; 2 probed, 13 partial, 7 owner-run only,
 3 unprobed. The 7 owner-run rows (contact 3/4/5; shot 1s/3s/5s/6s) are audited ONLY by measure.mjs.
 The 3 unprobed: B1 best-of-3, B2 K.O.-only rounds, U1 uniform base stats. .qa/fingerprint.mjs is a
@@ -168,24 +175,20 @@ idempotent; print the numbers.
 - Bare `!` in pasted commands triggers bash history expansion (`event not found`) — avoid, or `set +H`.
 - Prefer pure ASCII with \u escapes for scripts the owner pastes.
 - If a patch fails twice, ship a small gated ASCII script that md5-gates input AND output.
+6.8 NEW-FILE-ONLY ONE-SHOT (used by #749): the patch holds ONE new file — a gated, self-deleting tools/doc/land-NNN.mjs — so there is
+no hunk context to get wrong. It md5-gates every input, edits by ASCII content anchor, proves the edits in memory, writes, unlinks
+itself, regenerates, then md5-checks every output. Owner flow: awk-extract (or git apply) the script, check its md5, run it,
+git add -A, verify --quick, commit, push. It is idempotent (prints "already landed") and refuses on any input md5 or CRLF.
 
 ## 7. What remains
 
 Batch 3 CLOSED. Optional items — propose first, wait for "go", ONE patch:
-- Index titles: navgen title() cuts at the date paren, so the 54 numbered entries show a bare
-  number. Generator edit + regen; no record touched. The index is the front door to two era files.
-- The 14,343-byte line (docs/history/mf-2-667-721.md line 526 — grep). docreflow's write-time proofs
-  are the non-ws stream, the word stream and the heading count; bold parity is only a break-point
-  VETO inside safePoints(). So soft newlines AT EXISTING SPACES inside the bold span are safe for
-  the proofs; never insert blank lines (a paragraph break would break the bold span in rendering);
-  every resulting line must be <= 600 bytes (BIG) or docreflow --check reports CHANGES PENDING.
-  It is a FROZEN era file — flag the edit. Verify the exact proof code before editing.
+- Index titles: DONE in #749 (navgen rowTitle(); the 54 numbered rows now carry the heading text).
+- The 14,343-byte line: DONE in #749 (26 soft-wrapped lines ≤ 560 bytes; the frozen era file edit was flagged).
 - AGENTS grep hint: DONE in 3c.
 - Law-table follow-ups (owner's call): runnable assertions for B1/B2/U1 and the 7 owner-run-only
   laws; touches .qa/ probes; needs a proposal.
-- Handoff follow-ups from the hosting change: add a docs/handoff/ pointer to AGENTS.md ("Where truth
-  lives") and README; append the #749 chronicle entry for the hosting landing (both deferred to keep
-  that patch new-file-only). Fold into the next docs patch.
+- Handoff follow-ups (AGENTS/README docs/handoff pointers, #749 entry): DONE in #749.
 Batch 4 — tool layout: one home tools/ with proof/, doc/, measure/, lib/; rename .qa visibly;
 tools/manifest.json read by verify + run-battery; propose an owner-go flag for measure.mjs; move
 SPEC/CONTRACT/BUILD to docs/planned/; RECIPES "Traps" -> short rules; AGENTS = the one workflow home.
@@ -225,6 +228,7 @@ contract. Leave record content alone.
   §Current state; lint checks both.
 - New lint check => negative controls (one mutation per control + a passing control). 3c ran 9 + C9.
 - Stale-but-historical: chronicle says lengrow-bake --verify exits 2 (true then, now 0) — leave it.
+- mf-2's old 14 KB line is 26 soft-wrapped lines since #749 (bold spans cross newlines on purpose); NOTHING GUARDS THIS: re-joining two of the lines leaves verify --quick green (docreflow reports no safe break point and exits 0; measured in a control). Do not re-join.
 - Cosmetic: .qa/fingerprint.mjs (~line 33) mentions many dated checkpoints; one live baseline. Harmless.
 - Sandbox: the execution tool can vanish for whole turns; /tmp gets wiped between calls — re-bootstrap
   and WRITE RECEIPTS INTO YOUR REPLY IMMEDIATELY. Dropped tool output (`execute error`) = UNVERIFIED.
@@ -249,10 +253,10 @@ New-chat prompt (the whole thing):
 
 ## 10. Where we are / next action
 
-Landed through 68e29f9 (Batch 3c) + the handoff-hosting commit that introduced this file. Verify
-origin's HEAD; anything newer means more landed — re-baseline from STATE.md and say what moved.
+Landed through the #749 patch (index titles, mf-2 line re-paragraphed, AGENTS/README handoff pointers, #749 entry) on top of
+24ce531 (Batch 3c + the handoff-hosting commit). This file cannot name the #749 commit hash: verify origin HEAD; anything beyond
+24ce531 + one commit means more landed — re-baseline from STATE.md and say what moved.
 First: run the FRESHNESS CHECK, then §2. If the invariant hashes differ, STOP and tell the owner.
-Then propose the next §7 item — recommended: index titles + the 14,343-byte line as ONE patch,
-including the deferred AGENTS/README handoff pointers and the #749 entry — and WAIT for "go".
-After "go": the whole job in one pass (edits, regen, proofs, controls, fresh-clone proof), delivered
-per §6 + §6.7, with both handoff files updated in the same patch.
+Then propose the next item from §7 — Batch 4 (tool layout) or the law-table follow-ups — and WAIT for "go".
+After "go": the whole job in one pass (edits, regen, proofs, controls, fresh-clone proof), delivered per §6 + §6.7/§6.8,
+with both handoff files updated in the same patch.

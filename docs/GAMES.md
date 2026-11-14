@@ -28,13 +28,14 @@ The living record of game design: what exists and what is decided next. Platform
 | section | from line | size |
 |---|---|---|
 | The documents | 11 | 1 KB |
-| Current state | 144 | 136 KB |
-| Weapon art — the closed convention (locked 2026-10-18, CLOSED 2026-10- | 446 | 10 KB |
-| Design principles for all games | 469 | 2 KB |
-| Open design questions | 479 | 15 KB |
-| Measured facts | 501 | 1 KB |
-| Testing recipe (headless) | 512 | 21 KB |
-| 2026-11-14 — #748 · BATCH 3C — GAMES.md SPLITS BY ERA INTO `docs/histo | 560 | 3 KB |
+| Current state | 145 | 136 KB |
+| Weapon art — the closed convention (locked 2026-10-18, CLOSED 2026-10- | 447 | 10 KB |
+| Design principles for all games | 470 | 2 KB |
+| Open design questions | 480 | 15 KB |
+| Measured facts | 502 | 1 KB |
+| Testing recipe (headless) | 513 | 21 KB |
+| 2026-11-14 — #748 · BATCH 3C — GAMES.md SPLITS BY ERA INTO `docs/histo | 561 | 3 KB |
+| 2026-11-14 — #749 · BATCH 3 FOLLOW-UPS — THE INDEX TITLES, THE 14 KB L | 571 | 2 KB |
 
 **Frozen eras** (`docs/history/` — grep only, never load whole; the key is what the entry index below uses)
 
@@ -84,60 +85,60 @@ items = `###` measured-facts entries, or dated `##` landings for a chronicle fil
 | mf-1-pre667 | 357 | 2026-10-31 | `freeloop-r38` — the boomerang's free-loop redesign | <1 |
 | mf-1-pre667 | 359 | 2026-10-31 | `freeloop-r38` REJECTED and REVERTED | <1 |
 | mf-1-pre667 | 361 | 2026-11-01 | The Loyal Halo `halo-r39` | <1 |
-| mf-2-667-721 | 9 | 2026-11-01 | 667 | 3 |
-| mf-2-667-721 | 18 | 2026-11-01 | 668 | 6 |
-| mf-2-667-721 | 38 | 2026-11-01 | 669 | 6 |
-| mf-2-667-721 | 53 | 2026-11-01 | 670 | 3 |
-| mf-2-667-721 | 65 | 2026-11-01 | 672 | 8 |
-| mf-2-667-721 | 86 | 2026-11-01 | 673 | 2 |
-| mf-2-667-721 | 91 | 2026-11-01 | 674 | 2 |
-| mf-2-667-721 | 96 | 2026-11-01 | 675 | 3 |
-| mf-2-667-721 | 101 | 2026-11-01 | 676 | 5 |
-| mf-2-667-721 | 114 | 2026-11-01 | 677 | 2 |
-| mf-2-667-721 | 121 | 2026-11-01 | 678 | 5 |
-| mf-2-667-721 | 135 | 2026-11-01 | 679 | 2 |
-| mf-2-667-721 | 143 | 2026-11-01 | 680 | 4 |
-| mf-2-667-721 | 155 | 2026-11-01 | 681 | 3 |
-| mf-2-667-721 | 165 | 2026-11-01 | 682 | 4 |
-| mf-2-667-721 | 172 | 2026-11-01 | 683 | 4 |
-| mf-2-667-721 | 179 | 2026-11-01 | 684 | 4 |
-| mf-2-667-721 | 187 | 2026-11-01 | 685 | 6 |
-| mf-2-667-721 | 196 | 2026-11-01 | 686 | 4 |
-| mf-2-667-721 | 204 | 2026-11-01 | 687 | 3 |
-| mf-2-667-721 | 211 | 2026-11-01 | 688 | 3 |
-| mf-2-667-721 | 219 | 2026-11-01 | 689 | 3 |
-| mf-2-667-721 | 227 | 2026-11-01 | 690 | 4 |
-| mf-2-667-721 | 236 | 2026-11-01 | 691 | 4 |
-| mf-2-667-721 | 245 | 2026-11-02 | 692 | 4 |
-| mf-2-667-721 | 252 | 2026-11-02 | 693 | 4 |
-| mf-2-667-721 | 263 | 2026-11-02 | 694 | 5 |
-| mf-2-667-721 | 275 | 2026-11-02 | 695 | 5 |
-| mf-2-667-721 | 287 | 2026-11-02 | 696 | 5 |
-| mf-2-667-721 | 301 | 2026-11-02 | 697 | 6 |
-| mf-2-667-721 | 318 | 2026-11-02 | 698 | 8 |
-| mf-2-667-721 | 336 | 2026-11-02 | 699 | 1 |
-| mf-2-667-721 | 340 | 2026-11-02 | 700 | 1 |
-| mf-2-667-721 | 344 | 2026-11-02 | 701 | 6 |
-| mf-2-667-721 | 361 | 2026-11-02 | 702 | 4 |
-| mf-2-667-721 | 374 | 2026-11-02 | 703 | <1 |
-| mf-2-667-721 | 376 | 2026-11-02 | 704 | 3 |
-| mf-2-667-721 | 387 | 2026-11-02 | 705 | <1 |
-| mf-2-667-721 | 389 | 2026-11-03 | 706 | 4 |
-| mf-2-667-721 | 400 | 2026-11-03 | 707 | 2 |
-| mf-2-667-721 | 410 | 2026-11-03 | 708 | 3 |
-| mf-2-667-721 | 421 | 2026-11-03 | 709 | 3 |
-| mf-2-667-721 | 430 | 2026-11-03 | 710 | 2 |
-| mf-2-667-721 | 438 | 2026-10-31 | 711 | 4 |
-| mf-2-667-721 | 449 | 2026-10-31 | 712 | 4 |
-| mf-2-667-721 | 459 | 2026-10-31 | 713 | 2 |
-| mf-2-667-721 | 466 | 2026-10-31 | 714 | <1 |
-| mf-2-667-721 | 468 | 2026-10-31 | 715 | 5 |
-| mf-2-667-721 | 479 | 2026-10-31 | 716 | 4 |
-| mf-2-667-721 | 490 | 2026-10-31 | 717 | 2 |
-| mf-2-667-721 | 498 | 2026-10-31 | 718 | 4 |
-| mf-2-667-721 | 507 | 2026-10-31 | 719 | 2 |
-| mf-2-667-721 | 511 | 2026-10-31 | 720 | 3 |
-| mf-2-667-721 | 518 | 2026-11-10 | 721 | 19 |
+| mf-2-667-721 | 9 | 2026-11-01 | 667 — THE BOOMERANG PARKS AT THE OWNER'S CALL · `scratch/boomvars/` PURGED AT HIS | 3 |
+| mf-2-667-721 | 18 | 2026-11-01 | 668 — `bouncegrow-r40` LANDED — THE SHURIKEN'S RICOCHET BUDGET: every wall touch | 6 |
+| mf-2-667-721 | 38 | 2026-11-01 | 669 — `ricolaw-r41` LANDED — THE STAR RICOCHET LAW: the rim never kills a star, own | 6 |
+| mf-2-667-721 | 53 | 2026-11-01 | 670 — THE SHURIKEN'S SLOT CLOSES AT THE OWNER'S WORD — THE LAW IS THE TRAIT. 17 | 3 |
+| mf-2-667-721 | 65 | 2026-11-01 | 672 — `multgrow-r42` LANDED — THE BOW'S RAIN: every damaging hit thickens the | 8 |
+| mf-2-667-721 | 86 | 2026-11-01 | 673 — THE BOW'S SLOT CLOSES FOR NOW at the owner's word — _"i think bow is done for | 2 |
+| mf-2-667-721 | 91 | 2026-11-01 | 674 — PROCESS RULING: MECHANICS ONLY, AND FAST — the heavy test loop is retired at | 2 |
+| mf-2-667-721 | 96 | 2026-11-01 | 675 — `fan-r43` LANDED — THE KNIVES' GROWING FAN: every damaging hit adds one fan | 3 |
+| mf-2-667-721 | 101 | 2026-11-01 | 676 — `pinlaw-r44` LANDED — THE CROSSBOW'S NAILS: a bolt that reaches the rim is | 5 |
+| mf-2-667-721 | 114 | 2026-11-01 | 677 — `pinfix-r45` LANDED — THE OWNER'S PLAYTEST EYE-FIX ON THE NAILS: pinned bolts | 2 |
+| mf-2-667-721 | 121 | 2026-11-01 | 678 — `skewer-r46` LANDED — THE JAVELIN'S SKEWER: the hit does not consume the | 5 |
+| mf-2-667-721 | 135 | 2026-11-01 | 679 — `skewfix-r47` LANDED — THE OWNER'S PLAYTEST EYE-FIX ON THE SKEWER: the spear | 2 |
+| mf-2-667-721 | 143 | 2026-11-01 | 680 — `impale-r48` LANDED — THE OWNER'S EYE-FIX #2 ON THE SKEWER: the spear visibly | 4 |
+| mf-2-667-721 | 155 | 2026-11-01 | 681 — `naildrive-r49` LANDED — THE OWNER'S THIRD SKEWER EYE-RULING, the settled | 3 |
+| mf-2-667-721 | 165 | 2026-11-01 | 682 — `sinkalign-r50` LANDED — THE OWNER'S FOURTH SKEWER EYE-RULING, the | 4 |
+| mf-2-667-721 | 172 | 2026-11-01 | 683 — `carrydir-r51` LANDED — THE OWNER'S FIFTH SKEWER EYE-RULING: the HEADING | 4 |
+| mf-2-667-721 | 179 | 2026-11-01 | 684 — `javelincarry-r52` LANDED — THE OWNER'S SIXTH SKEWER EYE-RULING: the carry is | 4 |
+| mf-2-667-721 | 187 | 2026-11-01 | 685 — `touchorbit-r53` LANDED — THE BOOMERANG UNPARKED: THE WORLD ORBIT + THE | 6 |
+| mf-2-667-721 | 196 | 2026-11-01 | 686 — `chaosorbit-r54` LANDED — the owner's boomerang eye-fix quartet from his | 4 |
+| mf-2-667-721 | 204 | 2026-11-01 | 687 — `nocatch-r55` LANDED — the owner's boomerang EXPERIMENT: the wielder no | 3 |
+| mf-2-667-721 | 211 | 2026-11-01 | 688 — `catchonly-r56` LANDED — nocatch-r55 REVERTED at the owner's eye, and the | 3 |
+| mf-2-667-721 | 219 | 2026-11-01 | 689 — `snapfix-r57` LANDED — the owner's three boomerang eye-defects: the GAP HIT | 3 |
+| mf-2-667-721 | 227 | 2026-11-01 | 690 — `catchghost-r58` LANDED — the owner's two post-r57 directives: LOOPS CANCEL | 4 |
+| mf-2-667-721 | 236 | 2026-11-01 | 691 — `instantthrow-r59` LANDED — the owner's r58 clarifications confirmed, and the | 4 |
+| mf-2-667-721 | 245 | 2026-11-02 | 692 — `review-r60` LANDED — the boomerang CLOSED, the workspace purged, and | 4 |
+| mf-2-667-721 | 252 | 2026-11-02 | 693 — `bendspark-r61` LANDED — THE WAND'S BENDING SPARK: the pass's first | 4 |
+| mf-2-667-721 | 263 | 2026-11-02 | 694 — `allcut-r62` LANDED — ALLCUT: EVERY WEAPON CUTS ON BODY TOUCH — the | 5 |
+| mf-2-667-721 | 275 | 2026-11-02 | 695 — `slowmo-r63` LANDED — THE HIT BEAT IS SLOW MOTION: the non-kill hitstop | 5 |
+| mf-2-667-721 | 287 | 2026-11-02 | 696 — `flagfix-r64` LANDED — THE THREE FLAG LAWS RESTORED: the r61 bendspark | 5 |
+| mf-2-667-721 | 301 | 2026-11-02 | 697 — `hexspark-r65` LANDED — THE HEX: the wand's bend became a hunt. The owner's | 6 |
+| mf-2-667-721 | 318 | 2026-11-02 | 698 — `affinity-r66` LANDED — THE TOME TRIO IS LIVE: the 2026-10-28 ruling ("the | 8 |
+| mf-2-667-721 | 336 | 2026-11-02 | 699 — `wordform-r67` LANDED — THE WORD REFORMS (tome, PROVISIONAL, REVERT-READY) | 1 |
+| mf-2-667-721 | 340 | 2026-11-02 | 700 — `wordform-r67` REVERTED at the owner's word — FULL REMOVAL, canon restored | 1 |
+| mf-2-667-721 | 344 | 2026-11-02 | 701 — `hexfam-r68` LANDED — THE FAMILY FLIGHT LAW: THE HEX IS NO LONGER THE WAND'S | 6 |
+| mf-2-667-721 | 361 | 2026-11-02 | 702 — `spellform-r69` LANDED — THE OWNER'S THREE EYE-FIX RULINGS ON THE SPELL | 4 |
+| mf-2-667-721 | 374 | 2026-11-02 | 703 — `grudge-r70` — THE LONG GRUDGE, the wand's trait; REVERTED WHOLE at the | <1 |
+| mf-2-667-721 | 376 | 2026-11-02 | 704 — `chillfix-r71` LANDED — TWO OWNER CORRECTIONS: THE GRUDGE REVERTED WHOLE, AND | 3 |
+| mf-2-667-721 | 387 | 2026-11-02 | 705 — `flick-r72` — THE WHIP-CRACK FLICK, the wand's trait; REVERTED at the owner's | <1 |
+| mf-2-667-721 | 389 | 2026-11-03 | 706 — `bloom-r73` LANDED — THE WAND'S TRAIT: TRANSFIGURATION (THE BLOOM); THE | 4 |
+| mf-2-667-721 | 400 | 2026-11-03 | 707 — `bloomfix-r74` LANDED — THE OWNER'S EYE ON THE BLOOM: TOUCH THE BODY, AND | 2 |
+| mf-2-667-721 | 410 | 2026-11-03 | 708 — `bloomfix-r75` LANDED — THREE WORDS AND A QUESTION: 3 SECONDS, SLOWER TURN | 3 |
+| mf-2-667-721 | 421 | 2026-11-03 | 709 — `bloomfix-r76` LANDED — THE SHAKE-OFF BELONGS TO THE OBJECT; NO OWN-SPIN; THE | 3 |
+| mf-2-667-721 | 430 | 2026-11-03 | 710 — `bloomfix-r77` LANDED — THE LAZY SWEEP; THE WAND IS CONCLUDED | 2 |
+| mf-2-667-721 | 438 | 2026-10-31 | 711 — `meteor-r78` LANDED — THE CALLED FALL: THE SCROLL'S SPELL IS A METEOR, NOT | 4 |
+| mf-2-667-721 | 449 | 2026-10-31 | 712 — `emberpool-r79` LANDED — THE CALLED FALL REVERTED WHOLE; THE BURNING POOL IS | 4 |
+| mf-2-667-721 | 459 | 2026-10-31 | 713 — `poolfix-r80` LANDED — THE POOL GROWS, LIVES LONGER, AND BREATHES | 2 |
+| mf-2-667-721 | 466 | 2026-10-31 | 714 — `lane-r81` — THE SCORCHED LANE, the scroll's trait; REVERTED WHOLE at the | <1 |
+| mf-2-667-721 | 468 | 2026-10-31 | 715 — `kindling-r82` LANDED — THE EMBER SPILL FILLS THE SCROLL'S SLOT; THE SCORCHED | 5 |
+| mf-2-667-721 | 479 | 2026-10-31 | 716 — `kindlingfix-r83` LANDED — THE EMBER SPILL TUNED AT HIS EYE: THE BIG SPOT | 4 |
+| mf-2-667-721 | 490 | 2026-10-31 | 717 — `burnfix-r84` LANDED — THE BIG FIRE BURNS FASTER, BITES ON CONTACT, AND EVERY | 2 |
+| mf-2-667-721 | 498 | 2026-10-31 | 718 — `emberfix-r85` LANDED — THE COAL'S DEATHS BECOME READABLE, THE LAST-TICK HOLE | 4 |
+| mf-2-667-721 | 507 | 2026-10-31 | 719 — THE SCROLL'S TRAIT JOURNEY CONCLUDES — THE EMBER SPILL BLESSED AT HIS EYE | 2 |
+| mf-2-667-721 | 511 | 2026-10-31 | 720 — `longchain-r86` LANDED — THE LONG CHAIN: THE FLAIL'S TRAIT SLOT FILLED, THE | 3 |
+| mf-2-667-721 | 518 | 2026-11-10 | 721 — `links-r87` LANDED — THE ADDING-LINKS CHAIN: THE FLAIL GROWS BY ADDING LINKS | 19 |
 
 ---
 
@@ -566,3 +567,12 @@ This is the only coverage of the chrome's pairing path; `pair-proof.mjs` loads t
 - **Canonical untouched:** md5 `5de162de46eb4fa3204e3ee636f2aff3`, 4,716 lines, stamp `links-r87` — unchanged, so no battery was required and `measure.mjs` was NOT run. Token costs: see STATE.md §Documentation cost.
 - **Deviations flagged to the owner:** delivered as a patch PLUS this one-shot splitter (self-deleting) because a verbatim move of this size cannot be expressed in a chat-deliverable patch. New navigation prose only (era prefaces, the stub, a `docs/history/` bullet in The documents, the nav NOTE, this entry); AGENTS' stale "~155k tokens" figure became a STATE.md pointer.
 - **Rollback:** `git revert` this commit restores the monolith and removes `docs/history/` in one step; `git show games-presplit-3c:docs/GAMES.md` recovers the pre-split file.
+
+## 2026-11-14 — #749 · BATCH 3 FOLLOW-UPS — THE INDEX TITLES, THE 14 KB LINE, THE HANDOFF POINTERS (no canonical change)
+
+- **INDEX TITLES.** `navgen` cut every `### NNN — (date) ...` heading at the date paren, so the 54 numbered entries of `docs/history/mf-2-667-721.md` showed a bare number in the entry index. New `rowTitle()` keeps the number and the heading's own separator and appends the heading text after the date group (word-boundary cut at 84 characters, never an open code span, pipes escaped). Every other title is unchanged; no record line was touched by this part.
+- **THE 14 KB LINE.** `docs/history/mf-2-667-721.md` is a FROZEN era file. One line in it — entry #721's `AT THIS LANDING` sub-paragraph, 14,343 bytes — was the only line over 3,000 bytes in the record set, and `docreflow` could not break it because every break point sits inside a bold span. It is now 26 lines, each ≤ 560 bytes, made by replacing existing single spaces with newlines: no byte added or removed, no blank line (a paragraph break would end the bold span), no line starts a markdown block or an entry. Bold spans now cross soft newlines — valid CommonMark, not render-checked.
+- **HANDOFF POINTERS.** AGENTS "Where truth lives" and the README router now point at `docs/handoff/HANDOFF.md`, the repo-hosted process authority (outside every lint glob; never place it in `docs/history/`). Both handoff files were updated in this same commit.
+- **Canonical untouched:** md5 `5de162de46eb4fa3204e3ee636f2aff3`, stamp `links-r87` — so no battery was required and `measure.mjs` was NOT run. Token costs: see STATE.md §Documentation cost.
+- **Deviations flagged to the owner:** a FROZEN era file was edited (whitespace-only; the rejoin, non-whitespace, word, byte, heading and line-count proofs ran in memory before anything was written); delivered as a new-file-only patch holding one gated self-deleting one-shot rather than a diff of the changed files, so the regenerated files were produced on the owner's machine (`git add -A` required).
+- **Rollback:** `git revert` this commit.
