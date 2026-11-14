@@ -30,6 +30,7 @@ const lines = src.split(/\r?\n/);
 /* entry heading = line-leading bold span whose opening sentence carries a date
  * or an owner attribution (matches navgen's detector) */
 function isNewEntry(l) {
+  if (l.startsWith('### ')) return /\((20\d\d-\d\d-\d\d|owner)/.test(l);   // B3A: ### heading form
   if (!/^\*\*[^*]/.test(l)) return false;
   const c = l.indexOf('**', 2);
   return c > 0 && /\((20\d\d-\d\d-\d\d|owner)/.test(l.slice(0, c + 2));

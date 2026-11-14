@@ -40,6 +40,7 @@ function entryBlocks(ls, mf, tr) {
    * the first version of this required a blank line and silently merged two
    * entries, reporting 41 of 42. */
   const isNew = l => {
+    if (l.startsWith('### ')) return /\((20\d\d-\d\d-\d\d|owner)/.test(l);   // B3A: ### heading form
     if (!/^\*\*[^*]/.test(l)) return false;
     const c = l.indexOf('**', 2);
     if (c < 0) return false;
@@ -62,7 +63,7 @@ function entryBlocks(ls, mf, tr) {
 }
 
 const title = l => {
-  let t = l.trim().replace(/^\*\*/, '').split('**')[0];
+  let t = l.trim().replace(/^(?:\*\*|### )/, '').split('**')[0];   // B3A: ### heading form
   t = t.replace(/\s*\(20\d\d-\d\d-\d\d[\s\S]*$/, '').replace(/\s*\(owner[\s\S]*$/, '');
   return t.replace(/\s*[—\-·,]+\s*$/, '').trim().slice(0, 84);
 };
