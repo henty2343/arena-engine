@@ -3123,16 +3123,13 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   }
 
   // @@render/header
-  /* =====================================================================
-   * RENDERER — sumo-war look: sand ring, shot rim, flat discs, HP inside,
-   * white hit flash. No particles, no screen shake, no glow, no name.
-   * DOM/nondeterminism (flash decay timing) lives in this layer only.
-   * Weapon actors draw their OWN collision polygons (WEAPONS[..].poly —
-   * verbatim silhouettes + covering circles from the same data), so drawing
-   * and hitbox cannot drift apart. ALL contact-pose ghosts are retired
-   * (owner decisions 2026-10-18): the struck body's white flash is the
-   * frame's only hit punctuation; proof-of-contact lives in the harness.
-   * ===================================================================== */
+  /* ---- RENDERER: the sumo-war look ----
+   * sand ring, shot rim, flat discs, HP inside, white hit flash. No particles, no screen
+   * shake, no glow, no name. DOM/nondeterminism (flash decay timing) lives in this layer ONLY.
+   * Weapon actors draw their OWN collision polygons (WEAPONS[..].poly — verbatim silhouettes
+   * plus covering circles from the same data), so drawing and hitbox cannot drift apart.
+   * ALL contact-pose ghosts are retired: the struck body's white flash is the frame's only
+   * hit punctuation; proof-of-contact lives in the harness. */
 
   const COLS = ['#a8892f', '#ff6b4a'];        // Speedy, Heavy — cast colors: identical in every theme (identity is permanent)
   const HP_FONT = '800 ' + Math.round(CFG.bodyR * 0.62) + 'px ui-monospace, Menlo, monospace';   // bodyR is a constant — build the font string once
@@ -3179,18 +3176,14 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
      * Undefined/step 0 draws the weapon's own shipped polys, byte-for-byte as before. */
     const PS = polys || W.poly.polys;
     // ink pass first: the outline's outer half IS part of the body.
-    /* NOTE (2026-10-19, RESOLVED): the inscribe audit (.qa/ko-frame-recon.svg
-     * evidence, seed-63230 K.O. frame) proved the shipped coverings poked past
-     * their own ink — hammer +13.6px (the gap the owner spotted), axe +8.5,
-     * bow +2.0, dagger +1.5, cover()-batch +0.1..0.26 — and left ink uncovered
-     * (misses to 13.1px): hits were legal in circle-space while the inks were
-     * apart. Owner directive 2026-10-19: "this should be a top priority to
-     * always make weapons visibly touch something else before something
-     * happens, like nobody wants to see parry fire or body taking damage when
-     * there is a visible gap between etc". Fix: CIRCLES_V2 — every covering
-     * regenerated union-inscribed in THIS drawing's ink (.qa/inscribe.mjs
-     * --regen), gated by the same script after any art edit. Events now fire
-     * only on visible contact; disclosed whiff: outer 0.3px band + tips. */
+    /* VISIBLE CONTACT (owner directive 2026-10-19): "this should be a top priority to always
+   * make weapons visibly touch something else before something happens, like nobody wants to
+   * see parry fire or body taking damage when there is a visible gap between etc".
+   * The inscribe audit found the shipped coverings poking past their own ink and leaving ink
+   * uncovered — hits were legal in circle-space while the inks stood apart. Fix: CIRCLES_V2,
+   * every covering regenerated union-inscribed in THIS drawing's ink (.qa/inscribe.mjs
+   * --regen) and gated by the same script after any art edit. Events fire only on visible
+   * contact; disclosed whiff: the outer 0.3px band plus tips. */
     g.lineJoin = 'round';
     g.lineWidth = 3;
     g.strokeStyle = fillOverride || TH.botInk;
@@ -3271,25 +3264,25 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     ctx.restore();
   }
 
-  /* MEDALLION FIT (reveal redesign preview): every weapon sits on the same fixed-size plate, so size
-   * consistency no longer depends on the art's aspect ratio. Three rules replace contain-fit:
-   *   1. DIAGONAL: the long axis runs along the plate's diagonal (pointing at the VS centre), so
-   *      spears/katanas get the room a horizontal box never gave them.
-   *   2. EQUAL MASS: scale by ext = 0.5*max(w,h) + 0.5*sqrt(w*h) — a blend of length and area — so
-   *      a round shuriken and a long spear carry about the same ink. Pure contain-fit made long art
-   *      thin and compact art huge.
-   *   3. CLAMP: the bounding circle of the rotated art never exceeds the plate radius minus MEDAL.ring,
-   *      so no future weapon (very long, very small, odd-shaped) can break out of the plate.
-   * Renderer-only, like drawFitWeapon. Add `?classic` to the URL to get the old box fit back. */
+  /* MEDALLION FIT: every weapon sits on the same fixed-size plate, so size consistency does
+   * not depend on the art's aspect ratio. Three rules replace contain-fit:
+   *   1. DIAGONAL: the long axis runs along the plate's diagonal (at the VS centre) — room a
+   *      horizontal box never gave spears/katanas.
+   *   2. EQUAL MASS: ext = 0.5*max(w,h) + 0.5*sqrt(w*h), a blend of length and area, so a round
+   *      shuriken and a long spear carry about the same ink (contain-fit made long art thin).
+   *   3. CLAMP: the rotated art's bounding circle never exceeds the plate radius minus
+   *      MEDAL.ring, so no future weapon can break out.
+   * Renderer-only, like drawFitWeapon. `?classic` in the URL restores the old box fit. */
   const MEDAL = { r: 108, ring: 16, rot: Math.PI / 4 };   // r = the invisible plate radius every weapon is fitted to; ring = how far the art's farthest points stop short of that edge; rot = the diagonal the long axis runs along
-  /* Per-weapon pose on the poster (renderer-only). Default: the spine (d) aims up at the VS and the art's
-   * smallest enclosing circle touches the plate's inner ring, whatever the shape.
-   *   aim   — which LOCAL direction is the weapon's "front" (radians; 0 = +d the spine, -π/2 = -l, the side the
-   *           bow/crossbow/knives/shield open toward); that front is what aims at the opponent
-   *   flipL — mirror the art across its spine (scythe: blade tip down; katana: curve the other way)
-   *   rot   — absolute rotation for the left half (radians), replacing the aim rule
-   *   keepScale — size by the unmodified outline (for poster-only art edits that should change the drawn size)
-   *   fit   — fraction of the full touch-the-ring size (round compact art would be huge at 1) */
+  /* Per-weapon pose on the poster (renderer-only). Default: the spine (d) aims up at the VS
+   * and the art's smallest enclosing circle touches the plate's inner ring, whatever the shape.
+   *   aim       — which LOCAL direction is the weapon's front (radians; 0 = +d the spine,
+   *               −π/2 = −l, the side bow/crossbow/knives/shield open toward); that front aims
+   *               at the opponent
+   *   flipL     — mirror the art across its spine (scythe: tip down; katana: curve reversed)
+   *   rot       — absolute rotation for the left half (radians), replacing the aim rule
+   *   keepScale — size by the unmodified outline (poster-only edits that change drawn size)
+   *   fit       — fraction of the full touch-the-ring size (round compact art is huge at 1) */
   const MEDAL_POSE = {
     bow: { aim: -Math.PI / 2 }, crossbow: { aim: -Math.PI / 2 }, knives: { rot: 0, fit: 0.82 }, shield: { aim: -Math.PI / 2 },
     scythe: { flipL: true }, katana: { flipL: true }, dagger: { flipL: true, fit: 0.82, keepScale: true }, wand: { fit: 0.82 },
@@ -3409,30 +3402,21 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   let flipPhase = null;   // phase-change tracker: every phase ENTRY re-snaps both flips (the bell materialises blades in their true orientation; only mid-fight parry recoils animate)
   const VIEW = Array.from({ length: 2 }, () => ({ x: 0, y: 0, ang: 0, flip: 1, fpSim: 1, fl: Array.from({ length: 18 }, (_, k) => (k & 1) ^ 1) }));   // per-frame blended-pose scratch (draw) — filled in place, no per-frame allocation; flip = the DISPLAYED edge-leading factor (continuous during a transition), fpSim = the binary sim truth the hitbox overlay draws
   let banner = null;   // { text, t } — round banner (phase announcement)
-  /* K.O. kill still (owner decision 2026-10-19, option 1): the killing blow's
-   * 400 ms freeze + K.O. card used to show the TICK-END pose — detection fires
-   * mid-tick (per-substep bladeVsBody), then the remaining substeps let the
-   * attacker drift/swing a last bit (measured: <=2.98px / 0.013 rad over 14
-   * seeds — the victim freezes AT contact, integrate skips !alive). The
-   * latch draws the whole 'ko' phase (and the 'over' freeze after it) at
-   * CONTACT truth instead. Renderer-only: koStill is never read by the sim;
-   * fingerprints stay byte-identical. NOTE (same-day diagnosis correction,
-   * RESOLVED by CIRCLES_V2): the owner's seed-63230 gap was NOT this drift —
-   * .qa/ko-frame-recon.svg and the inscribe audit showed the hammer's
-   * covering circles poking up to 13.6px past the drawn ink (the kill legal
-   * in circle space while the inks stood ~7px apart). The regen fixed the
-   * hitbox data; the still owns the sub-3px drift. Shape:
-   *   { pose: [p0, p1], shot }   p = { x, y, ang? } — ang only for the blade
-   *   killer's weapon pose; discs are rotation-symmetric (HP number centred),
-   *   shot = drawable pseudo-shot for projectile kills (latched below). */
+  /* K.O. kill still: the killing blow's freeze + K.O. card used to show the TICK-END pose —
+   * detection fires mid-tick (per-substep bladeVsBody), then the remaining substeps let the
+   * attacker drift/swing a last bit while the victim freezes AT contact (integrate skips
+   * !alive). The latch draws the whole 'ko' phase AND the 'over' freeze after it at CONTACT
+   * truth instead. Renderer-only: koStill is never read by the sim, so fingerprints cannot
+   * move. Shape:
+   *   { pose: [p0, p1], shot }   p = { x, y, ang? } — ang only for the killer's blade; discs
+   *   are rotation-symmetric (HP number centred); shot = drawable pseudo-shot for projectile
+   *   kills (latched below). */
   let koStill = null;
-  /* Hit still — superseded for non-kill hits (owner 2026-10-27), and since
-   * slowmo-r63 (owner 2026-11-02) their beat is not even a pause: non-kill
-   * hits open a brief SLOW-MOTION window — the world keeps living at ¼×, so
-   * there is nothing to latch and nothing to hold; only the kill still
-   * (koStill, 2026-10-19 — the kill beat KEPT its hard freeze at the same r63
-   * ruling) latches contact poses. History and the traded guarantee:
-   * GAMES.md, dmg1-r21 entry. The non-kill latch machinery is gone. */
+  /* Hit still — superseded for non-kill hits: since slowmo-r63 their beat is not even a pause.
+   * Non-kill hits open a brief SLOW-MOTION window (the world keeps living), so there is
+   * nothing to latch and nothing to hold; only the kill still (koStill) latches contact poses
+   * — the kill beat KEPT its hard freeze at the same ruling. The non-kill latch machinery is
+   * gone. ref: slowmo-r63, dmg1-r21 */
   /* sid → the shot object as last drawn — flight state (kind/vx/vy/len) for
    * re-drawing a projectile that died on the killing tick; the impact point
    * itself comes from the event (sx, sy), not from this map. Bolts fly
@@ -3484,22 +3468,14 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       }   // affinity-r66: the venom bite pulses the RING, not the white body flash — the beat IS the DoT read (ring grammar: pulse = tempo)   // skewer-r46: the bleed pulse wears the hit flash but NOT the hitstop — freezing the world every 0.43s would stutter the struggle
       if (e.kind === 'hit') {
         flashV[e.to] = 1;
-        /* Hit beat — trigger policy 1 (owner decision 2026-10-19: "implement
-         * it, and do 1 trigger policy"): EVERY damage hit punches the world;
-         * the killing blow gets the long beat. Parry/wall/bounce never stop
-         * time (no damage); bleed pulses skip the beat entirely (skewer-r46 —
-         * a stuttering struggle). slowmo-r63 (owner 2026-11-02: "i want to
-         * change hitstop to do a brief slowmotion instead, hitstop seems laggy
-         * sometimes, when quick multiple hits occur"; and "keep ko hard
-         * freeze"): the non-kill punch is a SLOW-MOTION WINDOW — the world
-         * keeps living at hitSlowRate for hitSlowMs instead of freezing, so
-         * queued contacts RESOLVE inside the beat (in slow motion) instead of
-         * re-freezing it on lift. Windows MAX-merge, never stack — a hit in
-         * slow refreshes the window; a dense exchange is one sustained
-         * intensity slow, the slideshow class is structurally gone. The kill
-         * stays a HARD FREEZE — terminal punctuation with nothing chaining
-         * after it, and the koStill latch + winner overlay are built around
-         * the hold. */
+        /* Hit beat — trigger policy 1: EVERY damage hit punches the world; the killing blow gets
+   * the long beat. Parry/wall/bounce never stop time (no damage); bleed pulses skip the beat
+   * (skewer-r46 — a stuttering struggle). slowmo-r63: the non-kill punch is a SLOW-MOTION
+   * WINDOW at hitSlowRate for hitSlowMs, so queued contacts RESOLVE inside the beat instead
+   * of re-freezing it on lift. Windows MAX-merge, never stack — a dense exchange is one
+   * sustained slow, not a slideshow. The kill stays a HARD FREEZE: terminal punctuation with
+   * nothing chaining after it; koStill and the winner overlay are built around the hold.
+   * ref: slowmo-r63, skewer-r46 */
         if (e.kill) {
           const want = CFG.koStopMs * CFG.tickHz / 1000;
           if (want > stopTicks) stopTicks = want;
@@ -3549,21 +3525,16 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   const cv = document.getElementById('c');
   const ctx = cv.getContext('2d');
   const wrapEl = document.getElementById('wrap');
-  /* Overflow band (owner 2026-10-21: "i want to see the weapons go out of
-   * bounds instead of going under the rim", arena kept at approved size):
-   * ONE canvas, sized square + band, absolutely centred over its cssPx
-   * layout box — tips that poke past the square (worst ~146 units: long
-   * radial tip, body at the rim) stay whole instead of cutting at the old
-   * canvas edge, which at the four axis directions coincides with the rim's
-   * outer edge and read as the weapon dipping UNDER the rim. History: a
-   * margin-band zoom (smaller disc) was rejected ("something is off"); then
-   * a second band canvas met the main one at a fractional CSS offset whose
-   * device-pixel grid disagreed with it — the joint read as a line across
-   * the ink (owner: "you can see the line"). One backing store, one grid:
-   * no seam class. Disc scale U, page flow and chrome untouched; the band
-   * overhangs the chrome rows (pointer-transparent; extreme top/bottom tips
-   * draw over scorebug/legend — disclosed spectacle). Renderer-only; the
-   * sim never knows. */
+  /* Overflow band (owner 2026-10-21: "i want to see the weapons go out of bounds instead of
+   * going under the rim", arena kept at approved size): ONE canvas, sized square + band,
+   * absolutely centred over its cssPx layout box. Tips that poke past the square stay whole
+   * instead of cutting at the old canvas edge, which at the four axis directions coincides
+   * with the rim's outer edge and read as the weapon dipping UNDER the rim. ONE backing store,
+   * one grid: a second band canvas met the main one at a fractional CSS offset whose
+   * device-pixel grid disagreed, and the joint read as a line across the ink — that seam class
+   * is structurally gone. Disc scale U, page flow and chrome untouched; the band overhangs the
+   * chrome rows (pointer-transparent; extreme tips draw over scorebug/legend — disclosed
+   * spectacle). Renderer-only; the sim never knows. */
   const OV_MARGIN = 150;
   let OUT = 0, U = 1, OV_OFF = 0, arenaCv = null;
 
@@ -3652,14 +3623,14 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       ctx.beginPath(); ctx.arc(vx, vy, CFG.bodyR, 0, TAU); ctx.fill();
       ctx.restore();
     }
-    /* affinity-r66 — THE STATUS RINGS (the owner's grammar: ONE design, fixed inside-out slots —
-     * DoT tight against the body (it is eating him), the curse band outside it, the buff slot
-     * outermost (RESERVED — healing comes later). Colour = WHICH status (poison green KP1, frost
-     * blue KN1 — the shipped affinity tints); thickness + stand-off = DEPTH (stacks/cap); pulse =
-     * TEMPO, and debuffs beat HARD and INWARD: the venom ring tightens as the next bite winds up
-     * (d.acc is the anticipation) and snaps bright on the tick (poisonPulse), the chill ring drags
-     * on a slow heavy beat. At the cap the ring gains the inner bleed — the MAXED flourish (the hex
-     * precedent). Renderer-only: the sim never reads this. */
+    /* affinity-r66 — THE STATUS RINGS: ONE design, fixed inside-out slots — DoT tight against
+   * the body (it is eating him), the curse band outside it, the buff slot outermost (RESERVED
+   * — healing comes later). Colour = WHICH status (poison green KP1, frost blue KN1);
+   * thickness + stand-off = DEPTH (stacks/cap); pulse = TEMPO, and debuffs beat HARD and
+   * INWARD: the venom ring tightens as the next bite winds up (d.acc is the anticipation) and
+   * snaps bright on the tick (poisonPulse); the chill ring drags on a slow heavy beat. At the
+   * cap the ring gains the inner bleed — the MAXED flourish. Renderer-only: the sim never
+   * reads this. ref: affinity-r66 */
     const pd = f.alive ? f.dot : null;
     if (pd && pd.k === 'poison') {
       const hn = pd.n / TRIO.steps;
@@ -3693,13 +3664,14 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       }
       ctx.restore();
     }
-    /* hexspark-r65 → hexfam-r68 — THE HEX MARK: the victim WEARS the caster's growth counter. Every spell hit
-     * that lands on him deepens the hex (the attacker's f.shotStep, capped at TURN_STEPS like every growth axis —
-     * and since the family ruling ANY shot.hex attacker marks, in their own cast colour), and
-     * the mark says so across the arena: a pulsing ring in the ATTACKER's colour — "his magic is on you" —
-     * thickening and standing off with the stacks, plus an inner bleed past half. The pulse rides G.phaseT:
-     * the curse's heartbeat throbs inside the slow-mo window and freezes with the KO hold, like every other
-     * world FX. Renderer-only — the sim never reads this. */
+    /* hexspark-r65 -> hexfam-r68 — THE HEX MARK: the victim WEARS the caster's growth counter.
+   * Every spell hit that lands on him deepens the hex (the attacker's f.shotStep, capped at
+   * TURN_STEPS like every growth axis; since the family ruling ANY shot.hex attacker marks, in
+   * their own cast colour). The mark says so across the arena: a pulsing ring in the ATTACKER's
+   * colour, thickening and standing off with the stacks, plus an inner bleed past half. The
+   * pulse rides G.phaseT: it throbs inside the slow-mo window and freezes with the KO hold,
+   * like every other world FX. Renderer-only — the sim never reads this.
+   * ref: hexspark-r65, hexfam-r68 */
     const hexer = f.alive ? G.fighters[1 - f.slot] : null;
     const hexW = hexer && hexer.weapon ? WEAPONS[hexer.weapon] : null;
     if (hexW && hexW.shot && hexW.shot.hex && hexer.shotStep > 0) {
@@ -3727,12 +3699,12 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
 
   function drawWeaponOf(g, f, fightPop, vx, vy, va, vfl, vfp) {
     if (!f.weapon || fightPop <= 0 || !f.alive) return;   // the dead keep no weapon on the frozen K.O. frame — the faded disc is the death mark
-    /* catchghost-r58 (owner, on r57's empty hand: "the wielding boomerang is invisible, it should
-     * be, fix it"): the held art is drawn ALWAYS — r57's flight/hand-rest skip is withdrawn. The
-     * catch's teleport-read (r56 eye: the loop vanished at its touch point while the held copy
-     * stayed at the grip) is fixed on the OTHER side instead: a render-only ghost rides the caught
-     * arc home — consumeEvents latches the catch point + last-drawn flight state, and draw() slides
-     * it into the grip over CGHOST_T ticks, so the eye watches the boomerang come to hand. */
+    /* catchghost-r58: the held art is drawn ALWAYS — the flight/hand-rest skip is withdrawn.
+   * The catch's teleport-read (the loop vanished at its touch point while the held copy stayed
+   * at the grip) is fixed on the OTHER side: a render-only ghost rides the caught arc home —
+   * consumeEvents latches the catch point + last-drawn flight state, and draw() slides it into
+   * the grip over CGHOST_T ticks, so the eye watches the boomerang come to hand.
+   * ref: catchghost-r58, snapfix-r57 */
     g.globalAlpha = 1;
     // weapon actor — the collision silhouette's own shape, at the blended render pose
     const fr = spineFrame(vx, vy, va, f.weapon);
@@ -3781,19 +3753,14 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       g.restore();
     }
     g.save();
-    /* tuck (owner decision 2026-10-18): the grip tip never draws over the
-     * own disc — clip the own body circle out of the weapon pass. Detail
-     * budget belongs from the guard outwards.
-     * DERIVED 2026-10-28 (authoring-scale pass item 2): a TANGENTIAL chord
-     * never tucks — its midpoint sits on the rim and its art straddles it, so
-     * the clip would notch the weapon — which is why all 9 tangential rows used
-     * to repeat `tuck: false`. That is now read off `hold`, so a new tangential
-     * weapon cannot get it wrong; only handle-less RADIAL art still opts out by
-     * name (the orb, whose sphere floats 46.8px clear of the rim — a no-op
-     * clip today, kept declared in case its art ever grows inward). The clip
-     * can never hide a hitbox: ink at r <= bodyR from the own centre cannot be
-     * inside the opponent's disc at any legal separation (centres are 2 x bodyR
-     * apart at contact). */
+    /* tuck: the grip tip never draws over the own disc — clip the own body circle out of the
+   * weapon pass. Detail budget belongs from the guard outwards. DERIVED: a TANGENTIAL chord
+   * never tucks (its midpoint sits on the rim and its art straddles it, so the clip would notch
+   * the weapon) — that is read off `hold`, so a new tangential weapon cannot get it wrong; only
+   * handle-less RADIAL art still opts out by name (the orb, whose sphere floats clear of the
+   * rim — a no-op clip today, kept declared in case its art ever grows inward). THE CLIP CAN
+   * NEVER HIDE A HITBOX: ink at r <= bodyR from the own centre cannot be inside the opponent's
+   * disc at any legal separation (centres are 2 x bodyR apart at contact). */
     if (WEAPONS[f.weapon].tuck !== false && WEAPONS[f.weapon].hold !== 'tangential') {
       g.beginPath();
       g.rect(vx - 600, vy - 600, 1200, 1200);
@@ -3843,15 +3810,13 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
 
 
 
-  /* v1.0 projectiles — doctrine (owner 2026-10-19: "nobody wants to see …
-   * body taking damage when there is a visible gap"): the hitbox disc r is
-   * ALWAYS inked. Disc-shaped shots drew inside r already; bolt heads spike
-   * past r forward (safe direction) but leave the disc flanks bare, and the
-   * spark/star/boom shapes notch — so every kind gets the orb's halo
-   * treatment: a faint full-disc fill under the art, exactly radius r.
-   * The bow's kindless arrow borrows the bolt's steel (same drawArrow art,
-   * same bare-flank issue). 'shot' — the kill still's never-drawn fallback —
-   * draws as a plain steel disc at the impact point.
+  /* v1.0 projectiles — doctrine (owner 2026-10-19: "nobody wants to see … body taking damage
+   * when there is a visible gap"): the hitbox disc r is ALWAYS inked. Disc-shaped shots drew
+   * inside r already; bolt heads spike past r forward (safe direction) but leave the disc
+   * flanks bare, and the spark/star/boom shapes notch — so every kind gets the orb's halo
+   * treatment: a faint full-disc fill under the art, exactly radius r. The bow's kindless arrow
+   * borrows the bolt's steel (same drawArrow art, same bare-flank issue). 'shot' — the kill
+   * still's never-drawn fallback — draws as a plain steel disc at the impact point.
    * Renderer-only; the sim never reads this. Alphas are dials. */
   const HALO = { orb: 'rgba(159,224,255,0.28)', spark: 'rgba(212,167,58,0.22)', star: 'rgba(143,163,181,0.24)', boom: 'rgba(143,163,181,0.18)', bolt: 'rgba(143,163,181,0.18)', arrow: 'rgba(143,163,181,0.18)', javelin: 'rgba(143,163,181,0.18)', knife: 'rgba(143,163,181,0.18)', spell: 'rgba(214,51,26,0.20)', halo: 'rgba(93,184,58,0.20)', nova: 'rgba(111,195,236,0.20)', vortex: 'rgba(236,95,26,0.20)' };   // every shot kind inks its own hitbox disc (owner directive 2026-10-19); spell-family tints follow their affinity locals; page/scroll retired with the kind splits (2026-10-25)   // javelin/page/scroll entries pre-wired 2026-10-22; scroll halo retinted at the 2026-10-23 reconcile to the held art KT parchment family (owner-reference colours) — every shot kind inks its own hitbox disc (owner directive 2026-10-19)
   // @@render/shot-art
@@ -3872,29 +3837,26 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     }
     return art;
   }
-  /* SIGIL LEGIBILITY (owner pick 2026-10-28 — "grow + solid mark", applied to all four
-   * spell-family kinds). WHY, measured: the nucleus was 10.5 world px across
-   * = 5.68 css px at a ~541 css px arena, and because drawPolySet runs a full STROKE pass over
-   * every poly before any FILL pass, the inner flame's fill painted over the nucleus's own 2px ink
-   * — so the carrier mark sat BARE on the flame with no keyline at all, at 1.60–2.32:1 (all eight
-   * carrier × kind pairs under the 3:1 bar; vortex + Speedy is a 1° hue gap). The shot also crosses
-   * its own nucleus width in 15.4 ms ≈ 0.93 frames at 60Hz, which is why the fix is size and
-   * contrast, never detail. WHAT: the nucleus becomes a plain disc whose radius IS the launched
-   * hitbox (derived from WEAPONS[...].shot.r, so it tracks weaponScale instead of drifting), on a
-   * dark ink plate 1.3× that disc (SIG_PLATE), flagged vis 1 so it paints without its own stroke; one
-   * sigilPair(w, cx, cy) helper emits the pair for all four kinds. After:
-   * carrier-on-ink 4.23:1 (Speedy) / 5.02:1 (Heavy), plate-on-flame 8.0–9.8:1, nucleus 8.44 css px.
-   * DISCLOSED (a): these two polys per kind are IMPLEMENTER-GENERATED, not delivery-verbatim — the
-   * flame layers stay exactly as delivered, and the retired nuclei (the scroll's 4-point star, the
-   * trio's 32-gon at r 5.25) are in git history (tag docs-precleanup). (b) The plate's r 10.14
-   * stays inside the delivered flame head (y ±14.8, x to +15.6), so no kind's silhouette changes.
-   * (c) Measured while auditing this: the HALO hitbox tint disc is 100% HIDDEN under the opaque
-   * flame art on all four kinds (pre-existing, not caused here) — which is exactly why the nucleus
-   * carrying the true radius matters: it is the only visible cue of the shot's real size.
-   * TRAP: vis 1 also makes a shape pulse-eligible, but only when its centroid x < −1; the nuclei sit
-   * at x 0 (spell) and +1.25 (trio), so nothing pulses. Do not move a nucleus aft of −1 without
-   * re-reading drawPolySet's pulse dial. Renderer-only: SHOTS_ART has no sim consumer (drawShot,
-   * setShotArt, shotArtOf), so no fingerprint can move. */
+  /* SIGIL LEGIBILITY (owner pick 2026-10-28, "grow + solid mark", all four spell kinds).
+   * WHY: drawPolySet runs a full STROKE pass over every poly before any FILL pass, so the
+   * inner flame's fill painted over the tiny nucleus's own ink — the carrier mark sat BARE on
+   * the flame with no keyline, under the 3:1 contrast bar on every carrier x kind pair. The
+   * shot crosses its own nucleus width in under a frame at 60Hz: the fix is SIZE and CONTRAST,
+   * never detail.
+   * WHAT: the nucleus is a plain disc whose radius IS the launched hitbox (derived from
+   * WEAPONS[...].shot.r, so it tracks weaponScale instead of drifting), on a dark ink plate
+   * 1.3x that disc (SIG_PLATE), flagged vis 1 so it paints without its own stroke; one
+   * sigilPair(w, cx, cy) helper emits the pair for all four kinds.
+   * DISCLOSED: the two polys per kind are IMPLEMENTER-GENERATED, not delivery-verbatim; the
+   * flame layers stay exactly as delivered and the retired nuclei are in git history (tag
+   * docs-precleanup). The plate stays inside the delivered flame head, so no silhouette
+   * changes. The HALO hitbox tint disc is 100% HIDDEN under the opaque flame on all four kinds
+   * (pre-existing) — so the nucleus carrying the true radius is the ONLY visible cue of the
+   * shot's real size.
+   * TRAP: vis 1 also makes a shape pulse-eligible, but only when its centroid x < −1; the
+   * nuclei sit at x 0 (spell) and +1.25 (trio), so nothing pulses. Do not move a nucleus aft
+   * of −1 without re-reading drawPolySet's pulse dial. Renderer-only: SHOTS_ART has no sim
+   * consumer (drawShot, setShotArt, shotArtOf), so no fingerprint can move. */
   const SIG_N = 32;        // disc segments, nucleus and plate alike
   const SIG_PLATE = 1.3;   // plate radius as a multiple of the hitbox. NOT CFG.weaponScale (also 1.3) — unrelated dial.
                            // MEASURED CEILING: at 1.3× the plate still lies fully inside the BRIGHT INNER flame on all
@@ -4021,11 +3983,11 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     }
     g.restore();
   }
-  /* hexspark-r65 — THE COMET TRAIL (renderer-only, zero sim reads): hex sparks draw their recent path as
-   * a fading tail in the OWNER's colour, so the bend and the hunt read as a LINE through the air instead
-   * of a tumbling dot — half of "boing/underwhelming" was a fast tracer with no path language. Points are
-   * the interpolated drawn positions (what the eye sees); dead flights fade over a few frames instead of
-   * popping. TRAIL_N 0 disables the whole thing (cheap revert, house pattern). */
+  /* hexspark-r65 — THE COMET TRAIL (renderer-only, zero sim reads): hex sparks draw their
+   * recent path as a fading tail in the OWNER's colour, so the bend and the hunt read as a LINE
+   * through the air instead of a tumbling dot. Points are the interpolated drawn positions
+   * (what the eye sees); dead flights fade over a few frames instead of popping. TRAIL_N 0
+   * disables the whole thing (cheap revert, house pattern). ref: hexspark-r65 */
   const TRAIL_N = 12;
   function drawHexTrail(st, sx, sy) {
     if (!TRAIL_N || !st.hex) return;
@@ -4079,13 +4041,13 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     }
     const art = SHOTS_ART[ek];
     if (art) {
-      /* nucleus scale (shotgrow-r33): the halo above inks the hitbox disc at st.r, but the art
-       * polys are delivery-native to the row's base radius — a grown orb would otherwise read as
-       * a small bead inside a big halo, not "the orb got bigger". Scale the art by st.r / row r.
-       * Exactly 1 for every ungrown shot (the birth effR is bit-identical to W.shot.r without
-       * trait.shotR), so the other 21 weapons draw identically. Reading the owner's weapon here
-       * is safe: the copy path above already does it, weapons are fixed within a round, and shots
-       * do not survive the round flip. Ink stays 2px (house look: quiet print, ink never scales). */
+      /* nucleus scale (shotgrow-r33): the halo inks the hitbox disc at st.r, but the art polys are
+   * delivery-native to the row's base radius — a grown orb would otherwise read as a small bead
+   * inside a big halo, not "the orb got bigger". Scale the art by st.r / row r. Exactly 1 for
+   * every ungrown shot (the birth effR is bit-identical to W.shot.r without trait.shotR), so
+   * the other 21 weapons draw identically. Reading the owner's weapon here is safe: the copy
+   * path already does it, weapons are fixed within a round, and shots do not survive the round
+   * flip. Ink stays 2px (house look: quiet print, ink never scales). ref: shotgrow-r33 */
       let ks = 1;
       if (st.o != null && G.fighters[st.o]) { const wr = WEAPONS[G.fighters[st.o].weapon]; if (wr && wr.shot && wr.shot.r !== st.r) ks = st.r / wr.shot.r; }
       drawPolySet(g, art.polys, sx, sy, SHOT_SPIN[ek] ? G.phaseT * SHOT_SPIN[ek] : Math.atan2(st.vy, st.vx), acc, age, 0, 0, !!SPELLFAM[ek], shotMeta(art), ks);
@@ -4102,13 +4064,14 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
   }
 
   /* emberpool-r79 — THE BURNING POOL's art (renderer-only, zero sim reads, zero rng). Warm fire
-   * palette ON PURPOSE (owner: *"make it look visually good and pleasing, not just gray color like
-   * now"*): four layered heat discs (deep orange glow, orange body, amber heart) under a flickering
-   * flame ring, a brown char rim (brown, not gray, not red — RED is bleed's), and three gold ember
-   * motes riding the heat on G.phaseT. poolfix-r80: the fire now BREATHES — heart and flame ring
-   * flicker together, and two slow heat-shimmer rings radiate out at ≤0.10 alpha (subtle, his word). The flicker is a sine heartbeat per pool sid; the whole fire
-   * fades in over its first 0.1s and out over its last ~40%. Drawn UNDER the bodies, so a disc
-   * standing in the fire reads on top of it. */
+   * palette ON PURPOSE (owner: *"make it look visually good and pleasing, not just gray color
+   * like now"*): layered heat discs (deep orange glow, orange body, amber heart) under a
+   * flickering flame ring, a brown char rim (brown, not gray, not red — RED is bleed's), and
+   * gold ember motes riding the heat on G.phaseT. poolfix-r80: the fire BREATHES — heart and
+   * flame ring flicker together, and slow heat-shimmer rings radiate out at <=0.10 alpha
+   * (subtle, his word). The flicker is a sine heartbeat per pool sid; the whole fire fades in
+   * over its first 0.1s and out over its last ~40%. Drawn UNDER the bodies, so a disc standing
+   * in the fire reads on top of it. ref: emberpool-r79, poolfix-r80 */
   function drawPools(g) {
     if (!G.pools.length) return;
     g.save();
@@ -4145,15 +4108,16 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     g.restore();
   }
 
-  /* kindling-r82 — THE EMBER SPILL's art (renderer-only, zero sim reads, zero rng): each coal is a
-   * little floor fire — a char disc, a breathing amber heart with a white-hot pip, two dancing
-   * flame tongues and one rising spark mote; the first EMBER.flare ticks play the LANDING FLARE
+  /* kindling-r82 — THE EMBER SPILL's art (renderer-only, zero sim reads, zero rng): each coal
+   * is a little floor fire — a char disc, a breathing amber heart with a white-hot pip, dancing
+   * flame tongues and a rising spark mote; the first EMBER.flare ticks play the LANDING FLARE
    * (an expanding gold ring + the scale-in) so a shed coal reads as a falling coal that landed.
-   * Warm palette only (amber/orange/gold over brown char — never gray, never red: RED is bleed's).
-   * Drawn UNDER the bodies, over the pools. THE DEATHS ARE READABLE (emberfix-r85): a BURST (gold
-   * flash ring + sparks, k 0) means the coal BIT; a WISP (a thin warm-brown smoke curl, k 1) means
-   * it died of age or was pushed off the floor by the cap — never silent again, so a pass-through
-   * with a wisp reads as "it was already gone", not as "the fire did nothing". */
+   * Warm palette only (amber/orange/gold over brown char — never gray, never red: RED is
+   * bleed's). Drawn UNDER the bodies, over the pools. THE DEATHS ARE READABLE (emberfix-r85): a
+   * BURST (gold flash ring + sparks, k 0) means the coal BIT; a WISP (a thin warm-brown smoke
+   * curl, k 1) means it died of age or was pushed off the floor by the cap — never silent, so a
+   * pass-through with a wisp reads as "it was already gone", not "the fire did nothing".
+   * ref: kindling-r82, emberfix-r85 */
   function drawEmbers(g) {
     if (!G.embers.length && !G.emberFx.length) return;
     g.save();
@@ -4312,11 +4276,11 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
 
     for (let i = 0; i < 2; i++) {
       /* i is the POSTER HALF, i.e. the SLOT: VS.xs/shuffle/stride/land and the slot-ordered roll
-       * (`roll.w[i]`) are all correctly keyed by it. The CAST tables are not — a half must name,
-       * colour and describe the ACTOR playing that side, which is `G.cast[i]`. Reading them by `i`
-       * was right only while the pairing was [0, 1]; under a swap the poster named the wrong bot
-       * (caught by the r32 review; invisible to fingerprints, to chromecheck's default section and
-       * to pair-proof's sim-level sweep, which is why pair-proof now records the poster's text). */
+   * (`roll.w[i]`) are all correctly keyed by it. The CAST tables are NOT — a half must name,
+   * colour and describe the ACTOR playing that side, which is `G.cast[i]`. Reading them by `i`
+   * was right only while the pairing was [0, 1]; under a swap the poster named the wrong bot
+   * (invisible to fingerprints and to the sim-level sweeps, which is why pair-proof now records
+   * the poster's text). */
       const ci = G.cast[i];
       const cx = VS.xs[i], cy = VS.cy, wy = cy - 10;   // wy = the weapon's centre line (a little above the VS centre)
       const resultId = roll ? roll.w[i] : WEAPON_IDS[0];
@@ -4361,20 +4325,15 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       }
       ctx.restore();
 
-      /* Labels live inside each half, regrouped into two blocks (owner
-       * decision 2026-10-19, option 1 — the stacked names used to read as one
-       * compound, "SPEEDY HAMMER"): the TOP block is the FIGHTER — the
-       * scorebug/legend's ink-ringed cast disc ("ring = bot" vocabulary) +
-       * name + skill prose, all static truth, on screen from frame 1; the
-       * BOTTOM block is the DICE — weapon name + trait line, landing only.
-       * Same-day owner tune: the blocks pulled apart (fighter up to 258/306,
-       * dice down to 660/720, ROUND up to 128) and the weapon fit shrank to
-       * 245×150 — "when we get other bots, they might need a bit more text",
-       * so each block owns more air for longer prose. The fighter block still
-       * sits clear of the weapon ink: at the smaller box the hammer head
-       * corner reaches ≈ y 385 at rest, ≈ y 374 at the 1.1 slam pulse.
-       * Disc + name centre as ONE unit on the half's axis (the name alone
-       * would drift off-centre once the disc hangs on its left). */
+      /* Labels live inside each half, regrouped into two blocks (the stacked names used to read as
+   * one compound, "SPEEDY HAMMER"): the TOP block is the FIGHTER — the scorebug/legend's
+   * ink-ringed cast disc ("ring = bot" vocabulary) + name + skill prose, all static truth, on
+   * screen from frame 1; the BOTTOM block is the DICE — weapon name + trait line, landing only.
+   * The blocks are pulled apart and the weapon fit shrank so each block owns more air for
+   * longer prose (owner: "when we get other bots, they might need a bit more text"); the
+   * fighter block still sits clear of the weapon ink at rest and at the slam pulse. Disc + name
+   * centre as ONE unit on the half's axis (the name alone would drift off-centre once the disc
+   * hangs on its left). */
       const W = WEAPONS[resultId];
       ctx.save();
       ctx.globalAlpha = appear * wipe;
@@ -4445,15 +4404,12 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
 
     const pop = G.phase === 'fight' ? (G.phaseT + 1) / 8 : 1;   // weapon pop-in ramp: +12.5% per fight tick, full at 8; every other phase draws full size
 
-    /* v0.8.2 render interpolation (pattern from sumo_war (2).html): every
-     * actor draws between its last two tick poses, blended by viewA (the
-     * frame loop's leftover tick fraction). On displays whose refresh is not
-     * an integer multiple of the 120 Hz tick this turns the old dead-frame
-     * judder (144 Hz: 16.6% of frames repeated, 240 Hz: 50% — .qa/pacing.mjs)
-     * into even motion. viewA = 1 whenever the sim is not stepping, so
-     * paused / reveal / K.O. / over frames render the exact latest tick pose
-     * and stand perfectly still. Angles blend shortest-arc (lerpAng) because
-     * wAngle accumulates unwrapped and can straddle the 2π seam. */
+    /* Render interpolation: every actor draws between its last two tick poses, blended by viewA
+   * (the frame loop's leftover tick fraction). On displays whose refresh is not an integer
+   * multiple of the 120 Hz tick this turns dead-frame judder into even motion. viewA = 1
+   * whenever the sim is not stepping, so paused / reveal / K.O. / over frames render the exact
+   * latest tick pose and stand perfectly still. Angles blend shortest-arc (lerpAng) because
+   * wAngle accumulates unwrapped and can straddle the 2π seam. */
     const view = VIEW;
     if (G.phase !== flipPhase) { flipPhase = G.phase; flipAnim[0].snap = true; flipAnim[1].snap = true; }   // phase ENTRY re-snaps the flip (reveal/bell/ko materialise at truth; only mid-fight recoils animate)
     for (let i = 0; i < 2; i++) {
@@ -4461,14 +4417,11 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       view[i].x = f.prev.x + (f.pos.x - f.prev.x) * viewA;
       view[i].y = f.prev.y + (f.pos.y - f.prev.y) * viewA;
       view[i].ang = lerpAng(f.pwAngle, f.wAngle, viewA);
-      /* Edge-leading flip transition (owner decision 2026-10-22 — "a fast
-       * transition not an instant snap"): the DISPLAYED lateral factor eases
-       * old → edge-on → mirrored as cos(π·p) over CFG.flipMs, reading as the
-       * blade spinning about its own spine. fpSim stays the BINARY sim truth
-       * (the hitbox overlay draws that, never the squash — debug shows truth);
-       * the sim's own geometry flipped at the recoil tick, as always. The
-       * transition freezes with the frame under a hitstop (draw() gets
-       * dtFrames 0) and snaps at round rolls (resetFx). */
+      /* Edge-leading flip transition: the DISPLAYED lateral factor eases old -> edge-on -> mirrored
+   * as cos(π*p) over CFG.flipMs, reading as the blade spinning about its own spine. fpSim stays
+   * the BINARY sim truth (the hitbox overlay draws that, never the squash — debug shows truth);
+   * the sim's own geometry flipped at the recoil tick, as always. The transition freezes with
+   * the frame under a hitstop (draw() gets dtFrames 0) and snaps at round rolls (resetFx). */
       const fpTarget = f.weapon ? leadFlip(f.weapon, f.spin) : 1;
       view[i].fpSim = fpTarget;
       const fa = flipAnim[i];
@@ -4495,13 +4448,11 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       }
     }
 
-    /* Kill still (owner decision 2026-10-19, option 1): during the K.O. hold —
-     * and the post-match 'over' freeze, which shows the same scene — the
-     * fighters draw at the killing blow's CONTACT poses, so the kill tick's
-     * substep drift (knock integrated + blade swung through after the mid-tick
-     * detection) can never read as a gap in the frozen frame (seed 63230
-     * screenshot). Overriding `view` keeps art, weapon and hitbox debug in
-     * agreement. The latch drops as soon as the phase moves on. */
+    /* Kill still: during the K.O. hold — and the post-match 'over' freeze, which shows the same
+   * scene — the fighters draw at the killing blow's CONTACT poses, so the kill tick's substep
+   * drift (knock integrated + blade swung through after the mid-tick detection) can never read
+   * as a gap in the frozen frame. Overriding `view` keeps art, weapon and hitbox debug in
+   * agreement. The latch drops as soon as the phase moves on. */
     const still = koStill && (G.phase === 'ko' || G.over) ? koStill : null;
     if (koStill && !still) koStill = null;
     if (G.phase === 'reveal') { lastShots.clear(); sparkTrail.clear(); catchFx[0] = null; catchFx[1] = null; }   // per-round hygiene: sids never repeat, but no reason to carry dead flights or settle ghosts

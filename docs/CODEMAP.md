@@ -4,10 +4,10 @@
 Contains: region map, top-level symbol index and no-read data ranges for `previews/spinclash-preview.html`.
 Read when: before opening the canonical. Token cost: see STATE.md §Documentation cost.
 
-Built from md5 `0b7fd414aec732cba127e353c4dac21a` · stamp `links-r87` · 4,765 lines.
+Built from md5 `5de162de46eb4fa3204e3ee636f2aff3` · stamp `links-r87` · 4,716 lines.
 **Line numbers are valid only at that md5.** Symbol names are the durable handle — grep the name.
 
-Canonical ≈ 105,839 tokens; script block 0 carries 901 comment spans ≈ 50,198 tokens.
+Canonical ≈ 104,971 tokens; script block 0 carries 901 comment spans ≈ 49,329 tokens.
 
 ## Regions
 
@@ -26,17 +26,17 @@ Canonical ≈ 105,839 tokens; script block 0 carries 901 comment spans ≈ 50,19
 | sim/blade-vs-blade | 2150–2345 | 3,285 | 1,547 |
 | sim/projectiles | 2346–2571 | 4,316 | 1,282 |
 | sim/copy-rule | 2572–3124 | 12,973 | 5,875 |
-| render/header | 3125–3156 | 446 | 88 |
-| render/actors | 3157–3362 | 3,745 | 1,934 |
-| render/reveal | 3363–3395 | 593 | 353 |
-| render/fx | 3396–3546 | 3,005 | 852 |
-| render/canvas | 3547–3606 | 776 | 396 |
-| render/app-state | 3607–3624 | 203 | 124 |
-| render/draw | 3625–3856 | 3,467 | 1,642 |
-| render/shot-art | 3857–4572 | 12,470 | 7,691 |
-| app/loop | 4573–4641 | 1,270 | 410 |
-| app/input | 4642–4660 | 266 | 190 |
-| app/api | 4661–4682 | 477 | 349 |
+| render/header | 3125–3153 | 404 | 88 |
+| render/actors | 3154–3355 | 3,646 | 1,933 |
+| render/reveal | 3356–3388 | 593 | 353 |
+| render/fx | 3389–3522 | 2,728 | 847 |
+| render/canvas | 3523–3577 | 729 | 394 |
+| render/app-state | 3578–3595 | 203 | 124 |
+| render/draw | 3596–3821 | 3,371 | 1,641 |
+| render/shot-art | 3822–4523 | 12,162 | 7,688 |
+| app/loop | 4524–4592 | 1,270 | 410 |
+| app/input | 4593–4611 | 266 | 190 |
+| app/api | 4612–4633 | 477 | 349 |
 
 ## GENERATED DATA — do not read
 
@@ -47,7 +47,7 @@ Baked numeric blocks. Reading them costs thousands of tokens and teaches nothing
 
 Lines over 800 chars (mostly baked rows):
 
-130 · 361 · 461 · 647 · 737 · 747 · 810 · 813 · 818 · 820 · 823 · 825 · 827 · 830 · 1027–1034 · 1096–1097 · 3856
+130 · 361 · 461 · 647 · 737 · 747 · 810 · 813 · 818 · 820 · 823 · 825 · 827 · 830 · 1027–1034 · 1096–1097 · 3821
 
 ## Symbol index
 

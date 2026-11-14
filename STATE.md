@@ -6,10 +6,10 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.7k (compute
 
 ## Canonical (the one live game)
 - File: `previews/spinclash-preview.html`
-- md5: `0b7fd414aec732cba127e353c4dac21a`
-- Lines: 4,765
+- md5: `5de162de46eb4fa3204e3ee636f2aff3`
+- Lines: 4,716
 - Build stamp (`<title>`): `links-r87`
-- Approx token cost (chars/4): ~105,839
+- Approx token cost (chars/4): ~104,971
 
 ## Fingerprint baseline
 - Pointer: `.qa/BASELINE` → `fp-flailfix-r88.json`
@@ -33,7 +33,7 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.7k (compute
 | docs/CODEMAP.md | 1,515 | before opening the canonical |
 | docs/LAWS.md | 2,473 | before any sim/doc edit |
 | docs/RECIPES.md | 1,876 | adding a trait/skill/bot |
-| docs/GAMES.md | 165,741 | GREP ONLY — never load whole |
+| docs/GAMES.md | 166,765 | GREP ONLY — never load whole |
 | docs/SPEC.md | 12,988 | PLANNED engine work only |
 | docs/CONTRACT.md | 4,226 | PLANNED engine work only |
 | docs/BUILD.md | 4,525 | PLANNED engine work only |
