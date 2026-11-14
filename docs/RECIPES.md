@@ -33,32 +33,33 @@ Tier 1 (`inscribe`, `bake --verify`, `leadproof`, `flipproof`) only if art, poly
 moved. Tier 2 (differential sweeps, cost, the 484-cell run) only on suspicion, or once at the end of
 the pass.
 
-**Traps that have already bitten, so you do not repeat them.** A _derived_ label silently prints the
-WRONG text for any axis the derivation does not know — it did, for the spear, for a whole build. A
-declared multiplier is not the realised one: `shot.mult` 2 realises as 2.15× and 4 as ~7×, because
-more shots → more hits → more spin growth → more shots. A boot guard never proven to throw reads as
-coverage and is worse than none. `emit()` looks like an event bus and is not — it is an append-only
-log with no subscribers. **One field was being read two ways**, and only a non-default pairing could
-show it: the `hit` event's `to` fed `flashV[e.to]` (identity-coloured) _and_ `koStill.pose[e.to]`
-(slot-keyed, because `view[i]` is built by iterating `fighters[i]`) — identical while `idx === slot`,
-aliasing two actors into one scratch entry the moment they differ. The same ambiguity sat on `st.o`,
-read as `fs[st.o]`, `fs[1 - st.o]` and `G.fighters[st.o]` in three different places. **The rule that
-came out of it: event actor refs carry SLOTS**, because every consumer is a slot-keyed array
-(`measure.mjs` indexes `curW = [e.w0, e.w1]` with `e.by`); a cast identity is recoverable as
-`G.cast[slot]` and the reverse is not. **And the general trap: a mechanism that ships inert under its
-default is invisible to every standing suite that plays that default** — it needs a probe that runs
-it non-default, or the suite keeps reporting a pass it is not entitled to. That trap fired for real
-one landing later: `pair-r31` converted the sim's slot sites and **stopped at the renderer**, so the
-VS poster and the shot sigils still read `COLS[i]` / `TINTS[i]` / `FIGHTERS[i]` / `COLS[st.o]` by
-slot — 13 sites, all correct under `[0, 1]`, all wrong under `[1, 0]`, and invisible to fingerprints
-(sim state only), to chromecheck's default section, and to a sim-level pair-proof alike. **The rule:
-a slot/idx split has to be audited in the renderer too, and the audit has to drive a canvas.**
-**Second lesson, about scanning itself:** cleanup #4 recorded that "exactly ONE top-level
-declaration has no in-file reference". Wrong — `rect` (an art helper) has none either, and the scan
-that cleared it counted bare tokens, so `g.rect(…)`, two `ctx.rect(…)` and the CSS `clip: rect(…)`
-all read as references. **Token-counting a short identifier that is also a canvas method name and a
-CSS function always yields a false "referenced"**; scan word-bounded and excluding property access,
-and strip comments and strings before auditing reads.
+**Rules from traps that already bit (so you do not repeat them).** Full stories: grep the tag in
+`docs/GAMES.md` and `docs/history/` (`pair-r31`, `shot.mult`, `cleanup #4`).
+
+1. **Author the label for any axis the derivation does not know.** A _derived_ label silently prints the
+   WRONG text for such an axis (it did, for the spear, for a whole build). The guard in step (4) throws.
+2. **A declared multiplier is not the realised one.** `shot.mult` 2 realises as 2.15x and 4 as ~7x: more
+   shots, more hits, more spin growth, more shots. Measure the realised figure; never quote the declared one.
+3. **Prove every boot guard fires.** A guard never shown to throw reads as coverage and is worse than none
+   (step 5: inject a bad row).
+4. **`emit()` is not an event bus.** It is an append-only log with no subscribers.
+5. **Event actor refs carry SLOTS, not identities.** Every consumer is a slot-keyed array (`measure.mjs`
+   indexes `curW = [e.w0, e.w1]` with `e.by`); an identity is recoverable as `G.cast[slot]`, the reverse is
+   not. Why: one field was read two ways. The `hit` event's `to` fed `flashV[e.to]` (identity-coloured)
+   and `koStill.pose[e.to]` (slot-keyed, since `view[i]` is built by iterating `fighters[i]`), identical
+   while `idx === slot` and aliasing two actors into one scratch entry once they differ. The same
+   ambiguity sat on `st.o`, read as `fs[st.o]`, `fs[1 - st.o]` and `G.fighters[st.o]` in three places.
+6. **A mechanism that ships inert under its default is invisible to every suite that plays the default.**
+   Give it a probe that runs it non-default. Why: `pair-r31` converted the sim's slot sites and stopped
+   at the renderer, so the VS poster and the shot sigils still read `COLS[i]` / `TINTS[i]` /
+   `FIGHTERS[i]` / `COLS[st.o]` by slot: 13 sites, correct under `[0, 1]`, wrong under `[1, 0]`, and
+   invisible to fingerprints (sim state only), to chromecheck's default section and to a sim-level
+   pair-proof. **Audit a slot/idx split in the renderer too, and drive a canvas to do it.**
+7. **Never audit references by counting bare tokens.** A short identifier that is also a canvas method
+   and a CSS function always reads as "referenced". Cleanup #4 claimed exactly ONE top-level declaration
+   had no in-file reference; wrong, `rect` (an art helper) has none either, and the scan counted
+   `g.rect(...)`, two `ctx.rect(...)` and the CSS `clip: rect(...)`. Scan word-bounded, exclude property
+   access, and strip comments and strings first.
 
 ## Adding a bot — the recipe (rewritten by `pair-r31`)
 

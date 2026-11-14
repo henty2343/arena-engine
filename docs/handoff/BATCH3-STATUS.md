@@ -8,7 +8,7 @@ tools; an unlisted file there fails lint). Freshness: `git log -1 --format='%h %
 Status as of 2026-11-14: (a) DONE (0ddd7f5, #746) · (b) DONE (9e017bb, #742) · (d) DONE (f756e21, #747)
 · (c) DONE (68e29f9, #748). Nothing remains in Batch 3. Its follow-ups: #749 DONE (4cc98d5) · #750 DONE (4f38866) ·
 #751 DONE (63bb91c) · #752 DONE (361cbcb, the law-table completion + the probe registry) ·
-#753 DONE (477c34a, the RENDERED-FRAME proof) · #754 DONE (this commit, the measure.mjs header + the owner-go solidity run).
+#753 DONE (477c34a, the RENDERED-FRAME proof) · #754 DONE (46ffcd7, the measure.mjs header + the owner-go solidity run) · #755 DONE (this commit, Batch 4a: RECIPES Traps -> short rules + AGENTS as the one workflow home).
 Next: the S3 RULING (the owner's), then Batch 4's tool moves — HANDOFF §7.
 The Batch 2 ledger is the appendix below, carried verbatim. STATE.md and docs/CODEMAP.md
 are authoritative for every number.
@@ -25,7 +25,16 @@ pose (C3 → `partial`) and MEASURES law 3s, which does NOT hold on the current 
 `owner-run only`; the owner's ruling is open).
 Next: the S3 RULING, or Batch 4's tool moves.
 
-## #754 measure.mjs header + the owner-go solidity run - ledger (this commit)
+## #755 Batch 4a - RECIPES traps as rules, AGENTS as the one workflow home - ledger (this commit)
+
+What: (1) docs/RECIPES.md: the "Traps that have already bitten" paragraph became seven numbered rules, each a bolded rule plus its why. Every fact is kept (2.15x and ~7x, the 13 renderer sites, curW, koStill, st.o, the rect scan story) and a pointer says where the full stories live (grep pair-r31, shot.mult, cleanup #4). NOT a size win: 7,580 -> 7,523 bytes; the gain is structure. (2) AGENTS.md: a new Workflow section (orient, propose, change, prove, deliver) holding the freshness check, manifest-first before any probe, proof by edit class, and ONE patch in chat with a pointer to HANDOFF s6/s6.7; the Where-truth-lives line names it; 6,060 -> 7,828 bytes. (3) README: the Non-negotiables list became a pointer to AGENTS, so the doc regen order is no longer stated in two places; 1,282 -> 1,268 bytes. (4) STATE.md regenerated (cost table only). (5) Both handoff files updated. Nothing else is touched.
+Why: HANDOFF s7 Batch 4 listed these two as the items that need no frozen-text edit, and the workflow lived in three places (AGENTS, README, HANDOFF).
+Approved: "go 4a" - the owner named the item after the read-only proposal.
+Deviations (flagged at delivery): (1) No GAMES entry and no regen: the canonical did not move (as in #754). (2) HANDOFF s4 and s6 keep the detailed playbooks; AGENTS points there instead of absorbing them, so "one home" means one entry point and one summary, not a move of the playbooks. (3) .github/copilot-instructions.md still repeats three rules; left so Copilot sees them without following a link.
+Not verified: no rendered-markdown check; the battery was not run (canonical untouched); no new lint check, so no negative controls.
+Rollback: `git revert` this commit.
+
+## #754 measure.mjs header + the owner-go solidity run - ledger (commit 46ffcd7)
 
 What: (1) measure.mjs's header comment (lines 148-149 only) said "The owner never runs this; the assistant does, when told to" and pointed at .qa/projectile-fix.mjs, which does not exist in the repo; it now says the owner runs it, an agent runs it only on an explicit owner go for that one run, and names the runnable .qa probes. Comment-only; node --check passes; no code token moved. (2) The one owner-go `node measure.mjs --solidity` run is recorded in HANDOFF s7. (3) HANDOFF s1 carries the one-run exception. Both handoff files updated; nothing else is touched (no canonical, tool, GAMES, STATE or generated file).
 Why: the header contradicted the standing ban and named a missing file; and the run gave the first audit result since the weapons pass.
@@ -223,7 +232,7 @@ and ratchets it either way, so the next work does not depend on the ruling. Also
 measure.mjs band calibration (6px) no longer holds on the curated gauntlet (15.505px measured) and the full law
 re-proof is owed on the owner's machine. (2) Batch 4's tool MOVES — one home tools/ with proof/, doc/, measure/,
 lib/; the .qa rename; the measure.mjs owner-go flag; SPEC/CONTRACT/BUILD to docs/planned/; RECIPES "Traps" ->
-short rules; AGENTS as the one workflow home. Measured blast radius: 75 path substitutions in the three FROZEN
+short rules and AGENTS as the one workflow home (both DONE in #755). Measured blast radius: 75 path substitutions in the three FROZEN
 era files + 26 in live GAMES.md, i.e. non-whitespace edits to frozen historical text; docset.mjs is a dependency
 of four tools and its repo-root contract must be kept. The REGISTRY half of that item is DONE in #752, so the
 inventory is already agent-readable without a single file moving. Propose first; wait for "go"; ONE patch per

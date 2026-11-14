@@ -29,11 +29,11 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.9k (compute
 ## Documentation cost (chars/4 estimate)
 | file | ~tokens | read policy |
 |---|---:|---|
-| README.md | 321 | router only |
-| AGENTS.md | 1,498 | always |
+| README.md | 317 | router only |
+| AGENTS.md | 1,939 | always |
 | docs/CODEMAP.md | 1,515 | before opening the canonical |
 | docs/LAWS.md | 4,882 | before any sim/doc edit |
-| docs/RECIPES.md | 1,876 | adding a trait/skill/bot |
+| docs/RECIPES.md | 1,868 | adding a trait/skill/bot |
 | docs/GAMES.md | 55,491 | GREP ONLY — never load whole |
 | docs/SPEC.md | 12,988 | PLANNED engine work only |
 | docs/CONTRACT.md | 4,226 | PLANNED engine work only |

@@ -30,10 +30,12 @@ Follow-ups: #749 = 4cc98d5 (index titles, mf-2 line re-paragraphed, AGENTS/READM
   #753 = 477c34a: the RENDERED-FRAME proof — new .qa/frame-proof.mjs proves C3's band
   at the tick-entry pose (C3 → `partial`) and MEASURES law 3s, which does NOT hold on the current build
   (S3 stays `owner-run only`; the owner's ruling is open). Landed as 477c34a.
-  #754 (this file's last update): measure.mjs's header now says who really runs it (it named .qa/projectile-fix.mjs,
-  which does not exist, and said the assistant runs it), and the ONE owner-go --solidity run is recorded in s7. Its own
-  commit hash is not known to this file (a file cannot contain its own commit) - verify origin.
-Next: the S3 RULING (the owner's) or Batch 4's tool MOVES — §7.
+  #754 = 46ffcd7: measure.mjs's header now says who really runs it (it named .qa/projectile-fix.mjs,
+  which does not exist, and said the assistant runs it), and the ONE owner-go --solidity run is recorded in s7. Landed as 46ffcd7.
+  #755 (this file's last update): Batch 4a - RECIPES "Traps" became seven short rules, AGENTS became the one home for
+  the workflow (orient, propose, change, prove, deliver) and README now points to it. Its own commit hash is not known to
+  this file (a file cannot contain its own commit) - verify origin.
+Next: the read-only measure-vs-frame-proof discrepancy check, the S3 RULING (the owner's), or the rest of Batch 4's tool MOVES — §7.
 Delivery: ONE patch (§6) — read §6.7 first: the owner copies patches out of CHAT.
 
 State at the 3c landing (re-measure, do not trust): HEAD 68e29f9, parent f756e21; canonical md5
@@ -89,6 +91,12 @@ reproduced: 2; the law-3s counters measured and ratcheted: blade 85 / body 757 /
 the proof battery PASS - 13 steps, every step matched its expected exit code (lengrow-gate 1 BY DESIGN, the
 other twelve 0), canonical md5 and line count identical before and after the run; 4 canonical controls each
 FAIL their intended check; strip-hash PASS with the three invariant hashes unchanged.
+
+State after the #755 patch (BASE 46ffcd7; re-measure, do not trust): everything not named here is unchanged from the
+blocks above, including the canonical, CODEMAP, LAWS, GAMES, the three record files, every tool and every probe. As built:
+AGENTS 47addf2e5d592e3daa6c339f275425a1 · README 29e4e43ddd68f49531841df91097c2ac · RECIPES 0f0cda7df5dc64089d71089a4207cc9f · STATE 1e080656c5956a02f7fd109183ac1d5e. The two handoff files are not listed (a file
+cannot hold its own md5). Receipts: verify --quick PASS (6 checks); no new lint check, so no negative controls; the
+battery was not run (the canonical is untouched).
 
 ## 0. The record is a SET (since 3c)
 
@@ -283,7 +291,7 @@ proof and tool; run-battery and lint-docs read it, and lint-docs checks it is co
 is now one JSON line instead of three hand-kept lists). Still open there: verify.mjs is not yet a reader
 (it stays at 6 checks; lint-docs is the completeness gate). Also still open: one home tools/ with proof/,
 doc/, measure/, lib/; the .qa rename; the measure.mjs owner-go flag; moving SPEC/CONTRACT/BUILD to
-docs/planned/; RECIPES "Traps" -> short rules; AGENTS = the one workflow home.
+docs/planned/. DONE in #755 (Batch 4a): RECIPES "Traps" -> seven short rules; AGENTS = the one workflow home, README points to it.
   MEASURED BLAST RADIUS (2026-11-14, read-only counts — re-measure before quoting): renaming `.qa/` needs a path
   substitution in 43 refs in mf-1 + 23 in the chronicle + 9 in mf-2 (75 in the three FROZEN era files) + 26 in
   live GAMES.md; moving SPEC/CONTRACT/BUILD needs 10 in GAMES.md + 2 in mf-1 + 1 in LAWS.md + 5 in AGENTS/README
@@ -356,14 +364,14 @@ New-chat prompt (the whole thing):
 
 ## 10. Where we are / next action
 
-Landed through the #753 patch (the RENDERED-FRAME proof — new .qa/frame-proof.mjs proving C3's band and
+Landed through the #755 patch (Batch 4a), on top of #754 (46ffcd7) and #753 (the RENDERED-FRAME proof — new .qa/frame-proof.mjs proving C3's band and
 measuring law 3s), on top of 361cbcb (#752, the law-table completion + the probe registry) and c2bcf57
-(the handoff refresh). This file was last updated by the commit AFTER #753 — that is the patch below. The
+(the handoff refresh). This file was last updated by #755 — that is the patch below. The
 freshness check's two hashes always match ON ORIGIN, because this file is updated in the same commit as
 every landing. Verify origin HEAD against the hash that last updated this file; if they differ, more
 landed — re-baseline from STATE.md and say what moved.
 First: run the FRESHNESS CHECK, then §2. If the invariant hashes differ, STOP and tell the owner.
 Then propose the next item from §7 — the S3 RULING (the owner may want the probe's findings turned into a
-sim fix or a law rewrite; the probe reports it either way) or Batch 4's tool MOVES — and WAIT for "go".
+sim fix or a law rewrite; the probe reports it either way), the read-only measure-vs-frame-proof discrepancy check, or the rest of Batch 4's tool MOVES — and WAIT for "go".
 After "go": the whole job in one pass (edits, regen, proofs, controls, fresh-clone proof), delivered per §6 + §6.7/§6.8,
 with both handoff files updated in the same patch.

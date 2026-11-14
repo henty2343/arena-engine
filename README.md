@@ -12,7 +12,4 @@
 - Platform/engine rules (PLANNED engine): [`docs/SPEC.md`](./docs/SPEC.md), only for engine/platform work
 
 ## Non-negotiables
-- Propose before writing code.
-- Do not run `measure.mjs` without the owner's explicit go.
-- Do not split the canonical.
-- After any `docs/GAMES.md` or `docs/history/` edit, run `node tools/doc/docreflow.mjs` then `node tools/doc/navgen.mjs`, then `node tools/gen-state.mjs` (both doc tools cover the whole record set).
+The standing rules and the whole workflow (orient, propose, change, prove, deliver) live in [`AGENTS.md`](./AGENTS.md), the one home for them. The three that matter before you touch anything: propose before writing code; never run `measure.mjs` without the owner's explicit go; do not split the canonical.
