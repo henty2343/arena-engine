@@ -28,17 +28,18 @@ The living record of game design: what exists and what is decided next. Platform
 | section | from line | size |
 |---|---|---|
 | The documents | 11 | 1 KB |
-| Current state | 148 | 136 KB |
-| Weapon art — the closed convention (locked 2026-10-18, CLOSED 2026-10- | 450 | 10 KB |
-| Design principles for all games | 473 | 2 KB |
-| Open design questions | 483 | 15 KB |
-| Measured facts | 505 | 1 KB |
-| Testing recipe (headless) | 516 | 21 KB |
-| 2026-11-14 — #748 · BATCH 3C — GAMES.md SPLITS BY ERA INTO `docs/histo | 564 | 3 KB |
-| 2026-11-14 — #749 · BATCH 3 FOLLOW-UPS — THE INDEX TITLES, THE 14 KB L | 574 | 2 KB |
-| 2026-11-14 — #750 · BATCH 3 FOLLOW-UP — THE 3,000-BYTE LINE CAP (no ca | 582 | 2 KB |
-| 2026-11-14 — #751 · LAW-TABLE FOLLOW-UP — THE THREE UNPROBED LAWS GET  | 591 | 3 KB |
-| 2026-11-14 — #752 · LAW-TABLE COMPLETION + THE PROBE REGISTRY — THE LA | 600 | 4 KB |
+| Current state | 149 | 136 KB |
+| Weapon art — the closed convention (locked 2026-10-18, CLOSED 2026-10- | 451 | 10 KB |
+| Design principles for all games | 474 | 2 KB |
+| Open design questions | 484 | 15 KB |
+| Measured facts | 506 | 1 KB |
+| Testing recipe (headless) | 517 | 21 KB |
+| 2026-11-14 — #748 · BATCH 3C — GAMES.md SPLITS BY ERA INTO `docs/histo | 565 | 3 KB |
+| 2026-11-14 — #749 · BATCH 3 FOLLOW-UPS — THE INDEX TITLES, THE 14 KB L | 575 | 2 KB |
+| 2026-11-14 — #750 · BATCH 3 FOLLOW-UP — THE 3,000-BYTE LINE CAP (no ca | 583 | 2 KB |
+| 2026-11-14 — #751 · LAW-TABLE FOLLOW-UP — THE THREE UNPROBED LAWS GET  | 592 | 3 KB |
+| 2026-11-14 — #752 · LAW-TABLE COMPLETION + THE PROBE REGISTRY — THE LA | 601 | 4 KB |
+| 2026-11-14 — #753 · THE RENDERED-FRAME PROOF — THE LAST RENDERED-FRAME | 611 | 5 KB |
 
 **Frozen eras** (`docs/history/` — grep only, never load whole; the key is what the entry index below uses)
 
@@ -606,4 +607,15 @@ This is the only coverage of the chrome's pairing path; `pair-proof.mjs` loads t
 - **WHAT IT DOES NOT COVER.** S1's returning boomerang: the drawn ARC is the hitbox there (`chaosorbit-r54`), so the probe checks the SIGN of the sim's own arc gap instead of recomputing the arc. S6's volley row (the knives): the fan grows with the holder's hit count, so the probe matches each volley shot against the FULL anchor set — a shot born at the right anchor of the WRONG tier would still pass. Every other shot row is recomputed exactly. C3 and S3 stay `owner-run only`.
 - **Canonical untouched:** md5 `5de162de46eb4fa3204e3ee636f2aff3`, stamp `links-r87` — so the canonical battery was not required and `measure.mjs` was NOT run. The proof battery WAS run, to prove the manifest-driven step list and the two new steps: **12 steps, every step matched its expected exit code** (`lengrow-gate` 1 BY DESIGN, the other eleven 0), and the canonical's md5 and line count were identical before and after the run. Token costs: see STATE.md §Documentation cost.
 - **Deviations flagged to the owner:** the law table's Status column changed on five rows (`owner-run only` → `probed`/`partial`); Status is hand-written judgement and the lint cannot judge coverage — the probes are the evidence behind it. The probe battery grew from 9 steps to 12 and its step list moved from code to data, so a probe is registered by editing one JSON file. `tools/manifest.json` now also registers the owner's own tools (`measure.mjs`, `ingest.mjs`) with `ownerOnly: true` — the registry is total, and the flag is what says agents must not run them.
+- **Rollback:** `git revert` this commit.
+## 2026-11-14 — #753 · THE RENDERED-FRAME PROOF — THE LAST RENDERED-FRAME LAW GETS A PROBE, AND THE OTHER ONE IS RED (no canonical change)
+
+- **THE FRAME LAW.** `C3` (weapons are solids to each other) and `S3` (shots never overlap blade/body/rim/shot) were the last two `owner-run only` rows — only `measure.mjs` audited them, and agents never run it, so a break in either failed NOTHING an agent can run. Both are RENDERED-FRAME laws, and this repo already owns what that means: the renderer interpolates between tick poses, and in audit language "rendered frame" / "tick-entry pose" means THE TICK POSE (the v0.8.2 pose amendment, GAMES §Current state). So a rendered-frame law is decidable from the tick poses and the canonical's OWN geometry — new probe `.qa/frame-proof.mjs` (4/4, ~23s, read-only). **C3 is now `partial`: proved. S3 is now MEASURED — and it is red.**
+- **WHAT THE PROOF CHECKS.** The weapon-weapon gap at the rendered pose, via `geom.parryGap` — the SAME function `measure.mjs`'s contact law 3 calls, so the probe asks the sim the owner's question rather than re-implementing it. Measured over **68,275 rendered fight-ticks across 31 cells** (the owner's 23-cell curated solidity gauntlet at seed 101, plus `flail+scythe` across the owner's forced seeds 101–108): **the band's worst is 18.041px**, inside the envelope the law itself records (**20.754px**), and the visible band ticks are **43 of 68,275 = 0.0630%**, under the owner's 2% rate. The named **MIRROR class** (a parry in the previous tick's LAST substep + a lead/headLead weapon + the pre-flip pose clearing the ink — the art sweeps over `CFG.flipMs`, so it is never drawn) is reproduced per occurrence and reported in full, exactly as the owner's audit treats it: **2 occurrences** (worst 9.056px), excluded from the band.
+- **THE S3 FINDING — THE LAW DOES NOT HOLD ON THIS BUILD.** Law 3s is absolute ("shots never overlap foe blade / foe body / rim / another shot at tick-entry poses"), and a faithful reproduction of `measure.mjs`'s own law-3s pass (same tape reads, same entry-slot reuse, same thresholds, the same `G.auditShots` + `geom.bladeCircles` route) measures, over the owner's own gauntlet: **blade 85 · body 757 · rim 2,422 · pair 6,745** across 17,079 shot-bearing frames and 73,086 shots, worst 73.099px. The mechanisms are named and reproducible: **6,265** pair overlaps involve a NAIL at rest (a pinned shot, speed 0 — the sim's owner-blindness rule exempts the owner's own nails from every test), **480** are two shots in flight crossing (the no-friendly-fire rule: shots never interact), the rim/body figures are the boomerang's covering circle (the arc's bounding circle, not the drawn arc) and the impaled skewer (the skewer law embeds the drawn spear by design), and **70** are a shot in flight inside the foe's blade coverage.
+The owner's audit has not been re-run since the weapons pass (the law re-proof stands owed on the owner's machine), so **rewriting the law, narrowing the sim or accepting the classes is the OWNER'S RULING** — the probe therefore REPORTS law 3s and gates only its GROWTH (a ratchet on the four counters, in the `fingerprint.mjs` tradition), and the S3 row stays `owner-run only`.
+- **THE OWNER'S OWN 6px CALIBRATION NO LONGER HOLDS.** `measure.mjs` binds the band-class worst under **6px** on the curated gauntlet; on this build the gauntlet measures **15.505px** (`wand+bow` seed 101) — so that stricter bound fails today while the law's own disclosed envelope holds. The probe gates the envelope the law records (20.754px) and REPORTS the 6px calibration; the gap between them is the owner's call, and this is the second law channel that has drifted since the last sanctioned run.
+- **Canonical untouched:** md5 `5de162de46eb4fa3204e3ee636f2aff3`, stamp `links-r87` — `measure.mjs` was NOT run (permanently banned) and no canonical-specific proof was required. The proof battery WAS run: **13 steps**, every step matched its expected exit code (`lengrow-gate` 1 BY DESIGN, the other twelve 0), the canonical's md5 and line count identical before and after. Token costs: see STATE.md §Documentation cost.
+- **Deviations flagged to the owner:** (1) C3's Status moved `owner-run only` → `partial` and S3's Scope now carries the finding; S3's Status stays `owner-run only` on purpose — the probe reports the law, it does not assert it, so the row may carry no runnable anchor. (2) The proof battery grew from 12 steps to 13 (`frame-proof`). (3) The probe's S3 channel is a RATCHET, not a law gate: the four counters are compared against the numbers measured here, and a sim change that moves them turns the probe red so they are re-measured and updated deliberately — never silently. (4) The rate assertion is measured and reported but no canonical mutation I could find exceeds the owner's 2% bound:
+a visible band overlap only survives to the tick entry when the resolver cannot separate the blades inside the tick, and then it is also deep, so the depth assertion fires first (the rate does move — 0.0630% clean, 0.63% with the resolver disabled). (5) Batch 4's tool MOVES are still not in this commit (75 path substitutions inside the three frozen era files).
 - **Rollback:** `git revert` this commit.

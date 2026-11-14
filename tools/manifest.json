@@ -76,6 +76,14 @@
       "about": "S1 damage only on shot-touches-body, S5 the substep budget is honoured every tick, S6 every shot is born at its hold-derived launch point."
     },
     {
+      "name": "frame-proof",
+      "file": ".qa/frame-proof.mjs",
+      "exit": 0,
+      "battery": true,
+      "citable": true,
+      "about": "The RENDERED-FRAME proof: C3 the weapons are solids to each other (the disclosed band envelope + the visible-tick rate at the tick-entry pose) and the law-3s shot overlaps (reported and ratcheted - the law does not hold on this build)."
+    },
+    {
       "name": "chromecheck",
       "file": "chromecheck.mjs",
       "exit": 0,

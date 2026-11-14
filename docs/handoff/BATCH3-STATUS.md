@@ -7,8 +7,9 @@ tools; an unlisted file there fails lint). Freshness: `git log -1 --format='%h %
 
 Status as of 2026-11-14: (a) DONE (0ddd7f5, #746) · (b) DONE (9e017bb, #742) · (d) DONE (f756e21, #747)
 · (c) DONE (68e29f9, #748). Nothing remains in Batch 3. Its follow-ups: #749 DONE (4cc98d5) · #750 DONE (4f38866) ·
-#751 DONE (63bb91c) · #752 DONE (361cbcb, the law-table completion + the probe registry).
-Next: the two rendered-frame laws, then Batch 4's tool moves — HANDOFF §7.
+#751 DONE (63bb91c) · #752 DONE (361cbcb, the law-table completion + the probe registry) ·
+#753 DONE (this commit, the RENDERED-FRAME proof).
+Next: the S3 RULING (the owner's), then Batch 4's tool moves — HANDOFF §7.
 The Batch 2 ledger is the appendix below, carried verbatim. STATE.md and docs/CODEMAP.md
 are authoritative for every number.
 
@@ -19,7 +20,20 @@ assertion anywhere (B1/B2/U1), so the LAWS table now has no `unprobed` row - see
 #752 = 361cbcb is the LAW-TABLE COMPLETION + THE PROBE REGISTRY: .qa/contact-proof.mjs (C4, C5) and
 .qa/shot-proof.mjs (S1, S5, S6) assert the last five laws that had no agent-runnable proof, and
 tools/manifest.json becomes the single registry that run-battery and lint-docs read (verify.mjs is NOT a reader yet - it stays at 6 checks).
-Next: the two rendered-frame laws (C3, S3) or Batch 4's tool moves.
+#753 (this commit) is the RENDERED-FRAME PROOF: .qa/frame-proof.mjs proves C3's band at the tick-entry
+pose (C3 → `partial`) and MEASURES law 3s, which does NOT hold on the current build (S3 stays
+`owner-run only`; the owner's ruling is open).
+Next: the S3 RULING, or Batch 4's tool moves.
+
+## #753 rendered-frame proof - ledger (this commit)
+
+What: (1) New `.qa/frame-proof.mjs` - 4 assertions on the two RENDERED-FRAME laws, the last two `owner-run only` rows. The repo already defines a rendered frame as the tick-entry pose (the v0.8.2 pose amendment: the renderer interpolates, but in audit language "rendered frame" means the tick pose - the sim's ground truth), so the last rendered-frame law IS headlessly assertable, with the canonical's OWN geometry (`geom.parryGap`, `geom.bladeCircles`) - the same functions `measure.mjs` calls. (2) C3 → `partial`: the band's worst (18.041px measured over 68,275 rendered fight-ticks across 31 cells) stays inside the envelope the law itself records (20.754px) and the visible band ticks (43 = 0.0630%) stay under the owner's 2% rate; the named MIRROR class is reproduced per occurrence (2, worst 9.056px) and excluded from the band, as the owner excludes it. (3) S3 stays `owner-run only` and is REPORTED: a faithful reproduction of the owner's own law-3s pass measures blade 85 · body 757 · rim 2,422 · pair 6,745 (worst 73.099px) over 17,079 shot-bearing frames, in named classes (a nail at rest, two shots crossing, the boomerang's covering circle, an impaled skewer). The probe gates only the GROWTH of those counters (a ratchet, the fingerprint.mjs tradition) - it does not assert the law. (4) The probe is registered in `tools/manifest.json` (battery + citable), so the battery grew from 12 steps to 13 and the law table's citable set reads it from the same registry. (5) #753 appended to GAMES. Both handoff files updated. The canonical, CODEMAP, the three record files, AGENTS, README and every other tool are untouched.
+Why: a law nothing can fail is a law nothing protects, and the last two were exactly that - only measure.mjs saw them, and agents never run it. The rendered-frame definition the repo already owns is what makes them assertable without a renderer and without pixels.
+Approved: "ok go ... two remaining rendered-frame laws" - the owner named the item.
+Deviations (flagged at delivery): (1) C3's Status moved `owner-run only` → `partial`; S3's Scope now carries the finding and its Status stays `owner-run only` ON PURPOSE (the probe reports the law, so the row may carry no runnable anchor). (2) The proof battery grew from 12 steps to 13. (3) The S3 channel is a ratchet, not a law gate - a sim change that moves the counters turns the probe red so they are re-measured and updated deliberately. (4) The owner's own 6px band calibration no longer holds on the curated gauntlet (15.505px measured, `wand+bow` seed 101) - a second law channel that has drifted since the last sanctioned run; the probe gates the envelope the LAW records (20.754px) and reports the 6px calibration. (5) The rate assertion is measured and reported but no canonical mutation I could find exceeds the owner's 2% bound: a visible band overlap only survives to the tick entry when the resolver cannot separate the blades inside the tick, and then it is also deep, so the depth assertion fires first (the rate does move: 0.0630% clean, 0.63% with the resolver disabled). (6) Batch 4's tool MOVES are still NOT in this commit (75 path substitutions inside the three FROZEN era files).
+Controls (measured): 4 canonical mutations, each must FAIL its intended check - a closed spawn gap → the RED envelope fails; the resolver's de-overlap loop disabled → the envelope fails; the body radius grown → the S3 ratchet fails; the reveal never ends → the vacuity fails. A fifth control (resolver disabled + closed spawn) shows the RATE moving 10x (0.0630% → 0.63%) without crossing the owner's 2% bound - reported, not gated. The unmutated tree is 4/4.
+Not verified: no rendered-markdown check; measure.mjs NOT run (permanently banned); the canonical was untouched, so no canonical-specific proof was required. The S3 overlap CLASSES are the probe's classification, not a ruling - the owner's.
+Rollback: `git revert` this commit.
 
 ## #752 law-table completion + the probe registry - ledger (commit 361cbcb)
 
@@ -192,16 +206,19 @@ Rollback: `git revert 0ddd7f5`.
 
 ## What is next
 
-Batch 3 CLOSED; its follow-ups (#749, #750, #751, #752) are DONE. Per HANDOFF §7, what remains: (1) the TWO
-rendered-frame laws — C3 (visible rendered interpenetration) and S3 (no overlap on a rendered frame). They are the
-last `owner-run only` rows, and there is no render path an agent may use (measure.mjs is permanently banned), so
-closing them honestly needs a render-frame probe — a proposal, not a patch. (2) Batch 4's tool MOVES — one home
-tools/ with proof/, doc/, measure/, lib/; the .qa rename; the measure.mjs owner-go flag; SPEC/CONTRACT/BUILD to
-docs/planned/; RECIPES "Traps" -> short rules; AGENTS as the one workflow home. Measured blast radius: 75 path
-substitutions in the three FROZEN era files + 26 in live GAMES.md, i.e. non-whitespace edits to frozen historical
-text; docset.mjs is a dependency of four tools and its repo-root contract must be kept. The REGISTRY half of that
-item is DONE in #752, so the inventory is already agent-readable without a single file moving. Propose first;
-wait for "go"; ONE patch per HANDOFF §6 + §6.7/§6.8, updating both handoff files in the same commit.
+Batch 3 CLOSED; its follow-ups (#749, #750, #751, #752, #753) are DONE. Per HANDOFF §7, what remains: (1) the S3
+RULING — law 3s does not hold on the current build (the probe measures overlaps in named classes: a nail at rest,
+two shots crossing, the boomerang's covering circle, an impaled skewer). The owner may rewrite the law, narrow
+the sim (the nail placement, the boomerang's arc circle, the skewer) or accept the classes; the probe reports S3
+and ratchets it either way, so the next work does not depend on the ruling. Also open on the owner's side: the
+measure.mjs band calibration (6px) no longer holds on the curated gauntlet (15.505px measured) and the full law
+re-proof is owed on the owner's machine. (2) Batch 4's tool MOVES — one home tools/ with proof/, doc/, measure/,
+lib/; the .qa rename; the measure.mjs owner-go flag; SPEC/CONTRACT/BUILD to docs/planned/; RECIPES "Traps" ->
+short rules; AGENTS as the one workflow home. Measured blast radius: 75 path substitutions in the three FROZEN
+era files + 26 in live GAMES.md, i.e. non-whitespace edits to frozen historical text; docset.mjs is a dependency
+of four tools and its repo-root contract must be kept. The REGISTRY half of that item is DONE in #752, so the
+inventory is already agent-readable without a single file moving. Propose first; wait for "go"; ONE patch per
+HANDOFF §6 + §6.7/§6.8, updating both handoff files in the same commit.
 
 ## APPENDIX — BATCH2-STATUS.md, carried forward verbatim
 
