@@ -92,6 +92,14 @@
       "about": "measure.mjs reads the sim's chain-pose tape at the sim's own width (FL_SLOTS 18, STRF 37): its own flAt resolves every substep row on a real tape, with a pre-links-r87 control that must fail."
     },
     {
+      "name": "lenstep-proof",
+      "file": ".qa/lenstep-proof.mjs",
+      "exit": 0,
+      "battery": true,
+      "citable": false,
+      "about": "The audit rebuilds a GROWN chain at its true length: every chain-aware recompute site in measure.mjs and frame-proof carries lenStep, and on real fights a hit or parry recomputed with the pre-tick lenStep is an exact touch (link-add ticks are reported, not asserted), with a without-lenStep vacuity check and a mutated-source control that must fail."
+    },
+    {
       "name": "chromecheck",
       "file": "chromecheck.mjs",
       "exit": 0,

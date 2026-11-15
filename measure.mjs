@@ -434,18 +434,19 @@ function runMatch(api, seed, weapons) {
   const edgeSeen = [new Set(), new Set()];
   const idxOfSub = new Map();
   const entry = [];                  // shot entry-frame slots (objects reused)
+  const entryLs = [0, 0];            // each fighter's lenStep at tick entry (pre-tick stash; events do not carry it) - lenStep-r1: the growth step bladeCircles/parryGap need to rebuild a GROWN chain at its true length
   const entryFl = [_flRest(), _flRest()];   // the sub=-1 entry record's chain poses — flailInit's rest constant until the first stash
 
-  const gapAt = (S, i, fl0, fl1) => geom.parryGap(
-    { x: S[i + A_X], y: S[i + A_Y], ang: S[i + A_ANG], w: curW[0], fl: fl0, fp: geom.leadFlip(curW[0], S[i + A_SPIN]) },
-    { x: S[i + B_X], y: S[i + B_Y], ang: S[i + B_ANG], w: curW[1], fl: fl1, fp: geom.leadFlip(curW[1], S[i + B_SPIN]) }
+  const gapAt = (S, i, fl0, fl1, ls0, ls1) => geom.parryGap(
+    { x: S[i + A_X], y: S[i + A_Y], ang: S[i + A_ANG], w: curW[0], fl: fl0, fp: geom.leadFlip(curW[0], S[i + A_SPIN]), ls: ls0 },
+    { x: S[i + B_X], y: S[i + B_Y], ang: S[i + B_ANG], w: curW[1], fl: fl1, fp: geom.leadFlip(curW[1], S[i + B_SPIN]), ls: ls1 }
   ).gap;   // fp: the edge-leading mirror (owner 2026-10-22), derived from the substep record's own signed spins — the sim's collision passes the same factor
   /* the same, with EXPLICIT displayed factors — law 3's mirror class recomputes
    * the entry pose with the PRE-flip spins (law 3 only; every other channel reads
    * the record's own spins). */
-  const gapAtFp = (S, i, fp0, fp1, fl0, fl1) => geom.parryGap(
-    { x: S[i + A_X], y: S[i + A_Y], ang: S[i + A_ANG], w: curW[0], fl: fl0, fp: fp0 },
-    { x: S[i + B_X], y: S[i + B_Y], ang: S[i + B_ANG], w: curW[1], fl: fl1, fp: fp1 }
+  const gapAtFp = (S, i, fp0, fp1, fl0, fl1, ls0, ls1) => geom.parryGap(
+    { x: S[i + A_X], y: S[i + A_Y], ang: S[i + A_ANG], w: curW[0], fl: fl0, fp: fp0, ls: ls0 },
+    { x: S[i + B_X], y: S[i + B_Y], ang: S[i + B_ANG], w: curW[1], fl: fl1, fp: fp1, ls: ls1 }
   ).gap;
    // fl: the chain pose from the SAME source the record's body fields come from
     // (stashed live fl.u for the sub=-1 entry record, G.auditFl for a substep) —
@@ -468,13 +469,13 @@ function runMatch(api, seed, weapons) {
     for (let q = 0; q < _bdR.length; q += 3) m = Math.max(m, Math.hypot(_bdR[q], _bdR[q + 1]) + _bdR[q + 2]);
     return (_bdRc[w] = m);
   }
-  function bandDump(S, i, fl0, fl1) {
+  function bandDump(S, i, fl0, fl1, ls0, ls1) {
     const r3 = (v) => +v.toFixed(3), r4 = (v) => +v.toFixed(4);
-    const pA = { x: S[i + A_X], y: S[i + A_Y], ang: S[i + A_ANG], w: curW[0], fl: fl0, fp: geom.leadFlip(curW[0], S[i + A_SPIN]) };
-    const pB = { x: S[i + B_X], y: S[i + B_Y], ang: S[i + B_ANG], w: curW[1], fl: fl1, fp: geom.leadFlip(curW[1], S[i + B_SPIN]) };
+    const pA = { x: S[i + A_X], y: S[i + A_Y], ang: S[i + A_ANG], w: curW[0], fl: fl0, fp: geom.leadFlip(curW[0], S[i + A_SPIN]), ls: ls0 };
+    const pB = { x: S[i + B_X], y: S[i + B_Y], ang: S[i + B_ANG], w: curW[1], fl: fl1, fp: geom.leadFlip(curW[1], S[i + B_SPIN]), ls: ls1 };
     const pg = geom.parryGap(pA, pB);
-    geom.bladeCircles(pA.x, pA.y, pA.ang, pA.w, _bdA, pA.fl, pA.fp);
-    geom.bladeCircles(pB.x, pB.y, pB.ang, pB.w, _bdB, pB.fl, pB.fp);
+    geom.bladeCircles(pA.x, pA.y, pA.ang, pA.w, _bdA, pA.fl, pA.fp, pA.ls);
+    geom.bladeCircles(pB.x, pB.y, pB.ang, pB.w, _bdB, pB.fl, pB.fp, pB.ls);
     let daX = 0, daY = 0, dbX = 0, dbY = 0, deep = 0, tqA = 0, tqB = 0;
     let nCon = 0, gross = 0, bi = -1, bj = -1, bra = 0, brb = 0;
     for (let ii = 0; ii < _bdA.length; ii += 3) {
@@ -516,8 +517,8 @@ function runMatch(api, seed, weapons) {
       const D0 = [], D1 = [];
       for (let it = 0; it < 16 && gap < 0; it++) {
         iters++;
-        geom.bladeCircles(ax, ay, pA.ang, pA.w, D0, pA.fl, pA.fp);
-        geom.bladeCircles(bx, by, pB.ang, pB.w, D1, pB.fl, pB.fp);
+        geom.bladeCircles(ax, ay, pA.ang, pA.w, D0, pA.fl, pA.fp, pA.ls);
+        geom.bladeCircles(bx, by, pB.ang, pB.w, D1, pB.fl, pB.fp, pB.ls);
         let daX2 = 0, daY2 = 0, dbX2 = 0, dbY2 = 0, deep = 0;
         for (let ii = 0; ii < D0.length; ii += 3) {
           const ra = D0[ii + 2];
@@ -593,6 +594,7 @@ function runMatch(api, seed, weapons) {
     for (let fi = 0; fi < 2; fi++) {
       const f = G.fighters[fi];
       if (f && f.fl) { const u = f.fl.u, d = entryFl[fi]; for (let q = 0; q < FL_SLOTS; q++) d[q] = u[q]; }
+      if (f) entryLs[fi] = f.lenStep || 0;   // lenStep-r1: the same pre-tick instant; exact for the entry pose, and for an event/substep until the first grow of the tick (a hit grows the attacker AFTER its contact test)
     }
     tick(G); t++;
     if (G.phase === 'fight') fightTicksHere++;
@@ -642,7 +644,7 @@ function runMatch(api, seed, weapons) {
           hitsBySub.get(e.sub).add(e.by);
           // law 1 — phantom-hit check: recompute the touch from the stored contact pose
           if (WEAPONS[e.aW].chain && !e.aFl) flMissing++;
-          geom.bladeCircles(e.ax, e.ay, e.aAng, e.aW, circA, e.aFl, geom.leadFlip(e.aW, e.aSp));   // edge-leading mirror from the hit's stored signed spin (2026-10-22); e.aFl = the attacker's stored chain pose (sim :1460) — chain-aware since the 2026-10-28 fix, which closed the disclosed gap
+          geom.bladeCircles(e.ax, e.ay, e.aAng, e.aW, circA, e.aFl, geom.leadFlip(e.aW, e.aSp), entryLs[e.by]);   // edge-leading mirror from the hit's stored signed spin (2026-10-22); e.aFl = the attacker's stored chain pose (sim :1460) — chain-aware since the 2026-10-28 fix, which closed the disclosed gap
           const gap = geom.bladeBodyGap(circA, e.x, e.y);
           if (!(gap < CFG.bodyR + EPS)) phantomHits++;
           if (gap > worstHitGap) worstHitGap = gap;
@@ -655,8 +657,8 @@ function runMatch(api, seed, weapons) {
         // law 2 — exact touch at the stored ENTRY poses (no slack allowed)
         if ((WEAPONS[e.aW].chain && !e.aFl) || (WEAPONS[e.bW].chain && !e.bFl)) flMissing++;
         const pg = geom.parryGap(
-          { x: e.ax, y: e.ay, ang: e.aAng, w: e.aW, fl: e.aFl, fp: geom.leadFlip(e.aW, e.aSp) },
-          { x: e.bx, y: e.by, ang: e.bAng, w: e.bW, fl: e.bFl, fp: geom.leadFlip(e.bW, e.bSp) }
+          { x: e.ax, y: e.ay, ang: e.aAng, w: e.aW, fl: e.aFl, fp: geom.leadFlip(e.aW, e.aSp), ls: entryLs[0] },
+          { x: e.bx, y: e.by, ang: e.bAng, w: e.bW, fl: e.bFl, fp: geom.leadFlip(e.bW, e.bSp), ls: entryLs[1] }
         );   // aSp/bSp = the ENTRY spin signs (pre-recoil) — the mirror the blades had when they touched
              // aFl/bFl = the entry chain poses the event stored (sim :1648: "the resolver never changes them, only the bodies move")
         if (pg.gap > EPS) parryNoTouch++;
@@ -714,7 +716,7 @@ function runMatch(api, seed, weapons) {
         shotSwats++; addGone(e.sid, 'swat');
         // law 2 shot variant — the swat recomputes to an exact touch from the stored swatter pose
         if (WEAPONS[e.fW].chain && !e.fFl) flMissing++;
-        geom.bladeCircles(e.fx, e.fy, e.fAng, e.fW, circA, e.fFl, geom.leadFlip(e.fW, e.fSp));   // edge-leading mirror from the swat's stored signed spin (2026-10-22); e.fFl = the swatter's stored chain pose (sim :1765)
+        geom.bladeCircles(e.fx, e.fy, e.fAng, e.fW, circA, e.fFl, geom.leadFlip(e.fW, e.fSp), entryLs[e.by]);   // edge-leading mirror from the swat's stored signed spin (2026-10-22); e.fFl = the swatter's stored chain pose (sim :1765)
         let best = Infinity;
         for (let ci = 0; ci < circA.length; ci += 3) {
           const d = Math.hypot(e.x - circA[ci], e.y - circA[ci + 1]) - circA[ci + 2];
@@ -778,7 +780,7 @@ function runMatch(api, seed, weapons) {
           if (aAlive && bAlive) {
             polyTicks++;
             if (WEAPONS[curW[0]].chain || WEAPONS[curW[1]].chain) chainPoseTicks++;
-            const g = gapAt(S, i, entryFl[0], entryFl[1]);   // the RENDERED pose — entry chain poses from the pre-tick stash
+            const g = gapAt(S, i, entryFl[0], entryFl[1], entryLs[0], entryLs[1]);   // the RENDERED pose — entry chain poses from the pre-tick stash
             if (g < 0) {
               polyOverlap++; if (-g > polyWorst) polyWorst = -g;
               const vis = -g > 2.5;
@@ -790,7 +792,7 @@ function runMatch(api, seed, weapons) {
               if (havePrev && prevParrySubs && prevParrySubs.has(prevSub)) {
                 const W0 = WEAPONS[curW[0]], W1 = WEAPONS[curW[1]];
                 if (W0.lead || W0.headLead || W1.lead || W1.headLead) {
-                  const gPre = gapAtFp(S, i, geom.leadFlip(curW[0], prevS0), geom.leadFlip(curW[1], prevS1), entryFl[0], entryFl[1]);
+                  const gPre = gapAtFp(S, i, geom.leadFlip(curW[0], prevS0), geom.leadFlip(curW[1], prevS1), entryFl[0], entryFl[1], entryLs[0], entryLs[1]);
                   mirror = gPre > -2.5;
                 }
               }
@@ -814,7 +816,7 @@ function runMatch(api, seed, weapons) {
                     leady, parryPrev, prevSub,
                     parryLastSub: !!(parryPrev && prevParrySubs.has(prevSub)),
                   };
-                  if (BAND_DUMP) bandWorstHere.g = bandDump(S, i, entryFl[0], entryFl[1]);
+                  if (BAND_DUMP) bandWorstHere.g = bandDump(S, i, entryFl[0], entryFl[1], entryLs[0], entryLs[1]);
                 }
               }
             }
@@ -826,7 +828,7 @@ function runMatch(api, seed, weapons) {
           if (WEAPONS[curW[0]].chain || WEAPONS[curW[1]].chain) chainPoseSubs++;
           /* law 3 info — substep pre-resolution overlap (the resolver eats it in this same substep) */
           if (aAlive && bAlive) {
-            const g = gapAt(S, i, fl0, fl1);
+            const g = gapAt(S, i, fl0, fl1, entryLs[0], entryLs[1]);
             if (g < 0) { subOverlap++; if (-g > subOverlapWorst) subOverlapWorst = -g; }
           }
           /* law 4 — stuck-flag replica, both attackers, same order as the sim */
@@ -840,7 +842,7 @@ function runMatch(api, seed, weapons) {
             const vAlive = atk === 0 ? bAlive : aAlive, aAliveAtk = atk === 0 ? aAlive : bAlive;
             const flagStored = atk === 0 ? S[i + A_STUCK] : S[i + B_STUCK];
             if (!aAliveAtk || !vAlive) continue;
-            geom.bladeCircles(wx, wy, wAng, curW[atk], atk === 0 ? circA : circB, atk === 0 ? fl0 : fl1, geom.leadFlip(curW[atk], S[i + (atk === 0 ? A_SPIN : B_SPIN)]));   // the replica mirrors the sim's exact gate — flip included (the sim's bladeVsBody passes leadFlip from the same substep's spin) and chain pose included (bladeVsBody passes a.fl.u, sim :1403)
+            geom.bladeCircles(wx, wy, wAng, curW[atk], atk === 0 ? circA : circB, atk === 0 ? fl0 : fl1, geom.leadFlip(curW[atk], S[i + (atk === 0 ? A_SPIN : B_SPIN)]), entryLs[atk]);   // the replica mirrors the sim's exact gate — flip included (the sim's bladeVsBody passes leadFlip from the same substep's spin) and chain pose included (bladeVsBody passes a.fl.u, sim :1403)
             const gap = geom.bladeBodyGap(atk === 0 ? circA : circB, vx, vy);
             if (stuckRep[atk] !== (flagStored === 1)) stuckFlagMismatch++;
             if (stuckRep[atk]) {
@@ -912,7 +914,7 @@ function runMatch(api, seed, weapons) {
           const foeAlive = (foeI === 0 ? S[A_ALIVE] : S[B_ALIVE]) === 1;
           if (foeAlive) {
             if (WEAPONS[curW[foeI]].chain) chainShotEntries++;
-            geom.bladeCircles(S[FX], S[FY], S[FA], curW[foeI], circB, entryFl[foeI], geom.leadFlip(curW[foeI], S[FS]));   // edge-leading mirror from the entry record's signed spin (2026-10-22); entry chain pose from the pre-tick stash (this pass reads the sub=-1 record, which has no auditFl row)
+            geom.bladeCircles(S[FX], S[FY], S[FA], curW[foeI], circB, entryFl[foeI], geom.leadFlip(curW[foeI], S[FS]), entryLs[foeI]);   // edge-leading mirror from the entry record's signed spin (2026-10-22); entry chain pose from the pre-tick stash (this pass reads the sub=-1 record, which has no auditFl row)
             let best = Infinity;
             for (let ci = 0; ci < circB.length; ci += 3) {
               const d = Math.hypot(st.x - circB[ci], st.y - circB[ci + 1]) - circB[ci + 2];

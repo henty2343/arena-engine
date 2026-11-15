@@ -22,7 +22,7 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.9k (compute
 - scripts/ (1): `run-battery.mjs`
 - tools/ (11, incl. doc/ and lib/): `gen-codemap.mjs` · `gen-state.mjs` · `lint-docs.mjs` · `lint-markers.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/docset.mjs` · `lib/load-sim.mjs` · `lib/manifest.mjs` · `lib/strip-comments.mjs`
 - scratch/: gitignored RUNTIME temp dir (bake/gate temp copies, battery logs) — not source; nothing in it is tracked except `.gitkeep`.
-- .qa/ proofs (18): `bake-rows.mjs` · `contact-proof.mjs` · `fingerprint.mjs` · `flip-seeds.mjs` · `flipproof.mjs` · `frame-proof.mjs` · `inscribe.mjs` · `law-proof.mjs` · `leadproof.mjs` · `lengrow-bake.mjs` · `lengrow-build-proof.mjs` · `lengrow-gate.mjs` · `lengrow-proof.mjs` · `pair-proof.mjs` · `seam-proof.mjs` · `shot-proof.mjs` · `stride-proof.mjs` · `strip-hash.mjs`
+- .qa/ proofs (19): `bake-rows.mjs` · `contact-proof.mjs` · `fingerprint.mjs` · `flip-seeds.mjs` · `flipproof.mjs` · `frame-proof.mjs` · `inscribe.mjs` · `law-proof.mjs` · `leadproof.mjs` · `lengrow-bake.mjs` · `lengrow-build-proof.mjs` · `lengrow-gate.mjs` · `lengrow-proof.mjs` · `lenstep-proof.mjs` · `pair-proof.mjs` · `seam-proof.mjs` · `shot-proof.mjs` · `stride-proof.mjs` · `strip-hash.mjs`
 - .qa/ baselines (1): `fp-flailfix-r88.json`
 - Probe registry: `tools/manifest.json` — every proof and tool in one list: what it asserts, whether the battery runs it, whether a law row may cite it, whether an agent may run it. Read it before running anything; `tools/lib/manifest.mjs` loads it and checks it is complete.
 

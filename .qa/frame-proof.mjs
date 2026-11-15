@@ -150,8 +150,9 @@ for (const [name, weapons, seed] of CELLS) {
     if (phaseBefore === 'fight' && p[0].alive && p[1].alive && p[0].w && p[1].w) {
       T.rendered++;
       if (crossed) T.cRendered++; else T.gRendered++;
-      const qA = { x: p[0].x, y: p[0].y, ang: p[0].ang, w: p[0].w, fl: p[0].fl, fp: geom.leadFlip(p[0].w, p[0].spin) };
-      const qB = { x: p[1].x, y: p[1].y, ang: p[1].ang, w: p[1].w, fl: p[1].fl, fp: geom.leadFlip(p[1].w, p[1].spin) };
+      /* lenStep-r1: ls is the PRE-tick lenStep (captured with the pose above) - without it a grown chain is rebuilt short and the band overlap is overstated (.qa/lenstep-proof.mjs guards it) */
+      const qA = { x: p[0].x, y: p[0].y, ang: p[0].ang, w: p[0].w, fl: p[0].fl, fp: geom.leadFlip(p[0].w, p[0].spin), ls: p[0].ls };
+      const qB = { x: p[1].x, y: p[1].y, ang: p[1].ang, w: p[1].w, fl: p[1].fl, fp: geom.leadFlip(p[1].w, p[1].spin), ls: p[1].ls };
       const g = geom.parryGap(qA, qB).gap;
       if (g < 0) {
         T.overlaps++;
