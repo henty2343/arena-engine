@@ -38,7 +38,8 @@ Follow-ups: #749 = 4cc98d5 (index titles, mf-2 line re-paragraphed, AGENTS/READM
   #757 = 0d0be4d: DOCS ONLY - records the owner's 2026-11-15 --solidity re-run on the fixed stride (integrity check PASS; every other count unchanged), the SECOND harness drift it led to (measure.mjs and frame-proof's C3 pose never pass the fighter's lenStep, so a grown chain is rebuilt short), and RETRACTS #756's claim that law 3 is a real band red at 27.399px (with lenStep that tick has 2.415px of clearance). Confirmed on origin as 0d0be4d.
   #758 = a3d484c: the lenStep FIX, HARNESS-SIDE ONLY (the canonical is untouched) - measure.mjs stashes each fighter's lenStep at the pre-tick instant (entryLs, beside entryFl) and passes it to every chain-aware bladeCircles/parryGap recompute; frame-proof's C3 pose passes the ls it already captured; new .qa/lenstep-proof.mjs (battery step 15) asserts the sites and the method. Re-measured frame-proof C3 (the re-baseline): worst 18.041px -> 15.505px, visible band ticks 43 -> 35 (0.0630% -> 0.0513%), crossed-cell band worst 18.041px -> 9.764px, overlaps 287 unchanged, the S3 counters unchanged. measure.mjs was NOT run; the owner's re-run is owed. Confirmed on origin as a3d484c.
   #759 = 708d4b9: DOCS ONLY - the 2026-11-15 solidity re-run on the lenStep fix (exit 0, 657.2s, 109 battles) and the owner's defect-tracker ruling (no calibrated band; viewer-visible interpenetration or damage-without-contact is a tracked defect; D1 infeasible pin 26.100px at axe vs wand, D2 phantom shot hits 495, D3 whiff-swats 43, D4 visible shot-render overlaps; sequence: probe 1s/2s, rotational-DOF design probe, canonical fixes, balance pass). Confirmed on origin as 708d4b9.
-  #760 (this file's last update): DOCS ONLY - sequence item (a) CLOSED: the read-only 1s/2s diagnostic (throwaway scratch-measure.mjs, wand+bow 8 seeds) proved D2/D3 are substep displacement artifacts - the sim fires land/swat events correctly but the event stores the shot's post-substep position, so recomputes from stored fields show false positives (logged gaps 0.05px to 52.20px); the viewer never sees damage without contact. D2/D3 reclassified as disclosed audit artifacts; D1 (26.100px pin) and D4 stay open; next is (b) the rotational-DOF design probe. Its own commit hash is not known to
+  #760 = 77cc38d: DOCS ONLY - sequence item (a) CLOSED: the read-only 1s/2s diagnostic (throwaway scratch-measure.mjs, wand+bow 8 seeds) proved D2/D3 are substep displacement artifacts - the sim fires land/swat events correctly but the event stores the shot's post-substep position, so recomputes from stored fields show false positives (logged gaps 0.05px to 52.20px); the viewer never sees damage without contact. D2/D3 reclassified as disclosed audit artifacts; D1 (26.100px pin) and D4 stay open; next is (b) the rotational-DOF design probe. Confirmed on origin as 77cc38d.
+  #761 (this file's last update): chore+docs - removes diag-1s.cjs, land-760.cjs and scratch-measure.mjs, the three throwaway diagnostics #760's git add -A committed by accident; section 8 gains the scratch-before-add gotcha. Its own commit hash is not known to
   this file (a file cannot contain its own commit) - verify origin.
 Next: the DEFECT SEQUENCE - (b) read-only rotational-DOF design probe for the infeasible pin (D1), (c) canonical fixes one at a time with re-baseline, (d) balance/trait pass - or frame-proof's 2,500-tick horizon, or the rest of Batch 4's tool MOVES — §7.
 Delivery: ONE patch (§6) — read §6.7 first: the owner copies patches out of CHAT.
@@ -116,6 +117,8 @@ measure.mjs a383fe19cdf7cfdc642c3565bfa0d9fe · frame-proof b736f099b42acfb8d096
 State after the #759 patch (BASE a3d484c; re-measure, do not trust): DOCS ONLY. Every file other than the two handoff files is byte-identical to the #758 block above (measure.mjs a383fe19cdf7cfdc642c3565bfa0d9fe, frame-proof b736f099b42acfb8d096c9c4ff43ee3f, lenstep-proof 0b83efa69f70f0ddb6c2f264dfa6dea2, manifest.json a2b47333be5ad7f9cd9c2c4a4e1e8752, STATE 62c2d508632313cbbb0dfa156bea1085). The two handoff files are not listed (a file cannot hold its own md5). Receipts: verify --quick PASS (6 checks); no code, probe or generated file touched, so no controls; the battery was not run (the canonical is untouched).
 
 State after the #760 patch (BASE 708d4b9; re-measure, do not trust): DOCS ONLY. Every file other than the two handoff files is byte-identical to the #758/#759 blocks above (measure.mjs a383fe19cdf7cfdc642c3565bfa0d9fe, frame-proof b736f099b42acfb8d096c9c4ff43ee3f, lenstep-proof 0b83efa69f70f0ddb6c2f264dfa6dea2, manifest.json a2b47333be5ad7f9cd9c2c4a4e1e8752, STATE 62c2d508632313cbbb0dfa156bea1085). The two handoff files are not listed (a file cannot hold its own md5). Receipts: verify --quick PASS (6 checks); no code, probe or generated file touched, so no controls; the battery was not run (the canonical is untouched); the 1s/2s diagnostic was a throwaway scratch run, not a probe.
+
+State after the #761 patch (BASE 77cc38d; re-measure, do not trust): the three throwaway scripts are gone (diag-1s.cjs, land-760.cjs, scratch-measure.mjs); every other file is byte-identical to the #758/#759/#760 blocks above (measure.mjs a383fe19cdf7cfdc642c3565bfa0d9fe, frame-proof b736f099b42acfb8d096c9c4ff43ee3f, lenstep-proof 0b83efa69f70f0ddb6c2f264dfa6dea2, manifest.json a2b47333be5ad7f9cd9c2c4a4e1e8752, STATE 62c2d508632313cbbb0dfa156bea1085). The two handoff files are not listed (a file cannot hold its own md5). Receipts: verify --quick PASS (6 checks); no code, probe or generated file touched beyond the removals, so no controls; the battery was not run (the canonical is untouched).
 
 ## 0. The record is a SET (since 3c)
 
@@ -360,6 +363,7 @@ contract. Leave record content alone.
   The cap is per line, so a PARTIAL re-join slips through (measured in controls on a copy): 2 or 5 re-joined lines stay green (1,120 / 2,789 bytes), 6 (3,348) or 26 (14,343) fail. Do not re-join.
 - Line cap (B3E): LINE_CAP = 3000 BYTES (Buffer.byteLength, so 1,501 two-byte characters fail), applied to docs/GAMES.md + docs/history/*.md via the docset glob. Check-only; never edit an era file to satisfy it except whitespace-only. Run docreflow before lint if a new GAMES entry trips it.
 - Cosmetic: .qa/fingerprint.mjs (~line 33) mentions many dated checkpoints; one live baseline. Harmless.
+- Owner-machine hygiene (#761): `git add -A` on the owner's Windows box sweeps throwaway diagnostics into the commit - #760 took diag-1s.cjs, land-760.cjs and scratch-measure.mjs that way (they sat in the repo root; the .txt reports had already moved to scratch/). Move scratch to scratch/ (gitignored) or `git add` explicit paths before committing; measure/diag reports never enter the repo.
 - measure.mjs and frame-proof's C3 recompute contacts from stored poses and, since #758, pass the PRE-TICK lenStep (§7, THE lenStep FIX). Residue: a hit that adds a link (the event stores the post-grow chain pose; the hit event is built after grow()) and any event or substep after an in-tick grow are not exact; .qa/lenstep-proof.mjs reports the count. The 2026-11-15 owner re-run on the lenStep fix confirmed it (law 1 111 -> 12, law 2 117 -> 3, law 2s 116 -> 43, law 4 283 -> 66); the residue and the new defect tracker live in section 7 (THE OWNER'S RE-RUN / THE DEFECT-TRACKER RULING). The owner runs measure.mjs in cmd.exe with plain `>` redirects (never Git Bash `tee`, never PowerShell; GAMES) and captures `echo exit=%errorlevel%`; agents never run it.
 - Sandbox: the execution tool can vanish for whole turns; /tmp gets wiped between calls — re-bootstrap
   and WRITE RECEIPTS INTO YOUR REPLY IMMEDIATELY. Dropped tool output (`execute error`) = UNVERIFIED.
@@ -380,9 +384,9 @@ New-chat prompt (the whole thing):
 
     Clone https://github.com/henty2343/arena-engine.git and read docs/handoff/HANDOFF.md and
     docs/handoff/BATCH3-STATUS.md fully. Run the freshness check at the top of HANDOFF.md - origin HEAD
-    and the commit that last updated docs/handoff/HANDOFF.md MUST MATCH. The last landing is #760 (docs
-    only: sequence item (a) closed, D2/D3 reclassified as substep displacement artifacts), whose parent is
-    708d4b9 (#759, docs only: the 2026-11-15 solidity re-run and the defect-tracker ruling); re-measure the hash, and if the two differ, something else landed -
+    and the commit that last updated docs/handoff/HANDOFF.md MUST MATCH. The last landing is #761 (removes
+    the throwaway diagnostics #760 swept in; scratch-before-add gotcha), whose parent is 77cc38d (#760, docs only:
+    sequence item (a) closed); re-measure the hash, and if the two differ, something else landed -
     re-baseline from STATE.md and say what moved. The repo outranks any attached or pasted notes. Also
     read AGENTS.md (the one workflow section: orient, propose, change, prove, deliver). Then propose the
     next item from HANDOFF s7 and wait for my explicit "go".
@@ -396,6 +400,7 @@ New-chat prompt (the whole thing):
     stores the shot's post-substep position, so recomputes from stored fields show false positives (logged gaps 0.05px
     to 52.20px); the viewer never sees damage without contact. D2/D3 are disclosed audit artifacts now; D1 (infeasible
     pin 26.100px at axe vs wand) and D4 (visible shot-render overlaps) remain the open defects.
+    #761 removed the three throwaway scripts #760's git add -A swept in and added the scratch-before-add gotcha.
     Open, none started: (1) read-only rotational-DOF design probe for the infeasible pin (D1); (2) frame-proof's
     2,500-tick horizon; (3) Batch 4: the .qa rename and the SPEC/CONTRACT/BUILD move (both need my OK for non-whitespace
     edits to frozen era files), verify.mjs as a manifest reader, the measure.mjs owner-go flag. Do not start any work
@@ -403,9 +408,9 @@ New-chat prompt (the whole thing):
 
 ## 10. Where we are / next action
 
-Landed through the #760 patch (docs only: sequence item (a) closed, D2/D3 reclassified as substep displacement artifacts), on top of #759 (708d4b9, docs only: the 2026-11-15 solidity re-run and the defect-tracker ruling), #758 (a3d484c, the harness-side lenStep fix), #757 (0d0be4d, docs only: the lenStep finding), #756 (24e1e67, the measure.mjs stride fix), #755 (ffc90ef, Batch 4a), #754 (46ffcd7) and #753 (the RENDERED-FRAME proof — new .qa/frame-proof.mjs proving C3's band and
+Landed through the #761 patch (removes the three throwaway diagnostics #760's git add -A swept in; adds the scratch-before-add gotcha), on top of #760 (77cc38d, docs only: sequence item (a) closed), on top of #759 (708d4b9, docs only: the 2026-11-15 solidity re-run and the defect-tracker ruling), #758 (a3d484c, the harness-side lenStep fix), #757 (0d0be4d, docs only: the lenStep finding), #756 (24e1e67, the measure.mjs stride fix), #755 (ffc90ef, Batch 4a), #754 (46ffcd7) and #753 (the RENDERED-FRAME proof — new .qa/frame-proof.mjs proving C3's band and
 measuring law 3s), on top of 361cbcb (#752, the law-table completion + the probe registry) and c2bcf57
-(the handoff refresh). This file was last updated by #760 — that is the patch below. The
+(the handoff refresh). This file was last updated by #761 — that is the patch below. The
 freshness check's two hashes always match ON ORIGIN, because this file is updated in the same commit as
 every landing. Verify origin HEAD against the hash that last updated this file; if they differ, more
 landed — re-baseline from STATE.md and say what moved.
