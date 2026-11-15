@@ -114,6 +114,7 @@ const T = {
   parries: 0,
   sBlade: 0, sBody: 0, sRim: 0, sPair: 0, sWorst: 0, sFrames: 0, sShots: 0,
   sNailNail: 0, sCross: 0, sFlightBlade: 0,
+  bloomTicks: 0, bloomOverlaps: 0, bloomVis: 0, bloomWorst: 0, sBladeBloom: 0,   // bloom-r73 exemption (#765): solid-free pair, counted apart
 };
 const notes = [];
 const perCell = [];
@@ -141,7 +142,7 @@ for (const [name, weapons, seed] of CELLS) {
     const p = [];
     for (let fi = 0; fi < 2; fi++) {
       const f = G.fighters[fi];
-      p.push({ x: f.pos.x, y: f.pos.y, ang: f.wAngle, w: f.weapon, spin: f.spin,
+      p.push({ x: f.pos.x, y: f.pos.y, ang: f.wAngle, w: f.weapon, spin: f.spin, figT: f.figT,
                fl: f.fl ? f.fl.u.slice() : null, ls: f.lenStep, alive: f.alive });
     }
     tick(G);
@@ -154,7 +155,11 @@ for (const [name, weapons, seed] of CELLS) {
       const qA = { x: p[0].x, y: p[0].y, ang: p[0].ang, w: p[0].w, fl: p[0].fl, fp: geom.leadFlip(p[0].w, p[0].spin), ls: p[0].ls };
       const qB = { x: p[1].x, y: p[1].y, ang: p[1].ang, w: p[1].w, fl: p[1].fl, fp: geom.leadFlip(p[1].w, p[1].spin), ls: p[1].ls };
       const g = geom.parryGap(qA, qB).gap;
-      if (g < 0) {
+      const bloomPair = p[0].figT > 0 || p[1].figT > 0;   // bloom-r73 (#765): a bloomed fighter at tick entry makes the pair SOLID-FREE (bladeVsBlade returns on figT > 0) and the drawn weapon is the joke object
+      if (bloomPair) T.bloomTicks++;
+      if (g < 0 && bloomPair) {
+        T.bloomOverlaps++; if (-g > INK) T.bloomVis++; if (-g > T.bloomWorst) T.bloomWorst = -g;
+      } else if (g < 0) {
         T.overlaps++;
         if (-g > T.worst) T.worst = -g;
         const vis = -g > INK;
@@ -212,7 +217,8 @@ for (const [name, weapons, seed] of CELLS) {
             if (d < best) best = d;
           }
           const gB = best - st.r;
-          if (gB < 0) {
+          if (gB < 0 && p[foeI].figT > 0) T.sBladeBloom++;   // bloom-r73 (#765): a bloomed blade swats nothing; counted apart
+          else if (gB < 0) {
             T.sBlade++;
             if (-gB > T.sWorst) T.sWorst = -gB;
             if (!atRest) { T.sFlightBlade++; if (notes.length < 8) notes.push(`${name} s${seed}: a shot in flight (sid ${st.sid}) overlapped the foe blade by ${(-gB).toFixed(2)}px`); }
@@ -273,7 +279,8 @@ ok('S3 the reported law-3s counters did not grow past the recorded baseline',
 
 console.log(`\n${pass}/${pass + fail} passed`);
 console.log('C3 per-cell band worst: ' + perCell.filter(c => c.bandN).map(c => `${c.name} s${c.seed}: ${c.bandWorst.toFixed(2)}px/${c.bandVis}v`).join(' | '));
-console.log(`C3 CALIBRATION NOTE: the owner's audit binds the band-class worst under ${BAND_MAX}px (measure.mjs's contact law 3); on the curated gauntlet this build measures ${T.gBandWorst.toFixed(3)}px, so that stricter bound does NOT hold today - the law's own disclosed envelope (${RED_MAX}px) is what this probe gates.`);
+console.log(`C3 CALIBRATION NOTE: the owner's audit binds the band-class worst under ${BAND_MAX}px (measure.mjs's contact law 3); on the curated gauntlet this build measures ${T.gBandWorst.toFixed(3)}px, so that stricter bound ${T.gBandWorst < BAND_MAX ? 'holds' : 'does NOT hold'} on this sample (bloom-r73 pairs are exempt and counted apart, #765; the owner retired the 6px and 20.754px calibrations on 2026-11-15 - the envelope (${RED_MAX}px) is still what this probe gates).`);
+console.log(`C3 bloom exemption (#765, bloom-r73: the pair is solid-free by design): ${T.bloomTicks} rendered tick(s) with a bloomed fighter, ${T.bloomOverlaps} real-geometry overlap(s), ${T.bloomVis} visible, worst ${T.bloomWorst.toFixed(3)}px - counted apart, NOT in the band or the counters below; law 3s: ${T.sBladeBloom} shot-vs-bloomed-blade overlap(s) counted apart`);
 console.log(`C3 detail: ${T.overlaps} overlap(s) over ${T.rendered} rendered tick(s), ${T.vis} visible (>${INK}px), worst ${T.worst.toFixed(3)}px; ` +
             `mirror class ${T.mirror} (${T.mirrorVis} visible, worst ${T.mirrorWorst.toFixed(3)}px) EXCLUDED from the band, as the owner excludes it; ${T.parries} parry event(s) seen`);
 console.log(`S3 detail: the law-3s counters are blade ${T.sBlade} · body ${T.sBody} · rim ${T.sRim} · pair ${T.sPair} (worst ${T.sWorst.toFixed(3)}px) over ${T.sFrames} shot-bearing frame(s) with ${T.sShots} shot(s); ` +
@@ -283,6 +290,7 @@ if (notes.length) { console.log('notes:'); notes.slice(0, 8).forEach(n => consol
 if (fail) { console.log(`${fail} FAILED`); process.exit(1); }
 console.log(`Read-only: nothing written, measure.mjs untouched. ${T.rendered} rendered tick(s) over ${CELLS.length} cell(s).`);
 console.log(JSON.stringify({ check: 'frame-proof', pass, fail, ok: fail === 0,
+  bloomTicks: T.bloomTicks, bloomOverlaps: T.bloomOverlaps, bloomVis: T.bloomVis, bloomWorst: +T.bloomWorst.toFixed(3), sBladeBloom: T.sBladeBloom,
   rendered: T.rendered, overlaps: T.overlaps, vis: T.vis, worst: +T.worst.toFixed(3),
   gBandWorst: +T.gBandWorst.toFixed(3), gBandVis: T.gBandVis, gRendered: T.gRendered,
   cBandWorst: +T.cBandWorst.toFixed(3), mirror: T.mirror,

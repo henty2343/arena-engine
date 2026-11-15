@@ -100,6 +100,14 @@
       "about": "The audit rebuilds a GROWN chain at its true length: every chain-aware recompute site in measure.mjs and frame-proof carries lenStep, and on real fights a hit or parry recomputed with the pre-tick lenStep is an exact touch (link-add ticks are reported, not asserted), with a without-lenStep vacuity check and a mutated-source control that must fail."
     },
     {
+      "name": "bloom-proof",
+      "file": ".qa/bloom-proof.mjs",
+      "exit": 0,
+      "battery": true,
+      "citable": false,
+      "about": "The harness-side bloom exemption (bloom-r73): measure.mjs and frame-proof classify a pair with a bloomed fighter at tick entry (figT > 0) as solid-free by design and count it apart from the law 3 / 3s counters. Asserts the exemption sites by source, that no parry fires on bloomed ticks, that natural seed 27 reproduces the D1 anchor (26.100px at G.t 4941, axe bloomed), and a mutated-source control that must fail. The drawn joke object's own silhouette is not measured."
+    },
+    {
       "name": "chromecheck",
       "file": "chromecheck.mjs",
       "exit": 0,

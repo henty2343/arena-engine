@@ -236,6 +236,7 @@ let phantomHits = 0, worstHitGap = -Infinity;
 let parryNoTouch = 0, parryGapMax = -Infinity, parryGapMin = Infinity;
 let cMismatch = 0, stuckFlagMismatch = 0;
 let polyOverlap = 0, polyTicks = 0, polyWorst = 0;   // law 3: rendered fight-ticks / overlaps / worst depth — one class, every weapon is a path silhouette since v0.9
+let bloomPairTicks = 0, bloomOverlap = 0, bloomVis = 0, bloomWorst = 0, shotRenderBladeBloom = 0;   /* bloom-r73 exemption (2026-11-15, #765): law 3 / 3s on a pair with a bloomed (figT > 0 at tick entry) fighter. The sim makes that pair SOLID-FREE on purpose (bladeVsBlade returns on figT > 0, :2209) and draws the joke object, not the real weapon the audit's geometry rebuilds - so those overlaps are COUNTED HERE and kept OUT of the law-3 band/visible counters and the law-3s blade counter. Reported, never silently dropped. */
 let polyOverlapVis = 0;   // law 3 (2026-10-21 whip amendment): overlaps DEEPER than the 3px ink outline (>2.5px) — the visible class; sub-ink depths are the disclosed whip transient
 let subOverlap = 0, subOverlapWorst = 0;
 /* chain-pose coverage (2026-10-28 chain fix). The law recomputes read the
@@ -344,8 +345,9 @@ const ACC_ADD = ['battles', 'rounds', 'hitsTotal', 'parriesTotal', 'subSnaps',
   'budgetViol', 'maxSubEngaged', 'launchOffMid', 'rangedMeleeHits', 'rangedShoves',
   'chainPoseTicks', 'chainPoseSubs', 'chainShotEntries', 'flMissing',
   'polyFlipOverlap', 'polyFlipVis',
-  'bandN', 'bandParryNotLastSub', 'bandNoLead'];
-const ACC_MAX = ['worstHitGap', 'parryGapMax', 'polyWorst', 'polyFlipWorst', 'polyBandWorst', 'subOverlapWorst',
+  'bandN', 'bandParryNotLastSub', 'bandNoLead',
+  'bloomPairTicks', 'bloomOverlap', 'bloomVis', 'shotRenderBladeBloom'];
+const ACC_MAX = ['worstHitGap', 'parryGapMax', 'polyWorst', 'polyFlipWorst', 'polyBandWorst', 'subOverlapWorst', 'bloomWorst',
   'shotWorstGap', 'swatWorstGap', 'shotRenderWorst', 'launchWorst'];
 const ACC_MIN = ['parryGapMin', 'swatBestGap'];
 function accSnapshot() {
@@ -361,7 +363,8 @@ function accSnapshot() {
     launchOffMid, launchWorst, rangedMeleeHits, rangedShoves,
     chainPoseTicks, chainPoseSubs, chainShotEntries, flMissing,
     polyFlipOverlap, polyFlipVis, polyFlipWorst, polyBandWorst,
-    bandN, bandParryNotLastSub, bandNoLead };
+    bandN, bandParryNotLastSub, bandNoLead,
+    bloomPairTicks, bloomOverlap, bloomVis, bloomWorst, shotRenderBladeBloom };
 }
 function accZero() {
   const t = {};
@@ -435,6 +438,7 @@ function runMatch(api, seed, weapons) {
   const idxOfSub = new Map();
   const entry = [];                  // shot entry-frame slots (objects reused)
   const entryLs = [0, 0];            // each fighter's lenStep at tick entry (pre-tick stash; events do not carry it) - lenStep-r1: the growth step bladeCircles/parryGap need to rebuild a GROWN chain at its true length
+  const entryFig = [false, false];   // bloom-r73: each fighter's transfiguration at tick entry (figT > 0) - the joke object makes the pair solid-free (bladeVsBlade :2209), so law 3/3s exempt it (#765)
   const entryFl = [_flRest(), _flRest()];   // the sub=-1 entry record's chain poses — flailInit's rest constant until the first stash
 
   const gapAt = (S, i, fl0, fl1, ls0, ls1) => geom.parryGap(
@@ -594,6 +598,7 @@ function runMatch(api, seed, weapons) {
     for (let fi = 0; fi < 2; fi++) {
       const f = G.fighters[fi];
       if (f && f.fl) { const u = f.fl.u, d = entryFl[fi]; for (let q = 0; q < FL_SLOTS; q++) d[q] = u[q]; }
+      if (f) entryFig[fi] = f.figT > 0;   // bloom-r73 exemption (#765): read at the same pre-tick instant as the pose it classifies
       if (f) entryLs[fi] = f.lenStep || 0;   // lenStep-r1: the same pre-tick instant; exact for the entry pose, and for an event/substep until the first grow of the tick (a hit grows the attacker AFTER its contact test)
     }
     tick(G); t++;
@@ -779,9 +784,13 @@ function runMatch(api, seed, weapons) {
            * silhouette) — audited against the disclosed band in the checks. */
           if (aAlive && bAlive) {
             polyTicks++;
+            if (entryFig[0] || entryFig[1]) bloomPairTicks++;
             if (WEAPONS[curW[0]].chain || WEAPONS[curW[1]].chain) chainPoseTicks++;
             const g = gapAt(S, i, entryFl[0], entryFl[1], entryLs[0], entryLs[1]);   // the RENDERED pose — entry chain poses from the pre-tick stash
-            if (g < 0) {
+            if (g < 0 && (entryFig[0] || entryFig[1])) {
+              /* bloom-r73 exemption (#765): solid-free by design; counted, not folded into the law-3 band */
+              bloomOverlap++; if (-g > 2.5) bloomVis++; if (-g > bloomWorst) bloomWorst = -g;
+            } else if (g < 0) {
               polyOverlap++; if (-g > polyWorst) polyWorst = -g;
               const vis = -g > 2.5;
               if (vis) polyOverlapVis++;
@@ -921,7 +930,8 @@ function runMatch(api, seed, weapons) {
               if (d < best) best = d;
             }
             const gB = best - st.r;
-            if (gB < 0) { shotRenderBlade++; if (-gB > shotRenderWorst) shotRenderWorst = -gB; }
+            if (gB < 0 && entryFig[foeI]) shotRenderBladeBloom++;   // bloom-r73 (#765): a bloomed blade swats nothing - the shot passes the real blade; counted apart
+            else if (gB < 0) { shotRenderBlade++; if (-gB > shotRenderWorst) shotRenderWorst = -gB; }
             const gBody = Math.hypot(st.x - S[FX], st.y - S[FY]) - CFG.bodyR - st.r;
             if (gBody < 0) { shotRenderBody++; if (-gBody > shotRenderWorst) shotRenderWorst = -gBody; }
           }
@@ -1063,7 +1073,8 @@ async function runAll(api, opts) {
      launchOffMid, launchWorst, rangedMeleeHits, rangedShoves,
      chainPoseTicks, chainPoseSubs, chainShotEntries, flMissing,
      polyFlipOverlap, polyFlipVis, polyFlipWorst, polyBandWorst,
-     bandN, bandParryNotLastSub, bandNoLead } = merged);
+     bandN, bandParryNotLastSub, bandNoLead,
+     bloomPairTicks, bloomOverlap, bloomVis, bloomWorst, shotRenderBladeBloom } = merged);
 
   const results = [], detR = [];
   const forcedCells = {};
@@ -1212,6 +1223,7 @@ async function runAll(api, opts) {
   L.push(`[${pf(phantomHits === 0)}] contact law 1: damage only on weapon-touches-body (0 phantom hits)`);
   L.push(`[${pf(parryNoTouch === 0)}] contact law 2: parry only on exact weapon-weapon touch (0 fired with slack)`);
   if (polyTicks) L.push(`[${pf(polyBandWorst < 6 && (polyOverlapVis - polyFlipVis) / Math.max(1, polyTicks) <= 0.02)}] contact law 3: VISIBLE rendered interpenetration (deeper than the 3px ink outline, >2.5px) worst ${polyWorst.toFixed(3)}px (<6px) on ${polyOverlapVis}/${polyTicks} fight-ticks (<=2%) — the disclosed infeasible-pin band (calibration history in the archive); mutation-tested with the resolver disabled at 22.83px worst. Sub-ink overlaps (<=2.5px, inks crossing = contact visible, depth inside the outline) are the disclosed pin-whip transient (2026-10-21 amendment): ${polyOverlap}/${polyTicks} (${f2(100 * polyOverlap / Math.max(1, polyTicks))}%), worst ${polyWorst.toFixed(3)}px. BOTH figures now exclude the named edge-leading MIRROR class (2026-10-28): the band is judged on the ${polyTicks} rendered ticks, excluding the overlaps the mechanism explains (worst ${polyBandWorst.toFixed(3)}px, visible ${polyOverlapVis - polyFlipVis}), and the mirror class is disclosed separately at ${polyFlipOverlap} overlap(s) / ${polyFlipVis} visible / worst ${polyFlipWorst.toFixed(3)}px — proven per occurrence (a parry at the previous tick's last substep + a flagged weapon + the pre-flip pose clearing the ink), a consequence of the owner-accepted CFG.flipMs trade (sim hitbox at truth, art sweeping over 180ms), and measured never drawn: .qa/chainlaw.mjs Part F's worst drawn gap across the sweep is -0.149px, sub-ink. The class is NOT depth-gated — a shift bound would be vacuous (the javelin's mirror moves its butt circles 144px) — so it is reported in full and any growth in its count is the regression signal`);
+  L.push(`[----] bloom-r73 exemption (law 3 / 3s, #765): ${bloomPairTicks} rendered fight-tick(s) had a bloomed fighter at tick entry (the pair is solid-free by design - bladeVsBlade returns on figT > 0 - and the drawn weapon is the joke object, not the real geometry the audit rebuilds); of those ${bloomOverlap} had a real-geometry overlap, ${bloomVis} visible (>2.5px), worst ${bloomWorst.toFixed(3)}px - COUNTED HERE and NOT in the law-3 line above; law 3s: ${shotRenderBladeBloom} shot-vs-blade overlap(s) against a bloomed foe blade, NOT in the 3s blade counter. The drawn joke object's own silhouette vs the foe's weapon is not measured.`);
   L.push(`[${pf(flMissing === 0)}] harness chain-pose integrity (2026-10-28): every chain-weapon law recompute got the sim's own stored pose — events aFl/bFl/fFl, G.auditFl rows per substep, the stashed entry pose for laws 3/3s — 0 missing across ${chainPoseTicks} rendered chain ticks + ${chainPoseSubs} chain substeps + ${chainShotEntries} chain-foe shot checks, so no recompute silently degraded to the rigid spine (the cause of the 2026-10-27 red set; instrument .qa/chainlaw.mjs)`);
   L.push(`[${pf(cMismatch === 0 && stuckFlagMismatch === 0)}] contact law 4: one damage per touch, re-arm only after clearing the body AND deep-disengaging (peak clearance >= reArmDeep or >= reArmWait ticks out — owner 2026-10-23; projectile-weapon spines and the shield shove without damage, gate included — replica mirrors the sim gate exactly, owner 2026-10-19)`);
   L.push(`[${pf(flipViol === 0 && magViol === 0 && signLawViol === 0 && zeroSpins === 0)}] contact law 5: every parry recoils both spins; spins change sign ONLY at parries; never zero`);
