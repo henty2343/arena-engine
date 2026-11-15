@@ -8,8 +8,8 @@ tools; an unlisted file there fails lint). Freshness: `git log -1 --format='%h %
 Status as of 2026-11-14: (a) DONE (0ddd7f5, #746) · (b) DONE (9e017bb, #742) · (d) DONE (f756e21, #747)
 · (c) DONE (68e29f9, #748). Nothing remains in Batch 3. Its follow-ups: #749 DONE (4cc98d5) · #750 DONE (4f38866) ·
 #751 DONE (63bb91c) · #752 DONE (361cbcb, the law-table completion + the probe registry) ·
-#753 DONE (477c34a, the RENDERED-FRAME proof) · #754 DONE (46ffcd7, the measure.mjs header + the owner-go solidity run) · #755 DONE (ffc90ef, Batch 4a: RECIPES Traps -> short rules + AGENTS as the one workflow home) · #756 DONE (24e1e67, the measure.mjs stride fix) · #757 DONE (0d0be4d, docs only - the lenStep finding and the retraction of #756's law 3 claim) · #758 DONE (this commit: the lenStep fix, harness-side).
-Next: the owner's re-run of --solidity on the lenStep fix, then the S3 and band RULINGS (held until re-measured), then Batch 4's tool moves — HANDOFF §7.
+#753 DONE (477c34a, the RENDERED-FRAME proof) · #754 DONE (46ffcd7, the measure.mjs header + the owner-go solidity run) · #755 DONE (ffc90ef, Batch 4a: RECIPES Traps -> short rules + AGENTS as the one workflow home) · #756 DONE (24e1e67, the measure.mjs stride fix) · #757 DONE (0d0be4d, docs only - the lenStep finding and the retraction of #756's law 3 claim) · #758 DONE (a3d484c, the lenStep fix, harness-side) - #759 DONE (this commit: docs only - the 2026-11-15 solidity re-run on the lenStep fix and the defect-tracker ruling).
+Next: the DEFECT SEQUENCE - (a) read-only probe of 1s/2s, (b) rotational-DOF design probe for the infeasible pin, (c) canonical fixes, (d) balance/trait pass - or frame-proof's 2,500-tick horizon, or the rest of Batch 4's tool moves — HANDOFF §7.
 The Batch 2 ledger is the appendix below, carried verbatim. STATE.md and docs/CODEMAP.md
 are authoritative for every number.
 
@@ -25,7 +25,15 @@ pose (C3 → `partial`) and MEASURES law 3s, which does NOT hold on the current 
 `owner-run only`; the owner's ruling is open).
 Next: the S3 RULING, or Batch 4's tool moves.
 
-## #758 the lenStep fix (harness-side) + lenstep-proof - ledger (this commit)
+## #759 the 2026-11-15 solidity re-run on the lenStep fix + the defect-tracker ruling - ledger (this commit)
+
+What: DOCS ONLY, both handoff files. (1) Records the owner's 2026-11-15 --solidity re-run on the #758 lenStep fix (cmd.exe, exit=0, 657.2s wall, 109 battles, 8 workers, canonical md5 unchanged): law 1 phantom hits 111 -> 12, law 2 parries-without-touch 117 -> 3, law 2s swats-without-touch 116 -> 43, law 4 replica mismatches 283 -> 66 and stuck flags 123,260 -> 94,476; law 3 worst 27.399px -> 26.100px at natural seed 27 t4942 (axe vs wand, spins 6.5/-12.6, non-chain) with visible 614 -> 453; unchanged law 1s 495/2,849, law 3s 74.971px, law 4s 60, law 5 10, stall 5.26s. (2) Records the OWNER'S RULING: contact-exactness and solidity are hard product requirements - a viewer must never see weapons tunnel through each other or damage/parry/swat fire without visible contact; the calibrated band (6px / 20.754px) is RETIRED; law 3 becomes a DEFECT TRACKER. Open defects: D1 infeasible pin (26.100px, axe vs wand, translation-only projection with no rotational DOF), D2 phantom shot hits (495/2,849, cause unknown), D3 whiff-swats (43/1,837), D4 visible shot-render overlaps (law 3s body/blade subset). (3) Rewrites HANDOFF section 7 next-items as the sequence: (a) read-only probe of 1s/2s (classify real-vs-artifact), (b) read-only rotational-DOF design probe for D1, (c) canonical fixes one at a time with re-baseline, (d) balance/trait pass afterwards.
+Why: the re-run proved the lenStep fix removed ~90% of the phantom contacts and isolated the remaining reds to real defects; the old band stance described a limit the owner now rejects as product-acceptable.
+Approved: "go" after the ruling proposal (defect-tracker stance + sequence).
+Deviations: DOCS ONLY - no code, probe, canonical, LAWS, GAMES or generated file touched; the law table Status column unchanged (C3 partial, S3 owner-run only).
+Not verified: no proofs re-run (docs only); the run numbers are the owner's report, quoted verbatim.
+Rollback: `git revert` this commit.
+## #758 the lenStep fix (harness-side) + lenstep-proof - ledger (commit a3d484c)
 
 What: (1) measure.mjs: `entryLs`, each fighter's lenStep stashed at the pre-tick instant beside `entryFl`; passed as bladeCircles' 8th argument / the pose's `ls` at every chain-aware site (gapAt, gapAtFp, bandDump, the shot entry pass, the law 4 substep replica, and the hit, parry and swat event recomputes). (2) .qa/frame-proof.mjs: the C3 pose passes the `ls` it already captured, plus one comment. (3) New .qa/lenstep-proof.mjs (5 checks), registered in tools/manifest.json as battery step 15; STATE.md regenerated. (4) Both handoff files. No canonical, LAWS, GAMES or record file touched.
 Why: #757 found that a grown chain was rebuilt short by the harness (law 1 phantoms 24 -> 2 and law 2 parries without touch 25 -> 0 once lenStep is used), and that #756's law 3 red was an artifact; the S3 and band rulings are held until this is fixed and re-run.
