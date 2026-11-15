@@ -108,6 +108,14 @@
       "about": "The harness-side bloom exemption (bloom-r73): measure.mjs and frame-proof classify a pair with a bloomed fighter at tick entry (figT > 0) as solid-free by design and count it apart from the law 3 / 3s counters. Asserts the exemption sites by source, that no parry fires on bloomed ticks, that natural seed 27 reproduces the D1 anchor (26.100px at G.t 4941, axe bloomed), and a mutated-source control that must fail. The drawn joke object's own silhouette is not measured."
     },
     {
+      "name": "verdict-proof",
+      "file": ".qa/verdict-proof.mjs",
+      "exit": 0,
+      "battery": true,
+      "citable": false,
+      "about": "measure.mjs's law-3 and law-3s verdict lines are a DEFECT TRACKER (PASS at goal 0, FAIL on a regression vs the recorded 3b11f34 baseline, TRACK otherwise; #768). Never runs measure.mjs: asserts the call sites and the retired-gate removal by source, then runs the lifted verdict functions over 21 enumerated semantics cases (regression checked before the goal, px epsilon, fail-closed), pins the baseline, and catches 6 mutated copies. Bloom counters are not ratcheted."
+    },
+    {
       "name": "chromecheck",
       "file": "chromecheck.mjs",
       "exit": 0,

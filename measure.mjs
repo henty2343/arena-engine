@@ -60,13 +60,23 @@
  *   3 solidity             — blade-blade gap < 0 at tick-entry poses (the
  *                            sim's ground truth; since v0.8.2 the renderer
  *                            interpolates BETWEEN tick poses — see GAMES.md
- *                            pose amendment). Acceptance (one class since
- *                            v0.9 — every weapon is a path silhouette):
- *                            worst depth < 6px on <= 2% of fight-ticks, the
- *                            disclosed infeasible-pin band. Substep
+ *                            pose amendment). VERDICT = a DEFECT TRACKER
+ *                            (owner-delegated ruling, 2026-11-16, #768),
+ *                            three states: PASS = the goal is met (0 band-
+ *                            visible ticks, i.e. no non-mirror non-bloom
+ *                            overlap deeper than the 2.5px ink); FAIL = a
+ *                            REGRESSION of any tracked counter vs the
+ *                            recorded baseline (LAW3_BASE, the owner's
+ *                            2026-11-16 --solidity run on 3b11f34), checked
+ *                            BEFORE the goal; TRACK = otherwise, an open
+ *                            defect at or below baseline. Goal 0 stays the
+ *                            product requirement; the baseline is a
+ *                            regression TRIPWIRE, not an acceptance band.
+ *                            The retired 6px / 2% gate is gone. Substep
  *                            pre-resolution overlaps are reported as info:
  *                            the resolver eats them inside the same substep,
- *                            never rendered.
+ *                            never rendered. Bloom-pair counters stay on the
+ *                            exempt [----] line and are NOT ratcheted.
  *   4 one damage per touch — replica of the bladeStuck flag over every
  *                            substep pose; rising edges must equal hit events;
  *                            the replica mirrors the deep-disengage re-arm
@@ -92,7 +102,10 @@
  *      overlaps the foe blade, foe body, rim, or another shot; the sim's
  *      chosen substep count is audited against the blade AND projectile
  *      budget requirements every tick (auditK — the projectile term covers
- *      the worst shot-vs-shot PAIR since the 2026-10-19 mixed-speed fix)
+ *      the worst shot-vs-shot PAIR since the 2026-10-19 mixed-speed fix).
+ *      VERDICT = the same three-state DEFECT TRACKER as law 3 (#768): PASS
+ *      at 0 blade+body+rim+pair, FAIL on a regression of any counter or the
+ *      worst depth vs LAW3S_BASE (regression first), TRACK otherwise.
  *   4s every shot has exactly ONE accounted departure (landed / swatted /
  *      rim / cross / caught / cleared at the round roll) or is still in
  *      flight at the battle end — a shot vanishing without an event is the
@@ -1030,6 +1043,39 @@ const p90 = a => { if (!a.length) return NaN; const s = [...a].sort((x, y) => x 
 const pf = ok => ok ? 'PASS' : 'FAIL';
 const f2 = x => Number.isFinite(x) ? x.toFixed(2) : 'n/a';
 
+/* ---- DEFECT-TRACKER VERDICTS for law 3 / 3s (owner-delegated ruling 2026-11-16, #768) ----
+ * Three states instead of pass/fail against retired bounds: PASS = the goal is met (law 3: 0 band-visible
+ * ticks; 3s: 0 blade+body+rim+pair); FAIL = a REGRESSION of any tracked counter vs the recorded baseline,
+ * checked BEFORE the goal so a regression can never read as a pass; TRACK = otherwise (an open defect at or
+ * below baseline). Goal 0 remains the hard product requirement - the baseline is a regression TRIPWIRE,
+ * NOT an acceptance band. BASELINE = the owner's 2026-11-16 --solidity run on 3b11f34 (HANDOFF s7, #766).
+ * Integer counters compare exactly. px floats compare with a VEPS epsilon AND at the 3-decimal precision
+ * the baseline was recorded at (the report prints toFixed(3), so a raw compare would call a value that
+ * rounds to the baseline a regression whenever its true value sits above the rounded figure). A non-finite value fails closed (FAIL).
+ * Bloom counters (bloomOverlap/bloomVis/bloomWorst, shotRenderBladeBloom) are NOT tracked here (#765).
+ * The block between the two marker comments is self-contained: .qa/verdict-proof.mjs lifts and runs it. */
+/*VERDICT-BLOCK-BEGIN*/
+const LAW3_BASE = { bandVis: 42, bandWorst: 14.185, flipOverlap: 27, flipVis: 10, flipWorst: 11.559 };
+const LAW3S_BASE = { blade: 1296, body: 19609, rim: 54605, pair: 1061228, worst: 74.971 };
+const VEPS = 1e-6;
+const r3 = x => Math.round(x * 1000) / 1000;
+const worseInt = (x, base) => !(x <= base);
+const worsePx = (x, base) => !(r3(x) <= base + VEPS);
+function verdict3(c) {
+  const regressed = worseInt(c.bandVis, LAW3_BASE.bandVis) || worsePx(c.bandWorst, LAW3_BASE.bandWorst)
+    || worseInt(c.flipOverlap, LAW3_BASE.flipOverlap) || worseInt(c.flipVis, LAW3_BASE.flipVis)
+    || worsePx(c.flipWorst, LAW3_BASE.flipWorst);
+  if (regressed) return 'FAIL';
+  return c.bandVis === 0 ? 'PASS' : 'TRACK';
+}
+function verdict3s(c) {
+  const regressed = worseInt(c.blade, LAW3S_BASE.blade) || worseInt(c.body, LAW3S_BASE.body)
+    || worseInt(c.rim, LAW3S_BASE.rim) || worseInt(c.pair, LAW3S_BASE.pair) || worsePx(c.worst, LAW3S_BASE.worst);
+  if (regressed) return 'FAIL';
+  return c.blade + c.body + c.rim + c.pair === 0 ? 'PASS' : 'TRACK';
+}
+/*VERDICT-BLOCK-END*/
+
 async function runAll(api, opts) {
   const ids = [...api.WEAPON_IDS].sort();
   const list = buildBattleList(ids, opts);
@@ -1222,7 +1268,7 @@ async function runAll(api, opts) {
   if (forcedTotal) L.push(`[${pf(forcedTerm === forcedTotal)}] all ${forcedTotal} forced-cell battles terminate inside the ${BUDGET_SEC}s budget — EXPECTED RED until the balance pass: shield+shield cannot terminate and some projectile mirrors exhaust it (open question 1)`);
   L.push(`[${pf(phantomHits === 0)}] contact law 1: damage only on weapon-touches-body (0 phantom hits)`);
   L.push(`[${pf(parryNoTouch === 0)}] contact law 2: parry only on exact weapon-weapon touch (0 fired with slack)`);
-  if (polyTicks) L.push(`[${pf(polyBandWorst < 6 && (polyOverlapVis - polyFlipVis) / Math.max(1, polyTicks) <= 0.02)}] contact law 3: VISIBLE rendered interpenetration (deeper than the 3px ink outline, >2.5px) worst ${polyWorst.toFixed(3)}px (<6px) on ${polyOverlapVis}/${polyTicks} fight-ticks (<=2%) — the disclosed infeasible-pin band (calibration history in the archive); mutation-tested with the resolver disabled at 22.83px worst. Sub-ink overlaps (<=2.5px, inks crossing = contact visible, depth inside the outline) are the disclosed pin-whip transient (2026-10-21 amendment): ${polyOverlap}/${polyTicks} (${f2(100 * polyOverlap / Math.max(1, polyTicks))}%), worst ${polyWorst.toFixed(3)}px. BOTH figures now exclude the named edge-leading MIRROR class (2026-10-28): the band is judged on the ${polyTicks} rendered ticks, excluding the overlaps the mechanism explains (worst ${polyBandWorst.toFixed(3)}px, visible ${polyOverlapVis - polyFlipVis}), and the mirror class is disclosed separately at ${polyFlipOverlap} overlap(s) / ${polyFlipVis} visible / worst ${polyFlipWorst.toFixed(3)}px — proven per occurrence (a parry at the previous tick's last substep + a flagged weapon + the pre-flip pose clearing the ink), a consequence of the owner-accepted CFG.flipMs trade (sim hitbox at truth, art sweeping over 180ms), and measured never drawn: .qa/chainlaw.mjs Part F's worst drawn gap across the sweep is -0.149px, sub-ink. The class is NOT depth-gated — a shift bound would be vacuous (the javelin's mirror moves its butt circles 144px) — so it is reported in full and any growth in its count is the regression signal`);
+  if (polyTicks) L.push(`[${verdict3({ bandVis: polyOverlapVis - polyFlipVis, bandWorst: polyBandWorst, flipOverlap: polyFlipOverlap, flipVis: polyFlipVis, flipWorst: polyFlipWorst })}] contact law 3: VISIBLE rendered interpenetration (deeper than the 3px ink outline, >2.5px) - DEFECT TRACKER (goal: 0 band-visible ticks; #768): band visible ${polyOverlapVis - polyFlipVis}/${polyTicks} fight-ticks (baseline ${LAW3_BASE.bandVis}) worst ${polyBandWorst.toFixed(3)}px (baseline ${LAW3_BASE.bandWorst}) · mirror class ${polyFlipOverlap} overlap(s) (baseline ${LAW3_BASE.flipOverlap}) / ${polyFlipVis} visible (baseline ${LAW3_BASE.flipVis}) / worst ${polyFlipWorst.toFixed(3)}px (baseline ${LAW3_BASE.flipWorst}). PASS = goal met; FAIL = a REGRESSION of any counter vs the owner's 2026-11-16 --solidity baseline (3b11f34), checked before the goal; TRACK = an open defect at or below baseline (px compared at the baseline's 3-decimal precision). The baseline is a regression tripwire, NOT an acceptance band. Sub-ink overlaps (<=2.5px, inks crossing) are the disclosed pin-whip transient (2026-10-21 amendment), disclosed on the law-3 info line: ${polyOverlap}/${polyTicks} overlaps, worst ${polyWorst.toFixed(3)}px. The mirror class is a parry flipping a flagged weapon in the tick's last substep (sim truth, never drawn; Part F worst drawn gap -0.149px) and is ratcheted by count. Bloom-pair ticks are exempt and counted apart on the [----] line (#765).`);
   L.push(`[----] bloom-r73 exemption (law 3 / 3s, #765): ${bloomPairTicks} rendered fight-tick(s) had a bloomed fighter at tick entry (the pair is solid-free by design - bladeVsBlade returns on figT > 0 - and the drawn weapon is the joke object, not the real geometry the audit rebuilds); of those ${bloomOverlap} had a real-geometry overlap, ${bloomVis} visible (>2.5px), worst ${bloomWorst.toFixed(3)}px - COUNTED HERE and NOT in the law-3 line above; law 3s: ${shotRenderBladeBloom} shot-vs-blade overlap(s) against a bloomed foe blade, NOT in the 3s blade counter. The drawn joke object's own silhouette vs the foe's weapon is not measured.`);
   L.push(`[${pf(flMissing === 0)}] harness chain-pose integrity (2026-10-28): every chain-weapon law recompute got the sim's own stored pose — events aFl/bFl/fFl, G.auditFl rows per substep, the stashed entry pose for laws 3/3s — 0 missing across ${chainPoseTicks} rendered chain ticks + ${chainPoseSubs} chain substeps + ${chainShotEntries} chain-foe shot checks, so no recompute silently degraded to the rigid spine (the cause of the 2026-10-27 red set; instrument .qa/chainlaw.mjs)`);
   L.push(`[${pf(cMismatch === 0 && stuckFlagMismatch === 0)}] contact law 4: one damage per touch, re-arm only after clearing the body AND deep-disengaging (peak clearance >= reArmDeep or >= reArmWait ticks out — owner 2026-10-23; projectile-weapon spines and the shield shove without damage, gate included — replica mirrors the sim gate exactly, owner 2026-10-19)`);
@@ -1230,7 +1276,7 @@ async function runAll(api, opts) {
   L.push(`[${pf(spinSameDir === 0 && openMagMismatch === 0)}] contact law 6: every round opens counter-rotating`);
   L.push(`[${pf(shotPhantom === 0)}] projectile law 1s: shot damage only on shot-touches-body (0 phantom shot hits)`);
   L.push(`[${pf(swatNoTouch === 0)}] projectile law 2s: swats only on exact shot-blade touch (core law 5's sign audit proves swats flip nothing)`);
-  L.push(`[${pf(shotRenderBlade + shotRenderBody + shotRenderRim + shotRenderPair === 0 && shotRenderWorst < 1)}] projectile law 3s: shots never overlap blade/body/rim/shot on a rendered frame`);
+  L.push(`[${verdict3s({ blade: shotRenderBlade, body: shotRenderBody, rim: shotRenderRim, pair: shotRenderPair, worst: shotRenderWorst })}] projectile law 3s: shots never overlap blade/body/rim/shot on a rendered frame - DEFECT TRACKER (goal: 0 blade+body+rim+pair; #768): blade ${shotRenderBlade} (baseline ${LAW3S_BASE.blade}) · body ${shotRenderBody} (baseline ${LAW3S_BASE.body}) · rim ${shotRenderRim} (baseline ${LAW3S_BASE.rim}) · pair ${shotRenderPair} (baseline ${LAW3S_BASE.pair}) · worst ${Number.isFinite(shotRenderWorst) ? shotRenderWorst.toFixed(3) : 'n/a'}px (baseline ${LAW3S_BASE.worst}). PASS = goal met; FAIL = a REGRESSION of any counter vs the owner's 2026-11-16 --solidity baseline (3b11f34), checked before the goal; TRACK = open defect at or below baseline. Bloom-blade overlaps are exempt and counted apart (#765).`);
   L.push(`[${pf(shotLost === 0 && shotOrphan === 0 && shotDeathDup === 0)}] projectile law 4s: every shot accounted for — exactly one proven departure per shot`);
   L.push(`[${pf(budgetViol === 0 && maxSubEngaged === 0)}] projectile law 5s: substep budget honored every tick — the shot detection guarantee holds (projectile term covers the worst shot-vs-shot PAIR since the 2026-10-19 mixed-speed fix)`);
   L.push(`[${pf(launchOffMid === 0)}] projectile law 6s: every shot is born at its hold-derived launch point (radial: spine tip · tangential: middle +off — launch doctrine, owner 2026-10-19)`);
