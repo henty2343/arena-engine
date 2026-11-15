@@ -18,7 +18,7 @@ trust this file over the repo. As of the #752 landing the origin HEAD was 361cbc
 The REPO outranks every prose document, including this one. STATE.md and docs/CODEMAP.md are
 generated and authoritative for all numbers.
 
-Status 2026-11-14: Batch 1 DONE. Batch 2 DONE. Batch 3 (a)(b)(c)(d) ALL DONE — Batch 3 CLOSED.
+Status 2026-11-15: Batch 1 DONE. Batch 2 DONE. Batch 3 (a)(b)(c)(d) ALL DONE — Batch 3 CLOSED.
   3a = 0ddd7f5 #746 · 3b = 9e017bb #742 · 3d = f756e21 #747 · 3c = 68e29f9 #748
 Follow-ups: #749 = 4cc98d5 (index titles, mf-2 line re-paragraphed, AGENTS/README pointers, #749 entry), confirmed on origin.
   #750 = 4f38866 (the 3,000-byte line-cap lint B3E plus the record of the #749 hash) — confirmed on origin.
@@ -34,9 +34,10 @@ Follow-ups: #749 = 4cc98d5 (index titles, mf-2 line re-paragraphed, AGENTS/READM
   which does not exist, and said the assistant runs it), and the ONE owner-go --solidity run is recorded in s7. Landed as 46ffcd7.
   #755: Batch 4a - RECIPES "Traps" became seven short rules, AGENTS became the one home for
   the workflow (orient, propose, change, prove, deliver) and README now points to it. Landed as ffc90ef.
-  #756 (this file's last update): the measure.mjs STRIDE FIX - measure.mjs read the sim's chain-pose tape at the pre-links-r87 width (6 slots, stride 13; the sim's fl.u is 18 wide, the tape 37), so ~90% of substep rows came back null and every chain recompute degraded to the rigid spine: the cause of the failed `harness chain-pose integrity` check. New .qa/stride-proof.mjs asserts it. Its own commit hash is not known to
+  #756 = 24e1e67: the measure.mjs STRIDE FIX - measure.mjs read the sim's chain-pose tape at the pre-links-r87 width (6 slots, stride 13; the sim's fl.u is 18 wide, the tape 37), so ~90% of substep rows came back null and every chain recompute degraded to the rigid spine: the cause of the failed `harness chain-pose integrity` check. New .qa/stride-proof.mjs asserts it. Confirmed on origin as 24e1e67.
+  #757 (this file's last update): DOCS ONLY - records the owner's 2026-11-15 --solidity re-run on the fixed stride (integrity check PASS; every other count unchanged), the SECOND harness drift it led to (measure.mjs and frame-proof's C3 pose never pass the fighter's lenStep, so a grown chain is rebuilt short), and RETRACTS #756's claim that law 3 is a real band red at 27.399px (with lenStep that tick has 2.415px of clearance). Its own commit hash is not known to
   this file (a file cannot contain its own commit) - verify origin.
-Next: the owner's re-run of --solidity on the fixed stride (owner-go, one run), frame-proof's 2,500-tick horizon (§7), the S3 and band RULINGS (the owner's), or the rest of Batch 4's tool MOVES — §7.
+Next: the lenStep FIX (measure.mjs pre-tick stash + frame-proof's C3 pose, then the owner's re-run and a C3 re-baseline) BEFORE the S3 and band RULINGS (the owner's, HELD until re-measured), or the rest of Batch 4's tool MOVES — §7.
 Delivery: ONE patch (§6) — read §6.7 first: the owner copies patches out of CHAT.
 
 State at the 3c landing (re-measure, do not trust): HEAD 68e29f9, parent f756e21; canonical md5
@@ -103,6 +104,8 @@ State after the #756 patch (BASE ffc90ef; re-measure, do not trust): everything 
 blocks above, including the canonical, CODEMAP, LAWS, GAMES, the record files, AGENTS, README and every other probe. As built:
 measure.mjs 9d186ea1c27036535d21c3b81cff10b4 · stride-proof a0ceb8cc088f6f29d7a91474049219c0 · manifest.json 4e6bb049ba98e31361a860aa7877e43b · STATE 91cc15c19b31749142bdd22ef579d891. The two handoff files are not listed (a file
 cannot hold its own md5). Receipts: verify --quick PASS (6 checks); stride-proof 4/4 (18,170 substep rows, all resolved by measure.mjs's own flAt; the pre-links-r87 control resolves 2,060 of them and fails P1); node --check measure.mjs OK. measure.mjs was NOT run; the battery was not run (canonical untouched).
+
+State after the #757 patch (BASE 24e1e67; re-measure, do not trust): DOCS ONLY. Every file other than the two handoff files is byte-identical to the #756 block above (measure.mjs 9d186ea1c27036535d21c3b81cff10b4, stride-proof a0ceb8cc088f6f29d7a91474049219c0, manifest.json 4e6bb049ba98e31361a860aa7877e43b, STATE 91cc15c19b31749142bdd22ef579d891 - re-measured on origin after the #756 push). The two handoff files are not listed (a file cannot hold its own md5). Receipts: verify --quick PASS (6 checks); no code, probe or generated file touched, so no controls; the battery was not run (the canonical is untouched).
 
 ## 0. The record is a SET (since 3c)
 
@@ -272,7 +275,7 @@ Batch 3 CLOSED. Optional items — propose first, wait for "go", ONE patch:
   pair 6,745) in named classes. The probe REPORTS S3 and ratchets it; it does not assert it, so the row
   stays owner-run only. THE OWNER'S RULING IS OPEN: rewrite law 3s, narrow the sim, or accept the
   classes. NOTE the owner's own 6px band calibration no longer holds on the curated gauntlet (15.505px
-  measured) - the second law channel that has drifted since the last sanctioned run (the re-proof is
+  measured, from frame-proof's C3 pose, which omits lenStep - see THE lenStep DRIFT in the --solidity record below; re-measure before ruling) - the second law channel that has drifted since the last sanctioned run (the re-proof is
   owed on the owner's machine, GAMES §Current state).
 - THE OWNER-GO --solidity RUN (2026-11-14; canonical md5 5de162de..., unchanged; node 22.23.4, 1 core, jobs 1, 675.9s wall,
   109 battles; this tier carries no determinism replay; the exit code was not captured; the full report is NOT in the repo).
@@ -285,11 +288,13 @@ Batch 3 CLOSED. Optional items — propose first, wait for "go", ONE patch:
   departures 60 (57 addGone twice, 3 gone-yet-in-flight), lost without an event 0. PASS: law 6, 5s, 6s.
   LAW 3: worst 27.399px (flail+hammer seed 101 t15936 round 3), visible 614/1,243,128 = 0.05%; the 6px bound FAILS and the
   worst is ABOVE the 20.754px envelope the law records and frame-proof gates (frame-proof's own worst is 18.041px over 31
-  cells that include flail+hammer at seed 101). READ-ONLY INVESTIGATION DONE (2026-11-14): the disagreement is COVERAGE, not geometry. frame-proof stops every cell at TICK_BUDGET 2,500 ticks (~21s); measure.mjs runs whole battles (flail+hammer seed 101 ends at t18,707, 17,537 fight ticks), so frame-proof never reaches t15936. Re-computed with the live pose and geom.parryGap, the cell's worst overlap is 27.39923px at t15936 round 3 - measure.mjs's number exactly - and it is BAND class (no parry in the previous tick, neither weapon lead/headLead), above the 6px bound AND the 20.754px envelope. Law 3 is a real red on the current sim; C3's `partial` and frame-proof's envelope gate rest on the first 2,500 ticks only (frame-proof's horizon is an open item: a full-battle or late-battle cell would re-baseline it). LAW 3s: blade 1,888 - body
+  cells that include flail+hammer at seed 101). READ-ONLY INVESTIGATION (2026-11-14; CORRECTED 2026-11-15 - #756 recorded it wrongly as a real red): (1) COVERAGE - frame-proof stops every cell at TICK_BUDGET 2,500 ticks (~21s); measure.mjs runs whole battles (flail+hammer seed 101 ends at t18,707, 17,537 fight ticks), so frame-proof never reaches t15936. (2) The 27.399px is NOT a measured sim overlap: measure.mjs, frame-proof's C3 pose and my own #756 recompute all omit the fighter's lenStep (THE lenStep DRIFT, below). With the fighters' pre-tick lenStep (5 and 0 at that tick) the same tick has 2.415px of CLEARANCE; the cell's worst overlap over its 17,537 fight ticks is 14.185px with lenStep (27.399px without) and 2 visible ticks (61 without), not classified band/mirror and still above the 6px bound. The law 3 reading, frame-proof's 18.041px worst and its 20.754px envelope gate were all computed on the short chain; none is a measured fact about the sim until re-measured with lenStep. LAW 3s: blade 1,888 - body
   19,609 - rim 54,605 - pair 1,061,228 over 439,143 frames (worst 74.971px): a DIFFERENT sample from frame-proof's
   85/757/2,422/6,745 over 17,079 (the tier adds the 40 naturals), so the two are not comparable. Law 3s is red either way.
   The S3 ruling and the band calibration remain the owner's.
-  CHAIN-POSE INTEGRITY ROOT CAUSE (found 2026-11-14, FIXED in #756): measure.mjs had STRF = 13 and 6 slots per fighter; links-r87 widened fl.u to 18 slots, so the sim's G.auditFl row is 37 wide. On a real tape flAt resolved 7,430 of 76,855 substep rows (flail+hammer) and 7,430 of 60,912 (nunchaku+scythe); the rest returned null, flMissing counted them and the recompute fell back to the rigid spine. This is the likely cause of the red on laws 1, 2, 4, 5, 1s, 2s - NOT proven: that needs the owner's one-run re-measure of --solidity on the fixed harness. Law 3's entry pose reads a pre-tick stash, not the tape; it matched the independent recompute exactly, and the stash now copies all FL_SLOTS slots. Whether the old 6-slot stash changed any law-3 reading on a GROWN chain was not measured.
+  CHAIN-POSE INTEGRITY ROOT CAUSE (found 2026-11-14, FIXED in #756, confirmed on the harness 2026-11-15): measure.mjs had STRF = 13 and 6 slots per fighter; links-r87 widened fl.u to 18 slots, so the sim's G.auditFl row is 37 wide. On a real tape flAt resolved 7,430 of 76,855 substep rows (flail+hammer) and 7,430 of 60,912 (nunchaku+scythe); the rest returned null and the recompute fell back to the rigid spine. Law 3's entry pose reads a pre-tick stash, not the tape, and the stash now copies all FL_SLOTS slots. Whether the old 6-slot stash changed any law-3 reading on a GROWN chain was not measured.
+  THE OWNER'S RE-RUN ON THE FIXED STRIDE (2026-11-15; cmd.exe, plain `>` to a report file and a progress file, exit=0; 109 battles, 8 workers, 365.0s wall; canonical md5 unchanged; the report is NOT in the repo): `harness chain-pose integrity` now PASSES (0 missing across 229,971 chain ticks, 4,585,065 chain substeps and 310,536 chain-foe shot checks). The stride was NOT the cause of the other reds: law 1 (111/7,293, worst gap 252.01px), law 2 (117/2,868), law 5 (10 unexplained sign changes), law 1s (495/2,849), law 2s (116/1,837), law 4s (60 double departures) and law 3 (27.399px, 614/1,243,128 visible) are IDENTICAL to the 2026-11-14 run, so those counters do not read the broken tape. Law 4 moved (283 replica/event mismatches now, 1,335 recorded before; the stuck-flag count, 123,260, has no earlier figure) and still FAILs. Still FAIL: stall (5.26s worst), laws 1, 2, 3, 4, 5, 1s, 2s. PASS: laws 6, 5s, 6s and integrity. Exit 0 means the harness ran to the end, NOT that the audit passed (measure.mjs exits 1 on a crash and 2 on bad flags or the stride guard; the [FAIL] lines are verdicts). Band population 3,014 band-class overlaps (187 with a parry in the previous tick but not its last substep; 2,341 with neither weapon lead/headLead); mirror class 27 (10 visible, worst 11.559px).
+  THE lenStep DRIFT (found 2026-11-15, read-only, NOT fixed): the sim's contact tests pass the fighter's lenStep (bladeCircles' 8th argument; parryGap's pose `ls`; sim lines ~2095 and ~2210) and chainGrow(wId, ls) returns the ADDED link units, but hit and parry events do not store lenStep and measure.mjs passes none (grep: no lenStep anywhere in it), so every event recompute rebuilds the SHIPPED chain; frame-proof's C3 pose omits it too (its S3 pass includes it). Measured on the sim with each fighter's lenStep read around every tick (seed 101, the 23 gauntlet cells, 927 blade hits, 609 parries - a SUBSET, not the 109-battle population; throwaway scripts, not committed): law 1 phantom hits 24 -> 2, worst gap 163.8 -> 95.92; law 2 parries without touch 25 -> 0; all 24 phantoms were FLAIL hits at lenStep 4-12. The 2 left are flail hits at lenStep 11->12 and 7->8, the ticks where a link is added (every 4 steps - not re-read from the sim this session), where the event's stored pose is the post-grow remap but the contact used the pre-grow geometry - INFERENCE, not traced. NOT tested: laws 4, 5, 1s, 2s, 3s, 4s (laws 4, 2s and 3s also call bladeCircles without ls, so they likely share it; law 1s, 495/2,849 on shot death poses, has no known cause). Any fix beyond a harness-side pre-tick lenStep stash (exact for the tick-entry pose laws 3 and 3s; exact for events except the link-add ticks) needs lenStep on the audit tape or in the events, i.e. a CANONICAL edit (rule 5, the owner's). The S3 and band-calibration RULINGS are HELD until law 3 and 3s are re-measured with lenStep. #756's "law 3 is a real band red" was WRONG and is retracted here.
 - Handoff follow-ups (AGENTS/README docs/handoff pointers, #749 entry): DONE in #749.
 - Line-cap lint: DONE in #750 (lint-docs B3E; 3,000 bytes per line over GAMES + docs/history/*.md; check-only).
 Batch 4 — tool layout: the REGISTRY half is DONE in #752 (tools/manifest.json is the single list of every
@@ -330,7 +335,7 @@ contract. Leave record content alone.
 - Tags on origin: games-presplit-3c -> f756e21 (pre-split monolith), canonical-prediet-2c (the fixed
   2c base — compare, don't retag), canonical-precomments, docs-precleanup{,2,3}, item3-closed,
   pre-phase-a, scratch-precleanup.
-- Dated chronicle entry per landing is convention (last #750; next #751); REQUIRED only when the
+- Dated chronicle entry per landing is convention (convention; #753 was the last to append one, and #754-#757 added none because the canonical did not move); REQUIRED only when the
   canonical md5 moves. Append to GAMES, then regenerate; docreflow may re-wrap it (whitespace-only).
 - Law table: renaming a quoted assert fails lint until the anchor is updated (by design). New law =
   new row; ids C1-C6, S1-S6 required, unique; status in {probed, partial, owner-run only, unprobed};
@@ -344,6 +349,7 @@ contract. Leave record content alone.
   The cap is per line, so a PARTIAL re-join slips through (measured in controls on a copy): 2 or 5 re-joined lines stay green (1,120 / 2,789 bytes), 6 (3,348) or 26 (14,343) fail. Do not re-join.
 - Line cap (B3E): LINE_CAP = 3000 BYTES (Buffer.byteLength, so 1,501 two-byte characters fail), applied to docs/GAMES.md + docs/history/*.md via the docset glob. Check-only; never edit an era file to satisfy it except whitespace-only. Run docreflow before lint if a new GAMES entry trips it.
 - Cosmetic: .qa/fingerprint.mjs (~line 33) mentions many dated checkpoints; one live baseline. Harmless.
+- measure.mjs and frame-proof's C3 recompute contacts from stored poses WITHOUT lenStep (§7, THE lenStep DRIFT): a grown chain is rebuilt short, so every chain-weapon overlap or phantom number they print is unreliable until that is fixed; events carry the post-grow chain pose (the hit event is built after grow()). The owner runs measure.mjs in cmd.exe with plain `>` redirects (never Git Bash `tee`, never PowerShell; GAMES) and captures `echo exit=%errorlevel%`; agents never run it.
 - Sandbox: the execution tool can vanish for whole turns; /tmp gets wiped between calls — re-bootstrap
   and WRITE RECEIPTS INTO YOUR REPLY IMMEDIATELY. Dropped tool output (`execute error`) = UNVERIFIED.
   pkill patterns can match your own command line — use [h]ttps-style brackets. Long runs: setsid + poll.
@@ -360,23 +366,45 @@ There is no attachment step anymore — do not ask the owner to swap chat files.
 confirms a push, re-measure origin in a fresh clone and deliver the updated handoff files as part of
 the NEXT patch (or as a docs-only patch if nothing else is pending).
 New-chat prompt (the whole thing):
+
     Clone https://github.com/henty2343/arena-engine.git and read docs/handoff/HANDOFF.md and
-    docs/handoff/BATCH3-STATUS.md fully. Run the freshness check at the top of HANDOFF.md — origin HEAD
-    and the commit that last updated docs/handoff/HANDOFF.md MUST MATCH; if they differ, something else
-    landed, re-baseline from STATE.md and say what moved. The repo outranks any attached or pasted notes.
-    Then propose the next item from HANDOFF §7 and wait for my explicit "go". Hard rules: never run
-    measure.mjs; one patch per delivery, pasted in chat, gated per HANDOFF §6.7; pushes are mine
-    (VS Code + Git Bash on Windows).
+    docs/handoff/BATCH3-STATUS.md fully. Run the freshness check at the top of HANDOFF.md - origin HEAD
+    and the commit that last updated docs/handoff/HANDOFF.md MUST MATCH. The last landing is #757 (docs
+    only: the lenStep finding and the retraction of #756's law 3 claim), whose parent is 24e1e67 (#756,
+    the measure.mjs stride fix); re-measure the hash, and if the two differ, something else landed -
+    re-baseline from STATE.md and say what moved. The repo outranks any attached or pasted notes. Also
+    read AGENTS.md (the one workflow section: orient, propose, change, prove, deliver). Then propose the
+    next item from HANDOFF s7 and wait for my explicit "go".
+    Hard rules: agents never run measure.mjs (I run it, in cmd.exe: node measure.mjs --solidity > solidity-report.txt
+    2> solidity-progress.txt, then echo exit=%errorlevel%; never Git Bash tee, never PowerShell); one patch
+    per delivery, pasted in chat, gated per HANDOFF s6.7 with per-file md5s; pushes are mine (VS Code + Git
+    Bash on Windows). Be frugal with tokens: no re-checks beyond the freshness check.
+    Context: #756 fixed a stale stride in measure.mjs (STRF 13 / 6 chain-pose slots vs the sim's 37-wide
+    tape / 18-slot fl.u); my 2026-11-15 re-run confirmed the integrity check now PASSES, but every other
+    count (laws 1, 2, 3, 5, 1s, 2s, 4s) was IDENTICAL, so the stride was not the cause of those reds. The
+    cause found, read-only: measure.mjs and frame-proof's C3 pose never pass the fighter's lenStep (events do
+    not carry it), so a grown chain is rebuilt short. On seed 101 x the 23 gauntlet cells, law 1 phantoms
+    24 -> 2 and law 2 parries-without-touch 25 -> 0 once lenStep is used; law 3's 27.399px at flail+hammer
+    seed 101 t15936 is an ARTIFACT (2.415px of clearance with lenStep; the cell's worst is 14.185px with,
+    27.399px without). #756 wrongly called it a real band red; #757 retracts that. Laws 4, 5, 1s, 2s, 3s, 4s
+    are untested against lenStep; law 1s (495/2,849) has no known cause.
+    Open, none started: (1) the lenStep fix - a harness-side pre-tick lenStep stash in measure.mjs plus
+    frame-proof's C3 pose, then my re-run and a C3 re-baseline (exact for tick-entry laws, exact for events
+    except link-add ticks; anything exact beyond that needs lenStep in the sim's audit tape or events = a
+    canonical edit, my call, rule 5); (2) my rulings on law 3s and the measure.mjs band calibration, HELD
+    until re-measured with lenStep; (3) frame-proof's 2,500-tick horizon; (4) Batch 4: the .qa rename and
+    the SPEC/CONTRACT/BUILD move (both need my OK for non-whitespace edits to frozen era files), verify.mjs
+    as a manifest reader, the measure.mjs owner-go flag. Do not start any work until I say "go".
 
 ## 10. Where we are / next action
 
-Landed through the #756 patch (the measure.mjs stride fix), on top of #755 (ffc90ef, Batch 4a), #754 (46ffcd7) and #753 (the RENDERED-FRAME proof — new .qa/frame-proof.mjs proving C3's band and
+Landed through the #757 patch (docs only: the lenStep finding), on top of #756 (24e1e67, the measure.mjs stride fix), #755 (ffc90ef, Batch 4a), #754 (46ffcd7) and #753 (the RENDERED-FRAME proof — new .qa/frame-proof.mjs proving C3's band and
 measuring law 3s), on top of 361cbcb (#752, the law-table completion + the probe registry) and c2bcf57
-(the handoff refresh). This file was last updated by #756 — that is the patch below. The
+(the handoff refresh). This file was last updated by #757 — that is the patch below. The
 freshness check's two hashes always match ON ORIGIN, because this file is updated in the same commit as
 every landing. Verify origin HEAD against the hash that last updated this file; if they differ, more
 landed — re-baseline from STATE.md and say what moved.
 First: run the FRESHNESS CHECK, then §2. If the invariant hashes differ, STOP and tell the owner.
-Then propose the next item from §7 — the owner's one-run --solidity re-measure on the fixed stride (an owner-go; agents never run measure.mjs), frame-proof's 2,500-tick horizon, the S3 and band-calibration RULINGS (law 3 is a real band red: 27.399px), or the rest of Batch 4's tool MOVES — and WAIT for "go".
+Then propose the next item from §7 — the lenStep FIX (measure.mjs pre-tick stash + frame-proof's C3 pose, then the owner's re-run), the S3 and band-calibration RULINGS (HELD until law 3/3s are re-measured with lenStep), frame-proof's 2,500-tick horizon, or the rest of Batch 4's tool MOVES — and WAIT for "go".
 After "go": the whole job in one pass (edits, regen, proofs, controls, fresh-clone proof), delivered per §6 + §6.7/§6.8,
 with both handoff files updated in the same patch.

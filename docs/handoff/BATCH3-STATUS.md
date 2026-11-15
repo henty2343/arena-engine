@@ -8,8 +8,8 @@ tools; an unlisted file there fails lint). Freshness: `git log -1 --format='%h %
 Status as of 2026-11-14: (a) DONE (0ddd7f5, #746) · (b) DONE (9e017bb, #742) · (d) DONE (f756e21, #747)
 · (c) DONE (68e29f9, #748). Nothing remains in Batch 3. Its follow-ups: #749 DONE (4cc98d5) · #750 DONE (4f38866) ·
 #751 DONE (63bb91c) · #752 DONE (361cbcb, the law-table completion + the probe registry) ·
-#753 DONE (477c34a, the RENDERED-FRAME proof) · #754 DONE (46ffcd7, the measure.mjs header + the owner-go solidity run) · #755 DONE (ffc90ef, Batch 4a: RECIPES Traps -> short rules + AGENTS as the one workflow home) · #756 DONE (this commit: the measure.mjs stride fix).
-Next: the owner's one-run --solidity re-measure, the S3 and band RULINGS, then Batch 4's tool moves — HANDOFF §7.
+#753 DONE (477c34a, the RENDERED-FRAME proof) · #754 DONE (46ffcd7, the measure.mjs header + the owner-go solidity run) · #755 DONE (ffc90ef, Batch 4a: RECIPES Traps -> short rules + AGENTS as the one workflow home) · #756 DONE (24e1e67, the measure.mjs stride fix) · #757 DONE (this commit: docs only - the lenStep finding and the retraction of #756's law 3 claim).
+Next: the lenStep fix (a harness-side pre-tick stash, then the owner's re-run), then the S3 and band RULINGS (held until re-measured), then Batch 4's tool moves — HANDOFF §7.
 The Batch 2 ledger is the appendix below, carried verbatim. STATE.md and docs/CODEMAP.md
 are authoritative for every number.
 
@@ -25,13 +25,23 @@ pose (C3 → `partial`) and MEASURES law 3s, which does NOT hold on the current 
 `owner-run only`; the owner's ruling is open).
 Next: the S3 RULING, or Batch 4's tool moves.
 
-## #756 measure.mjs stride fix + stride-proof - ledger (this commit)
+## #756 measure.mjs stride fix + stride-proof - ledger (commit 24e1e67)
 
 What: (1) measure.mjs: FL_SLOTS = 18 and STRF = 1 + 2 * FL_SLOTS = 37 replace STRF = 13 and the hard-coded 6 slots (flAt, the entry-pose stash, the two rest-pose constants); a guard exits 2 if G.auditFl is not a whole number of STRF rows. (2) New .qa/stride-proof.mjs (4 checks) lifts measure.mjs's own FL_SLOTS/STRF/flAt text and runs it on real tapes from the shipped sim: fl.u 18 wide and the tape 37 per row (P1), flAt resolves every substep row, 18,170/18,170 (P2), the stash copies FL_SLOTS slots (P3), and a pre-links-r87 control (6 slots, stride 13) resolves 2,060/18,170 and fails. Registered in tools/manifest.json (battery true, citable false), so the battery is 14 steps. (3) STATE.md regenerated. (4) Both handoff files updated, recording the read-only findings: frame-proof's 2,500-tick horizon explains the law-3 disagreement (the cell's worst, 27.399px at t15936, reproduces and is band class), and the stale stride is the chain-pose integrity failure.
 Why: the owner-go --solidity run failed `harness chain-pose integrity` and nothing an agent could run caught the width change.
 Approved: "do a" - the owner named option A after the read-only findings.
 Deviations (flagged at delivery): (1) A code edit to an owner-only tool (measure.mjs), not comment-only; it was syntax-checked (`node --check`) and its changed blocks are exercised by stride-proof, but measure.mjs was NOT run. (2) The proof battery grew from 13 to 14 steps. (3) No GAMES entry and no regen of GAMES/CODEMAP: the canonical did not move.
 Not verified: that laws 1, 2, 4, 5, 1s, 2s go green on the fixed harness (needs the owner's one-run re-measure); the new exit-2 guard has never fired in a real run; the full battery was not run (canonical untouched).
+Correction (#757): this ledger's item (4) says the law 3 worst "reproduces and is band class", and the handoff files it landed said law 3 is a real band red. That was WRONG: the recompute omitted the fighter's lenStep, as measure.mjs does. See the #757 ledger and HANDOFF §7.
+Rollback: `git revert` this commit.
+
+## #757 the lenStep finding + the retraction + the handoff refresh - ledger (this commit)
+
+What: DOCS ONLY, both handoff files. (1) HANDOFF §7 records the owner's 2026-11-15 re-run on the fixed stride (exit 0, 109 battles, 8 workers, 365.0s; integrity check PASS; laws 1, 2, 3, 5, 1s, 2s, 4s counts identical to the 2026-11-14 run; law 4 moved), and THE lenStep DRIFT: measure.mjs and frame-proof's C3 pose never pass the fighter's lenStep, so a grown chain is rebuilt short (seed 101 x 23 cells: law 1 phantoms 24 -> 2, law 2 parries without touch 25 -> 0). (2) RETRACTS #756's "law 3 is a real band red at 27.399px": with lenStep that tick has 2.415px of clearance, and the cell's worst falls from 27.399px to 14.185px (61 visible ticks -> 2). (3) The S3 and band-calibration rulings are marked HELD. (4) §8 gets a gotcha for the drift and the cmd.exe run rule, plus a corrected stale line; §0 status date; §9 carries the new-chat prompt; §10 re-points the next action. (5) This ledger and a correction line on #756's.
+Why: #756 put a wrong claim on origin, and the re-run changed what is known.
+Approved: "go 757" after the owner asked for the law 1 investigation first.
+Deviations (flagged at delivery): (1) The #756 ledger's text is kept and corrected by an appended line, not rewritten; HANDOFF's own #756 paragraphs were replaced because they are status, not record. (2) No code, probe or generated file touched.
+Not verified: the lenStep numbers come from throwaway scripts (not committed) over seed 101 and the 23 gauntlet cells only, not the 109-battle population; the link-add explanation for the 2 residual phantoms is inference; the owner's report is not in the repo; laws 4, 5, 1s, 2s, 3s, 4s were not tested against lenStep. The fix patch will carry a probe.
 Rollback: `git revert` this commit.
 
 ## #755 Batch 4a - RECIPES traps as rules, AGENTS as the one workflow home - ledger (commit ffc90ef)
