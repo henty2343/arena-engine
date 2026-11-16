@@ -266,7 +266,7 @@
       "citable": false,
       "runnable": false,
       "ownerOnly": true,
-      "about": "THE OWNER'S AUDIT - renders frames and audits the rendering laws. AGENTS NEVER RUN IT (permanently banned, HANDOFF section 1). The law table's owner-run column cites it."
+      "about": "THE OWNER'S AUDIT - renders frames and audits the rendering laws. AGENTS NEVER RUN IT (permanently banned, HANDOFF section 1); it exits 2 unless the owner passes --owner-go (or sets ARENA_OWNER_GO=1). The law table's owner-run column cites it."
     },
     {
       "name": "ingest",

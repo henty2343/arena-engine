@@ -41,7 +41,7 @@ A localhost-only Node tool that renders seeded game simulations into publishable
 ## Standing rules (owner-enforced — this list is the canonical text; README and copilot-instructions only point here)
 
 1. **Discuss before writing.** Proposals first; nothing lands without the owner's "go".
-2. **`measure.mjs` NEVER runs without the owner's explicit go.** Long runs are his machine's job.
+2. **`measure.mjs` NEVER runs without the owner's explicit go.** Long runs are his machine's job. It refuses to start unless the owner passes `--owner-go` (or sets `ARENA_OWNER_GO=1`); an agent never passes it.
 3. **After any GAMES.md or `docs/history/` edit: `docreflow` FIRST, then `navgen`.** Both idempotent, both cover the whole record set.
 4. **Behaviour-identical edits prove fingerprints 8/8** vs `.qa/BASELINE`; the canonical md5 must not move unless sanctioned + recorded. 8/8 can be VACUOUS — establish coverage first.
 5. **One canonical.** `previews/spinclash-preview.html` is the single source; do not split it, do not repoint tool defaults.

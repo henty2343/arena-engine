@@ -7,7 +7,7 @@
  * (newGame / tick / CFG / FIGHTERS / WEAPONS / geom) is reachable, then loop
  * tick().
  *
- * Usage: node measure.mjs [file=previews/spinclash-preview.html] [seeds=40] [--verbose]
+ * Usage: node measure.mjs --owner-go [file=previews/spinclash-preview.html] [seeds=40] [--verbose]
  *        [--quick | --full | --vs <weapon> | --cells a+b,c+d | --solidity]
  *        [--matrix-only] [--band-dump] [--jobs N]
  * Arena shape is locked to round (owner decision 2026-10-15) — no shape arg.
@@ -158,6 +158,8 @@
  * cost is dominated by the handful of battles that exhaust BUDGET_SEC 420 (a
  * capped battle is ≈7x a typical one). Coverage was NOT cut to chase a sandbox
  * number; the tradeoff levers are recorded in GAMES.md (Testing recipe).
+ * OWNER-GO GATE (#780): without --owner-go (or ARENA_OWNER_GO=1 in the environment) this file prints a refusal and
+ * exits 2 before it loads or runs anything. Put --owner-go FIRST (before --vs / --cells, which read the next argument).
  * WHO RUNS IT: the OWNER, on their own machine. An agent NEVER runs this file unless the
  * owner gives an explicit go for that one run (HANDOFF section 1; tools/manifest.json
  * marks it ownerOnly). Agents take their fast checks from the .qa probes the registry
@@ -168,6 +170,18 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import { availableParallelism } from 'node:os';
 import { Worker, isMainThread, parentPort, workerData } from 'node:worker_threads';
+
+/* OWNER-GO GATE (#780): the first statement after the imports - nothing below has run yet (no loadSim, no canonical read,
+ * no write, no tick, no argument parsing). Main thread only: the worker threads this file spawns re-run the module
+ * without the main's argv, and they exist only after main has passed this gate. */
+const OWNER_GO =
+  process.argv.includes('--owner-go') ||
+  process.env.ARENA_OWNER_GO === '1';
+
+if (isMainThread && !OWNER_GO) {
+  console.error('measure.mjs is owner-only. The owner must run it with --owner-go, or set ARENA_OWNER_GO=1. Agents must not run it.');
+  process.exit(2);
+}
 
 const here = dirname(fileURLToPath(import.meta.url));
 let FILE = resolve(join(here, 'previews', 'spinclash-preview.html'));   // parseArgs overrides; main-side only (workers get the path via workerData)
@@ -1405,6 +1419,7 @@ function parseArgs(argv) {
     else if (a === '--solidity') modes.push({ mode: 'solidity' });
     else if (a === '--matrix-only') opts.matrixOnly = true;
     else if (a === '--band-dump') opts.bandDump = true;
+    else if (a === '--owner-go') { /* consumed by the OWNER_GO gate at the top of the file; nothing to record */ }
     else if (a === '--jobs') { opts.jobs = +argv[++i]; if (!(opts.jobs >= 1)) { console.error('measure: --jobs needs a number >= 1'); process.exit(2); } }
     else if (a.startsWith('--')) { console.error('measure: unknown flag ' + a + ' — see the header usage'); process.exit(2); }
     else pos.push(a);
