@@ -1,7 +1,73 @@
 {
   "version": 1,
-  "note": "THE PROBE REGISTRY - the single list of every proof and tool in this repo. Read it before running anything: it says what each file asserts, whether the battery runs it, whether a law row may cite it, and whether an agent may run it. Consumers: tools/lib/manifest.mjs (loader + completeness check), scripts/run-battery.mjs (the battery steps), tools/lint-docs.mjs (the law table citable set). Adding a proof = adding one line here. Flags: battery = the proof battery runs it; citable = a law row may cite file::anchor against it; runnable = an agent may RUN it safely (false when it writes); ownerOnly = the owner's alone, agents NEVER run it (measure.mjs is permanently banned - HANDOFF section 1).",
+  "note": "THE PROBE REGISTRY - the single list of every proof and tool in this repo. Read it before running anything: it says what each file asserts, whether the battery runs it, whether a law row may cite it, and whether an agent may run it. Consumers: tools/lib/manifest.mjs (loader + completeness check), scripts/run-battery.mjs (the battery steps), tools/lint-docs.mjs (the law table citable set), tools/verify.mjs (the health judge - its checks are the entries with a tier). Adding a proof = adding one line here. Flags: battery = the proof battery runs it; citable = a law row may cite file::anchor against it; runnable = an agent may RUN it safely (false when it writes); ownerOnly = the owner's alone, agents NEVER run it (measure.mjs is permanently banned - HANDOFF section 1); tier = which verify run executes it: quick (every run, no sim, in manifest order) or standard (the default run, not --quick); an entry with no tier is never run by verify. An ownerOnly or runnable:false entry must not carry a tier.",
   "probes": [
+    {
+      "name": "gen-state",
+      "file": "tools/gen-state.mjs",
+      "args": [
+        "--check"
+      ],
+      "exit": 0,
+      "battery": false,
+      "citable": false,
+      "tier": "quick",
+      "about": "STATE.md is current: the generated state file matches what the generator would write now."
+    },
+    {
+      "name": "lint-docs",
+      "file": "tools/lint-docs.mjs",
+      "exit": 0,
+      "battery": false,
+      "citable": false,
+      "tier": "quick",
+      "about": "The docs lint: law table anchors, record-set rules, line cap, token-cost guards, and this registry's completeness."
+    },
+    {
+      "name": "navgen",
+      "file": "tools/doc/navgen.mjs",
+      "args": [
+        "--check"
+      ],
+      "exit": 0,
+      "battery": false,
+      "citable": false,
+      "tier": "quick",
+      "about": "The GAMES navigation block is current across the record set."
+    },
+    {
+      "name": "docreflow",
+      "file": "tools/doc/docreflow.mjs",
+      "args": [
+        "--check"
+      ],
+      "exit": 0,
+      "battery": false,
+      "citable": false,
+      "tier": "quick",
+      "about": "The record set is already reflowed (idempotent); exits 1 on pending work in any file."
+    },
+    {
+      "name": "gen-codemap",
+      "file": "tools/gen-codemap.mjs",
+      "args": [
+        "--check"
+      ],
+      "exit": 0,
+      "battery": false,
+      "citable": false,
+      "tier": "quick",
+      "about": "docs/CODEMAP.md is current: the navigation map of the canonical matches what the generator would write now (read-only --check)."
+    },
+    {
+      "name": "lint-markers",
+      "file": "tools/lint-markers.mjs",
+      "exit": 0,
+      "battery": false,
+      "citable": false,
+      "tier": "quick",
+      "about": "The canonical region-marker lint (read-only)."
+    },
     {
       "name": "inscribe",
       "file": ".qa/inscribe.mjs",
@@ -152,6 +218,7 @@
       "exit": 0,
       "battery": false,
       "citable": true,
+      "tier": "standard",
       "about": "The change detector: hashes the full per-tick sim state over 8 cells and judges it against .qa/BASELINE. Proves 'did not move', never 'is right'."
     },
     {
