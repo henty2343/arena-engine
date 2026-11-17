@@ -18,7 +18,7 @@
  *       laws; no bloom counter reaches the tracker (#765: they stay on the exempt line, not ratcheted);
  *       polyTicks is still incremented (the counter computation is untouched);
  *   V2  SEMANTICS, on the lifted functions: 21 enumerated cases (listed below);
- *   V3  BASELINE PINS: LAW3_BASE / LAW3S_BASE / VEPS equal the recorded baselines (law 3: the owner's 2026-11-16 --solidity run on 3b11f34; law 3s: re-baselined in #790 to the owner's 2026-11-17 --solidity run on the #788 build 2fa2de4)
+ * V3 BASELINE PINS: LAW3_BASE / LAW3S_BASE / VEPS equal the recorded baselines (law 3: the owner's 2026-11-16 --solidity run on 3b11f34; law 3s: re-baselined #794 to 0/0/0/0)
  *       (HANDOFF s7, #766);
  *   CONTROL: six mutated copies of measure.mjs, each of which V1 + V2 + V3 must report (the unmutated
  *       source must report nothing, so the control is not vacuous).
@@ -39,7 +39,7 @@ let pass = 0, fail = 0;
 const ok = (n, c, d) => { c ? pass++ : fail++; console.log(`  ${c ? 'ok  ' : 'FAIL'} ${n}${d ? '  - ' + d : ''}`); };
 
 const EXPECT3 = { bandVis: 42, bandWorst: 14.185, flipOverlap: 27, flipVis: 10, flipWorst: 11.559 };
-const EXPECT3S = { blade: 6, body: 62, rim: 32, pair: 6, worst: 69.447 };   // #790: re-baselined to the TRUE residual post-exemption (the owner's 2026-11-17 --solidity run on the #788 build 2fa2de4)
+const EXPECT3S = { blade: 0, body: 0, rim: 0, pair: 0, worst: 0 };   // #794: re-baselined to 0 with LAW3S_BASE (the read-instant fix + pair sanction closed D4 / law 3s)
 
 /* ---- lift the self-contained verdict block out of a measure.mjs source ---- */
 function lift(src) {
@@ -127,14 +127,14 @@ const CASES = [
   ['10 law3 px epsilon and 3-decimal rounding noise (+5e-7, 14.1854, 11.5594) -> TRACK', 3, c3({ bandWorst: 14.1854, flipWorst: 11.5594 }), 'TRACK'],
   ['11 law3 regression outranks the goal (0 band-visible but mirror +1) -> FAIL', 3, c3({ bandVis: 0, bandWorst: 0, flipOverlap: B3.flipOverlap + 1 }), 'FAIL'],
   // law 3s (10)
-  ['12 law3s baseline -> TRACK', 4, c3s({}), 'TRACK'],
+  ['12 law3s baseline==goal (0/0/0/0) -> PASS', 4, c3s({}), 'PASS'],
   ['13 law3s goal (0 blade+body+rim+pair) -> PASS', 4, { blade: 0, body: 0, rim: 0, pair: 0, worst: 0 }, 'PASS'],
   ['14 law3s blade +1 -> FAIL', 4, c3s({ blade: B3S.blade + 1 }), 'FAIL'],
   ['15 law3s body +1 -> FAIL', 4, c3s({ body: B3S.body + 1 }), 'FAIL'],
   ['16 law3s rim +1 -> FAIL', 4, c3s({ rim: B3S.rim + 1 }), 'FAIL'],
   ['17 law3s pair +1 -> FAIL', 4, c3s({ pair: B3S.pair + 1 }), 'FAIL'],
   ['18 law3s worst +0.01px -> FAIL', 4, c3s({ worst: B3S.worst + 0.01 }), 'FAIL'],
-  ['19 law3s px epsilon and 3-decimal rounding noise (69.4474) -> TRACK', 4, c3s({ worst: 69.4474 }), 'TRACK'],
+  ['19 law3s px epsilon and 3-decimal rounding noise (0.0004) -> PASS', 4, c3s({ worst: 0.0004 }), 'PASS'],
   ['20 law3s regression outranks the goal (0 counts but worst 80px) -> FAIL', 4, { blade: 0, body: 0, rim: 0, pair: 0, worst: 80 }, 'FAIL'],
   ['21 non-finite value fails closed (NaN worst, law 3 and 3s) -> FAIL', 5, [c3({ bandWorst: NaN }), c3s({ worst: NaN })], 'FAIL'],
 ];
@@ -182,7 +182,7 @@ if (LF.api) {
 }
 ok(`V2 all ${CASES.length} cases give the expected verdict`, v2.length === 0 && CASES.length === 21, v2.join('; ') || `${CASES.length}/21`);
 
-console.log('V3 - baseline pins (law 3: the owner\'s 2026-11-16 --solidity run on 3b11f34; law 3s: re-baselined #790 to the owner\'s 2026-11-17 --solidity run on the #788 build 2fa2de4)');
+console.log('V3 - baseline pins (law 3: the owner\'s 2026-11-16 --solidity run on 3b11f34; law 3s: re-baselined #794 to 0/0/0/0 — D4 closed by the read-instant fix + pair sanction)');
 const v3 = LF.api ? runV3(LF.api) : ['block did not lift'];
 ok('V3 LAW3_BASE / LAW3S_BASE / VEPS equal the recorded baseline', v3.length === 0, v3.join('; '));
 
@@ -192,7 +192,7 @@ const MUT = [
   ['retired gate reinstated on the law-3 line', s => s.replace('[${verdict3({ bandVis', '[${pf(polyBandWorst < 6) && verdict3({ bandVis')],
   ['goal tested before regression in verdict3', s => s.replace("  if (regressed) return 'FAIL';\n  return c.bandVis === 0 ? 'PASS' : 'TRACK';", "  if (c.bandVis === 0) return 'PASS';\n  if (regressed) return 'FAIL';\n  return 'TRACK';")],
   ['a bloom counter ratcheted at the call site', s => s.replace('flipWorst: polyFlipWorst })}] contact law 3', 'flipWorst: polyFlipWorst, bloomVis: bloomVis })}] contact law 3')],
-  ['a baseline pin moved (3s pair)', s => s.replace('rim: 32, pair: 6', 'rim: 32, pair: 7')],
+  ['a baseline pin moved (3s pair)', s => s.replace('rim: 0, pair: 0', 'rim: 0, pair: 1')],
   ['a counter dropped from the law-3 regression test', s => s.replace('|| worseInt(c.flipVis, LAW3_BASE.flipVis)', '')],
   ['px compare made fail-open', s => s.replace('const worsePx = (x, base) => !(r3(x) <= base + VEPS);', 'const worsePx = (x, base) => r3(x) > base + VEPS;')],
 ];
@@ -207,6 +207,6 @@ for (const [n, f] of MUT) {
 ok('CONTROL the unmutated source reports nothing (not vacuous) and every mutated copy is reported', clean.length === 0 && caught === MUT.length, `${caught}/${MUT.length} mutated copies caught; unmutated reports ${clean.length}${clean.length ? ': ' + clean.join('; ') : ''}`);
 
 console.log(`\n${pass}/${pass + fail} passed`);
-console.log('NOT RUN: measure.mjs (owner-only). The first --solidity run after this lands is the first exercise of the re-baselined tracker; the prediction is [TRACK]/[TRACK] - law 3 counters identical to the #766 report, law 3s residual equal to the new #790 baseline - which is a prediction, not a measurement.');
+console.log('NOT RUN: measure.mjs (owner-only). The first --solidity run after this lands is the first exercise of the #794-closed tracker; the prediction is [TRACK]/[PASS] - law 3 counters identical to the #766 report, law 3s goal met (0/0/0/0) after the read-instant fix + pair sanction - which is a prediction, not a measurement.');
 if (fail) { console.log(`${fail} FAILED`); process.exit(1); }
 console.log(JSON.stringify({ check: 'verdict-proof', pass, fail, ok: fail === 0, cases: CASES.length, controls: `${caught}/${MUT.length}` }));

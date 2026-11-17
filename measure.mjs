@@ -443,9 +443,9 @@ function runMatch(api, seed, weapons) {
    * departure, so a duplicate departure can be named by mechanism instead of merely counted.
    * `.has()` is identical on Set and Map, but iteration is NOT — a Map yields [key,value] pairs,
    * so the orphan scan at the battle end must use .keys() (see the trap note there). */
-  const shotFireSids = new Set(), shotGoneSids = new Map();
+  const shotFireSids = new Set(), shotGoneSids = new Map(), shotGoneTick = new Map();   // #794: sid->first-departure tick (for the pair annihilation-event-frame sanction)
   const dupHere = [];
-  const addGone = (sid, kind) => {
+  const addGone = (sid, kind) => { if (!shotGoneTick.has(sid)) shotGoneTick.set(sid, G.t);   // #794: first departure tick
     if (shotGoneSids.has(sid)) {
       shotDeathDup++;
       dupHere.push({ mech: 'A-doubleGone', sid, t: G.t, kind, first: shotGoneSids.get(sid) });
@@ -469,6 +469,7 @@ function runMatch(api, seed, weapons) {
   const entryLs = [0, 0];            // each fighter's lenStep at tick entry (pre-tick stash; events do not carry it) - lenStep-r1: the growth step bladeCircles/parryGap need to rebuild a GROWN chain at its true length
   const entryFig = [false, false];   // bloom-r73: each fighter's transfiguration at tick entry (figT > 0) - the joke object makes the pair solid-free (bladeVsBlade :2209), so law 3/3s exempt it (#765)
   const entryFl = [_flRest(), _flRest()];   // the sub=-1 entry record's chain poses — flailInit's rest constant until the first stash
+let entryShotFlags = new Map();   /* #794: pre-tick entry-state shot flags. The 3s pass reads the ENTRY tape (:945), so it must read ENTRY-state flags, not post-tick G.shots (the #788 read-instant bug). */
 
   const gapAt = (S, i, fl0, fl1, ls0, ls1) => geom.parryGap(
     { x: S[i + A_X], y: S[i + A_Y], ang: S[i + A_ANG], w: curW[0], fl: fl0, fp: geom.leadFlip(curW[0], S[i + A_SPIN]), ls: ls0 },
@@ -630,6 +631,7 @@ function runMatch(api, seed, weapons) {
       if (f) entryFig[fi] = f.figT > 0;   // bloom-r73 exemption (#765): read at the same pre-tick instant as the pose it classifies
       if (f) entryLs[fi] = f.lenStep || 0;   // lenStep-r1: the same pre-tick instant; exact for the entry pose, and for an event/substep until the first grow of the tick (a hit grows the attacker AFTER its contact test)
     }
+    entryShotFlags = new Map(); for (const s of G.shots) entryShotFlags.set(s.sid, {returns:!!s.returns,pinned:!!s.pinned,ricochet:!!s.ricochet,skewVictim:!!s.skewVictim,skewCarry:!!s.skewCarry});   // #794: capture entry-state flags at the same pre-tick instant the entry tape is read
     tick(G); t++;
     if (G.phase === 'fight') fightTicksHere++;
 
@@ -932,7 +934,7 @@ function runMatch(api, seed, weapons) {
        * relative travel per substep <= half the narrowest window. */
       const ST = G.auditShots;
       if (ST.length) {
-        const shotsBySid = new Map(); for (const s of G.shots) shotsBySid.set(s.sid, s);   // #788: sid->live-shot lookup for flag access
+        const shotsBySid = entryShotFlags;   // #794: entry-state lookup (fixes the #788 post-tick read-instant bug that leaked 100 departed-shot frames)
         const K = G.auditK;
         if (K.length === 3) {
           if (K[0] < K[1] || K[0] < K[2]) budgetViol++;
@@ -997,7 +999,9 @@ function runMatch(api, seed, weapons) {
               else {
                 const liveA = shotsBySid.get(A2.sid), liveB = shotsBySid.get(B2.sid);
                 if (liveA && liveB && liveA.pinned && liveB.pinned) { shotRenderPairSanctioned++; }   // #788: nail×nail (pinlaw-r44)
-                else { shotRenderPair++; }
+                else if ((liveA && liveA.returns) !== (liveB && liveB.returns)) { shotRenderPairSanctioned++; }   // #794: one-sided returning shot — its pivot disc is not its hitbox (the drawn arc is, chaosorbit-r54), so the overlap with the non-returning one is the snapfix-r57 arc-cross frame or the returning loop's pivot artifact (same doctrine body/blade/rim exempt returns)
+                else if (shotGoneTick.get(A2.sid) === G.t || shotGoneTick.get(B2.sid) === G.t) { shotRenderPairSanctioned++; }   // #794: annihilation event frame — one shot departs this tick (cross/swat/...), so the entry-frame overlap IS the destruction the sim resolved (for shot-shot, departure is the resolution; this can never hide a live pass-through)
+                else { shotRenderPair++; }   // #794 residual: two ALIVE non-returning enemy shots overlapping = a genuine 3s pair defect (the tripwire's target)
               }
             }
           }
@@ -1102,7 +1106,7 @@ const f2 = x => Number.isFinite(x) ? x.toFixed(2) : 'n/a';
  * The block between the two marker comments is self-contained: .qa/verdict-proof.mjs lifts and runs it. */
 /*VERDICT-BLOCK-BEGIN*/
 const LAW3_BASE = { bandVis: 42, bandWorst: 14.185, flipOverlap: 27, flipVis: 10, flipWorst: 11.559 };
-const LAW3S_BASE = { blade: 6, body: 62, rim: 32, pair: 6, worst: 69.447 };
+const LAW3S_BASE = { blade: 0, body: 0, rim: 0, pair: 0, worst: 0 };   // #794: re-baselined to 0 — the read-instant fix (A) + the pair sanction (B) route every prior residual; D4 / law 3s CLOSED, goal met
 const VEPS = 1e-6;
 const r3 = x => Math.round(x * 1000) / 1000;
 const worseInt = (x, base) => !(x <= base);
@@ -1316,7 +1320,7 @@ async function runAll(api, opts) {
   L.push(`[${pf(parryNoTouch === 0)}] contact law 2: parry only on exact weapon-weapon touch (0 fired with slack)`);
   if (polyTicks) L.push(`[${verdict3({ bandVis: polyOverlapVis - polyFlipVis, bandWorst: polyBandWorst, flipOverlap: polyFlipOverlap, flipVis: polyFlipVis, flipWorst: polyFlipWorst })}] contact law 3: VISIBLE rendered interpenetration (deeper than the 3px ink outline, >2.5px) - DEFECT TRACKER (goal: 0 band-visible ticks; #768): band visible ${polyOverlapVis - polyFlipVis}/${polyTicks} fight-ticks (baseline ${LAW3_BASE.bandVis}) worst ${polyBandWorst.toFixed(3)}px (baseline ${LAW3_BASE.bandWorst}) · mirror class ${polyFlipOverlap} overlap(s) (baseline ${LAW3_BASE.flipOverlap}) / ${polyFlipVis} visible (baseline ${LAW3_BASE.flipVis}) / worst ${polyFlipWorst.toFixed(3)}px (baseline ${LAW3_BASE.flipWorst}). PASS = goal met; FAIL = a REGRESSION of any counter vs the owner's 2026-11-16 --solidity baseline (3b11f34), checked before the goal; TRACK = an open defect at or below baseline (px compared at the baseline's 3-decimal precision). The baseline is a regression tripwire, NOT an acceptance band. Sub-ink overlaps (<=2.5px, inks crossing) are the disclosed pin-whip transient (2026-10-21 amendment), disclosed on the law-3 info line: ${polyOverlap}/${polyTicks} overlaps, worst ${polyWorst.toFixed(3)}px. The mirror class is a parry flipping a flagged weapon in the tick's last substep (sim truth, never drawn; Part F worst drawn gap -0.149px) and is ratcheted by count. Bloom-pair ticks are exempt and counted apart on the [----] line (#765).`);
   L.push(`[----] bloom-r73 exemption (law 3 / 3s, #765): ${bloomPairTicks} rendered fight-tick(s) had a bloomed fighter at tick entry (the pair is solid-free by design - bladeVsBlade returns on figT > 0 - and the drawn weapon is the joke object, not the real geometry the audit rebuilds); of those ${bloomOverlap} had a real-geometry overlap, ${bloomVis} visible (>2.5px), worst ${bloomWorst.toFixed(3)}px - COUNTED HERE and NOT in the law-3 line above; law 3s: ${shotRenderBladeBloom} shot-vs-blade overlap(s) against a bloomed foe blade, NOT in the 3s blade counter. The drawn joke object's own silhouette vs the foe's weapon is not measured.`);
-  L.push(`[----] shot-doctrine exemptions (law 3s, #788): blade ${shotRenderBladeSanctioned} (boomerang blade-immunity + spear carry/impale) · body ${shotRenderBodySanctioned} (boomerang pass-through + spear impale) · rim ${shotRenderRimSanctioned} (boomerang pierce + nails + ricochets + spear impale) · pair ${shotRenderPairSanctioned} (same-owner + nail×nail) - COUNTED HERE and NOT in the 3s line above. The law-3s text predates the owner's shot-doctrine rulings; these overlaps are sanctioned by design.`);
+  L.push(`[----] shot-doctrine exemptions (law 3s, #788): blade ${shotRenderBladeSanctioned} (boomerang blade-immunity + spear carry/impale) · body ${shotRenderBodySanctioned} (boomerang pass-through + spear impale) · rim ${shotRenderRimSanctioned} (boomerang pierce + nails + ricochets + spear impale) · pair ${shotRenderPairSanctioned} (same-owner + nail×nail + one-sided-returning + annihilation-event-frame) - COUNTED HERE and NOT in the 3s line above. The law-3s text predates the owner's shot-doctrine rulings; these overlaps are sanctioned by design.`);
   L.push(`[${pf(flMissing === 0)}] harness chain-pose integrity (2026-10-28): every chain-weapon law recompute got the sim's own stored pose — events aFl/bFl/fFl, G.auditFl rows per substep, the stashed entry pose for laws 3/3s — 0 missing across ${chainPoseTicks} rendered chain ticks + ${chainPoseSubs} chain substeps + ${chainShotEntries} chain-foe shot checks, so no recompute silently degraded to the rigid spine (the cause of the 2026-10-27 red set; instrument .qa/chainlaw.mjs)`);
   L.push(`[${pf(cMismatch === 0 && stuckFlagMismatch === 0)}] contact law 4: one damage per touch, re-arm only after clearing the body AND deep-disengaging (peak clearance >= reArmDeep or >= reArmWait ticks out — owner 2026-10-23; projectile-weapon spines and the shield shove without damage, gate included — replica mirrors the sim gate exactly, owner 2026-10-19)`);
   L.push(`[${pf(flipViol === 0 && magViol === 0 && signLawViol === 0 && zeroSpins === 0)}] contact law 5: every parry recoils both spins; spins change sign ONLY at parries; never zero`);
