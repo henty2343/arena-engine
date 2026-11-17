@@ -34,7 +34,7 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.9k (compute
 | docs/CODEMAP.md | 1,515 | before opening the canonical |
 | docs/LAWS.md | 4,882 | before any sim/doc edit |
 | docs/RECIPES.md | 1,868 | adding a trait/skill/bot |
-| docs/GAMES.md | 55,491 | GREP ONLY — never load whole |
+| docs/GAMES.md | 55,497 | GREP ONLY — never load whole |
 | docs/SPEC.md | 12,988 | PLANNED engine work only |
 | docs/CONTRACT.md | 4,226 | PLANNED engine work only |
 | docs/BUILD.md | 4,525 | PLANNED engine work only |

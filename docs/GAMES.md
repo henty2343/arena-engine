@@ -528,8 +528,8 @@ Since v1.2 the harness is parallel (worker threads — the report is proven byte
 **Layout — every command below runs bare from the repo root.** All harness defaults resolve `previews/spinclash-preview.html`, and `navgen`/`docreflow` default to `docs/GAMES.md`. Explicit-arg semantics are deliberately unchanged and differ by folder: the `.qa`/`scratch` harnesses resolve an arg from the repo root (`inscribe` must, because `bake-rows` passes it `scratch/.bake-temp.html`), while `measure.mjs` and `chromecheck.mjs` live at the repo root and resolve an arg relative to their own folder (the folder-relative rule stands for any explicit arg).
 
 ```
-node measure.mjs [file] [seeds=40] [--verbose]
-                 [--quick | --full | --vs <weapon> | --cells a+b,c+d | --solidity] [--matrix-only] [--jobs N]   # OWNER'S GO ONLY
+node measure.mjs --owner-go [file] [seeds=40] [--verbose]
+                            [--quick | --full | --vs <weapon> | --cells a+b,c+d | --solidity] [--matrix-only] [--jobs N]   # OWNER'S GO ONLY
 node chromecheck.mjs [file]                                     # ~4s, safe
 node .qa/inscribe.mjs [file]                                            # ~6s, safe — PERMANENT inscription gate (owner directive
                                                                         # 2026-10-19: events only on visible contact). Partial art
