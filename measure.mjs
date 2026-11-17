@@ -313,6 +313,7 @@ let shotPin = 0;                   // pinlaw-r44: bolts nailed into the rim (a p
 let shotPhantom = 0, shotWorstGap = -Infinity;
 let swatNoTouch = 0, swatWorstGap = -Infinity, swatBestGap = Infinity;
 let shotRenderBlade = 0, shotRenderBody = 0, shotRenderRim = 0, shotRenderPair = 0, shotRenderWorst = 0, shotEntryFrames = 0;
+let shotRenderBladeSanctioned = 0, shotRenderBodySanctioned = 0, shotRenderRimSanctioned = 0, shotRenderPairSanctioned = 0;   /* shot-doctrine exemptions (2026-11-17, #788): law 3s on sanctioned overlaps (returning boomerang blade/body/rim, javelin skewer impale/carry, nails, ricochets, same-owner pairs, nail×nail pairs). The sim sanctions these by design, so they're COUNTED HERE and kept OUT of the 3s counters. */
 let shotLost = 0, shotOrphan = 0, shotDeathDup = 0;
 let budgetViol = 0, maxSubEngaged = 0;
 // v0.7.2 ranged class-rule accumulators
@@ -367,7 +368,8 @@ const ACC_ADD = ['battles', 'rounds', 'hitsTotal', 'parriesTotal', 'subSnaps',
   'polyOverlap', 'polyTicks', 'subOverlap', 'polyOverlapVis',
   'spinSameDir', 'spinOppDir', 'openMagMismatch', 'flipViol', 'signLawViol', 'zeroSpins', 'magViol',
   'shotThrown', 'shotLanded', 'shotSwats', 'shotRims', 'shotCross', 'shotCleared', 'shotCatch', 'shotPass', 'shotBounce', 'shotPin',
-  'shotPhantom', 'swatNoTouch', 'shotRenderBlade', 'shotRenderBody', 'shotRenderRim',
+  'shotPhantom', 'swatNoTouch', 'shotRenderBlade', 'shotRenderBody', 'shotRenderRim', 'shotRenderBladeSanctioned', 'shotRenderBodySanctioned', 'shotRenderRimSanctioned',
+  'shotRenderPairSanctioned',
   'shotRenderPair', 'shotEntryFrames', 'shotLost', 'shotOrphan', 'shotDeathDup',
   'budgetViol', 'maxSubEngaged', 'launchOffMid', 'rangedMeleeHits', 'rangedShoves',
   'chainPoseTicks', 'chainPoseSubs', 'chainShotEntries', 'flMissing',
@@ -385,7 +387,7 @@ function accSnapshot() {
     spinSameDir, spinOppDir, openMagMismatch, flipViol, signLawViol, zeroSpins, magViol,
     shotThrown, shotLanded, shotSwats, shotRims, shotCross, shotCleared, shotCatch, shotPass, shotBounce, shotPin,
     shotPhantom, shotWorstGap, swatNoTouch, swatWorstGap, swatBestGap,
-    shotRenderBlade, shotRenderBody, shotRenderRim, shotRenderPair, shotRenderWorst, shotEntryFrames,
+    shotRenderBlade, shotRenderBody, shotRenderRim, shotRenderPair, shotRenderWorst, shotEntryFrames, shotRenderBladeSanctioned, shotRenderBodySanctioned, shotRenderRimSanctioned, shotRenderPairSanctioned,
     shotLost, shotOrphan, shotDeathDup, budgetViol, maxSubEngaged,
     launchOffMid, launchWorst, rangedMeleeHits, rangedShoves,
     chainPoseTicks, chainPoseSubs, chainShotEntries, flMissing,
@@ -930,6 +932,7 @@ function runMatch(api, seed, weapons) {
        * relative travel per substep <= half the narrowest window. */
       const ST = G.auditShots;
       if (ST.length) {
+        const shotsBySid = new Map(); for (const s of G.shots) shotsBySid.set(s.sid, s);   // #788: sid->live-shot lookup for flag access
         const K = G.auditK;
         if (K.length === 3) {
           if (K[0] < K[1] || K[0] < K[2]) budgetViol++;
@@ -958,16 +961,45 @@ function runMatch(api, seed, weapons) {
             }
             const gB = best - st.r;
             if (gB < 0 && entryFig[foeI]) shotRenderBladeBloom++;   // bloom-r73 (#765): a bloomed blade swats nothing - the shot passes the real blade; counted apart
-            else if (gB < 0) { shotRenderBlade++; if (-gB > shotRenderWorst) shotRenderWorst = -gB; }
+            else if (gB < 0) {
+              const live = shotsBySid.get(st.sid);   // #788: look up the live shot for flag access
+              if (live && live.returns) shotRenderBladeSanctioned++;   // #788: boomerang blade-immunity (catchonly-r56)
+              else if (live && live.skewCarry) shotRenderBladeSanctioned++;   // #788: spear carry (skewer-r46)
+              else if (live && live.skewVictim) shotRenderBladeSanctioned++;   // #788: spear impale (skewer-r46)
+              else { shotRenderBlade++; if (-gB > shotRenderWorst) shotRenderWorst = -gB; }
+            }
             const gBody = Math.hypot(st.x - S[FX], st.y - S[FY]) - CFG.bodyR - st.r;
-            if (gBody < 0) { shotRenderBody++; if (-gBody > shotRenderWorst) shotRenderWorst = -gBody; }
+            if (gBody < 0) {
+              const live = shotsBySid.get(st.sid);   // #788: look up the live shot for flag access
+              if (live && live.returns) shotRenderBodySanctioned++;   // #788: boomerang pass-through (r38)
+              else if (live && live.skewVictim) shotRenderBodySanctioned++;   // #788: spear impale (skewer-r46)
+              else { shotRenderBody++; if (-gBody > shotRenderWorst) shotRenderWorst = -gBody; }
+            }
           }
-          if (Math.hypot(st.x - half, st.y - half) + st.r > half + 0.25) shotRenderRim++;
+          {   // #788: rim check with live-shot lookup
+            const dr = Math.hypot(st.x - half, st.y - half);
+            if (dr + st.r > half + 0.25) {
+              const live = shotsBySid.get(st.sid);
+              if (live && live.returns) shotRenderRimSanctioned++;   // #788: boomerang pierce (freeloop-r38)
+              else if (live && live.pinned) shotRenderRimSanctioned++;   // #788: nail (pinlaw-r44)
+              else if (live && live.ricochet) shotRenderRimSanctioned++;   // #788: ricochet (ricolaw-r41)
+              else if (live && live.skewVictim) shotRenderRimSanctioned++;   // #788: spear impale (skewer-r46)
+              else shotRenderRim++;
+            }
+          }
         }
         for (let i2 = 0; i2 < entry.length; i2++) {
           for (let j2 = i2 + 1; j2 < entry.length; j2++) {
             const A2 = entry[i2], B2 = entry[j2];
-            if (Math.hypot(A2.x - B2.x, A2.y - B2.y) < A2.r + B2.r - 0.25) shotRenderPair++;
+            const dist = Math.hypot(A2.x - B2.x, A2.y - B2.y);
+            if (dist < A2.r + B2.r - 0.25) {
+              if (A2.o === B2.o) { shotRenderPairSanctioned++; }   // #788: same-owner (multgrow-r42)
+              else {
+                const liveA = shotsBySid.get(A2.sid), liveB = shotsBySid.get(B2.sid);
+                if (liveA && liveB && liveA.pinned && liveB.pinned) { shotRenderPairSanctioned++; }   // #788: nail×nail (pinlaw-r44)
+                else { shotRenderPair++; }
+              }
+            }
           }
         }
       }
@@ -1128,7 +1160,7 @@ async function runAll(api, opts) {
      spinSameDir, spinOppDir, openMagMismatch, flipViol, signLawViol, zeroSpins, magViol,
      shotThrown, shotLanded, shotSwats, shotRims, shotCross, shotCleared, shotCatch, shotPass, shotBounce, shotPin,
      shotPhantom, shotWorstGap, swatNoTouch, swatWorstGap, swatBestGap,
-     shotRenderBlade, shotRenderBody, shotRenderRim, shotRenderPair, shotRenderWorst, shotEntryFrames,
+     shotRenderBlade, shotRenderBody, shotRenderRim, shotRenderPair, shotRenderWorst, shotEntryFrames, shotRenderBladeSanctioned, shotRenderBodySanctioned, shotRenderRimSanctioned, shotRenderPairSanctioned,
      shotLost, shotOrphan, shotDeathDup, budgetViol, maxSubEngaged,
      launchOffMid, launchWorst, rangedMeleeHits, rangedShoves,
      chainPoseTicks, chainPoseSubs, chainShotEntries, flMissing,
@@ -1284,6 +1316,7 @@ async function runAll(api, opts) {
   L.push(`[${pf(parryNoTouch === 0)}] contact law 2: parry only on exact weapon-weapon touch (0 fired with slack)`);
   if (polyTicks) L.push(`[${verdict3({ bandVis: polyOverlapVis - polyFlipVis, bandWorst: polyBandWorst, flipOverlap: polyFlipOverlap, flipVis: polyFlipVis, flipWorst: polyFlipWorst })}] contact law 3: VISIBLE rendered interpenetration (deeper than the 3px ink outline, >2.5px) - DEFECT TRACKER (goal: 0 band-visible ticks; #768): band visible ${polyOverlapVis - polyFlipVis}/${polyTicks} fight-ticks (baseline ${LAW3_BASE.bandVis}) worst ${polyBandWorst.toFixed(3)}px (baseline ${LAW3_BASE.bandWorst}) · mirror class ${polyFlipOverlap} overlap(s) (baseline ${LAW3_BASE.flipOverlap}) / ${polyFlipVis} visible (baseline ${LAW3_BASE.flipVis}) / worst ${polyFlipWorst.toFixed(3)}px (baseline ${LAW3_BASE.flipWorst}). PASS = goal met; FAIL = a REGRESSION of any counter vs the owner's 2026-11-16 --solidity baseline (3b11f34), checked before the goal; TRACK = an open defect at or below baseline (px compared at the baseline's 3-decimal precision). The baseline is a regression tripwire, NOT an acceptance band. Sub-ink overlaps (<=2.5px, inks crossing) are the disclosed pin-whip transient (2026-10-21 amendment), disclosed on the law-3 info line: ${polyOverlap}/${polyTicks} overlaps, worst ${polyWorst.toFixed(3)}px. The mirror class is a parry flipping a flagged weapon in the tick's last substep (sim truth, never drawn; Part F worst drawn gap -0.149px) and is ratcheted by count. Bloom-pair ticks are exempt and counted apart on the [----] line (#765).`);
   L.push(`[----] bloom-r73 exemption (law 3 / 3s, #765): ${bloomPairTicks} rendered fight-tick(s) had a bloomed fighter at tick entry (the pair is solid-free by design - bladeVsBlade returns on figT > 0 - and the drawn weapon is the joke object, not the real geometry the audit rebuilds); of those ${bloomOverlap} had a real-geometry overlap, ${bloomVis} visible (>2.5px), worst ${bloomWorst.toFixed(3)}px - COUNTED HERE and NOT in the law-3 line above; law 3s: ${shotRenderBladeBloom} shot-vs-blade overlap(s) against a bloomed foe blade, NOT in the 3s blade counter. The drawn joke object's own silhouette vs the foe's weapon is not measured.`);
+  L.push(`[----] shot-doctrine exemptions (law 3s, #788): blade ${shotRenderBladeSanctioned} (boomerang blade-immunity + spear carry/impale) · body ${shotRenderBodySanctioned} (boomerang pass-through + spear impale) · rim ${shotRenderRimSanctioned} (boomerang pierce + nails + ricochets + spear impale) · pair ${shotRenderPairSanctioned} (same-owner + nail×nail) - COUNTED HERE and NOT in the 3s line above. The law-3s text predates the owner's shot-doctrine rulings; these overlaps are sanctioned by design.`);
   L.push(`[${pf(flMissing === 0)}] harness chain-pose integrity (2026-10-28): every chain-weapon law recompute got the sim's own stored pose — events aFl/bFl/fFl, G.auditFl rows per substep, the stashed entry pose for laws 3/3s — 0 missing across ${chainPoseTicks} rendered chain ticks + ${chainPoseSubs} chain substeps + ${chainShotEntries} chain-foe shot checks, so no recompute silently degraded to the rigid spine (the cause of the 2026-10-27 red set; instrument .qa/chainlaw.mjs)`);
   L.push(`[${pf(cMismatch === 0 && stuckFlagMismatch === 0)}] contact law 4: one damage per touch, re-arm only after clearing the body AND deep-disengaging (peak clearance >= reArmDeep or >= reArmWait ticks out — owner 2026-10-23; projectile-weapon spines and the shield shove without damage, gate included — replica mirrors the sim gate exactly, owner 2026-10-19)`);
   L.push(`[${pf(flipViol === 0 && magViol === 0 && signLawViol === 0 && zeroSpins === 0)}] contact law 5: every parry recoils both spins; spins change sign ONLY at parries; never zero`);

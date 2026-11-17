@@ -18,7 +18,7 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.9k (compute
 - Older baselines (11) live in `.qa/archive/` as history only — they prove nothing about the current build.
 
 ## Tooling inventory
-- Root tools (3): `chromecheck.mjs` · `ingest.mjs` · `measure.mjs`
+- Root tools (5): `apply-788-fixed.mjs` · `apply-788.mjs` · `chromecheck.mjs` · `ingest.mjs` · `measure.mjs`
 - scripts/ (1): `run-battery.mjs`
 - tools/ (11, incl. doc/ and lib/): `gen-codemap.mjs` · `gen-state.mjs` · `lint-docs.mjs` · `lint-markers.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/docset.mjs` · `lib/load-sim.mjs` · `lib/manifest.mjs` · `lib/strip-comments.mjs`
 - scratch/: gitignored RUNTIME temp dir (bake/gate temp copies, battery logs) — not source; nothing in it is tracked except `.gitkeep`.
