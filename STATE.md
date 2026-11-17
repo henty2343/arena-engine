@@ -18,7 +18,7 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.9k (compute
 - Older baselines (11) live in `.qa/archive/` as history only — they prove nothing about the current build.
 
 ## Tooling inventory
-- Root tools (5): `apply-788-fixed.mjs` · `apply-788.mjs` · `chromecheck.mjs` · `ingest.mjs` · `measure.mjs`
+- Root tools (3): `chromecheck.mjs` · `ingest.mjs` · `measure.mjs`
 - scripts/ (1): `run-battery.mjs`
 - tools/ (11, incl. doc/ and lib/): `gen-codemap.mjs` · `gen-state.mjs` · `lint-docs.mjs` · `lint-markers.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/docset.mjs` · `lib/load-sim.mjs` · `lib/manifest.mjs` · `lib/strip-comments.mjs`
 - scratch/: gitignored RUNTIME temp dir (bake/gate temp copies, battery logs) — not source; nothing in it is tracked except `.gitkeep`.
@@ -29,15 +29,15 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.9k (compute
 ## Documentation cost (chars/4 estimate)
 | file | ~tokens | read policy |
 |---|---:|---|
-| README.md | 317 | router only |
-| AGENTS.md | 2,018 | always |
+| README.md | 321 | router only |
+| AGENTS.md | 2,032 | always |
 | docs/CODEMAP.md | 1,515 | before opening the canonical |
-| docs/LAWS.md | 4,882 | before any sim/doc edit |
+| docs/LAWS.md | 4,884 | before any sim/doc edit |
 | docs/RECIPES.md | 1,868 | adding a trait/skill/bot |
 | docs/GAMES.md | 55,497 | GREP ONLY — never load whole |
-| docs/SPEC.md | 12,988 | PLANNED engine work only |
-| docs/CONTRACT.md | 4,226 | PLANNED engine work only |
-| docs/BUILD.md | 4,525 | PLANNED engine work only |
+| docs/planned/SPEC.md | 12,990 | PLANNED engine work only |
+| docs/planned/CONTRACT.md | 4,226 | PLANNED engine work only |
+| docs/planned/BUILD.md | 4,525 | PLANNED engine work only |
 | docs/history/chronicle-722-747.md | 21,598 | GREP ONLY — frozen era |
 | docs/history/mf-1-pre667.md | 45,547 | GREP ONLY — frozen era |
 | docs/history/mf-2-667-721.md | 52,445 | GREP ONLY — frozen era |
@@ -47,4 +47,4 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.9k (compute
   `docs/LAWS.md` is the sole authority for them; the open queue and owner quotes are in `docs/GAMES.md` §Current state. `tools/lint-docs.mjs` checks the count and the table.
 - The record is split: `docs/GAMES.md` is the live file; 3 frozen era file(s) live in `docs/history/`. The nav block in GAMES indexes every file by key + line.
 - Implemented: the SpinClash harness (this canonical + bare-Node tools).
-- Planned (no code yet): the engine — `docs/BUILD.md` Phases 0–8 (PLANNED).
+- Planned (no code yet): the engine — `docs/planned/BUILD.md` Phases 0–8 (PLANNED).

@@ -6,7 +6,7 @@ Canonical for: the current laws — this file is the SOLE AUTHORITY for them, fo
 probe checks each law. `docs/GAMES.md` §Current state is the fuller design record (owner quotes, provenance); where it
 disagrees with this file, this file wins and the record is stale. `tools/lint-docs.mjs` checks the trait count and the
 law-to-probe table below.
-Platform rules live in `docs/SPEC.md`; agent workflow in `AGENTS.md`; mutable facts in `STATE.md`.
+Platform rules live in `docs/planned/SPEC.md`; agent workflow in `AGENTS.md`; mutable facts in `STATE.md`.
 
 > These are the laws as of build `links-r87`. Retired rules are NOT listed here — they live in
 > GAMES' dated entries (git history for older). If GAMES §Current state disagrees with a law below, this file wins:

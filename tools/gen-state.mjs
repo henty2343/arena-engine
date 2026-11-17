@@ -35,7 +35,7 @@ function facts() {
   const tok = p => existsSync(p) ? Math.round(readFileSync(p, 'utf8').length / 4) : 0;
   const POLICY = { 'README.md': 'router only', 'AGENTS.md': 'always', 'docs/CODEMAP.md': 'before opening the canonical', 'docs/LAWS.md': 'before any sim/doc edit',
     'docs/RECIPES.md': 'adding a trait/skill/bot', 'docs/GAMES.md': 'GREP ONLY — never load whole',
-    'docs/SPEC.md': 'PLANNED engine work only', 'docs/CONTRACT.md': 'PLANNED engine work only', 'docs/BUILD.md': 'PLANNED engine work only' };
+    'docs/planned/SPEC.md': 'PLANNED engine work only', 'docs/planned/CONTRACT.md': 'PLANNED engine work only', 'docs/planned/BUILD.md': 'PLANNED engine work only' };
   // B3C: the frozen era files join the cost table (sorted glob — a new era needs no edit here).
   const hist = historyFiles(root);
   const policy = { ...POLICY };
@@ -78,7 +78,7 @@ function render(f, cost = '~0.7k') {
   L.push('  `docs/LAWS.md` is the sole authority for them; the open queue and owner quotes are in `docs/GAMES.md` §Current state. `tools/lint-docs.mjs` checks the count and the table.');
   if (f.historyFiles.length) L.push(`- The record is split: \`docs/GAMES.md\` is the live file; ${f.historyFiles.length} frozen era file(s) live in \`docs/history/\`. The nav block in GAMES indexes every file by key + line.`);
   L.push('- Implemented: the SpinClash harness (this canonical + bare-Node tools).');
-  L.push('- Planned (no code yet): the engine — `docs/BUILD.md` Phases 0–8 (PLANNED).'); L.push('');
+  L.push('- Planned (no code yet): the engine — `docs/planned/BUILD.md` Phases 0–8 (PLANNED).'); L.push('');
   return L.join('\n');
 }
 const mode = process.argv[2] || '';

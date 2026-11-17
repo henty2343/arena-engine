@@ -76,7 +76,7 @@ const PLANNED = new Set(['package.json','render.json','targets.ts','characters.j
   'launch.json','settings.json','extensions.json','doctor.mjs','generate.mjs','inspect.mjs']);
 const PLANNED_DIR = /^(packages|apps|games|output|assets\/pools|assets\/fonts|\.vscode)\//;
 const HIST = /retired|purged|recover|git show|docs-precleanup|item3-closed|never committed|unrecoverable|former|removed|deleted|was\b|tombstone|archived|RETIRED|DORMANT|reverted|parked|pruned|gone|no longer|since retired/i;
-const SEARCH_DIRS = ['', '.qa','docs','tools','scripts','scratch','previews'];
+const SEARCH_DIRS = ['', '.qa','docs','docs/planned','tools','scripts','scratch','previews'];
 function resolves(ref) {
   const clean = ref.split('#')[0]; if (!clean) return true;
   if (PLANNED.has(path.basename(clean)) || PLANNED_DIR.test(clean)) return true;
@@ -89,7 +89,7 @@ function resolves(ref) {
   return false;
 }
 const refRe = /`([A-Za-z0-9_./\-]+\.(?:mjs|md|json|html|ts|js|svg|csv|txt|sh))`|\]\(([^)\s]+)\)/g;
-const operational = ['README.md','AGENTS.md','STATE.md','docs/CODEMAP.md','docs/LAWS.md','docs/RECIPES.md','docs/SPEC.md','docs/CONTRACT.md','docs/BUILD.md'];
+const operational = ['README.md','AGENTS.md','STATE.md','docs/CODEMAP.md','docs/LAWS.md','docs/RECIPES.md','docs/planned/SPEC.md','docs/planned/CONTRACT.md','docs/planned/BUILD.md'];
 function lintRefs(f, text, off=0) {
   text.split('\n').forEach((line,i) => {
     for (const mm of line.matchAll(refRe)) {
@@ -170,7 +170,7 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
     if (!existsSync(path.join(root, mm[1]))) err(`docs/GAMES.md references missing history file: ${mm[1]}`);
 
   // Hand-typed token costs drift; the only cost source is STATE.md (Phase I).
-  for (const f of ['AGENTS.md','docs/CODEMAP.md','docs/LAWS.md','docs/RECIPES.md','docs/SPEC.md','docs/CONTRACT.md','docs/BUILD.md','docs/GAMES.md', ...HIST_FILES])
+  for (const f of ['AGENTS.md','docs/CODEMAP.md','docs/LAWS.md','docs/RECIPES.md','docs/planned/SPEC.md','docs/planned/CONTRACT.md','docs/planned/BUILD.md','docs/GAMES.md', ...HIST_FILES])
     if (existsSync(path.join(root,f)) && /Approx token cost:\s*~?\d/.test(rd(f).split('\n').slice(0, 12).join('\n')))
       err(f + ' header has a hand-typed token cost — point to STATE.md §Documentation cost instead');
 

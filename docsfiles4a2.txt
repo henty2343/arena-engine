@@ -1,0 +1,12 @@
+docs/BUILD.md
+docs/CODEMAP.md
+docs/CONTRACT.md
+docs/GAMES.md
+docs/LAWS.md
+docs/RECIPES.md
+docs/SPEC.md
+docs/handoff/BATCH3-STATUS.md
+docs/handoff/HANDOFF.md
+docs/history/chronicle-722-747.md
+docs/history/mf-1-pre667.md
+docs/history/mf-2-667-721.md
