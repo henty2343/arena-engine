@@ -1102,7 +1102,7 @@ const f2 = x => Number.isFinite(x) ? x.toFixed(2) : 'n/a';
  * The block between the two marker comments is self-contained: .qa/verdict-proof.mjs lifts and runs it. */
 /*VERDICT-BLOCK-BEGIN*/
 const LAW3_BASE = { bandVis: 42, bandWorst: 14.185, flipOverlap: 27, flipVis: 10, flipWorst: 11.559 };
-const LAW3S_BASE = { blade: 1296, body: 19609, rim: 54605, pair: 1061228, worst: 74.971 };
+const LAW3S_BASE = { blade: 6, body: 62, rim: 32, pair: 6, worst: 69.447 };
 const VEPS = 1e-6;
 const r3 = x => Math.round(x * 1000) / 1000;
 const worseInt = (x, base) => !(x <= base);
