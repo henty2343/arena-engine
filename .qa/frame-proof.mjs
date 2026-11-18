@@ -45,8 +45,8 @@
  * law 3s and GATES ONLY ITS GROWTH (a ratchet against the baseline below), and the law row stays
  * `owner-run only`.
  *
- * THE BASELINE (the ratchet): the law-3s counters are compared against the numbers measured at the
- * #753 landing. They are NOT a law gate - they are a change detector, in the fingerprint.mjs
+ * THE BASELINE (the ratchet): the law-3s counters are compared against the numbers measured over WHOLE
+ * battles (#798; first set at the #753 landing on a 2,500-tick horizon). They are NOT a law gate - they are a change detector, in the fingerprint.mjs
  * tradition: if a sim change moves them, the probe goes red and the numbers are re-measured and
  * updated DELIBERATELY (never silently). The C3 band assertions are the law gate.
  *
@@ -75,11 +75,18 @@ const RED_MAX = 20.754;   // the law's own disclosed RED envelope: the worst the
 const RIM_SLACK = 0.25;   // the owner's rim slack, in px
 const PAIR_SLACK = 0.25;  // the owner's shot-vs-shot slack, in px
 
-/* The law-3s counters at the #753 landing (the ratchet baseline). Re-measure and update these
- * DELIBERATELY when a sim change moves them - see the probe header. */
-const BASELINE = { blade: 85, body: 757, rim: 2422, pair: 6745 };
+/* The law-3s counters over WHOLE battles (the ratchet baseline). Re-baselined at #798 when the
+ * horizon moved from the old 2,500-tick cap (blade 85 / body 757 / rim 2422 / pair 6745, set at
+ * #753) to the natural end of every battle - the owner's ruling, because a viewer watches the
+ * whole battle, not its first ~21s. Re-measure and update these DELIBERATELY when a sim change
+ * moves them - see the probe header. */
+const BASELINE = { blade: 214, body: 4105, rim: 10220, pair: 45922 };
 
-const TICK_BUDGET = 2500;
+/* THE HORIZON (#798): every cell runs to its NATURAL END (G.over), exactly as measure.mjs's whole
+ * battles do. TICK_BUDGET is only a safety CEILING (the longest known battle, flail+hammer s101,
+ * ends near t18,707); a cell that reaches it without ending is a stall and FAILS the vacuity
+ * assertion rather than being silently truncated. */
+const TICK_BUDGET = 60000;
 /* Minimum observations, so an assertion cannot pass on an empty sample. */
 const MIN_RENDERED_TICKS = 5000, MIN_SHOT_FRAMES = 200;
 
@@ -118,6 +125,8 @@ const T = {
 };
 const notes = [];
 const perCell = [];
+const stalled = [];     // cells that hit the TICK_BUDGET ceiling without a natural end (#798)
+let maxTicks = 0;
 
 /* The state tape's layout (the sim's own snapshot pass): [sub, x, y, wAngle, bladeStuck, spin,
  * alive] per fighter - stride 13. The owner's audit reads the same fields. */
@@ -133,7 +142,8 @@ for (const [name, weapons, seed] of CELLS) {
   /* the previous tick's mirror-class inputs (the owner's own route) */
   let prevParrySubs = new Set(), prevSub = -1, prevS0 = 1, prevS1 = 1, havePrev = false;
 
-  for (let t = 0; t < TICK_BUDGET && !G.over; t++) {
+  let t = 0;
+  for (; t < TICK_BUDGET && !G.over; t++) {
     /* THE RENDERED POSE: the tick entry - the live state right now, which is exactly what the
      * tick's entry snapshot records (and what the owner's entryFl stash captures for the chain).
      * Only FIGHT-phase ticks are rendered ticks: the sim fills its audit tape only in stepPhysics,
@@ -255,6 +265,9 @@ for (const [name, weapons, seed] of CELLS) {
     prevParrySubs = new Set();
     for (const e of G.events) if (e.kind === 'parry') { prevParrySubs.add(e.sub); T.parries++; }
   }
+  cell.ticks = t;
+  if (!G.over) stalled.push(`${name} s${seed}`);
+  maxTicks = Math.max(maxTicks, t);
   perCell.push(cell);
 }
 
@@ -267,9 +280,9 @@ ok('C3 the disclosed RED band stays inside the envelope the law records',
 ok('C3 the band rate holds: the band-class visible ticks are at most 2% of the rendered ticks',
    T.rendered >= MIN_RENDERED_TICKS && bandRate <= BAND_RATE,
    `${T.bandVis} visible band tick(s) over ${T.rendered} rendered tick(s) = ${(100 * bandRate).toFixed(4)}% (rate ${100 * BAND_RATE}%)`);
-ok('C3 the rendered fight-ticks are judged, not vacuous',
-   T.rendered >= MIN_RENDERED_TICKS && T.gRendered >= 1000,
-   `${T.rendered} rendered tick(s) over ${CELLS.length} cell(s) (floor ${MIN_RENDERED_TICKS}; ${T.gRendered} on the gauntlet, ${T.cRendered} on the crossed cells)`);
+ok('C3 the rendered fight-ticks are judged, not vacuous - every cell ran to its natural end',
+   T.rendered >= MIN_RENDERED_TICKS && T.gRendered >= 1000 && stalled.length === 0,
+   `${T.rendered} rendered tick(s) over ${CELLS.length} cell(s) (floor ${MIN_RENDERED_TICKS}; ${T.gRendered} on the gauntlet, ${T.cRendered} on the crossed cells); longest cell ${maxTicks} tick(s), ceiling ${TICK_BUDGET}${stalled.length ? '; STALLED at the ceiling: ' + stalled.join(', ') : ''}`);
 
 console.log('S3 - shots never overlap blade/body/rim/shot (REPORTED: the law does not hold on this build)');
 ok('S3 the reported law-3s counters did not grow past the recorded baseline',
