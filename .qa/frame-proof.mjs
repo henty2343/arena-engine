@@ -27,28 +27,41 @@
  *       it: excluded from the band, reported, growth is the signal.
  *   S3  the rendered-frame shot overlaps: foe blade, foe body, rim, and shot-vs-shot, computed at
  *       the shot-entry frames from the sim's own G.auditShots tape with the canonical's
- *       geom.bladeCircles - again the owner's own quantities, the owner's own pose definition.
+ *       geom.bladeCircles - again the owner's own quantities, the owner's own pose definition -
+ *       then classified by the OWNER'S SHOT DOCTRINE (below): the sanctioned classes are counted
+ *       apart and the UNSANCTIONED RESIDUAL is gated at zero.
  *
- * THE S3 FINDING (read this before trusting the counters): law 3s as written is ABSOLUTE ("shots
- * never overlap foe blade / foe body / rim / another shot at tick-entry poses") and it does NOT hold
- * on the current build. A faithful reproduction of measure.mjs's own law-3s pass (same tape reads,
- * same entry-slot reuse, same thresholds) measures overlaps in the owner's own curated gauntlet,
- * in these named classes:
- *   - a NAIL at rest (a pinned shot: speed 0) overlapping another nail of the SAME owner - the sim's
- *     owner-blindness rule ("the OWNER walks through his own nails") exempts those from every test;
- *   - a shot crossing another shot (the no-friendly-fire rule: shots never interact);
- *   - the boomerang's covering circle at the rim/body (the arc's bounding circle, not the drawn arc);
- *   - an impaled skewer inside the body (the skewer law embeds the drawn spear by design).
- * The owner's audit has not been re-run since the weapons pass (docs/GAMES.md: the law re-proof
- * stands owed on the owner's machine), so whether law 3s should be rewritten, or the sim narrowed,
- * or the classes accepted, is THE OWNER'S RULING - not this probe's. This probe therefore REPORTS
- * law 3s and GATES ONLY ITS GROWTH (a ratchet against the baseline below), and the law row stays
- * `owner-run only`.
+ * THE SHOT DOCTRINE (#799): law 3s as WRITTEN is absolute ("shots never overlap foe blade / foe
+ * body / rim / another shot at tick-entry poses"). The owner has since SANCTIONED named classes
+ * where the overlap is the designed behaviour, not a defect (docs/GAMES.md, the #788 and #794
+ * rulings; measure.mjs's shot entry-frame pass is the authority):
+ *   - a RETURNING boomerang vs blade / body / rim (catchonly-r56, r38, freeloop-r38): it passes
+ *     through by design, and its pivot disc is not its hitbox - the drawn arc is (chaosorbit-r54);
+ *   - a PINNED nail at the rim (pinlaw-r44), a RICOCHET star at the rim (ricolaw-r41);
+ *   - a spear IMPALE (skewVictim) vs blade / body / rim and a spear CARRY (skewCarry) vs blade
+ *     (skewer-r46: the skewer law embeds the drawn spear by design);
+ *   - shot PAIRS: same owner (multgrow-r42 - the owner walks through his own nails), two pinned
+ *     nails, a one-sided returning pair, and the ANNIHILATION EVENT FRAME (one of the two departs
+ *     this tick, so the entry overlap IS the destruction the sim resolved).
+ * This probe applies EXACTLY that doctrine and GATES THE RESIDUAL AT ZERO: an overlap nothing
+ * sanctions is a real 3s defect and fails here - an agent-runnable proof, no owner run needed.
+ * The law's own text is NOT rewritten by this probe; the exemptions are the owner's rulings.
  *
- * THE BASELINE (the ratchet): the law-3s counters are compared against the numbers measured over WHOLE
- * battles (#798; first set at the #753 landing on a 2,500-tick horizon). They are NOT a law gate - they are a change detector, in the fingerprint.mjs
- * tradition: if a sim change moves them, the probe goes red and the numbers are re-measured and
- * updated DELIBERATELY (never silently). The C3 band assertions are the law gate.
+ * TWO HOUSE RULES IT OBEYS:
+ *   - THE READ INSTANT (#794 fix A): the tape is the TICK-ENTRY pose, so the flags must be the
+ *     ENTRY flags, captured BEFORE tick(G) - never read off post-tick G.shots. A shot that
+ *     departed this tick has no post-tick flags, so a post-tick read leaks sanctioned overlaps
+ *     into the residual (the #788 bug, measured again in the #799 landing). Departure ticks come
+ *     from the sim's own events, first departure wins, exactly as measure.mjs's addGone.
+ *   - DOCTRINE DRIFT: the doctrine now lives in TWO files. The last assertion checks that every
+ *     exemption site mirrored here is STILL PRESENT in measure.mjs, so a change there cannot
+ *     silently leave this probe judging an old doctrine. measure.mjs wins any conflict.
+ *
+ * THE SANCTIONED COUNTS ARE REPORTED, NOT GATED (#799): they move with benign things (more
+ * boomerang throws, more impales), so ratcheting them was a weak detector - it would stay silent
+ * if a sanctioned overlap became a real one, because the total would not grow. The old ratchet
+ * baseline (214/4105/10220/45922 at #798; 85/757/2422/6745 at #753) is RETIRED, replaced by the
+ * residual gate. The C3 band assertions are the law gate.
  *
  * VACUITY RULE (house): every assertion states its own sample size. A build that stalls these seeds
  * makes them FAIL rather than passing on zero observations.
@@ -75,12 +88,28 @@ const RED_MAX = 20.754;   // the law's own disclosed RED envelope: the worst the
 const RIM_SLACK = 0.25;   // the owner's rim slack, in px
 const PAIR_SLACK = 0.25;  // the owner's shot-vs-shot slack, in px
 
-/* The law-3s counters over WHOLE battles (the ratchet baseline). Re-baselined at #798 when the
- * horizon moved from the old 2,500-tick cap (blade 85 / body 757 / rim 2422 / pair 6745, set at
- * #753) to the natural end of every battle - the owner's ruling, because a viewer watches the
- * whole battle, not its first ~21s. Re-measure and update these DELIBERATELY when a sim change
- * moves them - see the probe header. */
-const BASELINE = { blade: 214, body: 4105, rim: 10220, pair: 45922 };
+/* THE DOCTRINE CONTRACT (#799): every exemption site this probe mirrors in measure.mjs's shot
+ * entry-frame pass, plus the two read-instant sites (#794 fix A) and the departure ledger. The
+ * last assertion checks each string is still present there. measure.mjs is the AUTHORITY: if
+ * that assertion fails, re-read its pass and move this replica with it - never the reverse. */
+const DOCTRINE_SITES = [
+  'const shotsBySid = entryShotFlags;',
+  'entryShotFlags.set(s.sid, {returns:!!s.returns,pinned:!!s.pinned,ricochet:!!s.ricochet,skewVictim:!!s.skewVictim,skewCarry:!!s.skewCarry})',
+  'const addGone = (sid, kind) => { if (!shotGoneTick.has(sid)) shotGoneTick.set(sid, G.t);',
+  'if (live && live.returns) shotRenderBladeSanctioned++;',
+  'else if (live && live.skewCarry) shotRenderBladeSanctioned++;',
+  'else if (live && live.skewVictim) shotRenderBladeSanctioned++;',
+  'if (live && live.returns) shotRenderBodySanctioned++;',
+  'else if (live && live.skewVictim) shotRenderBodySanctioned++;',
+  'if (live && live.returns) shotRenderRimSanctioned++;',
+  'else if (live && live.pinned) shotRenderRimSanctioned++;',
+  'else if (live && live.ricochet) shotRenderRimSanctioned++;',
+  'else if (live && live.skewVictim) shotRenderRimSanctioned++;',
+  'if (A2.o === B2.o) { shotRenderPairSanctioned++; }',
+  'if (liveA && liveB && liveA.pinned && liveB.pinned) { shotRenderPairSanctioned++; }',
+  'else if ((liveA && liveA.returns) !== (liveB && liveB.returns)) { shotRenderPairSanctioned++; }',
+  'else if (shotGoneTick.get(A2.sid) === G.t || shotGoneTick.get(B2.sid) === G.t) { shotRenderPairSanctioned++; }',
+];
 
 /* THE HORIZON (#798): every cell runs to its NATURAL END (G.over), exactly as measure.mjs's whole
  * battles do. TICK_BUDGET is only a safety CEILING (the longest known battle, flail+hammer s101,
@@ -119,8 +148,9 @@ const T = {
   bandN: 0, bandVis: 0,
   mirror: 0, mirrorVis: 0, mirrorWorst: 0,
   parries: 0,
-  sBlade: 0, sBody: 0, sRim: 0, sPair: 0, sWorst: 0, sFrames: 0, sShots: 0,
-  sNailNail: 0, sCross: 0, sFlightBlade: 0,
+  sBlade: 0, sBody: 0, sRim: 0, sPair: 0, sWorst: 0, sFrames: 0, sShots: 0,   // RESIDUAL: the unsanctioned overlaps (#799)
+  sanBlade: 0, sanBody: 0, sanRim: 0, sanPair: 0,                            // the owner's sanctioned classes, counted apart
+  sPairSameOwner: 0, sPairNails: 0, sPairOneReturn: 0, sPairAnnihil: 0, sFlightBlade: 0,
   bloomTicks: 0, bloomOverlaps: 0, bloomVis: 0, bloomWorst: 0, sBladeBloom: 0,   // bloom-r73 exemption (#765): solid-free pair, counted apart
 };
 const notes = [];
@@ -141,6 +171,11 @@ for (const [name, weapons, seed] of CELLS) {
   const cell = { name, seed, crossed, bandWorst: 0, bandVis: 0, bandN: 0 };
   /* the previous tick's mirror-class inputs (the owner's own route) */
   let prevParrySubs = new Set(), prevSub = -1, prevS0 = 1, prevS1 = 1, havePrev = false;
+  /* the shot-departure ledger + the current weapon rows: the doctrine's annihilation-frame input,
+   * recorded exactly as measure.mjs's addGone / curW record it */
+  const goneTick = new Map();
+  const addGone = sid => { if (!goneTick.has(sid)) goneTick.set(sid, G.t); };
+  let curW = weapons.slice();
 
   let t = 0;
   for (; t < TICK_BUDGET && !G.over; t++) {
@@ -155,7 +190,21 @@ for (const [name, weapons, seed] of CELLS) {
       p.push({ x: f.pos.x, y: f.pos.y, ang: f.wAngle, w: f.weapon, spin: f.spin, figT: f.figT,
                fl: f.fl ? f.fl.u.slice() : null, ls: f.lenStep, alive: f.alive });
     }
+    /* #794 fix A: the ENTRY-state shot flags, captured at the SAME pre-tick instant as the pose
+     * above - the tape below is the tick-entry pose, so post-tick G.shots flags are the WRONG
+     * instant (a departed shot has none, which leaks sanctioned overlaps into the residual). */
+    const entryFlags = new Map();
+    for (const s of G.shots) entryFlags.set(s.sid, { returns: !!s.returns, pinned: !!s.pinned, ricochet: !!s.ricochet, skewVictim: !!s.skewVictim, skewCarry: !!s.skewCarry });
     tick(G);
+
+    /* the departure ledger: the sim's own events at the tick they fire, first departure wins -
+     * measure.mjs's addGone sites: roll-clear, a non-returning shot's body hit, swat, catch, rim,
+     * cross. A ricochet bounce and a pin are NOT departures. */
+    for (const e of G.events) {
+      if (e.kind === 'roll') { curW = [e.w0, e.w1]; for (const sid of e.clearedSids || []) addGone(sid); }
+      else if (e.kind === 'hit' && e.shot) { const row = WEAPONS[curW[e.by]]; if (!(row.shot && row.shot.returns)) addGone(e.sid); }
+      else if (e.kind === 'swat' || e.kind === 'shotCatch' || e.kind === 'shotRim' || e.kind === 'shotCross') addGone(e.sid);
+    }
 
     /* ---- C3: the weapon-weapon gap at the rendered pose ---- */
     if (phaseBefore === 'fight' && p[0].alive && p[1].alive && p[0].w && p[1].w) {
@@ -207,17 +256,16 @@ for (const [name, weapons, seed] of CELLS) {
       }
     }
 
-    /* ---- S3: the rendered-frame shot overlaps (REPORTED, not asserted - see the header) ---- */
+    /* ---- S3: the rendered-frame shot overlaps, classified by the OWNER'S SHOT DOCTRINE ----
+     * the sanctioned classes are counted apart; the RESIDUAL is gated at zero (see the header). */
     const ST = G.auditShots;
     if (ST.length) {
       const n = ST[0];
       const shots = [];
       for (let i = 0; i < n; i++) shots.push({ sid: ST[1 + i * 5], x: ST[2 + i * 5], y: ST[3 + i * 5], o: ST[4 + i * 5], r: ST[5 + i * 5] });
-      const live = new Map(G.shots.map(s => [s.sid, s]));
       if (n > 0) { T.sFrames++; T.sShots += n; }
       for (const st of shots) {
-        const ls = live.get(st.sid);
-        const atRest = ls && ls.speed === 0;          // a nail: pinned, at rest
+        const live = entryFlags.get(st.sid);          // #794 fix A: ENTRY flags, never post-tick G.shots
         const foeI = 1 - st.o;
         if (p[foeI].alive && p[foeI].w) {
           geom.bladeCircles(p[foeI].x, p[foeI].y, p[foeI].ang, p[foeI].w, circB, p[foeI].fl, geom.leadFlip(p[foeI].w, p[foeI].spin), p[foeI].ls);
@@ -229,26 +277,46 @@ for (const [name, weapons, seed] of CELLS) {
           const gB = best - st.r;
           if (gB < 0 && p[foeI].figT > 0) T.sBladeBloom++;   // bloom-r73 (#765): a bloomed blade swats nothing; counted apart
           else if (gB < 0) {
-            T.sBlade++;
-            if (-gB > T.sWorst) T.sWorst = -gB;
-            if (!atRest) { T.sFlightBlade++; if (notes.length < 8) notes.push(`${name} s${seed}: a shot in flight (sid ${st.sid}) overlapped the foe blade by ${(-gB).toFixed(2)}px`); }
+            if (live && live.returns) T.sanBlade++;          // #788: boomerang blade-immunity (catchonly-r56)
+            else if (live && live.skewCarry) T.sanBlade++;   // #788: spear carry (skewer-r46)
+            else if (live && live.skewVictim) T.sanBlade++;  // #788: spear impale (skewer-r46)
+            else {
+              T.sBlade++;
+              if (-gB > T.sWorst) T.sWorst = -gB;
+              if (!(live && live.pinned)) { T.sFlightBlade++; if (notes.length < 8) notes.push(`${name} s${seed}: an UNSANCTIONED shot in flight (sid ${st.sid}) overlapped the foe blade by ${(-gB).toFixed(2)}px`); }
+            }
           }
           const gBody = Math.hypot(st.x - p[foeI].x, st.y - p[foeI].y) - CFG.bodyR - st.r;
           if (gBody < 0) {
-            T.sBody++;
-            if (-gBody > T.sWorst) T.sWorst = -gBody;
+            if (live && live.returns) T.sanBody++;           // #788: boomerang pass-through (r38)
+            else if (live && live.skewVictim) T.sanBody++;   // #788: spear impale (skewer-r46)
+            else {
+              T.sBody++;
+              if (-gBody > T.sWorst) T.sWorst = -gBody;
+              if (notes.length < 8) notes.push(`${name} s${seed}: an UNSANCTIONED shot (sid ${st.sid}) overlapped the foe BODY by ${(-gBody).toFixed(2)}px`);
+            }
           }
         }
-        if (Math.hypot(st.x - half, st.y - half) + st.r > half + RIM_SLACK) { T.sRim++; }
+        if (Math.hypot(st.x - half, st.y - half) + st.r > half + RIM_SLACK) {
+          if (live && live.returns) T.sanRim++;              // #788: boomerang pierce (freeloop-r38)
+          else if (live && live.pinned) T.sanRim++;          // #788: nail (pinlaw-r44)
+          else if (live && live.ricochet) T.sanRim++;        // #788: ricochet (ricolaw-r41)
+          else if (live && live.skewVictim) T.sanRim++;      // #788: spear impale (skewer-r46)
+          else T.sRim++;
+        }
       }
       for (let i = 0; i < shots.length; i++) for (let j = i + 1; j < shots.length; j++) {
         const a = shots[i], b = shots[j];
         if (Math.hypot(a.x - b.x, a.y - b.y) < a.r + b.r - PAIR_SLACK) {
-          T.sPair++;
-          const la = live.get(a.sid), lb = live.get(b.sid);
-          const na = la && la.speed === 0, nb = lb && lb.speed === 0;
-          if (na || nb) T.sNailNail++;
-          else T.sCross++;
+          const la = entryFlags.get(a.sid), lb = entryFlags.get(b.sid);
+          if (a.o === b.o) { T.sanPair++; T.sPairSameOwner++; }                                   // #788: same owner (multgrow-r42)
+          else if (la && lb && la.pinned && lb.pinned) { T.sanPair++; T.sPairNails++; }            // #788: nail x nail (pinlaw-r44)
+          else if ((la && la.returns) !== (lb && lb.returns)) { T.sanPair++; T.sPairOneReturn++; } // #794: one-sided returning (chaosorbit-r54 / snapfix-r57)
+          else if (goneTick.get(a.sid) === G.t || goneTick.get(b.sid) === G.t) { T.sanPair++; T.sPairAnnihil++; }   // #794: the annihilation event frame
+          else {
+            T.sPair++;                                                                        // #794 residual: two ALIVE non-returning enemy shots
+            if (notes.length < 8) notes.push(`${name} s${seed}: two UNSANCTIONED live enemy shots (sids ${a.sid}/${b.sid}) overlapped at tick entry`);
+          }
         }
       }
     }
@@ -284,11 +352,17 @@ ok('C3 the rendered fight-ticks are judged, not vacuous - every cell ran to its 
    T.rendered >= MIN_RENDERED_TICKS && T.gRendered >= 1000 && stalled.length === 0,
    `${T.rendered} rendered tick(s) over ${CELLS.length} cell(s) (floor ${MIN_RENDERED_TICKS}; ${T.gRendered} on the gauntlet, ${T.cRendered} on the crossed cells); longest cell ${maxTicks} tick(s), ceiling ${TICK_BUDGET}${stalled.length ? '; STALLED at the ceiling: ' + stalled.join(', ') : ''}`);
 
-console.log('S3 - shots never overlap blade/body/rim/shot (REPORTED: the law does not hold on this build)');
-ok('S3 the reported law-3s counters did not grow past the recorded baseline',
-   T.sFrames >= MIN_SHOT_FRAMES &&
-   T.sBlade <= BASELINE.blade && T.sBody <= BASELINE.body && T.sRim <= BASELINE.rim && T.sPair <= BASELINE.pair,
-   `blade ${T.sBlade} (base ${BASELINE.blade}) · body ${T.sBody} (base ${BASELINE.body}) · rim ${T.sRim} (base ${BASELINE.rim}) · pair ${T.sPair} (base ${BASELINE.pair}) over ${T.sFrames} shot-bearing frame(s), ${T.sShots} shot(s), worst ${T.sWorst.toFixed(3)}px`);
+console.log("S3 - shots never overlap blade/body/rim/shot (the owner's shot doctrine applied; the RESIDUAL is gated)");
+ok("S3 the unsanctioned shot-overlap residual is zero (the owner's shot doctrine applied)",
+   T.sFrames >= MIN_SHOT_FRAMES && T.sBlade === 0 && T.sBody === 0 && T.sRim === 0 && T.sPair === 0,
+   `residual blade ${T.sBlade} · body ${T.sBody} · rim ${T.sRim} · pair ${T.sPair} (worst ${T.sWorst.toFixed(3)}px) over ${T.sFrames} shot-bearing frame(s), ${T.sShots} shot(s) (floor ${MIN_SHOT_FRAMES}); sanctioned apart: blade ${T.sanBlade} · body ${T.sanBody} · rim ${T.sanRim} · pair ${T.sanPair}`);
+
+console.log('S3 - the doctrine replica vs measure.mjs (the two-file contract)');
+const MSRC = readFileSync(join(here, '..', 'measure.mjs'), 'utf8');
+const missingSites = DOCTRINE_SITES.filter(s => !MSRC.includes(s));
+ok("S3 the doctrine replica still matches measure.mjs's exemption sites (no silent drift)",
+   DOCTRINE_SITES.length >= 16 && missingSites.length === 0,
+   `${DOCTRINE_SITES.length - missingSites.length}/${DOCTRINE_SITES.length} doctrine site(s) still present in measure.mjs${missingSites.length ? ' - MISSING: ' + missingSites.join(' | ') : ''}`);
 
 console.log(`\n${pass}/${pass + fail} passed`);
 console.log('C3 per-cell band worst: ' + perCell.filter(c => c.bandN).map(c => `${c.name} s${c.seed}: ${c.bandWorst.toFixed(2)}px/${c.bandVis}v`).join(' | '));
@@ -296,9 +370,9 @@ console.log(`C3 CALIBRATION NOTE: the owner's audit binds the band-class worst u
 console.log(`C3 bloom exemption (#765, bloom-r73: the pair is solid-free by design): ${T.bloomTicks} rendered tick(s) with a bloomed fighter, ${T.bloomOverlaps} real-geometry overlap(s), ${T.bloomVis} visible, worst ${T.bloomWorst.toFixed(3)}px - counted apart, NOT in the band or the counters below; law 3s: ${T.sBladeBloom} shot-vs-bloomed-blade overlap(s) counted apart`);
 console.log(`C3 detail: ${T.overlaps} overlap(s) over ${T.rendered} rendered tick(s), ${T.vis} visible (>${INK}px), worst ${T.worst.toFixed(3)}px; ` +
             `mirror class ${T.mirror} (${T.mirrorVis} visible, worst ${T.mirrorWorst.toFixed(3)}px) EXCLUDED from the band, as the owner excludes it; ${T.parries} parry event(s) seen`);
-console.log(`S3 detail: the law-3s counters are blade ${T.sBlade} · body ${T.sBody} · rim ${T.sRim} · pair ${T.sPair} (worst ${T.sWorst.toFixed(3)}px) over ${T.sFrames} shot-bearing frame(s) with ${T.sShots} shot(s); ` +
-            `pair split: ${T.sNailNail} involving a nail at rest, ${T.sCross} between two shots in flight; ${T.sFlightBlade} in-flight shot-vs-blade overlap(s)`);
-console.log("S3 VERDICT: law 3s as written is NOT satisfied on this build (the named classes are the mechanisms) - the owner's ruling, not the probe's.");
+console.log(`S3 detail: RESIDUAL (unsanctioned) blade ${T.sBlade} · body ${T.sBody} · rim ${T.sRim} · pair ${T.sPair} (worst ${T.sWorst.toFixed(3)}px) over ${T.sFrames} shot-bearing frame(s) with ${T.sShots} shot(s); ` +
+            `sanctioned by the owner's doctrine: blade ${T.sanBlade} · body ${T.sanBody} · rim ${T.sanRim} · pair ${T.sanPair}; pair split: ${T.sPairSameOwner} same-owner, ${T.sPairNails} nail x nail, ${T.sPairOneReturn} one-sided returning, ${T.sPairAnnihil} annihilation-event frame; ${T.sFlightBlade} unsanctioned in-flight shot-vs-blade overlap(s)`);
+console.log(`S3 VERDICT: law 3s ${T.sBlade + T.sBody + T.sRim + T.sPair === 0 ? "HOLDS on this sample under the owner's shot doctrine (#788/#794) - every overlap measured is a sanctioned class" : "is BROKEN beyond the owner's doctrine - an unsanctioned overlap is a real defect"}; the law's absolute text is unchanged, and the exemptions are the owner's rulings, not this probe's.`);
 if (notes.length) { console.log('notes:'); notes.slice(0, 8).forEach(n => console.log('   ' + n)); }
 if (fail) { console.log(`${fail} FAILED`); process.exit(1); }
 console.log(`Read-only: nothing written, measure.mjs untouched. ${T.rendered} rendered tick(s) over ${CELLS.length} cell(s).`);
@@ -308,4 +382,7 @@ console.log(JSON.stringify({ check: 'frame-proof', pass, fail, ok: fail === 0,
   gBandWorst: +T.gBandWorst.toFixed(3), gBandVis: T.gBandVis, gRendered: T.gRendered,
   cBandWorst: +T.cBandWorst.toFixed(3), mirror: T.mirror,
   sBlade: T.sBlade, sBody: T.sBody, sRim: T.sRim, sPair: T.sPair, sWorst: +T.sWorst.toFixed(3),
+  sanBlade: T.sanBlade, sanBody: T.sanBody, sanRim: T.sanRim, sanPair: T.sanPair,
+  sPairSameOwner: T.sPairSameOwner, sPairNails: T.sPairNails, sPairOneReturn: T.sPairOneReturn, sPairAnnihil: T.sPairAnnihil,
+  doctrineSites: DOCTRINE_SITES.length - missingSites.length,
   sFrames: T.sFrames, sShots: T.sShots }));
