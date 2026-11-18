@@ -207,6 +207,6 @@ for (const [n, f] of MUT) {
 ok('CONTROL the unmutated source reports nothing (not vacuous) and every mutated copy is reported', clean.length === 0 && caught === MUT.length, `${caught}/${MUT.length} mutated copies caught; unmutated reports ${clean.length}${clean.length ? ': ' + clean.join('; ') : ''}`);
 
 console.log(`\n${pass}/${pass + fail} passed`);
-console.log('NOT RUN: measure.mjs (owner-only). The first --solidity run after this lands is the first exercise of the #794-closed tracker; the prediction is [TRACK]/[PASS] - law 3 counters identical to the #766 report, law 3s goal met (0/0/0/0) after the read-instant fix + pair sanction - which is a prediction, not a measurement.');
+console.log('NOT RUN: measure.mjs (owner-only). This proof checks the verdict logic and the baseline pins only. The first --solidity run after #794 (the owner run on 8c34e31, 2026-11-18, recorded in HANDOFF s7 #796) CONFIRMED the closed tracker by measurement: law 3 [TRACK] at the #766 baseline, law 3s [PASS] 0/0/0/0.');
 if (fail) { console.log(`${fail} FAILED`); process.exit(1); }
 console.log(JSON.stringify({ check: 'verdict-proof', pass, fail, ok: fail === 0, cases: CASES.length, controls: `${caught}/${MUT.length}` }));
