@@ -234,6 +234,40 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
   if (!rows) err('docs/LAWS.md law table has no rows');
 })();
 
+// Phase 2 of the agent-architecture audit (F05, F07): docs/handoff/*.md profile. These files stay OUT of the
+// history glob (control C5). Errors: missing Contains:/Read when: header, hand-typed token cost, dead refs in
+// ROADMAP.md and in HANDOFF.md s0-s6 (the ledger before s0 and after s6 quotes retired paths on purpose), a
+// ROADMAP.md that AGENTS.md does not route to. Warnings only: lines >2000 chars and files over the size budget
+// (both known debts until the HANDOFF split), and lines >400 chars in the always-load docs. No md5 check here:
+// the ledgers legitimately quote old canonical md5s.
+(function lintHandoff() {
+  const dir = 'docs/handoff'; if (!existsSync(path.join(root, dir))) return;
+  const files = readdirSync(path.join(root, dir)).filter(f => f.endsWith('.md')).sort().map(f => dir + '/' + f);
+  for (const f of files) {
+    const text = rd(f), lines = text.split('\n'), head = lines.slice(0, 12).join('\n');
+    if (!/^Contains:/m.test(head) || !/^Read when:/m.test(head)) err(`${f} has no "Contains:" / "Read when:" header in its first 12 lines`);
+    if (/token cost:\s*~?\d/i.test(head)) err(`${f} header has a hand-typed token cost - point to STATE.md §Documentation cost instead`);
+    const long = lines.filter(l => l.length > 2000);
+    if (long.length) warn(`${f}: ${long.length} line(s) over 2000 chars (max ${Math.max(...long.map(l => l.length))}) - split into entries`);
+    if (text.length / 4 > 20000) warn(`${f}: ~${Math.round(text.length / 4)} tokens, over the 20000-token handoff budget`);
+  }
+  if (existsSync(path.join(root, dir, 'ROADMAP.md'))) {
+    lintRefs(dir + '/ROADMAP.md', rd(dir + '/ROADMAP.md'));
+    if (existsSync(path.join(root, 'AGENTS.md')) && !rd('AGENTS.md').includes(dir + '/ROADMAP.md'))
+      err(dir + '/ROADMAP.md exists but AGENTS.md does not route to it');
+  }
+  if (existsSync(path.join(root, dir, 'HANDOFF.md'))) {
+    const t = rd(dir + '/HANDOFF.md'), a = t.search(/^## 0\. /m), z = t.search(/^## 7\. /m);
+    if (a < 0 || z < a) err(dir + '/HANDOFF.md lost its "## 0." or "## 7." heading (the lint reads s0-s6)');
+    else lintRefs(dir + '/HANDOFF.md', t.slice(a, z), t.slice(0, a).split('\n').length - 1);
+  }
+  for (const f of ['AGENTS.md', 'docs/LAWS.md', 'docs/CODEMAP.md']) {
+    if (!existsSync(path.join(root, f))) continue;
+    const long = rd(f).split('\n').map((l, i) => [l.length, i + 1]).filter(x => x[0] > 400);
+    if (long.length) warn(`${f}: ${long.length} line(s) over 400 chars (max ${Math.max(...long.map(x => x[0]))}, first at line ${long[0][1]})`);
+  }
+})();
+
 const ok = errors.length===0;
 const verdict = { check:'lint-docs', ok, errors, warnings, canonicalMd5:md5, canonicalTraits };
 if (process.argv.includes('--json')) console.log(JSON.stringify(verdict));

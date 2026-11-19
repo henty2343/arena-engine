@@ -9,7 +9,7 @@ Removal: after Phase 6 (delete this file, AUDIT-REPORT.md and the AGENTS.md "Aud
 | Phase | Work (finding IDs in AUDIT-REPORT.md) | Status |
 |---|---|---|
 | 1 | STATE cost table lists the handoff files; gen-state fails on any doc without a read policy; delete scripts/.gitkeep; drop the hand-copied verify check count (F01, F08, F10) | DONE (#802, 213c80b) |
-| 2 | Lint profile for docs/handoff/*.md: 3-line header, refs resolve, md5 values match the canonical, warn on lines >400 chars in always-load files (AGENTS, STATE, LAWS, CODEMAP), size budget. Handoff files stay out of docs/history (F05, F07) | OPEN — next |
+| 2 | Lint profile for docs/handoff/*.md: 3-line header, refs resolve (ROADMAP + HANDOFF s0-s6), AGENTS routes to ROADMAP; warnings for long lines and size. Not done: md5 check (ledgers quote old md5s; enforce after the Phase 3 split in RUNBOOK/STATUS) (F05, F07) | DONE (#804) |
 | T | Trim pass: cut rationale, narrative and history from LAWS.md, RECIPES.md, AGENTS.md; keep rules, commands, numbers, file paths. Propose a before/after token count first | OPEN — owner go needed per file |
 | 3 | Split HANDOFF.md into router + RUNBOOK + DELIVERY + STATUS + archive; freeze BATCH3-STATUS.md; derive "where we are" from git log (F02, F03, F04) | BLOCKED on D1 |
 | 4 | GAMES.md size budget + freeze procedure; fingerprint baseline records canonical md5 + stamp; offline fallback for the freshness check (F06, F11, F12) | OPEN (D3, D4) |

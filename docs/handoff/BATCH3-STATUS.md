@@ -1,5 +1,8 @@
 # BATCH 3 — GAMES.md usability and docs authority: STATUS — COMPLETE
 
+Contains: the Batch 3 landing ledger, newest entry first (one "## #NNN" section per landing).
+Read when: only to look up one landing's receipts; grep "^## #NNN", never read whole. Token cost: see STATE.md.
+
 LOCATION: docs/handoff/BATCH3-STATUS.md — REPO-HOSTED alongside HANDOFF.md (v11+). Updated in the same
 commit as every landing; current as of HEAD by construction. Chat attachments of older copies are
 OBSOLETE; the repo outranks them. Never move these files into docs/history/ (globbed by the doc
@@ -25,7 +28,17 @@ pose (C3 → `partial`) and MEASURES law 3s, which does NOT hold on the current 
 `owner-run only`; the owner's ruling is open).
 Next: the S3 RULING, or Batch 4's tool moves.
 
-## #803 Audit roadmap and report added to the repo (temporary); #802's hash recorded - ledger (this commit)
+## #804 Audit Phase 2: docs/handoff lint profile and headers; #803's hash recorded - ledger (this commit)
+
+What: TOOLS + DOCS. tools/lint-docs.mjs gains lintHandoff(): every docs/handoff/*.md needs a Contains:/Read when: header and no hand-typed token cost; refs are checked in ROADMAP.md and HANDOFF.md s0-s6; AGENTS.md must route to ROADMAP.md while it exists; warnings (not errors) for lines over 2000 chars and files over 20000 tokens in the handoff dir, and for lines over 400 chars in AGENTS/LAWS/CODEMAP. HANDOFF.md and BATCH3-STATUS.md get the 3-line header; the HANDOFF title drops the stale task; one ref, `t-lib.mjs`, becomes `scratch/t-lib.mjs`. tools/manifest.json: lint-docs "about" updated. ROADMAP.md Phase 2 -> DONE. #803 LANDED AS 3ff60e7 is recorded. The canonical, the sim, measure.mjs and every probe are untouched.
+
+Why: the two largest docs had no header, no ref check and no line or size signal, which is how they reached ~140k tokens.
+
+Approved: the owner's go on the next audit patch (Phase 2).
+
+Deviations: no md5 check on the handoff files (ledgers quote old canonical md5s on purpose; it becomes enforceable after the Phase 3 split). Size and long-line findings are warnings until Phase 3. No DONE-list, chain-head or s7 entry.
+
+## #803 Audit roadmap and report added to the repo (temporary); #802's hash recorded - ledger
 
 What: DOCS + TOOLS. docs/handoff/ROADMAP.md (phases 1-6 with status, owner decisions D1-D4, rules) and docs/handoff/AUDIT-REPORT.md (the audit snapshot, grep-only) are added; Phase 1 is marked DONE (#802, 213c80b). AGENTS.md gets one "Audit work (temporary)" row. tools/gen-state.mjs gives the two files their own read policy; STATE.md regenerated. #802 LANDED AS 213c80b is recorded in HANDOFF.md. The canonical, the sim, measure.mjs and every probe are untouched.
 

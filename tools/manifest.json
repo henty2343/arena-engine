@@ -21,7 +21,7 @@
       "battery": false,
       "citable": false,
       "tier": "quick",
-      "about": "The docs lint: law table anchors, record-set rules, line cap, token-cost guards, and this registry's completeness."
+      "about": "The docs lint: law table anchors, record-set rules, line cap, token-cost guards, the docs/handoff profile (headers, refs, size/line warnings), and this registry's completeness."
     },
     {
       "name": "navgen",
