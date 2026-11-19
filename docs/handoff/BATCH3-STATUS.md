@@ -28,7 +28,17 @@ pose (C3 → `partial`) and MEASURES law 3s, which does NOT hold on the current 
 `owner-run only`; the owner's ruling is open).
 Next: the S3 RULING, or Batch 4's tool moves.
 
-## #804 Audit Phase 2: docs/handoff lint profile and headers; #803's hash recorded - ledger (this commit)
+## #805 Audit Phase 3: HANDOFF.md split into router + RUNBOOK + LEDGER; #804's hash recorded - ledger (this commit)
+
+What: DOCS + TOOLS. docs/handoff/HANDOFF.md (~92k tokens) is split: HANDOFF.md is now a ~0.5k router with the freshness check; RUNBOOK.md (~5k) holds old s0-s5, the live s6 delivery routes, s8 and a new short s9 (landing record, owner environment, the short new-chat prompt); LEDGER.md (~87k, frozen, grep-only) holds the old dated status ledger, the s6 "State after" blocks, s7, the old s9 and s10 verbatim. A script proved every old line from the status ledger onward appears in the new files, except one s6 sentence changed on purpose ("Both handoff files update in the same commit" -> "The ledger entry lands in the same commit"). The freshness anchor moves from HANDOFF.md to BATCH3-STATUS.md (AGENTS.md step 1 and 5 and the truth-lives line updated; a "Deliver a patch / process rules" row added). tools/lint-docs.mjs: the handoff profile lints HANDOFF.md and RUNBOOK.md refs whole, requires RUNBOOK s1/s6 and a BATCH3 "## #NNN" entry, and exempts the archives from size warnings. tools/gen-state.mjs: read policies for the new files. ROADMAP.md: Phase 3 DONE, D1 resolved. #804 LANDED AS 886438c is recorded. The canonical, the sim, measure.mjs and every probe are untouched.
+
+Why: the handoff was ~140k tokens with the delivery rules (~0.7k) buried between 29k of preamble ledger and 41k of s7; every landing rewrote it.
+
+Approved: the owner's "continue" after Phase 2.
+
+Deviations: STATUS.md and DELIVERY.md from the audit design were not created (the newest ledger entry is the status; the delivery routes are only ~0.7k tokens and sit in RUNBOOK s6). Old comments saying "HANDOFF s7" or "HANDOFF section 1" now map to LEDGER.md and RUNBOOK.md s1; HANDOFF.md says so. Per-landing edits shrink to: one ledger entry, ROADMAP if a phase moved, STATE regen.
+
+## #804 Audit Phase 2: docs/handoff lint profile and headers; #803's hash recorded - ledger
 
 What: TOOLS + DOCS. tools/lint-docs.mjs gains lintHandoff(): every docs/handoff/*.md needs a Contains:/Read when: header and no hand-typed token cost; refs are checked in ROADMAP.md and HANDOFF.md s0-s6; AGENTS.md must route to ROADMAP.md while it exists; warnings (not errors) for lines over 2000 chars and files over 20000 tokens in the handoff dir, and for lines over 400 chars in AGENTS/LAWS/CODEMAP. HANDOFF.md and BATCH3-STATUS.md get the 3-line header; the HANDOFF title drops the stale task; one ref, `t-lib.mjs`, becomes `scratch/t-lib.mjs`. tools/manifest.json: lint-docs "about" updated. ROADMAP.md Phase 2 -> DONE. #803 LANDED AS 3ff60e7 is recorded. The canonical, the sim, measure.mjs and every probe are untouched.
 

@@ -13,6 +13,7 @@ A localhost-only Node tool that renders seeded game simulations into publishable
 | Tier | Files | When |
 |---|---|---|
 | Always | `AGENTS.md` + `STATE.md` | every session |
+| Deliver a patch / process rules | `docs/handoff/RUNBOOK.md` §1 + §6 | before the first delivery of a session |
 | Audit work (temporary) | `docs/handoff/ROADMAP.md` | every session while it exists: it names the next open phase; evidence by finding ID in `docs/handoff/AUDIT-REPORT.md` (grep only) |
 | Before opening the canonical | `docs/CODEMAP.md` (generated region + symbol map) | never read the canonical whole — enter at one symbol |
 | Before any sim/doc edit | `docs/LAWS.md` (current laws quick ref) | the standing game laws |
@@ -33,11 +34,11 @@ A localhost-only Node tool that renders seeded game simulations into publishable
 
 ## Workflow: orient, propose, change, prove, deliver (the one home for it)
 
-1. **Orient (every session).** `git fetch origin && git rev-parse --short origin/main` must equal `git log -1 --format='%h' -- docs/handoff/HANDOFF.md` (the handoff is updated in the same commit as every landing). If they differ, something else landed: re-baseline from `STATE.md` and say what moved. Then `node tools/verify.mjs --quick` (expect VERIFY PASS) and `node .qa/strip-hash.mjs --base canonical-prediet-2c` (expect PASS and its three invariant hashes).
+1. **Orient (every session).** `git fetch origin && git rev-parse --short origin/main` must equal `git log -1 --format='%h' -- docs/handoff/BATCH3-STATUS.md` (the ledger is updated in the same commit as every landing). If they differ, something else landed: re-baseline from `STATE.md` and say what moved. Then `node tools/verify.mjs --quick` (expect VERIFY PASS) and `node .qa/strip-hash.mjs --base canonical-prediet-2c` (expect PASS and its three invariant hashes).
 2. **Propose, then wait for the owner's "go"** (rule 1). Read-only checks need no go.
 3. **Change.** Doc regeneration order is under "Edit docs" above. A canonical edit also carries a dated entry in `docs/GAMES.md` (the md5 slot is checked).
 4. **Prove.** Before running any probe read `tools/manifest.json`, the registry of every proof and tool: what each asserts, whether the battery runs it, whether an agent may run it (`ownerOnly: true` means never; rule 2). Comment-only canonical edit: `strip-hash` PASS plus a mojibake census. Behaviour-identical edit: fingerprints 8/8 (rule 4). Any canonical-touching patch: `node tools/verify.mjs --battery` once (~15 min). Quote only numbers you measured on the artifact you ship, and never say a check passed unless you saw it.
-5. **Deliver ONE artifact; the owner pushes.** Two routes, in `docs/handoff/HANDOFF.md` §6: **file-capable agents** ship one patch file as a downloadable file, proven on an independent fresh clone; **agents with no file channel (Qwen is one)** ship one md5-gated **Node** one-shot **as chat text - that IS Route B, not a deviation from §6.7**; the owner saves it as `scratch/land.mjs` (gitignored) and runs it from the repo root — Node only, the owner has no Python. Either way the gate is the **per-file md5s**, both handoff files update in the same commit, and **no execution means no delivery**. Read §6 before the first delivery of a session. The two routes are per-agent capability, deliberately different; never 'align' Route B to Route A.
+5. **Deliver ONE artifact; the owner pushes.** Two routes, in `docs/handoff/RUNBOOK.md` §6: **file-capable agents** ship one patch file as a downloadable file, proven on an independent fresh clone; **agents with no file channel (Qwen is one)** ship one md5-gated **Node** one-shot **as chat text - that IS Route B, not a deviation from §6.7**; the owner saves it as `scratch/land.mjs` (gitignored) and runs it from the repo root — Node only, the owner has no Python. Either way the gate is the **per-file md5s**, the ledger entry lands in the same commit, and **no execution means no delivery**. Read §6 before the first delivery of a session. The two routes are per-agent capability, deliberately different; never 'align' Route B to Route A.
 
 ## Standing rules (owner-enforced — this list is the canonical text; README and copilot-instructions only point here)
 
@@ -64,5 +65,5 @@ A localhost-only Node tool that renders seeded game simulations into publishable
 - Landing recipes (add trait / skill / bot, stamp discipline) → `docs/RECIPES.md`.
 - Agent workflow (orient, propose, change, prove, deliver) and loading order → this file. Platform rules → `docs/planned/SPEC.md`.
 - Decisions, owner quotes, measured history → `docs/GAMES.md` (live) and `docs/history/` (frozen eras; git history for older).
-- Process authority for AI sessions (handoff, ledgers, delivery rules) → `docs/handoff/HANDOFF.md` and `docs/handoff/BATCH3-STATUS.md` (repo-hosted; the repo outranks any chat attachment; they sit outside every lint glob and never go in `docs/history/`).
+- Process authority for AI sessions (handoff, ledgers, delivery rules) → `docs/handoff/HANDOFF.md` (router + freshness check), `docs/handoff/RUNBOOK.md` (rules, delivery routes), `docs/handoff/BATCH3-STATUS.md` (landing ledger, newest first); `docs/handoff/LEDGER.md` is frozen history. Repo-hosted; the repo outranks any chat attachment; lint-docs covers them; they never go in `docs/history/`.
 - `tools/lint-docs.mjs` fails the build if these drift (dead refs, stale md5, trait-count disagreement, retired rules stated as live, a broken law-to-probe table).
