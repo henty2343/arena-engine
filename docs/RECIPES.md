@@ -6,6 +6,19 @@ Canonical for: the landing recipes. The mechanics they must respect are in `docs
 
 ---
 
+## Which weapons still need a trait
+
+The roster is a work in progress. These weapons are not designed yet — their on-screen line still carries the
+generic placeholder, so their trait is a plain damage-growth or spin-growth default:
+
+<!-- WEAPON-TRAIT-MEMBERSHIP -->
+**Weapons that still need a designed trait (8 of 22):** `hammer`, `axe`, `sword`, `mace`, `nunchaku`, `scythe`, `katana`, `orb`
+<!-- /WEAPON-TRAIT-MEMBERSHIP -->
+
+The list is DERIVED, not typed: `tools/lib/weapon-traits.mjs` reads the canonical's weapon rows and counts a weapon as
+designed when its `line` says something specific about its trait. `tools/lint-docs.mjs` checks this list against that
+derivation on every run, so the moment you design one of these, the lint tells you to move it here.
+
 ## Adding a weapon trait (or a fighter skill)
 
 Axis list, consumer sites and guards: the canonical's `TRAIT / SKILL REGISTRY` comment block immediately above
@@ -60,6 +73,8 @@ seven arrays hold exactly two entries. **The renderer is part of this:** a third
 
 ---
 
-**Stamp discipline.** A _visible_ landing bumps the build stamp; a behaviour-identical one does not. "Visible" = _observable by the
+### Stamp discipline
+
+A _visible_ landing bumps the build stamp; a behaviour-identical one does not. "Visible" = _observable by the
 owner_ (e.g. `pair-r31` added `APP.setCast`: behaviour-identical, 0 of 8, and it DID bump the stamp). Comment-only or
 metadata-only landings do not bump.

@@ -8,44 +8,44 @@
       "tokens": 321
     },
     "AGENTS.md": {
-      "md5": "e75e251a6fa2bae3629c031f7c7d3af1",
-      "tokens": 2755
+      "md5": "be3472ed89c177acebcaacbc8bf13b04",
+      "tokens": 2909
     },
     "STATE.md": {
-      "md5": "d4d0e3330e3a208c91c87125b1f158d4",
-      "tokens": 1304
+      "md5": "17cd888b1f33fcedf5030b15014af395",
+      "tokens": 1279
     },
     "docs/CODEMAP.md": {
-      "md5": "2b0809a061ce5807f6902960e71bfeb0",
-      "tokens": 2621
+      "md5": "30dd8574d081ac6c0f5e129327aa94b1",
+      "tokens": 2619
     },
     "docs/LAWS.md": {
-      "md5": "2b9ede8d756a45dbb77975b15249f59a",
-      "tokens": 4294
+      "md5": "2fb52576bdec27c31426e8331d03e3e0",
+      "tokens": 4336
     },
     "docs/RECIPES.md": {
-      "md5": "fe019c371be1eacc7d930f134bf27c05",
-      "tokens": 1405
+      "md5": "f71199e08db065824f12ff7db910eedf",
+      "tokens": 1604
     },
     "docs/GAMES.md": {
-      "md5": "5851b91487cf44b297e070843711b082",
-      "tokens": 33653
+      "md5": "06cec64140708d72e5a01902fc0e0639",
+      "tokens": 32693
     },
     "docs/handoff/HANDOFF.md": {
-      "md5": "97d5b462da8de172227de8cad51ad90a",
-      "tokens": 385
+      "md5": "dd55e552ea14da02095df2f09120c0ad",
+      "tokens": 393
     },
     "docs/handoff/RUNBOOK.md": {
-      "md5": "46d4e391e212688007eea08ece4b87be",
-      "tokens": 4783
+      "md5": "843013ca6371b9479e44a416684f72a3",
+      "tokens": 4870
     },
-    "docs/handoff/BATCH3-STATUS.md": {
-      "md5": "604c3e6a1ec9d8458ea9f76289ee62a9",
-      "tokens": 5271
+    "docs/planned/INDEX.md": {
+      "md5": "8a493f239d948ef024a03e06227cf325",
+      "tokens": 598
     },
     "docs/planned/SPEC.md": {
-      "md5": "f2c8e08d8aef81bdee54c23fdeb5c116",
-      "tokens": 9522
+      "md5": "716a50402ca534cc8141d2d181866b97",
+      "tokens": 9506
     },
     "docs/planned/CONTRACT.md": {
       "md5": "a15d345ccf3c349a236cf8da63c58882",
@@ -56,8 +56,8 @@
       "tokens": 4709
     },
     "previews/spinclash-preview.html": {
-      "md5": "9b193635db219fa81fb05eed8f64fcb9",
-      "tokens": 142931
+      "md5": "b6703e08cec99404abc11d907619245d",
+      "tokens": 143268
     }
   }
 }

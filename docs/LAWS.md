@@ -70,8 +70,9 @@ State as of build `links-r87`. Retired rules are not listed here (GAMES dated en
 - **NO COMBOS / additive stacking only** (`nocombo-r34`): a skill may ADD on a shared axis, never reach into a trait's mechanic.
 - **Trait = data, skill = contract hook.** Pattern: a row field -> ONE consumer site -> one Tier-0 assertion (`docs/RECIPES.md`).
   Do not add a general hook/plugin framework.
-- **14 of 22 weapon traits landed** (8 remain: 7 melee blanks + the orb). This line is the pinned count `tools/lint-docs.mjs`
-  reads; README, AGENTS and GAMES §Current state are checked against it.
+- **How many weapons have a designed trait is NOT a law.** It is a project-progress fact about the code, and it moves.
+  The membership (which weapons still need one) is DERIVED from the canonical's weapon rows and listed in `docs/RECIPES.md`;
+  `tools/lint-docs.mjs` checks the two against each other on every run. Read `docs/RECIPES.md` §"Which weapons still need a trait".
 
 ## The slot/idx split (internalise before touching a fighter)
 

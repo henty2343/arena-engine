@@ -28,7 +28,7 @@ const CAPTIONS = {
   '.gitattributes': 'LF enforcement for md/mjs/html — the md5 and fingerprint checks depend on it',
   'docs': 'LAWS.md (current laws) · RECIPES.md (add trait/bot) · GAMES.md (design record) · CODEMAP.md (generated) · laws.json (machine form of the laws) · token-costs.json (measured token costs)',
   'docs/planned': 'SPEC.md · CONTRACT.md · BUILD.md — the PLANNED platform (no code yet)',
-  'docs/handoff': 'HANDOFF.md (router) · RUNBOOK.md (rules) · BATCH3-STATUS.md (landing ledger)',
+  'docs/handoff': 'HANDOFF.md (router) · RUNBOOK.md (rules)',
   'previews': 'spinclash-preview.html — THE canonical game (single file, dependency-free)',
   'chromecheck.mjs': 'fast boot + pairing check (~4s) — runs today on bare Node',
   'measure.mjs': 'the sanctioned law matrix — OWNER-GATED, never runs without his explicit go',

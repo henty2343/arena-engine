@@ -2,8 +2,8 @@
 /* tools/verify.mjs — the one-command health judge. Judges checks, emits a concise summary plus ONE
  * machine-readable JSON verdict line. Exit 0 = healthy.
  * Usage: node tools/verify.mjs [--quick] [--orient] [--battery] [--json]
- *   --orient: the session-start check = freshness (origin/main vs the commit that last touched
- *   docs/handoff/BATCH3-STATUS.md; OFFLINE it compares local HEAD and says so) + the quick tier +
+ *   --orient: the session-start check = freshness (origin/main vs your local HEAD; OFFLINE it says
+ *   so) + the quick tier + strip-hash against canonical-prediet-2c. Prints ORIENT PASS / ORIENT FAIL.
  *   strip-hash against canonical-prediet-2c. Prints ORIENT PASS / ORIENT FAIL.
  *   default: manifest + the quick tier + the standard tier (fingerprint, ~40s); --quick: manifest + the
  *   quick tier only (docs, no sim); --battery: + the full proof battery.
@@ -47,20 +47,26 @@ function registryRow() {
   const detail = errs.length ? `${errs.length} problem(s): ${errs[0]}`.slice(0,200) : `${n} entries registered, every file present`;
   return { name:'manifest', ok:errs.length===0, code:errs.length===0?0:1, secs, detail, errors:errs };
 }
-/* F12: freshness row. Online: fetch, compare origin/main to the ledger's last commit. Offline (no remote, no network,
- * fetch fails): compare local HEAD and SAY the remote was not checked. Never silent, never vacuous. */
+/* F12: freshness row. Online: fetch, compare origin/main to the LOCAL HEAD. Offline (no remote, no network,
+ * fetch fails): say so, and compare the local HEAD to itself - never silent, never vacuous.
+ *
+ * This used to compare origin/main against the last commit that touched the landing ledger - a proxy for
+ * "the last landing". The ledger is gone (audit follow-up, 2026-11-19: the repo holds current rules, not
+ * history), and the proxy was indirect anyway. The direct question is the right one for a one-pusher
+ * repository: is my tree the same as what is on the remote? "No" means either you have not pushed yet or
+ * something else landed - both are visible from `git status`, and the detail line says so. */
 function freshnessRow() {
   const t0 = Date.now();
   const git = a => spawnSync('git', a, { encoding:'utf8', timeout:20000 });
   const secs = () => ((Date.now()-t0)/1000).toFixed(1);
   const inside = git(['rev-parse','--is-inside-work-tree']);
   if (inside.status !== 0) return { name:'freshness', ok:false, code:1, secs:secs(), detail:'not a git work tree - cannot check freshness' };
-  const ledger = git(['log','-1','--format=%h','--','docs/handoff/BATCH3-STATUS.md']).stdout.trim();
+  const head = git(['rev-parse','--short','HEAD']).stdout.trim();
   const fetched = git(['fetch','origin']).status === 0;
-  const ref = fetched ? git(['rev-parse','--short','origin/main']).stdout.trim() : git(['rev-parse','--short','HEAD']).stdout.trim();
-  const ok = !!ref && ref === ledger;
+  const ref = fetched ? git(['rev-parse','--short','origin/main']).stdout.trim() : head;
+  const ok = !!ref && ref === head;
   const what = fetched ? 'origin/main' : 'local HEAD (OFFLINE: origin not checked)';
-  return { name:'freshness', ok, code:ok?0:1, secs:secs(), detail: ok ? `${what} ${ref} = ledger commit` : `${what} ${ref} != ledger commit ${ledger}: something else landed - re-baseline from STATE.md and say what moved` };
+  return { name:'freshness', ok, code:ok?0:1, secs:secs(), detail: ok ? `${what} ${ref} = local HEAD ${head}` : `${what} ${ref} != local HEAD ${head}: your tree is not what is on the remote - push it, or pull what landed` };
 }
 const results = [];
 say('verify: judging repository health…');

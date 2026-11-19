@@ -1,15 +1,15 @@
 # ARENA ENGINE — Games
 
-Contains: the live design record — current state, with quotes, the test recipe, and new landings.
-Read when: NEVER whole. Start at `AGENTS.md`; grep here by `#NNN`, symbol or heading, or use the generated navigation block under "How to read this file". Token cost: see STATE.md §Documentation cost.
-Canonical for: design detail and. The current-laws quick reference is `docs/LAWS.md`. Token cost: see STATE.md §Documentation cost.
+Contains: the live design record — current state, the test recipe, and the open questions.
+Read when: NEVER whole. Start at `AGENTS.md`; grep here by symbol or heading, or use the generated navigation block under "How to read this file". Token cost: see STATE.md §Documentation cost.
+Canonical for: the game design state. The current-laws quick reference is `docs/LAWS.md`. Token cost: see STATE.md §Documentation cost.
 
 The living record of game design: what exists and what is decided next.
 Platform rules live in `docs/planned/SPEC.md`, `docs/planned/CONTRACT.md` and `docs/planned/BUILD.md`;
 this file is the game side. Where they conflict:
 platform docs win on platform matters, this file wins on game-design state, because it is newer.
 
-**Do not read this file whole. Start at `AGENTS.md` and `STATE.md`; grep this file by `#NNN`, symbol or section heading.**
+**Do not read this file whole. Start at `AGENTS.md` and `STATE.md`; grep this file by symbol or section heading.**
 
 ## The documents
 
@@ -30,19 +30,12 @@ __
 | section | from line | size |
 |---|---|---|
 | The documents | 14 | 0 KB |
-| Current state | 49 | 95 KB |
-| Weapon art — the closed convention (locked 2026-10-18, CLOSED 2026-10- | 681 | 9 KB |
-| Design principles for all games | 759 | 1 KB |
-| Open design questions | 778 | 13 KB |
-| Measured facts | 865 | 0 KB |
-| Testing recipe (headless) | 871 | 20 KB |
-| 2026-11-19 — #807 · AUDIT PHASE 4 — GAMES.md BUDGET, BASELINE METADATA | 1017 | 1 KB |
-| 2026-11-19 — #809 · AUDIT PHASES 0-4 — THE ARCHITECTURE REMEDIATION (O | 1026 | 2 KB |
-
-**Measured facts — entry index** (0 entries, oldest first; this is the largest part of the record, so the index is the way in. "file" = GAMES = this file; "line" = the entry's first line.)
-
-| file | line | date | entry | KB |
-|---|---|---|---|---|
+| Current state | 42 | 95 KB |
+| Weapon art — the closed convention (locked 2026-10-18, CLOSED 2026-10- | 673 | 9 KB |
+| Design principles for all games | 751 | 1 KB |
+| Open design questions | 770 | 14 KB |
+| Measured facts | 858 | 0 KB |
+| Testing recipe (headless) | 865 | 20 KB |
 
 ---
 
@@ -50,7 +43,7 @@ __
 
 > **Quick reference:** [`LAWS.md`](./LAWS.md) is the SOLE AUTHORITY for the current standing laws, the weapon-trait count
 > and the law-to-probe table; where this section disagrees with it, LAWS wins and this text is stale. This section is the
-> fuller design record: read `LAWS.md` first, then grep here for detail, provenance and owner quotes. (Added Phase C part 2;
+> fuller design record: read `LAWS.md` first, then grep here for detail and the current design. (Added Phase C part 2;
 > authority flipped to LAWS at #747.)
 
 Platform: fully specified, **no engine code yet** (`docs/planned/BUILD.md` Phase 0).
@@ -72,7 +65,7 @@ Traits fire on damaging hits only (for projectile weapons: on landings only).
 | Sword     | 102                                               | radial                                                                        | +0.7 DMG                                                                                                                                                                                                                                                                                                                                                      | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | builder (v1.0)                                                                          |
 | Spear     | LT                                                | radial                                                                        | +0.7 DMG                                                                                                                                                                                                                                                                                                                                                      | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | builder (v1.0)                                                                          |
 | Mace      | LT                                                | radial                                                                        | +0.7 DMG                                                                                                                                                                                                                                                                                                                                                      | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | builder (v1.0; its tip defines LT)                                                      |
-| Shield    | 110                                               | tangential                                                                    | +0.7 DMG (unusable ⚠)                                                                                                                                                                                                                                                                                                                                         | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | builder (v1.0)                                                                          |
+| Shield    | 110                                               | tangential                                                                    | +0.7 DMG (cuts on touch like every weapon)                                                                                                                                                                                                                                                                                                                                         | —                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | builder (v1.0)                                                                          |
 | Staff     | 100                                               | radial                                                                        | +0.7 SPD · **+20% orb SIZE per landing** (`shotR` 0.20, `shotgrow-r33`, PROVISIONAL)                                                                                                                                                                                                                                                                          | orb 9 / 430, tip-launched — each landing grows the HOLDER'S next orb ×1.2, compounding, per fighter, reset per round (the LAW); no cap: the rim is the wall                                                                                                                                                                                                                                                                                                                                  | builder (v1.0)                                                                          |
 | Wand      | 59                                                | radial                                                                        | +0.7 SPD                                                                                                                                                                                                                                                                                                                                                      | spark 6 / 800, tip-launched                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | builder (v1.0)                                                                          |
 | Bow       | 108                                               | tangential                                                                    | +0.7 SPD — **THE RAIN** (`trait.mult` 0.5 per damaging hit, read-time cap `MULT_STEPS` 10 → smul ceiling 6 — `multgrow-r42`; brief '+SPD +RAIN / Hit'; landed with the generalized owner-blind cross law: no same-owner shot cross anywhere)                                                                                                                  | arrow 5 / 620, middle + off 26, radial out — the cadence thickens with the holder's hits this round; the rotation paints the stream                                                                                                                                                                                                                                                                                                                                                          | ingest-shape blob (v0.9)                                                                |
@@ -123,7 +116,7 @@ The sim truth stays binary everywhere it matters:
 the kill still latches the full ±1 contact pose (a damage event inside the window freezes into honest geometry; non-kill freezes are true pauses since pause-r20),
 and the sim/laws/audits never see the transition (fingerprints byte-identical).
 The disclosed art≠hitbox window (~5 drawn frames per flagged parry) is the -accepted trade —
-containment and proofs in Measured facts.
+containment and proofs in the proof suite (`tools/manifest.json`).
 The two invisible glint iterations were removed with it;
 the kill still latches the flip from the event's stored signed spin;
 the VS poster draws the canonical orientation (`drawFitWeapon` takes no flip).
@@ -152,7 +145,7 @@ The hit still (contact-pose override for non-kill freezes) is SUPERSEDED by that
 its onset/release boundary micro-steps proved to be the only motion inside the window.
 The KILL still keeps latching the killing contact for the 400 ms K.O.
 hold, including a landing shot frozen at its impact point (spliced on death, so the impact was never a drawn pose). Renderer-only;
-born from the seed-12024 graze diagnosis in **Measured facts**. **Weapons visible at all times.** The canvas IS the sim square plus a 150-unit band,
+born from the seed-12024 graze diagnosis (git history). **Weapons visible at all times.** The canvas IS the sim square plus a 150-unit band,
 absolutely centred over its cssPx layout box (the wrap keeps the flow height; the band overhangs the chrome rows, pointer-transparent), at the approved disc scale U —
 tips past the square (worst ~146 units: long radial tip, body at the rim) draw whole into the band instead of cutting at the old canvas edge,
 which at the four axis directions coincides with the rim's outer edge and read as the weapon dipping UNDER the rim.
@@ -197,7 +190,7 @@ Ownership is taught by the tinted half + the name inside it (the old "for X" lin
 Renderer-only helpers: `drawFitWeapon` (bbox-fit into a 245×150 box — twice shrunk at the 330×200 original read a touch too big, then alongside the label-block spread; near-uniform scale since v1.1's shared lengths), `clamp01`, `revealFrame`,
 `PLATE`; the +1s reveal extension shifts the sim timeline by design (`startFight` gates on `revealTicks`) —
 fingerprints re-baselined into `.qa/fp-after.json` with the v1.2-reference bytes retained at `.qa/fp-pre-rt285.json` (file purged in the cleanup — this record's delta proof stands),
-and the delta proof bounds the change exactly (+120 ticks × rounds per battle, dynamics untouched — see **Measured facts**);
+and the delta proof bounds the change exactly (+120 ticks × rounds per battle, dynamics untouched — the delta proof is in git history);
 cadence + landing truth proven per-tick against the real `drawReveal` by `.qa/reveal-probe.mjs`.
 Interpolation bases snap at every teleport (round rolls, launch angles, shot births);
 the hitbox overlay rides the same blended pose as the art.
@@ -562,7 +555,6 @@ EVERY weapon's spine cuts on body touch — the ten launchers AND the shield —
 at the WDEF base damage, feeding grow like any melee hit. The spine stays a full solid:
 it latches and knocks the body, parries weapon-vs-weapon, and swats enemy shots.
 The projectile remains the launcher's growth ENGINE but is no longer its only damage.
-The landing is recorded at #694; git carries the retired rule text.
 
 **Firing is physics, not a scheduler.** One shot leaves per full revolution of the spin (a per-fighter radian accumulator, `fireAcc += |spin|·sdt`, releases at 2π) —
 **spin rate IS fire rate**, no cooldown stat, no ammo, no new vocabulary:
@@ -699,7 +691,7 @@ the spell-family affinity locals (fire/poison/frost/fire-orange) are a permanent
 **Sigil (6a-6d):** exactly ONE diegetic carrier-coloured element per weapon via the `KC` tag (recolor-first, never on KP, interior-ink preferred);
 the one-`KC` invariant is gated by sheet-v2's x1 — _amended
 `sheet-v2.mjs` was purged at the pre-balance checkpoint, so `x1` is review-only until the kit-route rebuild restores a tool that counts `@carrier` polys;_ shot nuclei are `KC` ownership carriers inside the doctrine, review accents are tooling outside it;
-the realized mark map (22 rows) is recorded in the close entry in **Measured facts**.
+the realized mark map (22 rows) IS the canonical's weapon rows.
 **Handheld spec (4a-4d):** the **length band** — floor `LEN_MIN` 54 (the orb, shortest shipped weapon) to ceiling `LT`, named for the spear,
 **both ends boot-gated** since (balance pass item 2; a convention before that, which is how the crossbow came to overshoot it silently in);
 one shaft size (~11.5u full width); plain brown butt;
@@ -744,7 +736,7 @@ art and hitbox mirror together on spin sign; the 180 ms flip transition is the o
 chains are forbidden the flags by boot throw;
 the flag registry stands as re-quoted at the landing (leadproof 178/178, 286/286, 182/182, **86/86, 232/232** — the last two added, when the facing pass extended PROBES/Part A2/CELLS for the dagger and the staff as this harness's own header requires; **an unextended leadproof reports ALL PASS while covering nothing new**, which is what it did on that landing's first run).
 The 22-row facing audit that found them — KP centroid, off-axis covering circles, outline asymmetry per row —
-is in the facing-pass entry in **Measured facts**;
+is in the facing-pass entry in git history;
 it confirms the unflagged rows are unflagged for a reason (mirrored double bevels, the orb's zero off-axis circles, chains boot-forbidden) and records the mace's spiral highlights and the tangential rows' radial-axis KP as deliberately _not_ facing cues.
 **Circles (roundness class):** true circles are cut as 32-gons at authored centre and circumradius; elongated wraps keep their authored contours (the aspect gate above 1.15 exempts them).
 **Bakes and gates (2b-2d):** covering circles generate from the same polys (draw and hitbox cannot drift);
@@ -808,7 +800,8 @@ if a comeback mechanism is ever wanted it has to come from somewhere other than 
 a weapon's **trait** is data (a growth rate on the shared axes), a fighter's **skill** is a `docs/planned/CONTRACT.md` **hook** that modifies an existing mechanic and never introduces one.
 Adopted **lazily** — the two shipped numeric skills stay legal and no plumbing is added until the first non-numeric skill lands.
 The doctrine, the measured case against M1, the per-axis cost checklist and the five decisions that follow all live in **Fighter skill vs weapon trait — the model** in the SPINCLASH section.
-4. **Shield design** — what is a weapon that cannot damage _for_? Current state is a placeholder that stalls mirrors;
+4. **Shield design** — what is a weapon that wins like this? It CUTS on touch like every other weapon, so the
+question is what it is FOR, not what it does. Current state is a placeholder that stalls mirrors;
 the balance pass decides (damage-on-parry? shove-only win condition? cut it?).
 **MEASURED** (first sanctioned `measure.mjs` run, COMPLETE at 484 of 484 cells):
 the shield holder won **0 of 569 rounds in either hand** — 308 rounds as Speedy's weapon across 21 cells,
@@ -843,7 +836,7 @@ The WEAPON side is complete (22, — the commission queue is empty; future weapo
 7. **Weapon art convention — CLOSED.** The lock text lives prescriptively in this file's Weapon-art section; the ratification record and realized mark map live in the close entry in **Measured facts**. Nothing here is open any more.
 
 8. **Vocabulary at engine time — ANSWERED early.** The sim-internal `stone` was renamed to **`shot`** ahead of the Phase 8 rebuild rather than at it:
-425 tokens across 11 live files, behaviour-identical (see the rename entry in **Measured facts** for the two-half neutrality proof).
+425 tokens across 11 live files, behaviour-identical (the two-half neutrality proof is in git history).
 Per-shot on-screen names stayed (`arrow`, `orb`, …).
 What remains for the engine port: nothing —
 the sim, the harnesses and the audience word now agree.
@@ -864,7 +857,8 @@ Recorded so it is never re-proposed as new.
 
 ## Measured facts
 
-Not kept here. Measured numbers live in the proofs (`tools/manifest.json`) and `docs/LAWS.md`.
+Not kept here. Measured numbers live in the proofs (`tools/manifest.json`) and `docs/LAWS.md`;
+the measurements that were recorded here are in git history, next to the change they measured.
 
 ---
 
@@ -938,9 +932,7 @@ or the chain blindness re-reports phantom hits._
 
 **Standing baseline:** the standing fingerprint baseline is named in **`.qa/BASELINE`** (a pointer to the active `.qa/fp-*.json`);
 judge the current build against it with `node.qa/fingerprint.mjs --compare` (8/8 = identical, exit 0).
-The take-over chain — each adoption, its move count and md5 —
-is recorded in the dated Measured-facts entries (archived summary: git history).
-A fresh baseline file is written **only** when behaviour changes on purpose — never to make a regression disappear.
+The take-over chain and the re-baseline procedure are in `docs/handoff/RUNBOOK.md` §4; the chain itself is in git history.
 
 **Doc tools (hygiene pass, pick):** `tools/doc/navgen.mjs` regenerates this file's navigation block in place (parts table + Measured-facts entry index, iterated to a fixed point so its quoted line numbers are true of the file it writes; `--check` verifies without writing) and `tools/doc/docreflow.mjs` splits the record's 4–13 KB single-line paragraphs (whitespace-only, refused unless the whole-file non-whitespace byte stream, the word stream, every span's `**`/backtick parity and the entry-heading count are all preserved; `--check` is the idempotency proof). Run both after any edit that moves lines — they are the reason this file stays navigable at a quarter-megabyte of dense record. **Baseline tools (added):** the aggregation script sums the split-run part files into one aggregate and asserts the parts share no cell; the summary script derives the per-weapon, per-class and shield tables from them, and with `--csv` writes two distillates — the 484-cell baseline (one row per cell: rounds, winner split, Speedy%, median round sec, shots thrown/landed/swatted, source part) and the law counters (one row per part: the law counters and integrity fields). Both were cross-checked against this record and reproduce all 14 published totals exactly. The six raw `scratch/m-0*.txt` part files were RETIRED from the workspace later the same day: the CSVs carry the full 484-row cell table and the headline law counters, but the complete per-part law-block text now exists only in local copies, and regenerating them is 7.16 hours across two machines. The 3-seed calibration capture was retired in the same cleanup — its md5 and its conclusion are the record, the artifact is not.
 
@@ -960,7 +952,7 @@ ruled the round-ending stalls DELIBERATE until the skills pass (no round timer, 
 so at the sanctioned run these are expected reds by design,
 not debt to clear first._ Updated to v1.x reality at v1.2 (launch doctrine in 6s, projectile rule in 7s and the law-4 replica, worst-pair budget note in 5s),
 rebuilt the same day with parallel workers + run tiers (report proven byte-identical at any job count),
-first-run twice (part-0 naturals + the `--solidity` gauntlet — both recorded in **Measured facts**),
+first-run twice (part-0 naturals + the `--solidity` gauntlet — both recorded in git history),
 and trimmed of the dormant parts-class law-3 counters/lines (one representation class since v0.9).
 The forced-matrix portion is deferred to the sanctioned run on the machine (_amended — this read, which has since landed_).
 **`.qa/projectile-fix.mjs`** —
@@ -1009,42 +1001,7 @@ the merge template hardcodes the melee trait (launchers need a post-merge edit),
 the harnesses extract the first `<script>`, stub `document` / `window` / `performance` / `requestAnimationFrame` and the canvas context (a `Proxy` returning no-op-ables works), strip the IIFE wrapper, loop `tick`. Keep one harness per preview or reuse.
 **Run chromecheck (+ `inscribe.mjs` for anything touching contact or weapon art) after every change that touches the preview** —
 the `projectile-fix` probe this rule named was retired; `measure.mjs` when the says go.
-Record resulting facts in **Measured facts** with the build they came from.
+Record resulting facts in the commit message with the build they came from — the repo holds current rules, not history.
 The never runs the harnesses — they are the assistant's instrument:
 reproduce any playtest symptom headlessly (same seed) before patching.
 A test suite no human runs by hand is normal; this one's CI is the assistant.
-
-## 2026-11-19 — #807 · AUDIT PHASE 4 — GAMES.md BUDGET, BASELINE METADATA, ORIENT COMMAND
-
-**Canonical untouched:** md5 `5de162de46eb4fa3204e3ee636f2aff3`, stamp `links-r87`. `measure.mjs` was NOT run.
-**GAMES.md budget:** ~40,000 tokens; lint-docs warns above it; the trim procedure is RUNBOOK §10.
-`docs/history/` is deleted (no archive; git is the history).
-Sections duplicated in `docs/LAWS.md` (core contact law, uniform base) and the reverted movement-speed doctrine were deleted, as were the #748-#753 process entries.
-**Baseline metadata:** `.qa/fp-flailfix-r88.json` carries `_meta` {canonicalMd5, stamp}; `fingerprint.mjs` writes it and prints it on `--compare`.
-**Orient:** `node tools/verify.mjs --orient` = freshness (offline-aware) + `--quick` + strip-hash.
-
-## 2026-11-19 — #809 · AUDIT PHASES 0-4 — THE ARCHITECTURE REMEDIATION (ONE LANDING)
-
-**Canonical: the comment layer derubbed, the code untouched.** md5 `9b193635db219fa81fb05eed8f64fcb9`,
-stamp `links-r87` (UNCHANGED — a comment-only landing does not bump the stamp).
-The comment layer went from 195,690 chars (48,923 tokens, 47% of the file) to 179,605 chars (44,901 tokens);
-the canonical as a whole: 147,768 → 142,931 tokens. What went is what the ruling named: the quotes,
-the who/when, and the record of rejected approaches.
-After the pass there are 0 owner references,
-0 dates and 2 long quotes left in the layer, and every WHY stays. Proof:
-`.qa/strip-hash.mjs --base canonical-prediet-2c` PASS (the code hashes `c2cd01ef…`, `e9b6f8d6…`, `600097a7…` did not move) and `.qa/fingerprint.mjs --compare` 8/8.
-The rule catalogue is `tools/lib/archaeology.mjs`, the tool is `tools/canon-comments.mjs`,
-and the budget (180,000 comment chars) lives in `docs/laws.json` and is checked by `lint-docs`.
-
-**This record: the prose derubbed and re-wrapped.** §Current state 22,204 → 20,668 tokens; the whole file 36,549 → 33653.
-The 300-character prose cap is now ENFORCED, not stated:
-`lint-docs` errors on a line a tool could split and warns on one that resists wrapping,
-and `docreflow` rewraps any document to that target.
-
-**The rest of the landing.** The live contradictions are closed (the shield rule, the law tally, the phantom tree, the dead pointers, the qualified document references, the `ingest.mjs` owner-gate).
-The machine-readable facts are DERIVED rather than hand-copied:
-`docs/laws.json` for the law registry and the retired-rule vocabulary,
-`docs/token-costs.json` for the measured token costs, `tools/gen-tree.mjs` for the repo tree,
-`tools/gen-codemap.mjs` for the code map.
-`tools/lint-controls.mjs` proves the new checks actually fire,
-and `tools/lint-docs.mjs` now derives the law tally, the retired-rule state and the md5 slot instead of trusting a typed number.

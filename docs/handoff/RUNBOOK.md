@@ -73,6 +73,14 @@ completeness check, fail-closed), then the quick tier in manifest order: gen-sta
 lint-markers; the default run adds the standard tier (fingerprint); --battery adds run-battery. The check count is not stated here - read the verify output. Adding a check =
 one manifest line with a tier.
 After any canonical edit: `node .qa/strip-hash.mjs --base canonical-prediet-2c` + `verify --battery`.
+
+**Re-baselining (when behaviour changes ON PURPOSE).** The standing baseline is named in **`.qa/BASELINE`**
+(a pointer to the active `.qa/fp-*.json`); judge the current build against it with
+`node .qa/fingerprint.mjs --compare` (8/8 = identical, exit 0). A fresh baseline file is written
+**only** when behaviour changes on purpose — never to make a regression disappear. The new file's
+`_meta` carries the canonical md5 and the stamp it was recorded against, so the tool reports a moved
+canonical. The take-over chain — each adoption, its move count and md5 — lives in git history, not in
+the working tree.
 Battery expected exits (the STEP LIST now lives in tools/manifest.json — the probe registry; read it to
 see what proves what): inscribe 0 · lengrow-build-proof 0 · pair-proof 0 · flipproof 0 · leadproof 0 ·
 seam-proof 0 · law-proof 0 · contact-proof 0 · shot-proof 0 · frame-proof 0 · stride-proof 0 · lenstep-proof 0 · bloom-proof 0 · verdict-proof 0 · chromecheck 0 ·
@@ -100,9 +108,8 @@ The canonical md5 legitimately changes on every diet — never use md5 as the di
 
 ## 6. Delivery — one artifact, two routes
 
-One artifact per landing. The ledger entry (BATCH3-STATUS.md) lands in the same commit. The gate is the PER-FILE
-md5s. Pushes are the owner's. Build in a clone whose HEAD equals origin HEAD; include generated
-files (STATE.md, the nav block, CODEMAP if it moved); a canonical edit carries a dated entry (§8).
+One artifact per landing. The gate is the PER-FILE md5s. Pushes are the owner's. Build in a clone whose HEAD
+equals origin HEAD; include generated files (STATE.md, the nav block, CODEMAP if it moved).
 Never publish an md5 you did not measure on the exact bytes you handed over; lost tool output is
 UNVERIFIED and must be said. NO EXECUTION means NO DELIVERY: report and wait.
 
@@ -198,9 +205,10 @@ The owner runs measure.mjs in cmd.exe with plain `>` redirects (never Git Bash `
 
 Per patch: what changed, before/after token costs, exact verification commands WITH results, anything NOT verified, the artifact (s6) + the apply/run commands + BASE hash, next proposed step. Wait for "go". Flag deviations in the same message. Quote only measured numbers.
 
-Landing record (since #805): every landing (1) adds ONE short "## #NNN <title> - ledger (this commit)" section at the top of docs/handoff/BATCH3-STATUS.md, newest first (What / Why / Approved / Deviations), removes "(this commit)" from the prior entry and records the prior landing's commit hash;
-(2) regenerates STATE.md. HANDOFF.md and this file change only when a rule changes.
-Freshness anchor: the commit that last touched BATCH3-STATUS.md must equal origin HEAD (see HANDOFF.md). "Where we are" = the newest BATCH3-STATUS.md entry.
+There is no landing record. The repo holds current rules, not history: no ledger, no dated entries, no archive.
+Git is the history. "Where we are" = `docs/GAMES.md` §Current state and §Open design questions, and `docs/LAWS.md`
+for the rules. Every landing still regenerates STATE.md (the generated facts). HANDOFF.md and this file change only
+when a rule changes.
 
 Owner environment (facts, not preferences):
 - The owner runs measure.mjs in cmd.exe: `node measure.mjs --owner-go --solidity > solidity-report.txt 2> solidity-progress.txt`, then `echo exit=%errorlevel%`; never Git Bash tee, never PowerShell. An agent never passes --owner-go or sets ARENA_OWNER_GO.
@@ -217,6 +225,6 @@ New-chat prompt (the whole thing, same every time):
 ## 10. GAMES.md budget and trim
 
 Budget: ~40,000 tokens (chars/4, as STATE.md). `tools/lint-docs.mjs` WARNS above it. Over budget = trim in the next doc patch:
-1. Delete the oldest dated `## YYYY-MM-DD — #NNN` landing entries and any superseded, reverted or duplicated-in-LAWS section. No archive.
-2. Keep the NEWEST dated entry: it carries the canonical md5 (lint requirement).
+1. Delete what is NOT a current rule: superseded, reverted or duplicated-in-LAWS text, owner quotes, and the record of approaches that were rejected. No archive, no "retired" section.
+2. Keep the current design: the roster, the shot system, the art convention, the open questions.
 3. `docreflow -> navgen -> gen-codemap -> gen-state -> verify --quick`. Quote the before/after tokens from STATE.md.

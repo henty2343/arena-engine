@@ -64,9 +64,14 @@ for (let i = 0; i < lines.length; i++) {
   /* A raw quote can span several lines, and the markdown continuation ("   * ") sits inside it. So
    * the quotes are removed over the whole LINE first; a quote that continues on the next line is
    * handled by the next line's own pass. */
-  let t = removeRawQuotes(l);
+  /* The leading whitespace of a continuation line is MARKDOWN (a list item's continuation), not
+   * content, so it is detached before the rules run and re-attached after. Stripping it here would
+   * silently re-indent the paragraph - the rules ran once and the file never settled. */
+  const lead = l.match(/^[ \t]*/)[0];
+  let t = removeRawQuotes(l.slice(lead.length));
   t = derubLine(t);
-  t = t.replace(/^[:;.,\-—\s]+/, '');
+  t = t.replace(/^[:;.,\-—]+\s*/, '');      // an orphaned leading colon, not the indentation
+  t = lead + t;
   if (t !== l) changed.push({ line: i + 1, before: l, after: t });
   out.push(t);
 }

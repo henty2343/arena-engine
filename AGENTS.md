@@ -20,10 +20,10 @@ The video file is the product; everything else is scaffolding (`docs/planned/SPE
 | Before opening the canonical | `docs/CODEMAP.md` | never read the canonical whole — enter at one symbol |
 | Before any sim/doc edit | `docs/LAWS.md` | the standing game laws |
 | Add a weapon trait / bot | `docs/RECIPES.md` + the canonical `TRAIT / SKILL REGISTRY` | the cheap-class pattern |
-| Engine work | `docs/planned/SPEC.md` · `docs/planned/CONTRACT.md` · `docs/planned/BUILD.md` | only when building the platform |
-| A past decision / design detail | `docs/GAMES.md` | grep by `#NNN`, symbol or heading — NEVER read whole; older history = git |
+| Engine work | `docs/planned/INDEX.md` → `docs/planned/SPEC.md` · `docs/planned/CONTRACT.md` · `docs/planned/BUILD.md` | only when building the platform; `docs/planned/INDEX.md` is the island's entry point |
+| A past decision / design detail | `docs/GAMES.md` | grep by symbol or heading — NEVER read whole; older history = git |
 
-Never load `docs/GAMES.md` or the landing ledger whole (costs in `STATE.md`). Grep a `#NNN`, a symbol or a heading
+Never load `docs/GAMES.md` whole (costs in `STATE.md`). Grep a symbol or a heading
 (`grep -n '^## ' docs/GAMES.md`), and read only that region. The nav block in `docs/GAMES.md` indexes
 every file by key + line. `STATE.md` carries the current md5/stamp/line-count/baseline.
 
@@ -42,14 +42,19 @@ every file by key + line. `STATE.md` carries the current md5/stamp/line-count/ba
   of the tree and proves each check still fires. A lint that never fails is not a lint.
 - **Add a tool / proof** → placement: proofs in `.qa/`, generators and lints in `tools/` (shared code in `tools/lib/`), the battery runner in `scripts/`, standalone runtime tools at the root; register it in `tools/manifest.json` (verify and the battery read it).
 - **Prove a behaviour-identical edit** → `node .qa/fingerprint.mjs --compare` (8/8 vs `.qa/BASELINE`, exit 0).
+- **Land a VISIBLE change** → bump the build stamp in the canonical's `<title>` (`links-r87` → `links-r88`). A visible landing
+  bumps it; a behaviour-identical one does not; comment-only or metadata-only landings do not (`docs/RECIPES.md` §Stamp discipline).
+- **Change behaviour on purpose** → re-baseline per `docs/handoff/RUNBOOK.md` §4: a fresh `.qa/fp-<stamp>.json` and repoint `.qa/BASELINE`.
+  Never to make a regression disappear.
 
 ## Workflow: orient, propose, change, prove, deliver
 
-1. **Orient (every session).** `node tools/verify.mjs --orient` — freshness (origin/main = the commit that last touched
-   `docs/handoff/BATCH3-STATUS.md`; offline it compares local HEAD and says so), `verify --quick`, and `strip-hash` against
-   `canonical-prediet-2c`. Expect ORIENT PASS. If freshness differs, something else landed: re-baseline from `STATE.md` and say what moved.
+1. **Orient (every session).** `node tools/verify.mjs --orient` — freshness (origin/main vs your local HEAD: is your tree
+   what is on the remote? offline it says so), `verify --quick`, and `strip-hash` against `canonical-prediet-2c`. Expect ORIENT PASS.
+   If freshness differs, your tree is not what is on the remote: push it, or pull what landed and re-read `STATE.md`.
 2. **Propose, then wait for the owner's "go"** (rule 1). Read-only checks need no go.
-3. **Change.** Doc regeneration order is under "Edit docs". A canonical edit also carries a dated entry in `docs/GAMES.md` (the md5 slot is checked).
+3. **Change.** Doc regeneration order is under "Edit docs". A canonical edit needs no dated entry — the repo holds current
+   rules, not history; `STATE.md` (generated) carries the md5 and the fingerprint baseline's `_meta` carries the one it was recorded against.
 4. **Prove.** Before running any probe read `tools/manifest.json` (what each proof/tool asserts, whether the battery runs it,
    `ownerOnly: true` = never run it; rule 2). Comment-only canonical edit: `strip-hash` PASS plus a mojibake census.
    Behaviour-identical edit: fingerprints 8/8 (rule 4). Any canonical-touching patch: `node tools/verify.mjs --battery` once (~15 min).
@@ -58,7 +63,7 @@ every file by key + line. `STATE.md` carries the current md5/stamp/line-count/ba
    file-capable agents ship one patch file as a downloadable file, proven on an independent fresh clone; agents with no file channel
    (Qwen is one) ship one md5-gated **Node** one-shot **as chat text** (Route B, not a deviation from §6.7); the owner saves it as
    `scratch/land.mjs` (gitignored) and runs it from the repo root — Node only, the owner has no Python.
-   Gate = per-file md5s; the ledger entry lands in the same commit; **no execution means no delivery**.
+   Gate = per-file md5s; the landing commit carries the evidence; **no execution means no delivery**.
 
 ## Standing rules (owner-enforced; this list is the canonical text; README and copilot-instructions only point here)
 
@@ -99,11 +104,11 @@ every file by key + line. `STATE.md` carries the current md5/stamp/line-count/ba
 ## Where truth lives (one canonical source per fact)
 
 - Mutable facts (md5, stamp, lines, baseline, inventory, doc costs) → `STATE.md` (generated by `tools/gen-state.mjs`).
-- Current game laws, weapon-trait count, law-to-probe table → `docs/LAWS.md` (sole authority; wins on conflict). Design record, open queue → `docs/GAMES.md` §Current state (the landing record's dated entries hold the history and the quotes).
+- Current game laws, law-to-probe table → `docs/LAWS.md` (sole authority; wins on conflict). Design record, open queue → `docs/GAMES.md` §Current state.
+- Which weapons still need a designed trait → `docs/RECIPES.md` §"Which weapons still need a trait" — DERIVED from the canonical's weapon rows, not typed.
 - The machine form of the laws (retired-rule vocabulary, law statuses) → `docs/laws.json`, VERIFIED against `docs/LAWS.md` by `tools/lint-docs.mjs` on every run. Edit the laws, not the JSON — and if you must edit the JSON, the lint will tell you when it disagrees.
 - Landing recipes → `docs/RECIPES.md`. Workflow and loading order → this file. Platform rules → `docs/planned/SPEC.md`.
-- Decisions, owner quotes, design detail → `docs/GAMES.md` (budget: RUNBOOK §10). Older history = git; there is no archive directory.
-- AI-session process: `docs/handoff/HANDOFF.md` (router + freshness check), `docs/handoff/RUNBOOK.md` (rules, delivery routes),
-  `docs/handoff/BATCH3-STATUS.md` (landing ledger, newest first). The repo outranks any
-  chat attachment; lint-docs covers them.
-- `tools/lint-docs.mjs` fails the build on drift (dead refs, stale md5, trait-count disagreement, retired rules stated as live, a broken law-to-probe table).
+- Decisions, design detail → `docs/GAMES.md` (budget: RUNBOOK §10). Older history = git; there is no archive directory and no ledger.
+- AI-session process: `docs/handoff/HANDOFF.md` (router + freshness check), `docs/handoff/RUNBOOK.md` (rules, delivery routes).
+  The repo outranks any chat attachment; lint-docs covers them.
+- `tools/lint-docs.mjs` fails the build on drift (dead refs, a weapon-trait list that disagrees with the canonical, retired rules stated as live, a broken law-to-probe table).

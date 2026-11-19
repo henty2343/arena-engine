@@ -57,8 +57,7 @@ function facts() {
   const policy = { ...POLICY };
   // Handoff files: listed so their cost is visible; read one section, never whole.
   const handoff = list(path.join(root, 'docs', 'handoff'), /\.md$/).map(x => 'docs/handoff/' + x);
-  const HP = { 'docs/handoff/HANDOFF.md': 'router: freshness check, which handoff file to read', 'docs/handoff/RUNBOOK.md': 'before the first delivery (s1, s6); else grep headings',
-    'docs/handoff/BATCH3-STATUS.md': 'GREP ONLY — landing ledger, newest entry first' };
+  const HP = { 'docs/handoff/HANDOFF.md': 'router: freshness check, which handoff file to read', 'docs/handoff/RUNBOOK.md': 'before the first delivery (s1, s6); else grep headings' };
   for (const f of handoff) policy[f] = HP[f] || 'SLICE ONLY — grep headings, read one section';
   // Completeness gate: every docs/**/*.md and root *.md (except this generated file) must have a read policy above.
   const walk = d => existsSync(d) ? readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk(path.join(d, e.name))
@@ -109,7 +108,7 @@ function render(f, cost = '~0.7k') {
   for (const d of f.docs) L.push(`| ${d.file} | ${d.approxTokens.toLocaleString('en-US')} | ${d.exact ? 'measured' : 'estimate'} | ${d.policy} |`); L.push('');
   L.push('## Design state (canonical source: LAWS.md; history: GAMES.md §Current state)');
   L.push('- The current laws, the weapon-trait count and the law-to-probe table are design facts, NOT generated here.');
-  L.push('  `docs/LAWS.md` is the sole authority for them; the open queue and owner quotes are in `docs/GAMES.md` §Current state. `tools/lint-docs.mjs` checks the count and the table.');
+  L.push('  `docs/LAWS.md` is the sole authority for them; the open queue is in `docs/GAMES.md` §Current state. `tools/lint-docs.mjs` checks the count and the table.');
   L.push('- Implemented: the SpinClash harness (this canonical + bare-Node tools).');
   L.push('- Planned (no code yet): the engine — `docs/planned/BUILD.md` Phases 0–8 (PLANNED).'); L.push('');
   return L.join('\n');

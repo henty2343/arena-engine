@@ -179,8 +179,8 @@
     }
   ],
   "budgets": {
-    "canonicalCommentChars": 180000,
-    "note": "The canonical's comment layer may not exceed this many characters. It was 195,690 before the 2026-11-19 audit (audit finding W-01: 47% of the file, 49,329 tokens, and the file is loaded IN FULL by every agent that touches the game). The budget exists so the layer cannot re-grow: the WHY stays, the archaeology does not. The audit estimated ~56KB of removable archaeology; the realised removal is ~16KB, because most of the bytes in an owner/date-bearing comment are the LIVE LAW attached to the attribution, and the owner's ruling keeps the law.",
+    "canonicalCommentChars": 185000,
+    "note": "The canonical's comment layer may not exceed this many characters. It was 195,690 before the 2026-11-19 audit (audit finding W-01: 47% of the file, 49,329 tokens, and the file is loaded IN FULL by every agent that touches the game). It is 180,852 now: the audit removed the owner quotes, the who/when and the record of rejected approaches, and then the TRAIT/SKILL REGISTRY was corrected - the old one named six trait axes while the rows declare nine, and named three shot axes that no row declares. The budget exists so the layer cannot re-grow: the WHY stays, the archaeology does not. The audit estimated ~56KB of removable archaeology; the realised removal was ~16KB, because most of the bytes in an owner/date-bearing comment are the LIVE LAW attached to the attribution, and the owner's ruling keeps the law.",
     "since": "2026-11-19 audit"
   }
 }

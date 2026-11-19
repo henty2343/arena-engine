@@ -20,6 +20,7 @@ import path from 'node:path';
 import { citableProbes, manifestErrors } from './lib/manifest.mjs';
 import { wrappable, isTableRow, DEFAULT_MAX } from './lib/reflow.mjs';
 import { scan } from './lib/strip-comments.mjs';
+import { readMembership, weaponAxisSets, registryAxes } from './lib/weapon-traits.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [], warnings = [];
 const err = m => errors.push(m); const warn = m => warnings.push(m);
@@ -45,64 +46,63 @@ else { const b = readFileSync(basePtr,'utf8').trim();
 // file that exists. Without this the registry goes stale silently: a new proof nobody registers is
 // invisible to the battery AND to the law table.
 for (const e of manifestErrors(root)) err(e);
-// The record is docs/GAMES.md (the docs/history era glob is gone, #808); its NEWEST dated entry
-// must carry the current canonical md5.
+/* THE RECORD IS docs/GAMES.md — the living design record. It used to carry the canonical md5 in its
+ * newest dated entry ("the md5 slot"), and the lint checked the slot was current. The dated entries and
+ * the slot are GONE (audit follow-up, 2026-11-19): the repo holds current rules, not history, and the
+ * md5 lives in STATE.md, which is GENERATED from the canonical and therefore always current. The
+ * fingerprint baseline's _meta carries the md5 it was recorded against and `fingerprint --compare`
+ * reports a moved canonical - so "the canonical changed and nobody said so" is still caught, without a
+ * hand-maintained slot. */
 const RECORD_SET = ['docs/GAMES.md'];
 const games = rd('docs/GAMES.md');
-/* The md5 slot is scoped to the NEWEST dated entry of the record, not the whole file: a whole-file
- * substring search is satisfied by an old entry, a quoted message or a historical note, so it can
- * never fire on a genuinely stale build. (Audit finding D-13.) */
-function newestDatedEntry(text) {
-  const lines = text.split('\n');
-  let start = -1;
-  /* The LAST dated heading is the newest entry. This used to take the FIRST match, which was
-   * correct only while the record carried exactly one dated entry - with two, the md5 slot was
-   * checked against the OLDER one and a fresh landing could never satisfy it. */
-  for (let i = 0; i < lines.length; i++) if (/^## \d{4}-\d{2}-\d{2}\b/.test(lines[i])) start = i;
-  if (start < 0) return null;
-  let end = lines.length;
-  for (let i = start + 1; i < lines.length; i++) if (/^## /.test(lines[i])) { end = i; break; }
-  return lines.slice(start, end).join('\n');
-}
-const newestEntry = newestDatedEntry(games);
-if (!newestEntry) err('docs/GAMES.md has no dated entry (## YYYY-MM-DD ...) to carry the canonical md5 slot');
-else if (!newestEntry.includes(md5))
-  err(`docs/GAMES.md's NEWEST dated entry does not carry the current canonical md5 ${md5} (stale slot?)`);
 const GAMES_BUDGET_TOKENS = 40000; // RUNBOOK s10: over budget = trim the next doc patch (chars/4, as STATE.md)
 { const gt = Math.round(games.length / 4);
   if (gt > GAMES_BUDGET_TOKENS) warn(`docs/GAMES.md is ~${gt} tokens, over the ${GAMES_BUDGET_TOKENS} budget - trim it (RUNBOOK s10)`); }
 const csEnd = games.indexOf('## Measured facts');
 const currentState = games.slice(0, csEnd>0?csEnd:games.length);
-// B3D: docs/LAWS.md is the SOLE AUTHORITY for the weapon-trait count (it was GAMES §Current state before #747).
+/* THE WEAPON-TRAIT MEMBERSHIP IS DERIVED, NOT TYPED (audit follow-up, 2026-11-19).
+ *
+ * The repo used to pin "14 of 22 weapon traits landed" as a hand-typed number in docs/LAWS.md, and the
+ * lint only checked that OTHER documents AGREED with LAWS.md. Nothing checked it against the code - and
+ * it was in the wrong file: a project-progress counter is not a law.
+ *
+ * The MEMBERSHIP is derivable. A weapon is designed when its on-screen `line` says something specific
+ * about its trait; the ones that are not designed yet still carry the generic placeholder line
+ * ("... gains damage per hit"). The derivation reproduces the owner's count exactly (14 of 22) and names
+ * the same eight a cold-start agent derived by hand. The list lives in docs/RECIPES.md next to the recipe
+ * that uses it, and this check is what keeps it true.
+ */
 const lawsText = existsSync(path.join(root,'docs/LAWS.md')) ? rd('docs/LAWS.md') : '';
-const m = lawsText.match(/(\d+)\s+of\s+22\s+weapon\s+traits\s+landed/);
-const canonicalTraits = m ? parseInt(m[1],10) : null;
-if (canonicalTraits==null) err('docs/LAWS.md does not pin the weapon-trait count ("N of 22 weapon traits landed") — it is the sole authority for it');
-else {
-  for (const f of ['README.md','AGENTS.md','docs/LAWS.md']) {
+{
+  const canon = path.join(root,'previews/spinclash-preview.html');
+  const recipes = path.join(root,'docs/RECIPES.md');
+  if (existsSync(canon) && existsSync(recipes)) {
+    const derived = readMembership(canon);
+    const txt = rd('docs/RECIPES.md');
+    const block = txt.match(/<!-- WEAPON-TRAIT-MEMBERSHIP -->([\s\S]*?)<!-- \/WEAPON-TRAIT-MEMBERSHIP -->/);
+    if (!block)
+      err('docs/RECIPES.md has no WEAPON-TRAIT-MEMBERSHIP block - the weapon-trait membership must be stated there (it is derived from the canonical; the lint checks it)');
+    else {
+      const stated = [...block[1].matchAll(/`([a-z]+)`/g)].map((x) => x[1]);
+      const want = derived.blank.slice().sort();
+      const got = stated.slice().sort();
+      if (JSON.stringify(want) !== JSON.stringify(got))
+        err(`docs/RECIPES.md lists the weapons that still need a trait as [${got.join(', ')}] but the canonical derives [${want.join(', ')}] - the canonical is the truth; fix the list in docs/RECIPES.md`);
+      const said = block[1].match(/\((\d+) of (\d+)\)/);
+      if (said && (+said[1] !== derived.blank.length || +said[2] !== derived.total))
+        err(`docs/RECIPES.md says "${said[0]}" but the canonical derives ${derived.blank.length} of ${derived.total}`);
+    }
+  }
+  /* The count is a progress counter, not a law: it must not creep back into a document. A document that
+   * needs it points at docs/RECIPES.md. */
+  for (const f of ['README.md','AGENTS.md','docs/LAWS.md','docs/GAMES.md']) {
     if (!existsSync(path.join(root,f))) continue;
     const txt = rd(f);
-    for (const mm of txt.matchAll(/(\d+)\s+of\s+22/g)) {
-      const n = parseInt(mm[1],10);
-      if (n!==canonicalTraits && n<=22) {
-        const line = txt.slice(0,mm.index).split('\n').length;
-        err(`${f}:${line} says "${mm[0]}" but docs/LAWS.md pins ${canonicalTraits} of 22`);
-      }
+    for (const mm of txt.matchAll(/(\d+)\s+of\s+22\s+weapon\s+traits?\s+landed/g)) {
+      const line = txt.slice(0, mm.index).split('\n').length;
+      err(`${f}:${line} carries the weapon-trait progress count ("${mm[0]}") - it is a project fact, not a law; it is derived from the canonical and stated in docs/RECIPES.md`);
     }
   }
-  // The GAMES record is checked only on the explicit "N of 22 weapon traits" phrase (other "of 22" prose there is unrelated).
-  for (const mm of currentState.matchAll(/(\d+)\s+of\s+22\s+weapon\s+traits/g)) {
-    const n = parseInt(mm[1],10);
-    if (n!==canonicalTraits) {
-      const line = currentState.slice(0,mm.index).split('\n').length;
-      err(`docs/GAMES.md:${line} (§Current state) says "${mm[0]}" but docs/LAWS.md pins ${canonicalTraits} of 22 — LAWS wins, fix the record`);
-    }
-  }
-  /* The count is pinned in ONE place only: docs/LAWS.md (RUNBOOK s8). docs/GAMES.md does not carry it -
-   * the copy moved to LAWS at #747 while the old rule still told agents to bump both. A second copy is
-   * a second thing to drift, so its presence is now an error rather than a no-op. (D-06) */
-  if (/(\d+)\s+of\s+22\s+weapon\s+traits\s+landed/.test(games))
-    err('docs/GAMES.md carries the weapon-trait count - it is pinned in docs/LAWS.md ONLY (the sole authority). Remove the copy; do not add a second one.');
 }
 
 /* THE RETIRED-RULE CHECK IS DERIVED FROM A MACHINE-READABLE SOURCE, NOT FROM A LIST OF PAST BUGS.
@@ -418,9 +418,9 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
  * stated limit, the worst at 2,699 characters. That is a CORRECTNESS rule, not a style rule: the
  * repository's premise is "grep the record, do not read it", and a grep hit on a 2,699-char line costs
  * ~2,100 tokens to answer a question worth ~20. Exempt: markdown table rows (their columns ARE the
- * content), fenced code blocks, and the landing ledger (append-only, dated, grep-only). */
+ * content) and fenced code blocks. */
 const PROSE_CAP = 300;
-const PROSE_EXEMPT_FILES = new Set(['docs/handoff/BATCH3-STATUS.md']);
+const PROSE_EXEMPT_FILES = new Set();
 function lintProseCap(f, text) {
   if (PROSE_EXEMPT_FILES.has(f)) return;
   const all = text.split('\n');
@@ -449,6 +449,44 @@ for (const f of operational) if (existsSync(path.join(root, f))) lintProseCap(f,
 lintProseCap('docs/GAMES.md', games);
 for (const f of ['docs/handoff/HANDOFF.md', 'docs/handoff/RUNBOOK.md'])
   if (existsSync(path.join(root, f))) lintProseCap(f, rd(f));
+
+/* THE CANONICAL'S AXIS INVENTORY IS CHECKED AGAINST ITS OWN ROWS (audit follow-up, 2026-11-19).
+ *
+ * The canonical's TRAIT / SKILL REGISTRY block is what every agent reads FIRST when it adds a trait
+ * (docs/RECIPES.md says so). It had drifted: it named six trait axes while the weapon rows declare
+ * nine, and it named three shot axes that no row declares at all, while missing four live ones. A
+ * stale inventory there is worse than none - the agent trusts it and writes a row the boot guard has
+ * never seen.
+ *
+ * So the inventory is DERIVED from the rows and compared with the block:
+ *   - an axis a row declares but the block does not name  -> error;
+ *   - an axis the block names that no row declares         -> error (a phantom);
+ *   - a field on the block's "NOT axes" line that IS a real axis -> error.
+ */
+{
+  const canon = path.join(root, 'previews/spinclash-preview.html');
+  if (existsSync(canon)) {
+    const src = rd('previews/spinclash-preview.html');
+    const reg = registryAxes(src);
+    if (!reg) err('the canonical has no TRAIT / SKILL REGISTRY block - the axis inventory every agent reads first is missing');
+    else {
+      const ax = weaponAxisSets(src);
+      for (const k of ['trait', 'skill', 'shot']) {
+        const declared = [...ax[k]].sort();
+        const named = [...reg[k]].sort();
+        const missing = declared.filter((x) => !named.includes(x));
+        const phantom = named.filter((x) => !declared.includes(x));
+        if (missing.length)
+          err(`the canonical's REGISTRY does not name the ${k} axis(es) the weapon rows declare: ${missing.join(', ')} - add them to the registry (or fix the row)`);
+        if (phantom.length)
+          err(`the canonical's REGISTRY names ${k} axis(es) no row declares: ${phantom.join(', ')} - they are phantom axes; remove them`);
+      }
+      const realNonAxis = [...reg.notAxis].filter((x) => ax.shot.has(x));
+      if (realNonAxis.length)
+        err(`the canonical's REGISTRY lists ${realNonAxis.join(', ')} as "NOT axes" but the weapon rows declare them as axes`);
+    }
+  }
+}
 
 /* THE CANONICAL COMMENT BUDGET (audit finding W-01; owner ruling 2026-11-19). The canonical is
  * loaded IN FULL by every agent that touches the game, and its comment layer was 47% of the file -
@@ -591,11 +629,10 @@ if (LAWREG && LAWREG.budgets && LAWREG.budgets.canonicalCommentChars) {
 })();
 
 // docs/handoff/*.md profile. Errors: missing Contains:/Read when: header, hand-typed token cost, dead refs
-// in the live files (HANDOFF, RUNBOOK; the landing ledger quotes retired paths on purpose), RUNBOOK losing
-// the s1/s6 headings AGENTS relies on. Warnings only: lines >2000 chars and files over the size budget in
-// the live files (the ARCHIVES - the landing ledger - are grep-only and exempt), and lines >400 chars in
-// the always-load docs. No md5 check: the ledger legitimately quotes old canonical md5s.
-const ARCHIVES = new Set(['BATCH3-STATUS.md']);
+// in the live files (HANDOFF, RUNBOOK), RUNBOOK losing the s1/s6 headings AGENTS relies on. Warnings only:
+// lines >2000 chars and files over the size budget in the live files, and lines >400 chars in the always-load
+// docs.
+const ARCHIVES = new Set();
 (function lintHandoff() {
   const dir = 'docs/handoff'; if (!existsSync(path.join(root, dir))) return;
   const files = readdirSync(path.join(root, dir)).filter(f => f.endsWith('.md')).sort().map(f => dir + '/' + f);
@@ -612,8 +649,6 @@ const ARCHIVES = new Set(['BATCH3-STATUS.md']);
     const t = rd(dir + '/RUNBOOK.md');
     for (const h of [/^## 1\. /m, /^## 6\. /m]) if (!h.test(t)) err(dir + '/RUNBOOK.md lost a section heading AGENTS.md points to: ' + h.source);
   }
-  if (existsSync(path.join(root, dir, 'BATCH3-STATUS.md')) && !/^## #\d+ /m.test(rd(dir + '/BATCH3-STATUS.md')))
-    err(dir + '/BATCH3-STATUS.md has no "## #NNN" ledger entry (the freshness check reads it)');
   for (const f of ['AGENTS.md', 'docs/LAWS.md', 'docs/CODEMAP.md']) {
     if (!existsSync(path.join(root, f))) continue;
     const long = rd(f).split('\n').map((l, i) => [l.length, i + 1]).filter(x => x[0] > 400);
@@ -622,7 +657,7 @@ const ARCHIVES = new Set(['BATCH3-STATUS.md']);
 })();
 
 const ok = errors.length===0;
-const verdict = { check:'lint-docs', ok, errors, warnings, canonicalMd5:md5, canonicalTraits };
+const verdict = { check:'lint-docs', ok, errors, warnings, canonicalMd5:md5 };
 if (process.argv.includes('--json')) console.log(JSON.stringify(verdict));
 else {
   console.log(`lint-docs: ${errors.length} error(s), ${warnings.length} warning(s)`);

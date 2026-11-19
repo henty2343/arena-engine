@@ -2,14 +2,14 @@
 # STATE — current project facts
 
 Contains: the mutable facts of the repo, derived from the canonical and the tree.
-Read when: every session, alongside AGENTS.md. Approx token cost: ~1.1k (computed).
+Read when: every session, alongside AGENTS.md. Approx token cost: ~1.0k (computed).
 
 ## Canonical (the one live game)
 - File: `previews/spinclash-preview.html`
-- md5: `9b193635db219fa81fb05eed8f64fcb9`
-- Lines: 4,694
+- md5: `b6703e08cec99404abc11d907619245d`
+- Lines: 4,711
 - Build stamp (`<title>`): `links-r87`
-- Token cost: **142,931** (MEASURED with a real BPE tokenizer)
+- Token cost: **143,268** (MEASURED with a real BPE tokenizer)
 
 ## Fingerprint baseline
 - Pointer: `.qa/BASELINE` → `fp-flailfix-r88.json`
@@ -20,7 +20,7 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~1.1k (compute
 ## Tooling inventory
 - Root tools (3): `chromecheck.mjs` · `ingest.mjs` · `measure.mjs`
 - scripts/ (1): `run-battery.mjs`
-- tools/ (16, incl. doc/ and lib/): `canon-comments.mjs` · `docs-archaeology.mjs` · `gen-codemap.mjs` · `gen-state.mjs` · `gen-tree.mjs` · `lint-controls.mjs` · `lint-docs.mjs` · `lint-markers.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/archaeology.mjs` · `lib/load-sim.mjs` · `lib/manifest.mjs` · `lib/reflow.mjs` · `lib/strip-comments.mjs`
+- tools/ (17, incl. doc/ and lib/): `canon-comments.mjs` · `docs-archaeology.mjs` · `gen-codemap.mjs` · `gen-state.mjs` · `gen-tree.mjs` · `lint-controls.mjs` · `lint-docs.mjs` · `lint-markers.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/archaeology.mjs` · `lib/load-sim.mjs` · `lib/manifest.mjs` · `lib/reflow.mjs` · `lib/strip-comments.mjs` · `lib/weapon-traits.mjs`
 - scratch/: gitignored RUNTIME temp dir (bake/gate temp copies, battery logs) — not source; nothing in it is tracked except `.gitkeep`.
 - .qa/ proofs (21): `bake-rows.mjs` · `bloom-proof.mjs` · `contact-proof.mjs` · `fingerprint.mjs` · `flip-seeds.mjs` · `flipproof.mjs` · `frame-proof.mjs` · `inscribe.mjs` · `law-proof.mjs` · `leadproof.mjs` · `lengrow-bake.mjs` · `lengrow-build-proof.mjs` · `lengrow-gate.mjs` · `lengrow-proof.mjs` · `lenstep-proof.mjs` · `pair-proof.mjs` · `seam-proof.mjs` · `shot-proof.mjs` · `stride-proof.mjs` · `strip-hash.mjs` · `verdict-proof.mjs`
 - .qa/ baselines (1): `fp-flailfix-r88.json`
@@ -35,21 +35,20 @@ estimate, so a stale figure is never presented as fact.
 | file | tokens | basis | read policy |
 |---|---:|---|---|
 | README.md | 321 | measured | router only |
-| AGENTS.md | 2,755 | measured | always |
-| docs/CODEMAP.md | 2,621 | measured | before opening the canonical |
-| docs/LAWS.md | 4,294 | measured | before any sim/doc edit |
-| docs/RECIPES.md | 1,405 | measured | adding a trait/skill/bot |
-| docs/GAMES.md | 33,653 | measured | GREP ONLY — never load whole |
-| docs/planned/INDEX.md | 578 | estimate | PLANNED engine work only — the island's entry point |
-| docs/planned/SPEC.md | 9,522 | measured | PLANNED engine work only |
+| AGENTS.md | 2,909 | measured | always |
+| docs/CODEMAP.md | 2,619 | measured | before opening the canonical |
+| docs/LAWS.md | 4,336 | measured | before any sim/doc edit |
+| docs/RECIPES.md | 1,604 | measured | adding a trait/skill/bot |
+| docs/GAMES.md | 32,693 | measured | GREP ONLY — never load whole |
+| docs/planned/INDEX.md | 598 | measured | PLANNED engine work only — the island's entry point |
+| docs/planned/SPEC.md | 9,506 | measured | PLANNED engine work only |
 | docs/planned/CONTRACT.md | 4,060 | measured | PLANNED engine work only |
 | docs/planned/BUILD.md | 4,709 | measured | PLANNED engine work only |
-| docs/handoff/BATCH3-STATUS.md | 5,271 | measured | GREP ONLY — landing ledger, newest entry first |
-| docs/handoff/HANDOFF.md | 385 | measured | router: freshness check, which handoff file to read |
-| docs/handoff/RUNBOOK.md | 4,783 | measured | before the first delivery (s1, s6); else grep headings |
+| docs/handoff/HANDOFF.md | 393 | measured | router: freshness check, which handoff file to read |
+| docs/handoff/RUNBOOK.md | 4,870 | measured | before the first delivery (s1, s6); else grep headings |
 
 ## Design state (canonical source: LAWS.md; history: GAMES.md §Current state)
 - The current laws, the weapon-trait count and the law-to-probe table are design facts, NOT generated here.
-  `docs/LAWS.md` is the sole authority for them; the open queue and owner quotes are in `docs/GAMES.md` §Current state. `tools/lint-docs.mjs` checks the count and the table.
+  `docs/LAWS.md` is the sole authority for them; the open queue is in `docs/GAMES.md` §Current state. `tools/lint-docs.mjs` checks the count and the table.
 - Implemented: the SpinClash harness (this canonical + bare-Node tools).
 - Planned (no code yet): the engine — `docs/planned/BUILD.md` Phases 0–8 (PLANNED).

@@ -534,29 +534,46 @@ body {
  * M2: a WEAPON has a TRAIT, a FIGHTER has a SKILL.
  * Keyed to symbol names, not line numbers. Grep the name to find the site.
  *
- * TRAIT axes (on the weapon row):
- * trait.spin added to spin on hit -> grow (dagger +2.0)
- * trait.dmg added to damage on hit -> grow
- * trait.len length-growth rate -> grow advances f.lenStep
- * trait.shotR shot-radius growth rate -> grow advances f.shotStep (staff orbs)
- * trait.return boomerang return -> boomerangReturn
- * trait.cycle boomerang cycle growth -> grow
+ * THIS LIST IS CHECKED AGAINST THE ROWS BELOW by tools/lint-docs.mjs: an axis
+ * that a row declares but this list does not name is an error, and so is an
+ * axis this list names that no row declares. Do not hand-edit it into
+ * disagreement - add the axis to the row, and the lint will tell you.
+ *
+ * TRAIT axes (on the weapon row) - every trait.* a row may declare:
+ * trait.spin   added to spin on hit -> grow (dagger +2.0)
+ * trait.dmg    added to damage on hit -> grow
+ * trait.len    length-growth rate -> grow advances f.lenStep (EXPENSIVE: moves geometry)
+ * trait.shotR  shot-radius growth rate -> grow advances f.shotStep (staff orbs)
+ * trait.cycle  cycle-growth rate -> grow advances f.shotStep (boomerang)
+ * trait.mult   shot-cadence growth rate -> grow advances f.shotStep (bow, crossbow)
+ * trait.fan    fan-tier growth rate -> grow advances f.shotStep (knives)
+ * trait.fig    transfiguration seconds -> the bloom gates (bladeVsBody, shotHitBody)
+ * trait.ember  ember-spill cadence -> the shot's birth (scroll)
  *
  * SKILL axes (on the fighter row):
- * skill.spin fighter's spin bonus -> grow
- * skill.dmg fighter's damage bonus -> grow
+ * skill.spin   fighter's spin bonus -> grow
+ * skill.dmg    fighter's damage bonus -> grow
  *
  * SHOT axes (on the weapon row, projectile weapons):
- * shot.speed projectile velocity -> spawnShot
- * shot.damage projectile damage -> checkShotHit
- * shot.lifespan projectile lifetime -> shotStep
- * shot.skewer javelin drag law -> startSkewer
- * shot.pin pin duration -> checkShotHit
- * shot.ricochet ricochet behavior -> shotStep
- * shot.curve curve path -> shotStep
+ * shot.speed   projectile velocity -> the shot's flight
+ * shot.off     launch offset from the grip -> fireShots
+ * shot.r       the hitbox radius
+ * shot.len     the drawn trail behind the hitbox
+ * shot.fire    the release point: 'tip' or 'radial' -> fireShots
+ * shot.revs    release every N revolutions -> fireShots
+ * shot.volley  the volley anchors -> grownVolley
+ * shot.hex     the seek authority -> bornBend
+ * shot.pin     the nail: the rim as a nail board
+ * shot.returns the returning loop -> boomerangReturn
+ * shot.ricochet the star's eternal bounce
+ * shot.skewer  the javelin drag law -> startSkewer
+ * shot.orbit   the world orbit solve -> shot.a / shot.b / shot.peak
+ * shot.cycle   the element cycle (the tome trio)
+ * NOT axes: shot.what (the on-screen name), shot.kind (the art kind), shot.copy (the copy rule).
  *
- * Each axis is consumed at ONE consumer site. If your trait moves geometry,
- * stop and ask first. Proof: every axis has a seam-proof assertion.
+ * Every axis above has a boot guard in the row-validation block below the
+ * registry, and a seam-proof assertion. Each axis is consumed at ONE consumer
+ * site. If your trait moves geometry, stop and ask first.
  * ========================================================================================*/
   const WEAPONS = {
     bow: {

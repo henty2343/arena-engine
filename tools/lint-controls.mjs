@@ -15,7 +15,6 @@
  */
 import { cpSync, mkdirSync, mkdtempSync, rmSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
-import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -39,15 +38,19 @@ const CONTROLS = [
     mutate: (s) => s.replace('## 3. Orientation', '## 3. Orientation\n\nTally: 9 probed, 16 partial, 1 owner-run only, 0 unprobed.'),
   },
   {
-    name: 'trait count cross-check (D-06)',
-    file: 'README.md',
-    expect: 'pins 14 of 22',
-    mutate: (s) => s + '\n\n9 of 22 weapon traits landed.\n',
+    name: 'the weapon-trait membership is derived (2026-11-19)',
+    file: 'docs/RECIPES.md',
+    expect: 'the canonical derives',
+    /* The membership is not typed: it is read out of the canonical's weapon rows. This control adds a
+     * weapon to the list that the canonical says is already designed - the lint must catch it. */
+    mutate: (s) => s.replace('`hammer`, `axe`', '`hammer`, `axe`, `wand`'),
   },
   {
-    name: 'trait count is pinned in LAWS only (D-06)',
+    name: 'the progress count must not creep back (2026-11-19)',
     file: 'docs/GAMES.md',
-    expect: 'carries the weapon-trait count',
+    expect: 'carries the weapon-trait progress count',
+    /* A project-progress counter is not a law and must not reappear in a document; the membership in
+     * docs/RECIPES.md is the one place it is allowed to live. */
     mutate: (s) => s.replace('## Current state', '## Current state\n\n14 of 22 weapon traits landed.'),
   },
   {
@@ -63,13 +66,16 @@ const CONTROLS = [
     mutate: (s) => s.replace('## Current state', '## Current state\n\nSee `docs/LAWS.md` §Weapon art table for the roster.'),
   },
   {
-    name: 'md5 slot is scoped to the newest entry (D-13)',
+    name: 'the prose cap is enforced (2026-11-19)',
     file: 'docs/GAMES.md',
-    expect: 'NEWEST dated entry does not carry',
-    /* The mutation must break the LIVE slot, not a historical one: the record's newest dated entry
-     * carries the current canonical md5, and a control that replaced an OLD md5 would report
-     * "the lint did not complain" while proving nothing. */
-    mutate: (s) => s.replace(LIVE_MD5, '00000000000000000000000000000000'),
+    expect: 'over the 300-char prose cap',
+    /* The 300-character prose rule was stated in the repo and enforced nowhere, for two audits. The
+     * control adds a long prose line and requires the lint to fire on it. */
+    /* The line must be WRAPPABLE by the shared wrapper (it breaks at sentence ends), because the lint
+     * distinguishes "a tool could split this" (an error) from "this resists wrapping" (a warning that
+     * needs an author). A control that mutates an unwrappable line proves nothing. */
+    mutate: (s) => s.replace('## Current state',
+      '## Current state\n\n' + 'This sentence is filler prose for the prose-cap control. '.repeat(8) + '\n'),
   },
   {
     name: 'manifest covers scripts/ (D-10)',
@@ -100,21 +106,21 @@ const CONTROLS = [
     mutate: (s) => s.replace(/("id":\s*"C1"[\s\S]{0,120}?"status":\s*")partial(")/, '$1probed$2'),
   },
   {
+    name: "the canonical's axis inventory matches its rows (2026-11-19)",
+    file: 'previews/spinclash-preview.html',
+    expect: 'does not name the trait axis',
+    /* The REGISTRY block is what every agent reads first when it adds a trait. It had drifted: six
+     * trait axes named, nine declared. The control removes one line from the registry and requires
+     * the lint to catch the disagreement with the rows. */
+    mutate: (s) => s.replace(/^ \* trait\.mult   shot-cadence growth rate.*\n/m, ''),
+  },
+  {
     name: 'a retired rule must not be quoted as a live count',
     file: 'docs/GAMES.md',
     expect: 'quotes a stale count',
     mutate: (s) => s.replace('## Current state', '## Current state\n\nSeven shot-law checks are still live.'),
   },
 ];
-
-/* The live canonical md5, so a control that mutates the md5 slot mutates the slot that is
- * actually checked. */
-const LIVE_MD5 = (() => {
-  try {
-    const p = path.join(root, 'previews', 'spinclash-preview.html');
-    return createHash('md5').update(readFileSync(p)).digest('hex');
-  } catch { return ''; }
-})();
 
 const results = [];
 
