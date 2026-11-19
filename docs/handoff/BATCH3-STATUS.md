@@ -25,7 +25,17 @@ pose (C3 → `partial`) and MEASURES law 3s, which does NOT hold on the current 
 `owner-run only`; the owner's ruling is open).
 Next: the S3 RULING, or Batch 4's tool moves.
 
-## #801 Batch 4(a)(ii) declined, the C3 band drop recorded, law 4 parked; #800's hash recorded - ledger (this commit)
+## #802 Phase 1 of the agent-architecture audit: STATE cost table + unlisted-doc gate; #801's hash recorded - ledger (this commit)
+
+What: TOOLS + DOCS. tools/gen-state.mjs adds docs/handoff/*.md to the cost table (policy SLICE ONLY) and exits 1 when any docs/**/*.md or root *.md (except STATE.md) has no read policy; STATE.md regenerated (14 docs listed, was 12); scripts/.gitkeep removed (scripts/ holds run-battery.mjs); the literal verify check count ("7 checks") removed from AGENTS.md step 1 and from the live instructions in HANDOFF.md (s0 freshness check, s4, s6 delivery commands, s9). Historical ledger bullets and receipts that quote the old count are untouched. #801 LANDED AS 4584583 is recorded. The canonical, the sim, measure.mjs and every probe are untouched.
+
+Why: the two largest docs (~140k tokens together) were missing from the generated cost table, so agents could not see their cost; a hand-copied check count goes stale the moment a manifest tier is added.
+
+Approved: the owner's go on Phase 1 of the audit roadmap.
+
+Deviations: no per-landing DONE-list, chain-head or s7 entry was added (this ledger and the s10 / STATE lines are the record); the stale count in the s7 open item about verify's own manifest row (~line 526) is left as history.
+
+## #801 Batch 4(a)(ii) declined, the C3 band drop recorded, law 4 parked; #800's hash recorded - ledger
 
 What: docs/handoff/HANDOFF.md and docs/handoff/BATCH3-STATUS.md only. The owner's three 2026-11-19 decisions are recorded: Batch 4(a)(ii), the SPEC/CONTRACT/BUILD move, is DECLINED and the move debts (iii), the canonical BUILD.md comment and the SPEC tree diagram, close as won't-do with no content change to those files; the C3 contact band is CLOSED-AS-DROPPED and stays a disclosed RED in law 3 (builder-measured 31-cell renudge3 numbers and the owner-reported 109-battle 22.025 px spike on flail+hammer seed 103 are in the HANDOFF s7 bullet); contact law 4's defect classification is PARKED. #800 LANDED AS 6a2800d (parent 3c76804) is recorded. HANDOFF.md - the #801 entry, Next, the chain head, the STATE line, Landed-through, the footer, the OPEN and next-action items, and the new s7 bullet. BATCH3-STATUS.md - this ledger, Next, the DONE list, the follow-ups line, #800's header renamed to its hash. The canonical, the sim, measure.mjs, every probe, docs/LAWS.md, docs/GAMES.md, tools/manifest.json, AGENTS.md and STATE.md are untouched (gen-state --check reports CURRENT).
 

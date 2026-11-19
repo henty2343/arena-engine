@@ -40,9 +40,16 @@ function facts() {
   const hist = historyFiles(root);
   const policy = { ...POLICY };
   for (const f of hist) policy[f] = 'GREP ONLY — frozen era';
+  // Handoff files are huge ledgers: listed so their cost is visible; read one section, never whole.
+  const handoff = list(path.join(root, 'docs', 'handoff'), /\.md$/).map(x => 'docs/handoff/' + x);
+  for (const f of handoff) policy[f] = 'SLICE ONLY — grep headings, read one section';
+  // Completeness gate: every docs/**/*.md and root *.md (except this generated file) must have a read policy above.
+  const walk = d => existsSync(d) ? readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk(path.join(d, e.name))
+    : e.name.endsWith('.md') ? [path.relative(root, path.join(d, e.name)).split(path.sep).join('/')] : []) : [];
+  const unlisted = [...list(root, /\.md$/).filter(x => x !== 'STATE.md'), ...walk(path.join(root, 'docs'))].filter(x => !(x in policy)).sort();
   const docs = Object.keys(policy).map(f => ({ file: f, policy: policy[f], approxTokens: tok(path.join(root, f)) }));
   return { canonical:'previews/spinclash-preview.html', md5, lines, stamp, baseline, baselineOk,
-    labelNote, archivedBaselines: archived.length,
+    labelNote, archivedBaselines: archived.length, unlisted,
     counts:{proofs:proofs.length,baselines:baselines.length,rootTools:rootTools.length,scripts:scripts.length,tools:tools.length},
     proofs, baselines, rootTools, scripts, tools, docs, historyFiles: hist, approxCanonicalTokens: Math.round(html.length/4) };
 }
@@ -83,6 +90,10 @@ function render(f, cost = '~0.7k') {
 }
 const mode = process.argv[2] || '';
 const f = facts();
+if (f.unlisted.length && mode !== '--json') {
+  console.log('gen-state: UNLISTED doc(s) with no read policy: ' + f.unlisted.join(', ') + ' — add each to POLICY in tools/gen-state.mjs');
+  process.exit(1);
+}
 if (mode === '--json') { console.log(JSON.stringify(f)); process.exit(0); }
 const costOf = t => '~' + (Math.round(t.length / 400) / 10).toFixed(1) + 'k';
 const out = render(f, costOf(render(f))); const target = path.join(root, 'STATE.md');
