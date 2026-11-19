@@ -48,6 +48,8 @@ for (let i = 0; i < lines.length; i++) {
   if (/^<!-- END GENERATED /.test(l)) { inGen = false; out.push(l); continue; }
   if (inGen) { out.push(l); continue; }
   if (/^\s*\|/.test(l)) { out.push(l); continue; }      // a table row is data
+  if (/^( {4}|\t)/.test(l)) { out.push(l); continue; }    // an INDENTED BLOCK is code: its spacing and
+                                                        // its vocabulary are its own
   if (/^\s*(-{3,}|\*{3,}|_{3,})\s*$/.test(l)) { out.push(l); continue; }   // a thematic break is not prose
   if (/^## How to read this file/.test(l)) { inNav = true; out.push(l); continue; }
   /* A DATED ENTRY is where history lives - the repo's own doctrine is "Current docs state current
@@ -70,7 +72,8 @@ for (let i = 0; i < lines.length; i++) {
   const lead = l.match(/^[ \t]*/)[0];
   let t = removeRawQuotes(l.slice(lead.length));
   t = derubLine(t);
-  t = t.replace(/^[:;.,\-—]+\s*/, '');      // an orphaned leading colon, not the indentation
+  t = t.replace(/^[:;]+\s*/, '');            // an orphaned leading colon, not the indentation, not a list marker
+                                           // and not a path: ".qa/..." starts with a dot
   t = lead + t;
   if (t !== l) changed.push({ line: i + 1, before: l, after: t });
   out.push(t);

@@ -35,7 +35,6 @@ const CAPTIONS = {
   'ingest.mjs': 'weapon-art merge gate — DORMANT and OWNER-GATED (same --owner-go gate as measure.mjs)',
   '.qa': 'proof probes + BASELINE (pointer to the active baseline; judge with `fingerprint --compare`)',
   '.qa/BASELINE': 'pointer to the standing fingerprint baseline (one line, read by fingerprint --compare)',
-  '.qa/archive': 'historical baselines — history only; they prove nothing about the current build',
   'tools': 'LIVE agent tooling: verify.mjs (health judge, JSON verdict) · lint-docs.mjs · lint-markers.mjs · lint-controls.mjs · gen-state.mjs · gen-codemap.mjs · gen-tree.mjs · manifest.json (the probe registry) · doc/ (navgen · docreflow) · lib/ (load-sim.mjs, shared sim loader)',
   'scripts': 'run-battery.mjs (LIVE — one-command proof battery)',
   'scratch': 'gitignored, TEMPORARY ONLY (per-build smokes live here until the next purge)',
@@ -51,7 +50,7 @@ const LIST = [
   { path: 'docs' }, { path: 'docs/planned' }, { path: 'docs/handoff' },
   { path: 'previews' },
   { path: 'chromecheck.mjs' }, { path: 'measure.mjs' }, { path: 'ingest.mjs' },
-  { path: '.qa' }, { path: '.qa/BASELINE' }, { path: '.qa/archive' },
+  { path: '.qa' }, { path: '.qa/BASELINE' },
   { path: 'tools' }, { path: 'scripts' }, { path: 'scratch' }, { path: 'output' },
   { path: '.github' },
 ];

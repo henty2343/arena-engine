@@ -21,7 +21,6 @@ function facts() {
   const list = (d, re) => existsSync(d) ? readdirSync(d).filter(f => re.test(f)).sort() : [];
   const proofs = list(path.join(root, '.qa'), /\.mjs$/);
   const baselines = list(path.join(root, '.qa'), /^fp-.*\.json$/);
-  const archived = list(path.join(root, '.qa', 'archive'), /^fp-.*\.json$/);
   const bl = (baseline.match(/-r(\d+)\.json$/) || [])[1], st = (stamp.match(/-r(\d+)$/) || [])[1];
   let bmeta = null;
   try { bmeta = JSON.parse(readFileSync(path.join(root, '.qa', baseline), 'utf8'))._meta || null; } catch {}
@@ -68,7 +67,7 @@ function facts() {
     return { file: f, policy: policy[f], approxTokens: c.tokens, exact: c.exact };
   });
   return { canonical:'previews/spinclash-preview.html', md5, lines, stamp, baseline, baselineOk,
-    labelNote, archivedBaselines: archived.length, unlisted,
+    labelNote, unlisted,
     counts:{proofs:proofs.length,baselines:baselines.length,rootTools:rootTools.length,scripts:scripts.length,tools:tools.length},
     proofs, baselines, rootTools, scripts, tools, docs,
     approxCanonicalTokens: tokenCost('previews/spinclash-preview.html').tokens,
@@ -89,7 +88,6 @@ function render(f, cost = '~0.7k') {
   L.push(`- Pointer: \`.qa/BASELINE\` → \`${f.baseline}\`${f.baselineOk ? '' : '  ⚠ MISSING'}`);
   L.push('- Judge: `node .qa/fingerprint.mjs --compare` (8/8 = behaviour-identical, exit 0).');
   if (f.labelNote) L.push('- ' + f.labelNote);
-  L.push(`- Older baselines (${f.archivedBaselines}) live in \`.qa/archive/\` as history only — they prove nothing about the current build.`); L.push('');
   L.push('## Tooling inventory');
   L.push(`- Root tools (${f.counts.rootTools}): ${f.rootTools.map(x => '`'+x+'`').join(' · ')}`);
   L.push(`- scripts/ (${f.counts.scripts}): ${f.scripts.map(x => '`'+x+'`').join(' · ')}`);

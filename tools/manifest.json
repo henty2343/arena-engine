@@ -234,14 +234,6 @@
       "about": "The comment-only proof: no code token moved, so no law moved. The three invariant hashes."
     },
     {
-      "name": "lengrow-proof",
-      "file": ".qa/lengrow-proof.mjs",
-      "exit": 0,
-      "battery": false,
-      "citable": true,
-      "about": "The length-growth ladder's own read-only proof."
-    },
-    {
       "name": "flip-seeds",
       "file": ".qa/flip-seeds.mjs",
       "exit": 0,
@@ -276,7 +268,7 @@
       "citable": false,
       "runnable": false,
       "ownerOnly": true,
-      "about": "The weapon-art merge gate - DORMANT (superseded by the in-file poly builder) and OWNER-GATED: it exits 2 unless the owner passes --owner-go (or sets ARENA_OWNER_GO=1). It can WRITE the canonical with --into, so an agent never runs it."
+      "about": "The weapon-art merge gate - DORMANT for IMPORT (the canonical holds in-file polys, not SVGs) and OWNER-GATED: it exits 2 unless the owner passes --owner-go (or sets ARENA_OWNER_GO=1). It can WRITE the canonical with --into, so an agent never runs it. NOT dead, though: it is the REFERENCE implementation of the house geometry - the greedy maximal-inscribed covering that .qa/inscribe.mjs mirrors and the sliver metric eps(k) that .qa/lengrow-proof.mjs mirrors. It is where the house algorithm is written down."
     },
     {
       "name": "run-battery",

@@ -4,7 +4,7 @@ Contains: the CURRENT mechanical laws of SPINCLASH, the weapon-trait count, and 
 Read when: before any sim or game-doc edit. Token cost: see STATE.md §Documentation cost.
 Canonical for: the current laws — SOLE AUTHORITY for them, for the weapon-trait count, and for the law-to-probe table
 (`tools/lint-docs.mjs` checks the count and the table). On conflict with `docs/GAMES.md` §Current state, this file wins.
-State as of build `links-r87`. Retired rules are not listed here (GAMES dated entries, git history).
+State as of build `links-r87`. Retired rules are not listed here — git history holds them.
 
 ## Battle structure
 
@@ -12,11 +12,11 @@ State as of build `links-r87`. Retired rules are not listed here (GAMES dated en
 - **Per-round dice roll:** seeded; each fighter draws a weapon from the 22-weapon roster; duplicates allowed.
   Fixed draw order (2 weapon draws + 1 opening-spin direction draw + 2 launch draws per round), so `(seed)` fully determines a battle.
 - **Stats reset every round.**
-- **Rounds end on K.O. only** — no timer (owner decision). Stalls are watched, not fixed.
-- **1v1 only** (owner decision). SPEC's match shape allows up to four.
+- **Rounds end on K.O. only** — no timer. Stalls are watched, not fixed.
+- **1v1 only**. SPEC's match shape allows up to four.
 - **Hidden forcing:** `newGame(seed, {weapons})` forces a combo silently.
 
-## Core contact law (owner 2026-10-16) — every weapon/skill/hit rule must satisfy all six
+## Core contact law — every weapon/skill/hit rule must satisfy all six
 
 1. **Damage requires touch.** A bot takes damage only when the opponent's weapon overlaps its body disc; the drawn disc IS
    the collision circle (radius 64). Nothing else writes HP (walls, body-vs-body, spin growth never damage).
@@ -53,7 +53,7 @@ State as of build `links-r87`. Retired rules are not listed here (GAMES dated en
 - **Firing is physics:** one shot per full revolution (`fireAcc += |spin|·sdt`, releases at 2π); spin rate IS fire rate.
   Shot damage snapshots the thrower's CURRENT damage at launch. Combo matrix: 484 ordered cells x 8 seeds at the 22-weapon roster.
 
-## Uniform base stats + growth (owner 2026-10-16 / 2026-10-28)
+## Uniform base stats + growth
 
 - **One uniform base for every weapon:** omega **3.5** rad/s, damage **1** (`WDEF`); hp **100**. Base damage 1 is a TEST:
   do not re-tune it during the skills pass. Only on-hit growth moves spin/damage.
@@ -66,7 +66,7 @@ State as of build `links-r87`. Retired rules are not listed here (GAMES dated en
 ## Weapon traits — the skills-pass laws
 
 - **A weapon has a TRAIT; a fighter has a SKILL.** Always "weapon trait" / "fighter skill".
-- **Weapon traits RESET every round** (owner law 2026-10-28).
+- **Weapon traits RESET every round**.
 - **NO COMBOS / additive stacking only** (`nocombo-r34`): a skill may ADD on a shared axis, never reach into a trait's mechanic.
 - **Trait = data, skill = contract hook.** Pattern: a row field -> ONE consumer site -> one Tier-0 assertion (`docs/RECIPES.md`).
   Do not add a general hook/plugin framework.

@@ -12,7 +12,7 @@ principles, Open design questions, a `## Measured facts` stub, the Testing recip
 ## 1. Ground rules (owner-enforced — non-negotiable)
 
 - PROPOSE BEFORE WRITING; wait for the owner's explicit "go". Read-only checks need no go.
-- NEVER run measure.mjs. Read-only grep is permitted; execution is not. Since #780 it also exits 2 unless the owner passes --owner-go (or sets ARENA_OWNER_GO=1); an agent never passes either. EXCEPTION (owner, 2026-11-14): the owner may give an
+- NEVER run measure.mjs. Read-only grep is permitted; execution is not. Since #780 it also exits 2 unless the owner passes --owner-go (or sets ARENA_OWNER_GO=1); an agent never passes either. EXCEPTION: the owner may give an
   explicit go for ONE run; it covers that run only and never carries over (one --solidity run was authorised that way).
 - DO NOT SPLIT THE CANONICAL previews/spinclash-preview.html (rule 5). Owner-only decision.
 - Removals are TAGGED first (`git tag <name> HEAD`). Never force-push. Pushes are the owner's.
@@ -194,7 +194,7 @@ measure/diag reports never enter the repo.
 - measure.mjs and frame-proof's C3 recompute contacts from stored poses and, since #758, pass the PRE-TICK lenStep (§7, THE lenStep FIX). Residue:
 a hit that adds a link (the event stores the post-grow chain pose; the hit event is built after grow()) and any event or substep after an in-tick grow are not exact;
 .qa/lenstep-proof.mjs reports the count.
-The 2026-11-15 owner re-run on the lenStep fix confirmed it (law 1 111 -> 12, law 2 117 -> 3, law 2s 116 -> 43, law 4 283 -> 66);
+The owner re-run on the lenStep fix confirmed it (law 1 111 -> 12, law 2 117 -> 3, law 2s 116 -> 43, law 4 283 -> 66);
 the residue and the defect-tracker ruling are recorded in the pre-#808 ledger entries (git history).
 The owner runs measure.mjs in cmd.exe with plain `>` redirects (never Git Bash `tee`, never PowerShell; GAMES) and captures `echo exit=%errorlevel%`; agents never run it.
 - Sandbox: the execution tool can vanish for whole turns; /tmp gets wiped between calls — re-bootstrap

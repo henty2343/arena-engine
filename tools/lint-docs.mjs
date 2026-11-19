@@ -21,6 +21,7 @@ import { citableProbes, manifestErrors } from './lib/manifest.mjs';
 import { wrappable, isTableRow, DEFAULT_MAX } from './lib/reflow.mjs';
 import { scan } from './lib/strip-comments.mjs';
 import { readMembership, weaponAxisSets, registryAxes } from './lib/weapon-traits.mjs';
+import { derubLine } from './lib/archaeology.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [], warnings = [];
 const err = m => errors.push(m); const warn = m => warnings.push(m);
@@ -449,6 +450,46 @@ for (const f of operational) if (existsSync(path.join(root, f))) lintProseCap(f,
 lintProseCap('docs/GAMES.md', games);
 for (const f of ['docs/handoff/HANDOFF.md', 'docs/handoff/RUNBOOK.md'])
   if (existsSync(path.join(root, f))) lintProseCap(f, rd(f));
+
+/* NO DOCUMENT CARRIES DECISION ARCHAEOLOGY (housekeep, 2026-11-19).
+ *
+ * The repo's doctrine is "current docs state current rules; git history holds history", and the
+ * owner's ruling was explicit: "you are free to remove and delete all of that, an agent doesnt need
+ * to know it." The rule was stated but NOT ENFORCED: tools/docs-archaeology.mjs removed the
+ * archaeology from one file (docs/GAMES.md) and nothing checked the rest, so a line carrying an owner
+ * quote, a who/when attribution or the record of a rejected approach could land in any document and
+ * stay there.
+ *
+ * The check is the SAME catalogue the derub uses (tools/lib/archaeology.mjs), run over the prose: a
+ * line the derub would change is a line that still carries archaeology. The planned island
+ * (docs/planned/) is EXEMPT: it is the owner's design space for the engine that does not exist yet.
+ */
+{
+  const LIVE_DOCS = ['AGENTS.md', 'README.md', 'docs/GAMES.md', 'docs/LAWS.md', 'docs/RECIPES.md',
+                     'docs/handoff/HANDOFF.md', 'docs/handoff/RUNBOOK.md'];
+  for (const f of LIVE_DOCS) {
+    if (!existsSync(path.join(root, f))) continue;
+    const all = rd(f).split('\n');
+    let inFence = false, inGen = false, inNav = false;
+    all.forEach((l, i) => {
+      if (/^\s*```/.test(l)) { inFence = !inFence; return; }
+      if (inFence) return;
+      if (/^<!-- BEGIN GENERATED /.test(l)) { inGen = true; return; }
+      if (/^<!-- END GENERATED /.test(l)) { inGen = false; return; }
+      if (inGen) return;
+      if (/^## How to read this file/.test(l)) { inNav = true; return; }
+      if (inNav && /^## /.test(l)) { inNav = false; return; }
+      if (inNav) return;                                   // the navigation layer is GENERATED
+      if (/^#{1,6}\s/.test(l)) return;                    // a heading is a pointer
+      if (/^\s*\|/.test(l)) return;                      // a table row is data
+      if (/^( {4}|\t)/.test(l)) return;                   // an indented block is code
+      const lead = l.match(/^[ \t]*/)[0];
+      const body = l.slice(lead.length);
+      if (derubLine(body) !== body)
+        err(`${f}:${i + 1} carries decision archaeology (an owner quote, a who/when attribution, or the record of a rejected approach) - run \`node tools/docs-archaeology.mjs ${f}\``);
+    });
+  }
+}
 
 /* THE CANONICAL'S AXIS INVENTORY IS CHECKED AGAINST ITS OWN ROWS (audit follow-up, 2026-11-19).
  *

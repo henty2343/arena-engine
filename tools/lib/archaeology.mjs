@@ -17,6 +17,15 @@
  */
 export const RULES = [
   {
+    id: 'owner-compound',
+    what: 'an owner-prefixed compound - "owner-accepted", "owner-locked" -> "accepted", "locked"',
+    /* The prefix is the archaeology; the adjective is often part of the live statement ("the
+     * accepted trade"). Removing the WHOLE compound left a dangling hyphen - "the -accepted trade"
+     * - so only the prefix goes. */
+    re: /(?<=\bthe )owner-(?=[a-z])/g,
+    to: '',
+  },
+  {
     id: 'attrib-paren',
     what: 'an owner-attribution parenthetical - "(owner option 1, 2026-10-21)", "(owner law)", "(owner: ...)"',
     re: /[ \t]*[([]\s*(?:the\s+)?owner(?:'s)?\b[^()[\]]*[)\]]/gi,
@@ -50,8 +59,14 @@ export const RULES = [
   {
     id: 'owner-phrase',
     what: 'a bare owner attribution phrase - "owner ruling", "owner word", "the owner\'s eye"',
-    re: /\b(?:the\s+)?owner(?:'s)?\s+(?:word|words|eye|eyes|ruling|rulings|decision|decisions|request|requests|playtest|catch|go|bug seed|heads-up|approval|approved|tune|pick\s*\d+|option\s*\d+|volley ruling|eye-ruling|eye-rulings|shape grammar|flight tuning|prototype|solo prototype|eye-judgment toggle)\b/gi,
-    to: '',
+    /* A POSSESSIVE attribution keeps its noun: "the owner's request" becomes "the request" - the
+     * word "owner" is the archaeology, but "request" is the sentence. Dropping the whole phrase
+     * left "restored at because ...". */
+    re: /\b(the\s+)?owner(?:'s)\s+(word|words|eye|eyes|ruling|rulings|decision|decisions|request|requests|playtest|catch|go|bug seed|heads-up|approval|approved|tune|pick\s*\d+|option\s*\d+|volley ruling|eye-ruling|eye-rulings|shape grammar|flight tuning|prototype|solo prototype|eye-judgment toggle)\b/gi,
+    to: '$1$2',
+    /* The plain form ("owner ruling", "owner decisions") goes entirely - there is no noun to keep. */
+    alt2: /\b(?:the\s+)?owner\s+(?:word|words|eye|eyes|ruling|rulings|decision|decisions|request|requests|playtest|catch|go|bug seed|heads-up|approval|approved|tune|pick\s*\d+|option\s*\d+|volley ruling|eye-ruling|eye-rulings|shape grammar|flight tuning|prototype|solo prototype|eye-judgment toggle)\b/gi,
+    alt2to: '',
   },
   {
     id: 'owner-quote-colon',
@@ -68,7 +83,7 @@ export const RULES = [
   {
     id: 'retired-inline',
     what: 'an inline retirement marker - trait.shotR RETIRED',
-    re: /[ \t]*RETIRED\b(?=\s*[-—:])/gi,
+    re: /[ \t]*\bRETIRED\b(?=\s*[-—:])/g,
     to: '',
   },
   {
@@ -80,7 +95,7 @@ export const RULES = [
   {
     id: 'retired-paren',
     what: 'a retired-precedent aside - (both retired with the fields)',
-    re: /[ \t]*\([^)]*\bretired\b[^)]*\)/gi,
+    re: /[ \t]*\(\s*(?:both\s+|all\s+|the\s+\w+\s+)?\bretired\b(?![-\w])[^)]*\)/gi,
     to: '',
   },
   {
@@ -98,7 +113,7 @@ export const RULES = [
   {
     id: 'was-number',
     what: 'a superseded number - len was 116',
-    re: /[ \t]*[-—]?[ \t]*\bwas\s+[0-9][0-9.,]*/gi,
+    re: /[ \t]*[-—]?[ \t]*\bwas\s+[0-9]+(?![0-9/.,])/gi,
     to: '',
   },
   {
@@ -110,14 +125,8 @@ export const RULES = [
   {
     id: 'owner-verb',
     what: 'a verb attributed to the owner - "the owner asked for" -> "asked for"',
-    re: /\bthe\s+owner\s+(asked|wanted|said|picked|chose|decided|ruled|approved|requested|held|meant)\b/gi,
+    re: /\bthe\s+owner\s+(asked|wanted|said|picked|chose|decided|ruled|approved|requested|held|meant|rejected|refused|vetoed|ratified|closed|discharged|deferred|overruled|confirmed|signed|kept|dropped)\b/gi,
     to: '$1',
-  },
-  {
-    id: 'owner-word',
-    what: 'the bare word "owner" wherever it attributes a decision - "are owner rulings", "the owner\'s eye"',
-    re: /\bowner(?:'s)?\b/gi,
-    to: '',
   },
   {
     id: 'used-to',
@@ -143,12 +152,10 @@ export const RULES = [
     re: /[ \t]*ref:[ \t]*[a-z0-9][a-z0-9-]*(?:[ \t]*,[ \t]*[a-z0-9][a-z0-9-]*)*/gi,
     to: '',
   },
-  {
-    id: 'his-her',
-    what: 'a possessive attribution - "his reference", "her option"',
-    re: /[ \t]*\b(?:his|her)\b/gi,
-    to: '',
-  },
+  /* A possessive attribution ("his reference", "her option") used to be a rule. It is not one any
+   * more: the possessive sits INSIDE a live sentence ("the frame economy is his call"), and
+   * removing the word leaves the sentence broken ("the frame economy is call"). Four occurrences in
+   * four documents - and none of them is archaeology worth breaking a sentence for. */
 ];
 
 /* The mechanical cleanup that follows the rules: empty parens, doubled commas, dangling commas and
@@ -158,11 +165,14 @@ export function tidyLine(t) {
   return t
     .replace(/\(\s*,/g, '(')
     .replace(/,\s*\)/g, ')')
-    .replace(/\(\s*\)/g, '')
-    .replace(/\[\s*\]/g, '')
-    .replace(/[ \t]{2,}/g, ' ')
-    .replace(/[ \t]+([,.;:!?])/g, '$1')
-    .replace(/([,;:])\s*([,.;:!?])/g, '$1')
+    .replace(/(?<![\w])\(\s*\)/g, '')       // an empty pair, but not a call: "emit()" stays
+    .replace(/(?<!- )\[\s*\]/g, '')      // an empty pair - but "- [ ]" is a TASK checkbox
+    /* Prose runs collapse; an ALIGNED '# comment' keeps its spacing (a command and its comment are
+     * aligned by hand, and collapsing the run moves the comment). The check looks at what follows
+     * the run, so the run itself is left alone. */
+    .replace(/[ \t]{2,}/g, (m, off, str) => (/^\s*#/.test(str.slice(off + m.length)) ? m : ' '))
+    .replace(/[ \t]+([,;:!?])/g, '$1')
+    .replace(/([,;:])\s*([,.;!?])(?![A-Za-z0-9_/-])/g, '$1')
     .replace(/,\s*,/g, ',')
     .replace(/,\s*\./g, '.')
     .replace(/[ \t]+\)/g, ')')
@@ -178,6 +188,7 @@ export function derubLine(line) {
     if (r.id === 'raw-quote') continue;          // handled at comment level
     t = t.replace(r.re, r.to);
     if (r.alt) t = t.replace(r.alt, r.to);
+    if (r.alt2) t = t.replace(r.alt2, r.alt2to);
   }
   t = tidyLine(t);
   return lead + restoreGameOwner(t);
@@ -219,5 +230,22 @@ export function removeRawQuotes(text, opts = {}) {
  * afterwards. The placeholder carries no letters, so no rule can match it.
  */
 const OWNER_TOKEN = '\u0001\u0002';
-export function protectGameOwner(t) { return t.replace(/\bOWNER\b/g, OWNER_TOKEN); }
-export function restoreGameOwner(t) { return t.split(OWNER_TOKEN).join('OWNER'); }
+/* The forms that are NOT the human. Each one is protected before the rules run, because a rule
+ * that strips it does not merely lose a word - it BREAKS a rule:
+ *   - "OWNER" (capitals) is the fighter who holds a weapon;
+ *   - "same-owner" is a game law (two shots from the same holder do not cross);
+ *   - "owner-blind" is a game law (a cross that does not check ownership);
+ *   - "--owner-go" is the owner's command flag: "node measure.mjs --owner-go" is not a sentence
+ *     about a person, it is a COMMAND, and stripping it yields "node measure.mjs ---go".
+ */
+export function protectGameOwner(t) {
+  return t
+    .replace(/\bOWNER\b/g, OWNER_TOKEN + '0')
+    .replace(/--owner-go\b/g, OWNER_TOKEN + '1')
+    .replace(/\bsame-owner\b/gi, OWNER_TOKEN + '2')
+    .replace(/\bowner-blind\b/gi, OWNER_TOKEN + '3');
+}
+const OWNER_FORMS = { 0: 'OWNER', 1: '--owner-go', 2: 'same-owner', 3: 'owner-blind' };
+export function restoreGameOwner(t) {
+  return t.replace(/\u0001\u0002([0-3])/g, (_, k) => OWNER_FORMS[k]);
+}

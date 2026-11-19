@@ -118,7 +118,7 @@ Cleanliness — **built into the primitives so an author cannot opt out:**
 - Minimum text 28px at 1080-wide. Heavy weights only. Numerics in tabular figures.
 - Subtle dither overlay (~1.5%, fixed per render) on large smooth gradients —
 prevents banding after platform recompression.
-_(Deferral noted 2026-10-19: the locked PEBBLE frame is a LIGHT ground with no dark areas — at Phase 3, re-scope this to whatever gradients the theme actually ships, or drop it. Until then it stays a requirement on paper only.)_
+_(Deferral noted the locked PEBBLE frame is a LIGHT ground with no dark areas — at Phase 3, re-scope this to whatever gradients the theme actually ships, or drop it. Until then it stays a requirement on paper only.)_
 - No pure `#000000` or `#FFFFFF` in large areas. (PEBBLE's values: page mid-stop `#bab09b`, arena floor `#e7dfca`, card cream `#ede7d6`, ink `#2e2b22`.)
 - Bold simple shapes over fine detail; high contrast. Fine detail dies in platform recompression.
 
@@ -215,7 +215,7 @@ Coined compounds (a material plus a verb) or real words with a double life are t
 the strongest names are words whose dictionary meaning _is_ the game's doctrine.
 - **A set, not a template.** Names should read as volumes from one press without sharing a prefix or suffix. The channel's visual system is the family resemblance; the name is the individual volume. No forced series prefix, ever.
 - **Tagline: one line, six words max, present tense.** It says what the viewer watches or feels, never the scoring rule.
-- **Placement.** The name appears on the outro card and in the title and description for search — **never inside the match frame** (owner decision: no game name on screen; the match is the headline). The old name-stamp concept is retired with it.
+- **Placement.** The name appears on the outro card and in the title and description for search — **never inside the match frame**. The old name-stamp concept is retired with it.
 
 ---
 
@@ -237,7 +237,7 @@ Fixed across all games (the palette is the one starting direction, locked by the
 | Arena                         | One fixed square, the same size in every game, **centred in the frame at every aspect ratio**. All action stays inside it; compliance verifies this.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Weapon art                    | **LANDED at build roster-r12** (2026-10-25; convention CLOSED 2026-10-27 — the prescriptive lock lives in GAMES.md, "Weapon art — the closed convention"). The practiced grammar is now prescribed by the landed art: flat fills, one uniform ink outline #2e2b22, no gradients/texture/glow; the locked paints (KW/KD/KS/KP/KB in art; KG RETIRED from art at sweep-r15, owner 2026-10-27, surviving only as the carrier-less sigil fallback) plus the sigil tag KC (carrier colour at draw), the scroll's four local reference colours, and the spell-family affinity locals (fire / poison / frost / fire-orange — owner word 2026-10-25, pre-figuring the skill pass). One diegetic sigil element per weapon (doctrine 2026-10-23, realized in the return-1 blocks); copy-kind throws draw the wielder's weapon polys at area-centroid pivots. The canonical art path is the in-file poly builder; `ingest.mjs` stands DORMANT/superseded (close item 2a). State lives in GAMES.md "Weapon art"; the 2026-10-18 locked convention and the rider-brief era are preserved in git history (`git show docs-precleanup:docs/CHRONICLE-archive.md`). |
 
-**The paper theme — locked as PEBBLE (owner, 2026-10-15).** The channel's frame is settled: a quiet printed game sheet —
+**The paper theme — locked as PEBBLE.** The channel's frame is settled: a quiet printed game sheet —
 warm gray-taupe page (radial `#c6bda9 → #bab09b → #aca18b`),
 a light warm-sand arena floor (`#e7dfca`) that always reads _lighter than the page but never glaring_,
 a thin mid-tone hairline rim (`#a99f86`, edge `#8d8369` — locked at rim cut two, toggle stripped),
@@ -260,7 +260,7 @@ each player owns one color and one tint permanently.
 Frame overlays follow the preview's locked frame:
 the **scorebug above the arena** (mini-bot discs — cast color with the bots' ink border — beside names in the players' deep tints, the series score big in ink — a plain row on the page, no container) and the **legend rows below on cream cards** —
 the frame's single sanctioned container,
-restored at the owner's request because the cards are what group each fighter's facts (deep-tint names, subtle by size; the skill and the weapon's trait as shorthand codes — `+SPD / Hit`, `+DMG / Hit`, the reveal poster also teaching the full sentences; the weapon in ink bold at the same weight as the bot names; codes and weapons stacked in a real table (auto layout aligns every column across both rows and hugs the names); growth stats as bold tabular numbers in fixed 3ch boxes, so the stats column can never grow and nothing ever reflows; no HP, which lives only on the bot bodies). The locked layout is **Columns**: one card, two rows — identity group, air, loadout group, air, stats. In-arena moments — round banners, K.O. — are type directly on the floor (SPINCLASH's K.O. card type removed at owner word 2026-10-21, "i dont want it to be announced": the round's end reads as the kill-still freeze, the faded disc and the scorebug tick; type-on-floor remains the channel rule for banners and future in-arena moments); the winner is type on the scrim. SPINCLASH's dice reveal is the owner-designed exception (2026-10-19): the VS poster covers the arena disc for its ~2.4s, then dissolves. Everywhere else the recorded frame carries no containers: emphasis is weight, size and color only. Raw cast colors set no type — actors and fills only. A game that cannot sit on this sheet (glow, neon, darkness-as-subject) is not a game for this channel. The default body is `gfx.body`; games override it only where their subject demands.
+restored at the request because the cards are what group each fighter's facts (deep-tint names, subtle by size; the skill and the weapon's trait as shorthand codes — `+SPD / Hit`, `+DMG / Hit`, the reveal poster also teaching the full sentences; the weapon in ink bold at the same weight as the bot names; codes and weapons stacked in a real table (auto layout aligns every column across both rows and hugs the names); growth stats as bold tabular numbers in fixed 3ch boxes, so the stats column can never grow and nothing ever reflows; no HP, which lives only on the bot bodies). The locked layout is **Columns**: one card, two rows — identity group, air, loadout group, air, stats. In-arena moments — round banners, K.O. — are type directly on the floor (SPINCLASH's K.O. card type removed at,: the round's end reads as the kill-still freeze, the faded disc and the scorebug tick; type-on-floor remains the channel rule for banners and future in-arena moments); the winner is type on the scrim. SPINCLASH's dice reveal is the designed exception: the VS poster covers the arena disc for its ~2.4s, then dissolves. Everywhere else the recorded frame carries no containers: emphasis is weight, size and color only. Raw cast colors set no type — actors and fills only. A game that cannot sit on this sheet (glow, neon, darkness-as-subject) is not a game for this channel. The default body is `gfx.body`; games override it only where their subject demands.
 
 **Channel test:** render one frame from every game, tile them in a grid. They must look like one channel. Run it whenever a game is added or the design system changes.
 
@@ -340,7 +340,6 @@ arena-engine/
 ├─ ingest.mjs  # weapon-art merge gate — DORMANT and OWNER-GATED (same --owner-go gate as measure.mjs)
 ├─ .qa/  # proof probes + BASELINE (pointer to the active baseline; judge with `fingerprint --compare`)
 ├─ .qa/BASELINE  # pointer to the standing fingerprint baseline (one line, read by fingerprint --compare)
-├─ .qa/archive/  # historical baselines — history only; they prove nothing about the current build
 ├─ tools/  # LIVE agent tooling: verify.mjs (health judge, JSON verdict) · lint-docs.mjs · lint-markers.mjs · lint-controls.mjs · gen-state.mjs · gen-codemap.mjs · gen-tree.mjs · manifest.json (the probe registry) · doc/ (navgen · docreflow) · lib/ (load-sim.mjs, shared sim loader)
 ├─ scripts/  # run-battery.mjs (LIVE — one-command proof battery)
 ├─ scratch/  # gitignored, TEMPORARY ONLY (per-build smokes live here until the next purge)
@@ -375,7 +374,7 @@ Design facts (e.g. the trait count) have ONE canonical home (`docs/GAMES.md` §C
 
 8. **Doc lint is a gate.** `tools/lint-docs.mjs` fails on dead live refs, stale canonical md5 slots, trait-count disagreement, retired rules stated as live, and a missing baseline. Run it via `tools/verify.mjs` after doc changes.
 
-9. **Current vs history.** Current docs state current rules; dated entries + `git history ` hold history. A retired rule never appears as live in a current-state section.
+9. **Current vs history.** Current docs state current rules; git history holds history. A retired rule never appears as live in a current-state section.
 
 10. **Readable lines + headers.** Prose lines stay ≤ ~300 chars where practical (generated tables/data exempt). Each doc opens with a three-line header: what it contains / when to read it / approximate token cost.
 

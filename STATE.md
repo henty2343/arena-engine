@@ -15,14 +15,12 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~1.0k (compute
 - Pointer: `.qa/BASELINE` → `fp-flailfix-r88.json`
 - Judge: `node .qa/fingerprint.mjs --compare` (8/8 = behaviour-identical, exit 0).
 - Recorded on: canonical md5 `5de162de46eb4fa3204e3ee636f2aff3`, stamp `links-r87` (the baseline file's label is a checkpoint name, not a build stamp).
-- Older baselines (11) live in `.qa/archive/` as history only — they prove nothing about the current build.
-
 ## Tooling inventory
 - Root tools (3): `chromecheck.mjs` · `ingest.mjs` · `measure.mjs`
 - scripts/ (1): `run-battery.mjs`
 - tools/ (17, incl. doc/ and lib/): `canon-comments.mjs` · `docs-archaeology.mjs` · `gen-codemap.mjs` · `gen-state.mjs` · `gen-tree.mjs` · `lint-controls.mjs` · `lint-docs.mjs` · `lint-markers.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/archaeology.mjs` · `lib/load-sim.mjs` · `lib/manifest.mjs` · `lib/reflow.mjs` · `lib/strip-comments.mjs` · `lib/weapon-traits.mjs`
 - scratch/: gitignored RUNTIME temp dir (bake/gate temp copies, battery logs) — not source; nothing in it is tracked except `.gitkeep`.
-- .qa/ proofs (21): `bake-rows.mjs` · `bloom-proof.mjs` · `contact-proof.mjs` · `fingerprint.mjs` · `flip-seeds.mjs` · `flipproof.mjs` · `frame-proof.mjs` · `inscribe.mjs` · `law-proof.mjs` · `leadproof.mjs` · `lengrow-bake.mjs` · `lengrow-build-proof.mjs` · `lengrow-gate.mjs` · `lengrow-proof.mjs` · `lenstep-proof.mjs` · `pair-proof.mjs` · `seam-proof.mjs` · `shot-proof.mjs` · `stride-proof.mjs` · `strip-hash.mjs` · `verdict-proof.mjs`
+- .qa/ proofs (20): `bake-rows.mjs` · `bloom-proof.mjs` · `contact-proof.mjs` · `fingerprint.mjs` · `flip-seeds.mjs` · `flipproof.mjs` · `frame-proof.mjs` · `inscribe.mjs` · `law-proof.mjs` · `leadproof.mjs` · `lengrow-bake.mjs` · `lengrow-build-proof.mjs` · `lengrow-gate.mjs` · `lenstep-proof.mjs` · `pair-proof.mjs` · `seam-proof.mjs` · `shot-proof.mjs` · `stride-proof.mjs` · `strip-hash.mjs` · `verdict-proof.mjs`
 - .qa/ baselines (1): `fp-flailfix-r88.json`
 - Probe registry: `tools/manifest.json` — every proof and tool in one list: what it asserts, whether the battery runs it, whether a law row may cite it, whether an agent may run it. Read it before running anything; `tools/lib/manifest.mjs` loads it and checks it is complete.
 
@@ -37,15 +35,15 @@ estimate, so a stale figure is never presented as fact.
 | README.md | 321 | measured | router only |
 | AGENTS.md | 2,909 | measured | always |
 | docs/CODEMAP.md | 2,619 | measured | before opening the canonical |
-| docs/LAWS.md | 4,336 | measured | before any sim/doc edit |
+| docs/LAWS.md | 4,290 | measured | before any sim/doc edit |
 | docs/RECIPES.md | 1,604 | measured | adding a trait/skill/bot |
-| docs/GAMES.md | 32,693 | measured | GREP ONLY — never load whole |
+| docs/GAMES.md | 30,404 | measured | GREP ONLY — never load whole |
 | docs/planned/INDEX.md | 598 | measured | PLANNED engine work only — the island's entry point |
-| docs/planned/SPEC.md | 9,506 | measured | PLANNED engine work only |
-| docs/planned/CONTRACT.md | 4,060 | measured | PLANNED engine work only |
-| docs/planned/BUILD.md | 4,709 | measured | PLANNED engine work only |
+| docs/planned/SPEC.md | 9,416 | measured | PLANNED engine work only |
+| docs/planned/CONTRACT.md | 4,040 | measured | PLANNED engine work only |
+| docs/planned/BUILD.md | 4,688 | measured | PLANNED engine work only |
 | docs/handoff/HANDOFF.md | 393 | measured | router: freshness check, which handoff file to read |
-| docs/handoff/RUNBOOK.md | 4,870 | measured | before the first delivery (s1, s6); else grep headings |
+| docs/handoff/RUNBOOK.md | 4,853 | measured | before the first delivery (s1, s6); else grep headings |
 
 ## Design state (canonical source: LAWS.md; history: GAMES.md §Current state)
 - The current laws, the weapon-trait count and the law-to-probe table are design facts, NOT generated here.

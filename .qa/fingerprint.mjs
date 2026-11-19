@@ -28,9 +28,10 @@
  * the before-half of the facing-pass kept pair): two role-names for one artifact, not a duplicate
  * to merge, and neither is a stray.
  *
- * UPDATE 2026-10-28 (pre-skills workspace cleanup, owner go): those four historical checkpoints —
- * fp-authoring.json, fp-dmg1-r21.json, fp-shotvocab.json and fp-pause-after.json — were DELETED,
- * so at that point `.qa/archive/fp-lead-r22.json` was the only baseline on disk (a 2026-10-28 snapshot — many dated `fp-<stamp>.json` checkpoints exist now; the standing one is named in `.qa/BASELINE`, judged via `--compare`). The reasoning above is kept
+ * The four historical checkpoints that used to sit beside the standing baseline — fp-authoring.json,
+ * fp-dmg1-r21.json, fp-shotvocab.json and fp-pause-after.json — are DELETED: a baseline is a claim
+ * about ONE build, so keeping the old ones in the tree only invites comparing against the wrong one.
+ * The standing one is named in `.qa/BASELINE`, judged via `--compare`). The reasoning above is kept
  * verbatim because it records why they were never strays while they existed; the deletion reverses
  * the keeping decision, not the reasoning, and GAMES.md's Testing recipe carries the dated note.
  */

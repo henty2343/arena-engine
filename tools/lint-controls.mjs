@@ -115,6 +115,16 @@ const CONTROLS = [
     mutate: (s) => s.replace(/^ \* trait\.mult   shot-cadence growth rate.*\n/m, ''),
   },
   {
+    name: 'no document carries decision archaeology (2026-11-19)',
+    file: 'docs/LAWS.md',
+    expect: 'carries decision archaeology',
+    /* The doctrine is "current docs state current rules; git history holds history". The check is the
+     * derub's own catalogue run over the prose, so a line the derub would rewrite is an error. The
+     * control puts one owner quote back into a live document and requires the lint to name it. */
+    mutate: (s) => s.replace('## Battle structure',
+      '## Battle structure\n\nThe round timer was (owner word: "i want it slower") set to 5s.'),
+  },
+  {
     name: 'a retired rule must not be quoted as a live count',
     file: 'docs/GAMES.md',
     expect: 'quotes a stale count',

@@ -177,7 +177,7 @@ they can appear immediately and get theirs later.
 5. It may consume the game's seeded RNG, but must **never create or seed one.**
 6. Anything time-dependent — a cycle, a timer, a cooldown — is advanced by the game's own per-tick logic. The hook only reads whatever has already been decided.
 
-A game may bind its hooks tighter than these six rules. SPINCLASH's standing ruling (owner, 2026-10-31, recorded in its `docs/GAMES.md`):
+A game may bind its hooks tighter than these six rules. SPINCLASH's standing ruling:
 a player **skill** and an equipment **trait** may stack **only by addition on a shared axis** —
 neither may reach into the other's mechanic, and no unique player×equipment combinations may exist.
 
