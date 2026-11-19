@@ -1,99 +1,65 @@
 # RECIPES — add a weapon trait / fighter skill / bot
 
-Contains: the step-by-step recipes for adding a weapon trait, a fighter skill, or a bot, plus stamp discipline.
+Contains: the recipes for adding a weapon trait, a fighter skill, or a bot, plus stamp discipline.
 Read when: you are adding a trait / skill / bot (task tier). Token cost: see STATE.md §Documentation cost.
-Canonical for: the landing recipes (moved here from README in Phase C). The mechanics they must respect are in `docs/LAWS.md`.
+Canonical for: the landing recipes. The mechanics they must respect are in `docs/LAWS.md`.
 
 ---
 
-## Adding a weapon trait (or a fighter skill) — the recipe
+## Adding a weapon trait (or a fighter skill)
 
-The full axis list, consumer sites and guards live **in the canonical**, in the `TRAIT / SKILL
-REGISTRY` comment block immediately above `const WEAPONS = {`. Read that first — it is keyed to
-symbol names, not line numbers, so it cannot rot. This is the process around it.
+Axis list, consumer sites and guards: the canonical's `TRAIT / SKILL REGISTRY` comment block immediately above
+`const WEAPONS = {` (keyed to symbols, not line numbers). Read it first.
 
-**Step 0 — which cost class?** A trait that is a _number read at an existing site_ is **CHEAP**
-(minutes). A trait that moves _geometry_ (drawn art or a covering) is **EXPENSIVE** (days), because
-it needs per-step coverings re-baked through `.qa/lengrow-bake.mjs` with every row gated against its
-own stretched art. Only the spear's `len` is in the expensive class so far. If your trait is
-expensive, **stop and say so before starting** — that is a conversation, not a task.
+**Step 0 — cost class.** A trait that is a _number read at an existing site_ is **CHEAP**. A trait that moves _geometry_
+(drawn art or a covering) is **EXPENSIVE**: per-step coverings re-baked through `.qa/lengrow-bake.mjs`, every row gated
+against its stretched art. Only the spear's `len` is expensive so far. Expensive = **stop and ask the owner before starting**.
 
-**Cheap-class steps.** (1) add the field to the weapon row (`trait.*` / `shot.*`) or the fighter row
-(`skill.*`) · (2) add **ONE** consumer line at the site that already handles that moment; if no site
-handles it, that is a new seam — add it _there_, do not build a framework · (3) add a boot guard if
-the value could break something silently (a division, an index past the baked rows, an unauthored
-label) · (4) author `brief` (weapon) / `short` (fighter) if the new axis is not plain spin/dmg — the
-derivation cannot express it and the guard will throw · (5) add an assertion to `.qa/seam-proof.mjs`,
-**including one that proves the guard FIRES** by injecting a bad row · (6) update the REGISTRY block.
+**Cheap-class steps.**
+1. Add the field to the weapon row (`trait.*` / `shot.*`) or the fighter row (`skill.*`).
+2. Add **ONE** consumer line at the site that already handles that moment. No such site = a new seam: add it there, no framework.
+3. Add a boot guard if the value could break something silently (a division, an index past the baked rows, an unauthored label).
+4. Author `brief` (weapon) / `short` (fighter) if the axis is not plain spin/dmg; the guard throws without it.
+5. Add an assertion to `.qa/seam-proof.mjs`, **including one that proves the guard FIRES** by injecting a bad row.
+6. Update the REGISTRY block.
 
-**Proofs — Tier 0 only unless geometry moved.** `.qa/seam-proof.mjs` (~5min) then
-`.qa/lengrow-build-proof.mjs` (~60s); `chromecheck` if a label changed; `fingerprint.mjs` if the
-landing is _meant_ to be behaviour-identical (an inert seam, a comment) — where 0 of 8 IS meaningful.
-Tier 1 (`inscribe`, `bake --verify`, `leadproof`, `flipproof`) only if art, polys, coverings or scale
-moved. Tier 2 (differential sweeps, cost, the 484-cell run) only on suspicion, or once at the end of
-the pass.
+**Proofs — Tier 0 unless geometry moved.** `.qa/seam-proof.mjs` (~5min), then `.qa/lengrow-build-proof.mjs` (~60s);
+`chromecheck` if a label changed; `fingerprint.mjs` if the landing is meant to be behaviour-identical (0 of 8 IS meaningful there).
+Tier 1 (`inscribe`, `bake --verify`, `leadproof`, `flipproof`) only if art, polys, coverings or scale moved.
+Tier 2 (differential sweeps, cost, the 484-cell run) only on suspicion or once at the end of the pass.
 
-**Rules from traps that already bit (so you do not repeat them).** Full stories: grep the tag in
-`docs/GAMES.md` and `docs/history/` (`pair-r31`, `shot.mult`, `cleanup #4`).
+**Traps (grep the tag in `docs/GAMES.md` and `docs/history/` for the story: `pair-r31`, `shot.mult`, `cleanup #4`).**
+1. **Author the label for any axis the derivation does not know.** A derived label prints the WRONG text; the step-4 guard throws.
+2. **A declared multiplier is not the realised one.** `shot.mult` 2 realises as 2.15x, 4 as ~7x. Measure; never quote the declared figure.
+3. **Prove every boot guard fires** (step 5). An unproven guard reads as coverage.
+4. **`emit()` is not an event bus.** Append-only log, no subscribers.
+5. **Event actor refs carry SLOTS, not identities.** Every consumer is a slot-keyed array (`measure.mjs` indexes `curW = [e.w0, e.w1]`
+   with `e.by`); identity = `G.cast[slot]`. Slot-vs-idx reads of `hit.to` (`flashV[e.to]` vs `koStill.pose[e.to]`) and `st.o`
+   (`fs[st.o]`, `fs[1 - st.o]`, `G.fighters[st.o]`) agree only while `idx === slot`.
+6. **A mechanism inert under the default is invisible to every default-playing suite.** Give it a probe that runs it non-default.
+   Audit a slot/idx split in the renderer too, driving a canvas (`COLS[i]` / `TINTS[i]` / `FIGHTERS[i]` / `COLS[st.o]` read by slot
+   were 13 wrong sites under `[1, 0]`).
+7. **Never audit references by counting bare tokens** (`rect` is also a canvas method and a CSS function). Scan word-bounded,
+   exclude property access, strip comments and strings first.
 
-1. **Author the label for any axis the derivation does not know.** A _derived_ label silently prints the
-   WRONG text for such an axis (it did, for the spear, for a whole build). The guard in step (4) throws.
-2. **A declared multiplier is not the realised one.** `shot.mult` 2 realises as 2.15x and 4 as ~7x: more
-   shots, more hits, more spin growth, more shots. Measure the realised figure; never quote the declared one.
-3. **Prove every boot guard fires.** A guard never shown to throw reads as coverage and is worse than none
-   (step 5: inject a bad row).
-4. **`emit()` is not an event bus.** It is an append-only log with no subscribers.
-5. **Event actor refs carry SLOTS, not identities.** Every consumer is a slot-keyed array (`measure.mjs`
-   indexes `curW = [e.w0, e.w1]` with `e.by`); an identity is recoverable as `G.cast[slot]`, the reverse is
-   not. Why: one field was read two ways. The `hit` event's `to` fed `flashV[e.to]` (identity-coloured)
-   and `koStill.pose[e.to]` (slot-keyed, since `view[i]` is built by iterating `fighters[i]`), identical
-   while `idx === slot` and aliasing two actors into one scratch entry once they differ. The same
-   ambiguity sat on `st.o`, read as `fs[st.o]`, `fs[1 - st.o]` and `G.fighters[st.o]` in three places.
-6. **A mechanism that ships inert under its default is invisible to every suite that plays the default.**
-   Give it a probe that runs it non-default. Why: `pair-r31` converted the sim's slot sites and stopped
-   at the renderer, so the VS poster and the shot sigils still read `COLS[i]` / `TINTS[i]` /
-   `FIGHTERS[i]` / `COLS[st.o]` by slot: 13 sites, correct under `[0, 1]`, wrong under `[1, 0]`, and
-   invisible to fingerprints (sim state only), to chromecheck's default section and to a sim-level
-   pair-proof. **Audit a slot/idx split in the renderer too, and drive a canvas to do it.**
-7. **Never audit references by counting bare tokens.** A short identifier that is also a canvas method
-   and a CSS function always reads as "referenced". Cleanup #4 claimed exactly ONE top-level declaration
-   had no in-file reference; wrong, `rect` (an art helper) has none either, and the scan counted
-   `g.rect(...)`, two `ctx.rect(...)` and the CSS `clip: rect(...)`. Scan word-bounded, exclude property
-   access, and strip comments and strings first.
+## Adding a bot
 
-## Adding a bot — the recipe (rewritten by `pair-r31`)
+A row edit plus a colour. Nothing reads `1 - x.idx`; `SKILL_SHORT` already `.map`s over `FIGHTERS`. What remains is sizing:
+seven arrays hold exactly two entries. **The renderer is part of this:** a third bot makes every slot-keyed cast-table read observable.
 
-Before the pairing step this was a structural change; it is now a row edit plus a colour. **The
-sim's identity assumptions are gone** — nothing left reads `1 - x.idx`, and `SKILL_SHORT`
-already `.map`s over `FIGHTERS` (`LEN_CAP` was retired with `lenSteps` at `nocombo-r34`). What remains is _sizing_: seven arrays hold exactly two entries.
+1. Add the `FIGHTERS` row: `id`, `name`, `skill` (axes it owns), **`short`** (authored legend label; a boot guard throws without it), `line`.
+2. **Ask the owner for its colour:** a raw cast fill for `COLS` and a >=4.5:1 deep tint for `TINTS`. The six-colour frame economy is his call.
+3. Widen `COLS`, `TINTS`, `SPAWN`, `VIEW`, `flashV`, `flipAnim` and `C0`/`C1` from two entries to N. `C0`/`C1` should become one
+   array-of-buffers indexed by slot (the parry resolver and the hitbox overlay share them).
+4. Pick the pairing: `DEFAULT_CAST` or `APP.setCast([i, j])`.
+5. Run `.qa/pair-proof.mjs` (foe invariant and every event actor ref over `slot ≠ idx` pairings; the new bot's skill via the
+   damage-per-hit check; **section I** = the VS poster names and colours the actor, not the half). With three bots, also drive
+   `APP.setCast` over all six ordered pairings and eyeball the poster each time.
 
-**The renderer is part of this, not an afterthought** — that is exactly where `pair-r31` left 13
-slot-keyed reads of cast tables, and a third bot makes every one of them observable.
-
-(1) add the `FIGHTERS` row — `id`, `name`, `skill` (the axes it owns), **`short`** (the authored
-legend label; a boot guard throws without it), `line` · (2) **ask the owner for its colour** — a raw
-cast fill for `COLS` and a ≥4.5:1 deep tint for `TINTS`; the six-colour frame economy is his call,
-not the assistant's · (3) widen `COLS`, `TINTS`, `SPAWN`, `VIEW`, `flashV`, `flipAnim` and `C0`/`C1`
-from two entries to N — `C0`/`C1` should become one array-of-buffers indexed by slot, since they are
-the scratch the parry resolver and the hitbox overlay share · (4) pick the pairing, either
-`DEFAULT_CAST` or `APP.setCast([i, j])` · (5) run `.qa/pair-proof.mjs` — it sweeps the foe invariant
-and every event actor ref over pairings where `slot ≠ idx`, shows a new bot's skill travelling with
-it via the damage-per-hit check, and its **section I** proves the VS poster names and colours the
-actor rather than the half. With three cast members, also drive `APP.setCast` over all six ordered
-pairings and eyeball the poster each time.
-
-**Do not** add a cast-selection UI while N = 2 (the console lever is deliberate), and **do not**
-widen those arrays speculatively for a bot that has not been chosen — the owner is allergic to
-over-engineering, and step (2) is a conversation that has to happen first anyway.
+**Do not** add a cast-selection UI while N = 2, and **do not** widen the arrays for a bot that has not been chosen.
 
 ---
 
-**Stamp discipline.** A _visible_ landing bumps the build stamp; a behaviour-identical one does not.
-The REGISTRY block landed under `seam-r30` for that reason — comments are not visible, and
-fingerprints confirmed 0 of 8. **Clarified 2026-10-28 by `pair-r31`, which is behaviour-identical
-(fingerprints 0 of 8) and DID bump the stamp:** "visible" means _observable by the owner_, not
-"changes a pixel on load". `pair-r31` adds `APP.setCast([i, j])`, which he can call and watch the
-fighters change sides, so a stamp reading `seam-r30` on a file that has the lever would mislead him
-at the console. A comment-only or metadata-only landing still does not bump.
-
----
+**Stamp discipline.** A _visible_ landing bumps the build stamp; a behaviour-identical one does not. "Visible" = _observable by the
+owner_ (e.g. `pair-r31` added `APP.setCast`: behaviour-identical, 0 of 8, and it DID bump the stamp). Comment-only or
+metadata-only landings do not bump.

@@ -202,8 +202,7 @@ The cleanup line deletes `scratch/land.mjs` but NEVER `scratch/t-lib.mjs`, `scra
   canonical md5 moves. Append to GAMES, then regenerate; docreflow may re-wrap it (whitespace-only).
 - Law table: renaming a quoted assert fails lint until the anchor is updated (by design). New law =
   new row; ids C1-C6, S1-S6 required, unique; status in {probed, partial, owner-run only, unprobed};
-  six cells; consistency rules; anchors without backtick or |. Retire = remove row + LAWS "Retired
-  rules" + dated entry.
+  six cells; consistency rules; anchors without backtick or |. Retire = remove row + dated entry (LAWS has no Retired-rules section since #806).
 - Trait count: bump `N of 22 weapon traits landed` in LAWS AND the CURRENT BUILD paragraph in GAMES
   §Current state; lint checks both.
 - New lint check => negative controls (one mutation per control + a passing control). 3c ran 9 + C9.

@@ -30,10 +30,10 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~1.0k (compute
 | file | ~tokens | read policy |
 |---|---:|---|
 | README.md | 321 | router only |
-| AGENTS.md | 2,177 | always |
+| AGENTS.md | 1,972 | always |
 | docs/CODEMAP.md | 1,515 | before opening the canonical |
-| docs/LAWS.md | 5,037 | before any sim/doc edit |
-| docs/RECIPES.md | 1,868 | adding a trait/skill/bot |
+| docs/LAWS.md | 3,962 | before any sim/doc edit |
+| docs/RECIPES.md | 1,254 | adding a trait/skill/bot |
 | docs/GAMES.md | 55,497 | GREP ONLY — never load whole |
 | docs/planned/SPEC.md | 12,990 | PLANNED engine work only |
 | docs/planned/CONTRACT.md | 4,226 | PLANNED engine work only |
@@ -42,11 +42,11 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~1.0k (compute
 | docs/history/mf-1-pre667.md | 45,547 | GREP ONLY — frozen era |
 | docs/history/mf-2-667-721.md | 52,445 | GREP ONLY — frozen era |
 | docs/handoff/AUDIT-REPORT.md | 6,487 | SLICE ONLY — grep by finding ID (temporary) |
-| docs/handoff/BATCH3-STATUS.md | 49,687 | GREP ONLY — landing ledger, newest entry first |
+| docs/handoff/BATCH3-STATUS.md | 50,009 | GREP ONLY — landing ledger, newest entry first |
 | docs/handoff/HANDOFF.md | 493 | router: freshness check, which handoff file to read |
 | docs/handoff/LEDGER.md | 87,305 | GREP ONLY — frozen history |
-| docs/handoff/ROADMAP.md | 765 | audit work: read first while it exists (temporary) |
-| docs/handoff/RUNBOOK.md | 5,127 | before the first delivery (s1, s6); else grep headings |
+| docs/handoff/ROADMAP.md | 781 | audit work: read first while it exists (temporary) |
+| docs/handoff/RUNBOOK.md | 5,132 | before the first delivery (s1, s6); else grep headings |
 
 ## Design state (canonical source: LAWS.md; history: GAMES.md §Current state)
 - The current laws, the weapon-trait count and the law-to-probe table are design facts, NOT generated here.

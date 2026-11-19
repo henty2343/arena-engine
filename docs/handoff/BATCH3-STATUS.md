@@ -28,7 +28,17 @@ pose (C3 → `partial`) and MEASURES law 3s, which does NOT hold on the current 
 `owner-run only`; the owner's ruling is open).
 Next: the S3 RULING, or Batch 4's tool moves.
 
-## #805 Audit Phase 3: HANDOFF.md split into router + RUNBOOK + LEDGER; #804's hash recorded - ledger (this commit)
+## #806 Audit Phase T: trim pass on LAWS.md, RECIPES.md, AGENTS.md; #805's hash recorded - ledger (this commit)
+
+What: DOCS. Agent-facing rationale, narrative and history cut from docs/LAWS.md (Retired-rules section dropped; Scope cells of C3 and S3 shortened; all 25 law-table rows keep columns 1-5 byte-identical), docs/RECIPES.md (trap "Why" stories, bot-recipe and stamp-discipline narrative) and AGENTS.md (prose tightened, no rule dropped). Rules, commands, numbers and paths kept. Approx tokens (chars/4) before -> after: LAWS 5,037 -> 3,962; RECIPES 1,868 -> 1,254; AGENTS 2,177 -> 1,972 (STATE.md cost table, before and after). RUNBOOK s8 loses its pointer to the dropped LAWS section. ROADMAP: Phase T DONE. STATE.md regenerated. #805 LANDED AS 92dd2ae is recorded. The canonical, the sim, measure.mjs and every probe are untouched.
+
+Why: Phase T of the audit: the three always-or-often-loaded docs carried rationale an agent never acts on.
+
+Approved: the owner's "phase t go", then "drop it" (LAWS Retired-rules section) and "fold recipes and agents in the patch".
+
+Deviations: RUNBOOK s8 edited (one clause) although no rule changed, because it named the removed LAWS section. RUNBOOK s1 forbids dropping record content; LAWS is a rules file, not the record, and the owner approved the drop.
+
+## #805 Audit Phase 3: HANDOFF.md split into router + RUNBOOK + LEDGER; #804's hash recorded - ledger
 
 What: DOCS + TOOLS. docs/handoff/HANDOFF.md (~92k tokens) is split: HANDOFF.md is now a ~0.5k router with the freshness check; RUNBOOK.md (~5k) holds old s0-s5, the live s6 delivery routes, s8 and a new short s9 (landing record, owner environment, the short new-chat prompt); LEDGER.md (~87k, frozen, grep-only) holds the old dated status ledger, the s6 "State after" blocks, s7, the old s9 and s10 verbatim. A script proved every old line from the status ledger onward appears in the new files, except one s6 sentence changed on purpose ("Both handoff files update in the same commit" -> "The ledger entry lands in the same commit"). The freshness anchor moves from HANDOFF.md to BATCH3-STATUS.md (AGENTS.md step 1 and 5 and the truth-lives line updated; a "Deliver a patch / process rules" row added). tools/lint-docs.mjs: the handoff profile lints HANDOFF.md and RUNBOOK.md refs whole, requires RUNBOOK s1/s6 and a BATCH3 "## #NNN" entry, and exempts the archives from size warnings. tools/gen-state.mjs: read policies for the new files. ROADMAP.md: Phase 3 DONE, D1 resolved. #804 LANDED AS 886438c is recorded. The canonical, the sim, measure.mjs and every probe are untouched.
 

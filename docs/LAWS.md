@@ -1,90 +1,77 @@
 # LAWS — the current standing game laws (quick reference)
 
-Contains: the distilled CURRENT mechanical laws of SPINCLASH — what every weapon/skill/hit rule must satisfy.
-Read when: before any sim or game-doc edit (the "before code" tier). Token cost: see STATE.md §Documentation cost.
-Canonical for: the current laws — this file is the SOLE AUTHORITY for them, for the weapon-trait count, and for which
-probe checks each law. `docs/GAMES.md` §Current state is the fuller design record (owner quotes, provenance); where it
-disagrees with this file, this file wins and the record is stale. `tools/lint-docs.mjs` checks the trait count and the
-law-to-probe table below.
-Platform rules live in `docs/planned/SPEC.md`; agent workflow in `AGENTS.md`; mutable facts in `STATE.md`.
-
-> These are the laws as of build `links-r87`. Retired rules are NOT listed here — they live in
-> GAMES' dated entries (git history for older). If GAMES §Current state disagrees with a law below, this file wins:
-> fix the record. The lint only checks the trait count and the table, so a prose conflict is found by reading, not by `verify`.
+Contains: the CURRENT mechanical laws of SPINCLASH, the weapon-trait count, and which probe checks each law.
+Read when: before any sim or game-doc edit. Token cost: see STATE.md §Documentation cost.
+Canonical for: the current laws — SOLE AUTHORITY for them, for the weapon-trait count, and for the law-to-probe table
+(`tools/lint-docs.mjs` checks the count and the table). On conflict with `docs/GAMES.md` §Current state, this file wins.
+State as of build `links-r87`. Retired rules are not listed here (GAMES dated entries, git history).
 
 ## Battle structure
 
 - **Best of 3 rounds**, first to 2 round wins. Video target: 1min+ of battle.
-- **Per-round dice roll:** the seeded roll assigns each fighter a weapon from the 22-weapon roster;
-  **duplicates allowed** (mirror duels are deliberate). Fixed draw order (2 weapon draws + 1 opening-spin
-  direction draw + 2 launch draws per round), so `(seed)` fully determines a battle.
-- **Stats reset every round** — each round is a fresh snowball; escalation is the series situation, not stat carry-over.
-- **Rounds end on K.O. only** — no timer (owner decision). Stalls are watched, not "fixed" (open question).
-- **1v1 only** (owner decision). A 3-man brawl is a wanted future mode; SPEC's match shape already allows up to four.
-- **Hidden forcing:** the viewer sees the roll as random; `newGame(seed, {weapons})` forces a combo silently.
+- **Per-round dice roll:** seeded; each fighter draws a weapon from the 22-weapon roster; duplicates allowed.
+  Fixed draw order (2 weapon draws + 1 opening-spin direction draw + 2 launch draws per round), so `(seed)` fully determines a battle.
+- **Stats reset every round.**
+- **Rounds end on K.O. only** — no timer (owner decision). Stalls are watched, not fixed.
+- **1v1 only** (owner decision). SPEC's match shape allows up to four.
+- **Hidden forcing:** `newGame(seed, {weapons})` forces a combo silently.
 
 ## Core contact law (owner 2026-10-16) — every weapon/skill/hit rule must satisfy all six
 
-1. **Damage requires touch.** A bot takes damage only when the opponent's weapon overlaps its body disc; the drawn
-   disc IS the collision circle (radius 64). Nothing else writes HP (walls, body-vs-body, spin growth never damage).
-   **Since `allcut-r62` (owner 2026-11-02) the converse holds for EVERY weapon: a spine touching the body deals
-   damage — launchers and the shield included.** (The old "projectile spines deal no damage" rule is RETIRED.)
-2. **Parry requires weapon-on-weapon collision.** Only the blade-vs-blade gap triggers a parry; body proximity is
-   irrelevant. Trigger = exact touch (surface gap ≤ 0); the 4px `parryPad` is hysteresis re-arm, not a gameplay window.
-   **Flutter gate:** after a parry, the latch cannot re-arm for `parryGate` 16 ticks; contacts inside the gate stay
-   solid but fire nothing. A blade touching a SHOT is a *swat*, not a parry.
+1. **Damage requires touch.** A bot takes damage only when the opponent's weapon overlaps its body disc; the drawn disc IS
+   the collision circle (radius 64). Nothing else writes HP (walls, body-vs-body, spin growth never damage).
+   Since `allcut-r62` this holds for EVERY weapon: a spine touching the body deals damage, launchers and the shield included.
+2. **Parry requires weapon-on-weapon collision.** Only the blade-vs-blade gap triggers a parry; body proximity is irrelevant.
+   Trigger = exact touch (surface gap <= 0); the 4px `parryPad` is hysteresis re-arm, not a gameplay window.
+   **Flutter gate:** after a parry the latch cannot re-arm for `parryGate` 16 ticks; contacts inside the gate stay solid but fire nothing.
+   A blade touching a SHOT is a *swat*, not a parry.
 3. **Weapons are solids to each other.** No tunneling, no interpenetration, on any rendered frame or between frames.
-   A per-substep resolver de-overlaps along the true contact normal, kills approaching velocity, recoils spins on
-   fresh contact. Substeps are sized so any real crossing spans ≥2 tests. **Disclosed RED:** the translation-only
-   resolver has a fixed-point overlap band on crossed long blades (measured ~20.75px worst); the rotational-DOF
-   rework is DEFERRED to the end of the skills pass. Nothing in the skills pass may depend on the resolver being correct.
-4. **One damage per touch.** First touch deals damage once; no further damage while in contact; re-eligible only after
-   the blade clears the body by the 12px re-arm margin. Blades pass through bodies (solid to each other only).
-   **Deep-disengage gate:** re-arm also needs a genuine disengagement (peak clearance ≥ `reArmDeep` 85px) OR
-   `reArmWait` 90 ticks out. **Since `allcut-r62` there is NO projectile exception** — every latched rising edge pairs
-   a hit, launchers and shield included. A shot is consumed by the body it hits, so it can never double-damage.
-5. **Parry recoils both weapons.** On a parry both spin directions flip; with law 6 the pair stays counter-rotating
-   all round (growth preserves sign; zero-spin cannot occur). Any future exception must be a named, documented weapon trait.
-6. **Counter-rotation from the bell.** Every round starts with the two weapons spinning opposite directions; one seeded
-   roll decides fighter 0, fighter 1 gets the opposite. Rolled, not fixed per cast.
+   A per-substep resolver de-overlaps along the true contact normal, kills approaching velocity, recoils spins on fresh contact.
+   Substeps are sized so any real crossing spans >=2 tests. **Disclosed RED:** the translation-only resolver has a fixed-point
+   overlap band on crossed long blades (measured ~20.75px worst); the rotational-DOF rework is DEFERRED to the end of the skills pass.
+   Nothing in the skills pass may depend on the resolver being correct.
+4. **One damage per touch.** First touch deals damage once; no further damage while in contact; re-eligible only after the blade
+   clears the body by the 12px re-arm margin. Blades pass through bodies (solid to each other only).
+   **Deep-disengage gate:** re-arm also needs peak clearance >= `reArmDeep` 85px OR `reArmWait` 90 ticks out.
+   No projectile exception: every latched rising edge pairs a hit, launchers and shield included.
+   A shot is consumed by the body it hits, so it never double-damages.
+5. **Parry recoils both weapons.** Both spin directions flip; with law 6 the pair stays counter-rotating all round
+   (growth preserves sign; zero-spin cannot occur). Any exception must be a named, documented weapon trait.
+6. **Counter-rotation from the bell.** Every round starts with the two weapons spinning opposite directions; one seeded roll
+   decides fighter 0, fighter 1 gets the opposite.
 
 ## Shot laws (the projectile system) — 1s–6s live; 7s RETIRED
 
 - **1s** damage only on shot-touches-body (recomputed from the stored death pose).
 - **2s** swats only on exact shot-blade touch (swats flip no spin).
 - **3s** shots never overlap foe blade / foe body / rim / another shot at tick-entry poses (anti-teleport bracket).
-- **4s** accounting — every fired shot has exactly one proven departure (landed / swatted / rim / cross / cleared at roll)
-  or is still in flight at battle end; a shot vanishing without an event is the tunneling alarm.
-- **5s** the substep budget audit (0 violations).
-- **6s** launch doctrine — every launch recomputes to its hold-derived point (radial → tip; tangential → middle).
-- **7s RETIRED at `allcut-r62`** — was "zero melee hits by projectile weapons"; every spine now cuts, so the counter
-  survives as visibility only (`rangedMeleeHits`). See §Retired rules below.
-- **Firing is physics:** one shot per full revolution (`fireAcc += |spin|·sdt`, releases at 2π) — spin rate IS fire rate.
-  Shot damage snapshots the thrower's CURRENT damage at launch. The combo matrix is forced: 484 ordered cells × 8 seeds
-  at the 22-weapon roster.
+- **4s** every fired shot has exactly one proven departure (landed / swatted / rim / cross / cleared at roll) or is in flight at
+  battle end; a shot vanishing without an event is the tunneling alarm.
+- **5s** substep budget audit (0 violations).
+- **6s** every launch recomputes to its hold-derived point (radial -> tip; tangential -> middle).
+- **7s RETIRED** at `allcut-r62`; `rangedMeleeHits` survives as visibility only.
+- **Firing is physics:** one shot per full revolution (`fireAcc += |spin|·sdt`, releases at 2π); spin rate IS fire rate.
+  Shot damage snapshots the thrower's CURRENT damage at launch. Combo matrix: 484 ordered cells x 8 seeds at the 22-weapon roster.
 
 ## Uniform base stats + growth (owner 2026-10-16 / 2026-10-28)
 
-- **One uniform base for every weapon:** ω **3.5** rad/s, damage **1** (`WDEF`); hp **100**. Base damage 1 is explicitly
-  a TEST ("just a test") — not to be re-tuned during the skills pass. Only on-hit growth moves spin/damage.
-- **What differentiates a weapon:** length, drawn shape, hold, growth axis, special effects (shot behaviour) — not base numbers.
-- **Growth, uncapped:** every damaging hit grows the attacker — the fighter's skill AND the weapon's trait both apply.
-  The only ceilings are sim stability (`omegaCap` 140 rad/s, DORMANT — the real ceiling is structural: hp ÷ damage = 100
-  hits → max spin 103.5). Fights are meant to get ridiculous.
+- **One uniform base for every weapon:** omega **3.5** rad/s, damage **1** (`WDEF`); hp **100**. Base damage 1 is a TEST:
+  do not re-tune it during the skills pass. Only on-hit growth moves spin/damage.
+- **What differentiates a weapon:** length, drawn shape, hold, growth axis, special effects — not base numbers.
+- **Growth, uncapped:** every damaging hit grows the attacker (fighter skill AND weapon trait both apply). `omegaCap` 140 rad/s
+  is DORMANT; the real ceiling is structural (hp / damage = 100 hits -> max spin 103.5).
 - **Fighter skills (placeholder cast):** Speedy = +0.30 SPD per damaging hit; Heavy = +0.9 DMG per damaging hit.
   One skill per fighter per game. Cast stays at two until the bot pass.
 
 ## Weapon traits — the skills-pass laws
 
-- **A weapon has a TRAIT; a fighter has a SKILL.** Always "weapon trait" / "fighter skill", never the bare nouns.
-- **Weapon traits RESET every round** (owner law 2026-10-28) — no trait growth carries across a round boundary.
-- **NO COMBOS / additive stacking only** (`nocombo-r34`): a skill may ADD on a shared axis, never reach into a trait's
-  mechanic. Retired `skill.lenSteps`.
-- **Trait = data, skill = contract hook.** The cheap pattern is a row field → ONE consumer site → one Tier-0 assertion
-  (see `docs/RECIPES.md`). No general hook/plugin framework was built — do not add one.
-- **14 of 22 weapon traits landed** (8 remain: 7 melee blanks + the orb). This line is the pinned count that
-  `tools/lint-docs.mjs` reads; README, AGENTS and GAMES §Current state are checked against it. The open queue and the
-  per-trait history stay in `docs/GAMES.md` §Current state.
+- **A weapon has a TRAIT; a fighter has a SKILL.** Always "weapon trait" / "fighter skill".
+- **Weapon traits RESET every round** (owner law 2026-10-28).
+- **NO COMBOS / additive stacking only** (`nocombo-r34`): a skill may ADD on a shared axis, never reach into a trait's mechanic.
+- **Trait = data, skill = contract hook.** Pattern: a row field -> ONE consumer site -> one Tier-0 assertion (`docs/RECIPES.md`).
+  Do not add a general hook/plugin framework.
+- **14 of 22 weapon traits landed** (8 remain: 7 melee blanks + the orb). This line is the pinned count `tools/lint-docs.mjs`
+  reads; README, AGENTS and GAMES §Current state are checked against it.
 
 ## The slot/idx split (internalise before touching a fighter)
 
@@ -92,52 +79,37 @@ Platform rules live in `docs/planned/SPEC.md`; agent workflow in `AGENTS.md`; mu
   **`G.cast[slot]` is the only map between them.**
 - Slot-keyed: `SPAWN`, roll order, direction sign, `wins`/`winner`, `1 - f.slot`, `view`/`flashV`/`flipAnim`/`koStill.pose`,
   `C0`/`C1`, `fs[st.o]`, and **every event actor ref** (`by`/`to`/`o`/`winner`/`loser`).
-- Idx-keyed: `COLS`, `TINTS`, `SKILL_SHORT`, `FIGHTERS[idx].skill`, `meta.fighters` — **including in the renderer**.
-- **Event actor refs carry SLOTS** (every consumer is a slot-keyed array); a cast identity is recoverable as `G.cast[slot]`,
-  the reverse is not. A slot/idx split must be audited in the renderer too, driving a canvas (`.qa/pair-proof.mjs` §I).
-  They hold the same number under `DEFAULT_CAST=[0,1]`, which is why the fingerprint suite can never check any of it.
+- Idx-keyed: `COLS`, `TINTS`, `SKILL_SHORT`, `FIGHTERS[idx].skill`, `meta.fighters` — including in the renderer.
+- Audit a slot/idx split in the renderer too, driving a canvas (`.qa/pair-proof.mjs` §I). Under `DEFAULT_CAST=[0,1]` slot and idx
+  are equal, so the fingerprint suite can never check any of it.
 
-## Verification laws (how a change proves itself)
+## Verification laws
 
 - **One canonical:** `previews/spinclash-preview.html`; its md5 must not move unless sanctioned + recorded.
-- **Behaviour-identical edits prove fingerprints 8/8** vs `.qa/BASELINE` (`node .qa/fingerprint.mjs --compare`).
-  8/8 can be VACUOUS — establish coverage before reading neutrality into it.
+- **Behaviour-identical edits prove fingerprints 8/8** vs `.qa/BASELINE` (`node .qa/fingerprint.mjs --compare`). 8/8 can be VACUOUS: establish coverage first.
 - **Tiered proof battery:** Tier 0 every landing; Tier 1 only if geometry moved; Tier 2 only on suspicion / end of pass.
   `measure.mjs` NEVER runs without the owner's explicit go. Judge health with `node tools/verify.mjs`.
-- **No balancing during the skills pass** (no win-rate tables); the 484-cell re-run, resolver rework and spear-bearing
-  fingerprint cell are deferred to the end.
+- **No balancing during the skills pass** (no win-rate tables); the 484-cell re-run, resolver rework and spear fingerprint cell are deferred to the end.
 
 ## Law-to-probe table
 
-Which runnable probe checks each live law, and where its `measure.mjs` audit lives. Built by reading each probe's header
-and assert labels. Every `file::anchor` item below is checked by `tools/lint-docs.mjs`: the file must exist and contain
-the anchor text verbatim (so a renamed assert or a moved audit fails `verify`, not silently). The lint cannot judge
-whether an assert really covers a law — that is the **Status** column, written by hand:
-
-- **probed** — a runnable probe asserts it. **partial** — a runnable probe asserts part of it (see **Scope**).
-- **owner-run only** — only `measure.mjs` audits it. Agents never run it, so no agent-runnable probe fails if the law breaks.
-  The table says where the audit text is, not whether it last passed (GAMES dated entries record the sanctioned runs).
-- **unprobed** — no assertion anywhere; at most `.qa/fingerprint.mjs`, which is a change detector for ALL laws on the
-  default cast with no spear (it proves "did not move", never "is right") and so is not repeated per row.
-  No row is currently `unprobed` or `owner-run only`: every live law below carries a runnable probe alongside
-  its `measure.mjs` audit. S3 moved to `partial` at #799: `.qa/frame-proof.mjs` applies the owner's shot doctrine
-  (the #788/#794 sanctioned classes) with pre-tick entry flags and gates the UNSANCTIONED residual at zero, so an
-  overlap nothing sanctions fails an agent-runnable proof. The sanctioned classes are reported, not gated, and
-  the law's absolute text is unchanged - the exemptions are the owner's rulings (GAMES, the #788 and #794 entries).
-  C3 is `partial`: `.qa/frame-proof.mjs` proves the band's envelope and the visible-tick rate at the tick-entry
-  pose - the RED itself (the fixed-point overlap band) is NOT closed by a proof, it is a bound the proof holds.
+Every `file::anchor` is checked by `tools/lint-docs.mjs` (file exists, anchor text verbatim). **Status** is hand-written:
+**probed** = a runnable probe asserts it; **partial** = asserts part of it (see Scope); **owner-run only** = only `measure.mjs`
+audits it (agents never run it); **unprobed** = no assertion. No row is currently `unprobed` or `owner-run only`.
+`.qa/fingerprint.mjs` is a change detector for all laws on the default cast with no spear (proves "did not move", never "is right")
+and is not repeated per row. S3 and C3 are `partial` via `.qa/frame-proof.mjs` (see their Scope).
 
 | ID | Law | Runnable probe | Owner-run audit | Status | Scope |
 |---|---|---|---|---|---|
 | C1 | Damage requires touch (body disc = collision circle) | `.qa/inscribe.mjs::A poking circle fires hits across`; `.qa/leadproof.mjs::hit gContact` | `measure.mjs::contact law 1: damage only on weapon-touches-body` | partial | covering circles vs drawn art; hit recompute for lead-flag weapons only |
 | C2 | Parry requires weapon-on-weapon touch | `.qa/inscribe.mjs::A poking circle fires hits across`; `.qa/leadproof.mjs::parry entry gap` | `measure.mjs::contact law 2: parry only on exact weapon-weapon touch` | partial | covering fidelity; entry-pose gap for lead-flag weapons only |
-| C3 | Weapons are solids to each other | `.qa/frame-proof.mjs::C3 the disclosed RED band stays inside the envelope the law records`; `.qa/frame-proof.mjs::C3 the band rate holds: the band-class visible ticks are at most 2% of the rendered ticks` | `measure.mjs::contact law 3: VISIBLE rendered interpenetration` | partial | the rendered pose (the tick-entry pose, this repo's definition of a rendered frame) over the owner's curated gauntlet and the crossed-blades cells: the band's worst stays inside the envelope the law records and the visible band ticks stay under 2% of the rendered ticks. The RED itself is NOT closed - the proof holds the band, it does not prove zero; and the owner's stricter 6px calibration no longer holds (see GAMES, the #753 entry) |
+| C3 | Weapons are solids to each other | `.qa/frame-proof.mjs::C3 the disclosed RED band stays inside the envelope the law records`; `.qa/frame-proof.mjs::C3 the band rate holds: the band-class visible ticks are at most 2% of the rendered ticks` | `measure.mjs::contact law 3: VISIBLE rendered interpenetration` | partial | rendered pose (tick-entry pose) over the curated gauntlet + crossed-blades cells: band worst stays inside the recorded envelope and band ticks stay under 2% of rendered ticks. The RED itself is NOT closed (the proof holds the band, not zero). The owner's stricter 6px calibration no longer holds (GAMES #753) |
 | C4 | One damage per touch; re-arm gates | `.qa/contact-proof.mjs::C4 a fighter never deals two damaging blade hits in one tick`; `.qa/contact-proof.mjs::C4 every re-arm satisfies the deep-disengage gate` | `measure.mjs::contact law 4: one damage per touch` | probed | the sim law in full: no double touch, one damage per latch, and the re-arm gate read back off the fighter's own peak and latch counters |
 | C5 | Parry recoils both weapons | `.qa/contact-proof.mjs::C5 every parry flips BOTH weapons spins` | `measure.mjs::contact law 5: every parry recoils both spins` | probed | both spin signs flip on every parry; `flipproof` checks the drawn flip, not the spin recoil |
 | C6 | Counter-rotation from the bell | `.qa/pair-proof.mjs::rule 6 holds per SIDE` | `measure.mjs::contact law 6: every round opens counter-rotating` | partial | per side under every pairing, not swept over weapons |
 | S1 | 1s damage only on shot-touches-body | `.qa/shot-proof.mjs::S1 every shot that damaged the body was touching it`; `.qa/shot-proof.mjs::S1 the probe recomputes the touch itself (non-returning rows)` | `measure.mjs::projectile law 1s: shot damage only on shot-touches-body` | partial | every shot hit was a touch and the gap is recomputed from the event's own coordinates; the returning boomerang's ARC gap is the sim's own number (sign only) |
 | S2 | 2s swats only on exact shot-blade touch | `.qa/leadproof.mjs::swat touch gap` | `measure.mjs::projectile law 2s: swats only on exact shot-blade touch` | partial | lead-flag weapons only |
-| S3 | 3s shots never overlap blade/body/rim/shot | `.qa/frame-proof.mjs::S3 the unsanctioned shot-overlap residual is zero (the owner's shot doctrine applied)`; `.qa/frame-proof.mjs::S3 the doctrine replica still matches measure.mjs's exemption sites (no silent drift)` | `measure.mjs::projectile law 3s: shots never overlap blade/body/rim/shot on a rendered frame` | partial | the UNSANCTIONED residual is asserted at zero at the rendered tick-entry poses over the owner's curated gauntlet and the crossed-blades cells (#799): the probe applies the owner's sanctioned classes (#788/#794 - returning boomerang, pinned nail / ricochet at the rim, spear impale/carry, and same-owner / nail-pair / one-sided-returning / annihilation-frame pairs) with pre-tick entry flags and counts them apart. Not `probed`: the sanctioned classes are REPORTED, not judged, the doctrine is a replica of `measure.mjs`'s pass (a site-drift assertion guards it), and the law's absolute text is unchanged |
+| S3 | 3s shots never overlap blade/body/rim/shot | `.qa/frame-proof.mjs::S3 the unsanctioned shot-overlap residual is zero (the owner's shot doctrine applied)`; `.qa/frame-proof.mjs::S3 the doctrine replica still matches measure.mjs's exemption sites (no silent drift)` | `measure.mjs::projectile law 3s: shots never overlap blade/body/rim/shot on a rendered frame` | partial | the UNSANCTIONED residual is asserted at zero at tick-entry poses over the gauntlet + crossed-blades cells (#799); the owner's sanctioned classes (#788/#794: returning boomerang, pinned nail / ricochet at the rim, spear impale/carry, same-owner / nail-pair / one-sided-returning / annihilation-frame pairs) are REPORTED, not gated. Not `probed`: the doctrine is a replica of `measure.mjs`'s pass (a site-drift assertion guards it) |
 | S4 | 4s every shot has exactly one proven departure | `.qa/seam-proof.mjs::DEPARTURE ACCOUNTING` | `measure.mjs::projectile law 4s: every shot accounted for` | partial | ricochet stars only |
 | S5 | 5s substep budget audit | `.qa/shot-proof.mjs::S5 the emergency brake never engaged`; `.qa/shot-proof.mjs::S5 the budget was never under-allocated` | `measure.mjs::projectile law 5s: substep budget honored every tick` | probed | the chosen substep count against the cap and against the blade and projectile requirement, on every audited tick |
 | S6 | 6s launch doctrine (hold-derived launch point) | `.qa/shot-proof.mjs::S6 every hold-derived row launches where its hold says`; `.qa/shot-proof.mjs::S6 every volley shot is born at one of its anchors` | `measure.mjs::projectile law 6s: every shot is born at its hold-derived launch point` | partial | every shot row recomputed exactly from the launch event's own pose, except the volley row: matched against the whole anchor set, so a shot born at the right anchor of the WRONG tier would pass |
@@ -154,18 +126,3 @@ whether an assert really covers a law — that is the **Status** column, written
 | T2 | No combos: additive stacking only | `.qa/pair-proof.mjs::no skill reaches into a trait`; `.qa/lengrow-build-proof.mjs::no fighter carries lenSteps` | — | partial | the retired hook is gone; additivity itself via G1 |
 | T3 | Trait = data, one consumer site | `.qa/seam-proof.mjs::GUARD FIRES: a new trait axis with no authored brief` | — | partial | boot guards only; "one consumer site" is a review convention |
 | X1 | Slot/idx split | `.qa/pair-proof.mjs::every event actor ref`; `.qa/pair-proof.mjs::every cast-keyed table read is indexed by an IDENTITY`; `chromecheck.mjs::PAIRING section` | — | probed | fingerprints are blind to it (default cast), so these probes carry it |
-
-## Retired rules (kept as provenance, NOT current)
-
-The following rules were once live and were retired. They are recorded here so they never get "fixed" as bugs.
-Full verbatim text is in git history; GAMES dated entries record the landings.
-
-- **The projectile rule** (retired `allcut-r62`, owner 2026-11-02): formerly "a projectile weapon's spine deals
-  no damage, only its projectiles do." Now every weapon cuts on body touch, launchers and shield included. The
-  gate-free law is in `bladeVsBody`; `measure.mjs` keeps `rangedMeleeHits` as visibility only.
-- **Former law 4 exception** (retired Phase A, GAMES #735, 2026-11-12): formerly "a projectile spine touching
-  the body latches/shoves but emits no hit event." Now every latched rising edge pairs a hit.
-- **Former law 7s clause** (retired Phase A, GAMES #735, 2026-11-12): formerly "zero melee hits by projectile
-  weapons." Now every spine can hit; law 7s is removed from the live suite.
-
-If you're tempted to "restore" any of these, stop — they were retired for reasons recorded in the dated entries.
