@@ -30,7 +30,7 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~1.0k (compute
 | file | ~tokens | read policy |
 |---|---:|---|
 | README.md | 321 | router only |
-| AGENTS.md | 2,067 | always |
+| AGENTS.md | 2,113 | always |
 | docs/CODEMAP.md | 1,515 | before opening the canonical |
 | docs/LAWS.md | 5,037 | before any sim/doc edit |
 | docs/RECIPES.md | 1,868 | adding a trait/skill/bot |
@@ -41,8 +41,10 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~1.0k (compute
 | docs/history/chronicle-722-747.md | 21,598 | GREP ONLY — frozen era |
 | docs/history/mf-1-pre667.md | 45,547 | GREP ONLY — frozen era |
 | docs/history/mf-2-667-721.md | 52,445 | GREP ONLY — frozen era |
-| docs/handoff/BATCH3-STATUS.md | 48,615 | SLICE ONLY — grep headings, read one section |
-| docs/handoff/HANDOFF.md | 91,573 | SLICE ONLY — grep headings, read one section |
+| docs/handoff/AUDIT-REPORT.md | 6,487 | SLICE ONLY — grep by finding ID (temporary) |
+| docs/handoff/BATCH3-STATUS.md | 48,857 | SLICE ONLY — grep headings, read one section |
+| docs/handoff/HANDOFF.md | 91,742 | SLICE ONLY — grep headings, read one section |
+| docs/handoff/ROADMAP.md | 703 | audit work: read first while it exists (temporary) |
 
 ## Design state (canonical source: LAWS.md; history: GAMES.md §Current state)
 - The current laws, the weapon-trait count and the law-to-probe table are design facts, NOT generated here.

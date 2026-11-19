@@ -25,7 +25,17 @@ pose (C3 → `partial`) and MEASURES law 3s, which does NOT hold on the current 
 `owner-run only`; the owner's ruling is open).
 Next: the S3 RULING, or Batch 4's tool moves.
 
-## #802 Phase 1 of the agent-architecture audit: STATE cost table + unlisted-doc gate; #801's hash recorded - ledger (this commit)
+## #803 Audit roadmap and report added to the repo (temporary); #802's hash recorded - ledger (this commit)
+
+What: DOCS + TOOLS. docs/handoff/ROADMAP.md (phases 1-6 with status, owner decisions D1-D4, rules) and docs/handoff/AUDIT-REPORT.md (the audit snapshot, grep-only) are added; Phase 1 is marked DONE (#802, 213c80b). AGENTS.md gets one "Audit work (temporary)" row. tools/gen-state.mjs gives the two files their own read policy; STATE.md regenerated. #802 LANDED AS 213c80b is recorded in HANDOFF.md. The canonical, the sim, measure.mjs and every probe are untouched.
+
+Why: an agent starting a new session must see what the audit already did and what is next, without reading the 91k-token handoff.
+
+Approved: the owner's go on adding the roadmap and the archived audit, and the owner's instruction that both are removed when the audit closes (ROADMAP.md Phase 6).
+
+Deviations: no DONE-list, chain-head or s7 entry (this ledger plus the s10 and STATE lines are the record).
+
+## #802 Phase 1 of the agent-architecture audit: STATE cost table + unlisted-doc gate; #801's hash recorded - ledger
 
 What: TOOLS + DOCS. tools/gen-state.mjs adds docs/handoff/*.md to the cost table (policy SLICE ONLY) and exits 1 when any docs/**/*.md or root *.md (except STATE.md) has no read policy; STATE.md regenerated (14 docs listed, was 12); scripts/.gitkeep removed (scripts/ holds run-battery.mjs); the literal verify check count ("7 checks") removed from AGENTS.md step 1 and from the live instructions in HANDOFF.md (s0 freshness check, s4, s6 delivery commands, s9). Historical ledger bullets and receipts that quote the old count are untouched. #801 LANDED AS 4584583 is recorded. The canonical, the sim, measure.mjs and every probe are untouched.
 

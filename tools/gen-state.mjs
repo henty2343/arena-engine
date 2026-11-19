@@ -42,7 +42,8 @@ function facts() {
   for (const f of hist) policy[f] = 'GREP ONLY — frozen era';
   // Handoff files are huge ledgers: listed so their cost is visible; read one section, never whole.
   const handoff = list(path.join(root, 'docs', 'handoff'), /\.md$/).map(x => 'docs/handoff/' + x);
-  for (const f of handoff) policy[f] = 'SLICE ONLY — grep headings, read one section';
+  const HP = { 'docs/handoff/ROADMAP.md': 'audit work: read first while it exists (temporary)', 'docs/handoff/AUDIT-REPORT.md': 'SLICE ONLY — grep by finding ID (temporary)' };
+  for (const f of handoff) policy[f] = HP[f] || 'SLICE ONLY — grep headings, read one section';
   // Completeness gate: every docs/**/*.md and root *.md (except this generated file) must have a read policy above.
   const walk = d => existsSync(d) ? readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk(path.join(d, e.name))
     : e.name.endsWith('.md') ? [path.relative(root, path.join(d, e.name)).split(path.sep).join('/')] : []) : [];

@@ -13,6 +13,7 @@ A localhost-only Node tool that renders seeded game simulations into publishable
 | Tier | Files | When |
 |---|---|---|
 | Always | `AGENTS.md` + `STATE.md` | every session |
+| Audit work (temporary) | `docs/handoff/ROADMAP.md` | every session while it exists: it names the next open phase; evidence by finding ID in `docs/handoff/AUDIT-REPORT.md` (grep only) |
 | Before opening the canonical | `docs/CODEMAP.md` (generated region + symbol map) | never read the canonical whole — enter at one symbol |
 | Before any sim/doc edit | `docs/LAWS.md` (current laws quick ref) | the standing game laws |
 | Add a weapon trait / bot | `docs/RECIPES.md` + the canonical `TRAIT / SKILL REGISTRY` | the cheap-class pattern |
