@@ -13,7 +13,7 @@ principles, Open design questions, a `## Measured facts` stub, the Testing recip
 
 - PROPOSE BEFORE WRITING; wait for the owner's explicit "go". Read-only checks need no go.
 - NEVER run measure.mjs. Read-only grep is permitted; execution is not. Since #780 it also exits 2 unless the owner passes --owner-go (or sets ARENA_OWNER_GO=1); an agent never passes either. EXCEPTION (owner, 2026-11-14): the owner may give an
-  explicit go for ONE run; it covers that run only and never carries over (one --solidity run was authorised that way, s7).
+  explicit go for ONE run; it covers that run only and never carries over (one --solidity run was authorised that way).
 - DO NOT SPLIT THE CANONICAL previews/spinclash-preview.html (rule 5). Owner-only decision.
 - Removals are TAGGED first (`git tag <name> HEAD`). Never force-push. Pushes are the owner's.
 - Terminology: a fighter has a SKILL, a weapon has a TRAIT. Never the bare nouns.
@@ -185,7 +185,7 @@ The cleanup line deletes `scratch/land.mjs` but NEVER `scratch/t-lib.mjs`, `scra
 - Line cap (B3E): LINE_CAP = 3000 BYTES (Buffer.byteLength, so 1,501 two-byte characters fail) on docs/GAMES.md. Check-only. Run docreflow before lint if a new GAMES entry trips it.
 - Cosmetic: .qa/fingerprint.mjs (~line 33) mentions many dated checkpoints; one live baseline. Harmless.
 - Owner-machine hygiene (#761): `git add -A` on the owner's Windows box sweeps throwaway diagnostics into the commit - #760 took diag-1s.cjs, land-760.cjs and scratch-measure.mjs that way (they sat in the repo root; the .txt reports had already moved to scratch/). Move scratch to scratch/ (gitignored) or `git add` explicit paths before committing; measure/diag reports never enter the repo.
-- measure.mjs and frame-proof's C3 recompute contacts from stored poses and, since #758, pass the PRE-TICK lenStep (§7, THE lenStep FIX). Residue: a hit that adds a link (the event stores the post-grow chain pose; the hit event is built after grow()) and any event or substep after an in-tick grow are not exact; .qa/lenstep-proof.mjs reports the count. The 2026-11-15 owner re-run on the lenStep fix confirmed it (law 1 111 -> 12, law 2 117 -> 3, law 2s 116 -> 43, law 4 283 -> 66); the residue and the new defect tracker live in section 7 (THE OWNER'S RE-RUN / THE DEFECT-TRACKER RULING). The owner runs measure.mjs in cmd.exe with plain `>` redirects (never Git Bash `tee`, never PowerShell; GAMES) and captures `echo exit=%errorlevel%`; agents never run it.
+- measure.mjs and frame-proof's C3 recompute contacts from stored poses and, since #758, pass the PRE-TICK lenStep (§7, THE lenStep FIX). Residue: a hit that adds a link (the event stores the post-grow chain pose; the hit event is built after grow()) and any event or substep after an in-tick grow are not exact; .qa/lenstep-proof.mjs reports the count. The 2026-11-15 owner re-run on the lenStep fix confirmed it (law 1 111 -> 12, law 2 117 -> 3, law 2s 116 -> 43, law 4 283 -> 66); the residue and the defect-tracker ruling are recorded in the pre-#808 ledger entries (git history). The owner runs measure.mjs in cmd.exe with plain `>` redirects (never Git Bash `tee`, never PowerShell; GAMES) and captures `echo exit=%errorlevel%`; agents never run it.
 - Sandbox: the execution tool can vanish for whole turns; /tmp gets wiped between calls — re-bootstrap
   and WRITE RECEIPTS INTO YOUR REPLY IMMEDIATELY. Dropped tool output (`execute error`) = UNVERIFIED.
   pkill patterns can match your own command line — use [h]ttps-style brackets. Long runs: setsid + poll.
@@ -194,24 +194,24 @@ The cleanup line deletes `scratch/land.mjs` but NEVER `scratch/t-lib.mjs`, `scra
 
 Per patch: what changed, before/after token costs, exact verification commands WITH results, anything NOT verified, the artifact (s6) + the apply/run commands + BASE hash, next proposed step. Wait for "go". Flag deviations in the same message. Quote only measured numbers.
 
-Landing record (since #805): every landing (1) adds ONE short "## #NNN <title> - ledger (this commit)" section at the top of docs/handoff/BATCH3-STATUS.md, newest first (What / Why / Approved / Deviations), removes "(this commit)" from the prior entry and records the prior landing's commit hash; (2) updates docs/handoff/ROADMAP.md if a phase moved; (3) regenerates STATE.md. HANDOFF.md and this file change only when a rule changes. LEDGER.md is frozen history: never append to it.
-Freshness anchor: the commit that last touched BATCH3-STATUS.md must equal origin HEAD (see HANDOFF.md). "Where we are" = the newest BATCH3-STATUS.md entry plus ROADMAP.md.
+Landing record (since #805): every landing (1) adds ONE short "## #NNN <title> - ledger (this commit)" section at the top of docs/handoff/BATCH3-STATUS.md, newest first (What / Why / Approved / Deviations), removes "(this commit)" from the prior entry and records the prior landing's commit hash; (2) regenerates STATE.md. HANDOFF.md and this file change only when a rule changes.
+Freshness anchor: the commit that last touched BATCH3-STATUS.md must equal origin HEAD (see HANDOFF.md). "Where we are" = the newest BATCH3-STATUS.md entry.
 
 Owner environment (facts, not preferences):
 - The owner runs measure.mjs in cmd.exe: `node measure.mjs --owner-go --solidity > solidity-report.txt 2> solidity-progress.txt`, then `echo exit=%errorlevel%`; never Git Bash tee, never PowerShell. An agent never passes --owner-go or sets ARENA_OWNER_GO.
 - Pushes are the owner's (VS Code + Git Bash on Windows). Node only: the owner has no Python. Scratch files go in scratch/ (gitignored); `git add` explicit paths only.
 - Be frugal: no re-checks beyond the freshness check. Quote only numbers you measured, or that are in the owner's pasted report, or are labelled prior-agent and unverified until you re-measure. If a tool output is lost, say UNVERIFIED.
 
-New-chat prompt (the whole thing, same every time; drop the ROADMAP sentence when ROADMAP.md is deleted):
+New-chat prompt (the whole thing, same every time):
 
     Repo: github.com/henty2343/arena-engine. Clone it fresh.
-    Read AGENTS.md and STATE.md, then docs/handoff/ROADMAP.md while it exists. Never read big docs whole; grep them.
-    Tell me: the commit you are on, what is done, and the next open phase.
+    Read AGENTS.md and STATE.md. Never read big docs whole; grep them.
+    Tell me: the commit you are on, what is done, and the next open work.
     Then propose it and wait for my "go". Follow AGENTS.md: never run measure.mjs, don't touch the canonical unless asked, deliver one patch proven on a fresh clone.
 
 ## 10. GAMES.md budget and trim
 
 Budget: ~40,000 tokens (chars/4, as STATE.md). `tools/lint-docs.mjs` WARNS above it. Over budget = trim in the next doc patch:
-1. Delete the oldest dated `## YYYY-MM-DD — #NNN` landing entries and any superseded, reverted or duplicated-in-LAWS section. No archive, no `docs/history/`.
+1. Delete the oldest dated `## YYYY-MM-DD — #NNN` landing entries and any superseded, reverted or duplicated-in-LAWS section. No archive.
 2. Keep the NEWEST dated entry: it carries the canonical md5 (lint requirement).
 3. `docreflow -> navgen -> gen-codemap -> gen-state -> verify --quick`. Quote the before/after tokens from STATE.md.

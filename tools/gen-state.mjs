@@ -7,7 +7,6 @@ import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { historyFiles } from './lib/docset.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CANON = path.join(root, 'previews', 'spinclash-preview.html');
 function facts() {
@@ -37,15 +36,11 @@ function facts() {
   const POLICY = { 'README.md': 'router only', 'AGENTS.md': 'always', 'docs/CODEMAP.md': 'before opening the canonical', 'docs/LAWS.md': 'before any sim/doc edit',
     'docs/RECIPES.md': 'adding a trait/skill/bot', 'docs/GAMES.md': 'GREP ONLY — never load whole',
     'docs/planned/SPEC.md': 'PLANNED engine work only', 'docs/planned/CONTRACT.md': 'PLANNED engine work only', 'docs/planned/BUILD.md': 'PLANNED engine work only' };
-  // B3C: the frozen era files join the cost table (sorted glob — a new era needs no edit here).
-  const hist = historyFiles(root);
   const policy = { ...POLICY };
-  for (const f of hist) policy[f] = 'GREP ONLY — frozen era';
-  // Handoff files are huge ledgers: listed so their cost is visible; read one section, never whole.
+  // Handoff files: listed so their cost is visible; read one section, never whole.
   const handoff = list(path.join(root, 'docs', 'handoff'), /\.md$/).map(x => 'docs/handoff/' + x);
   const HP = { 'docs/handoff/HANDOFF.md': 'router: freshness check, which handoff file to read', 'docs/handoff/RUNBOOK.md': 'before the first delivery (s1, s6); else grep headings',
-    'docs/handoff/BATCH3-STATUS.md': 'GREP ONLY — landing ledger, newest entry first', 'docs/handoff/LEDGER.md': 'GREP ONLY — frozen history',
-    'docs/handoff/ROADMAP.md': 'audit work: read first while it exists (temporary)', 'docs/handoff/AUDIT-REPORT.md': 'SLICE ONLY — grep by finding ID (temporary)' };
+    'docs/handoff/BATCH3-STATUS.md': 'GREP ONLY — landing ledger, newest entry first' };
   for (const f of handoff) policy[f] = HP[f] || 'SLICE ONLY — grep headings, read one section';
   // Completeness gate: every docs/**/*.md and root *.md (except this generated file) must have a read policy above.
   const walk = d => existsSync(d) ? readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk(path.join(d, e.name))
@@ -55,7 +50,7 @@ function facts() {
   return { canonical:'previews/spinclash-preview.html', md5, lines, stamp, baseline, baselineOk,
     labelNote, archivedBaselines: archived.length, unlisted,
     counts:{proofs:proofs.length,baselines:baselines.length,rootTools:rootTools.length,scripts:scripts.length,tools:tools.length},
-    proofs, baselines, rootTools, scripts, tools, docs, historyFiles: hist, approxCanonicalTokens: Math.round(html.length/4) };
+    proofs, baselines, rootTools, scripts, tools, docs, approxCanonicalTokens: Math.round(html.length/4) };
 }
 function render(f, cost = '~0.7k') {
   const L = [];
@@ -87,7 +82,6 @@ function render(f, cost = '~0.7k') {
   L.push('## Design state (canonical source: LAWS.md; history: GAMES.md §Current state)');
   L.push('- The current laws, the weapon-trait count and the law-to-probe table are design facts, NOT generated here.');
   L.push('  `docs/LAWS.md` is the sole authority for them; the open queue and owner quotes are in `docs/GAMES.md` §Current state. `tools/lint-docs.mjs` checks the count and the table.');
-  if (f.historyFiles.length) L.push(`- The record is split: \`docs/GAMES.md\` is the live file; ${f.historyFiles.length} frozen era file(s) live in \`docs/history/\`. The nav block in GAMES indexes every file by key + line.`);
   L.push('- Implemented: the SpinClash harness (this canonical + bare-Node tools).');
   L.push('- Planned (no code yet): the engine — `docs/planned/BUILD.md` Phases 0–8 (PLANNED).'); L.push('');
   return L.join('\n');

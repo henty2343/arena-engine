@@ -17,7 +17,6 @@ something else landed: re-baseline from STATE.md and say what moved.
 |---|---|
 | Rules, orientation, proof sequence, delivery routes, gotchas, report format, landing record | RUNBOOK.md (read s1 and s6 before delivering) |
 | What landed last, or one landing's receipts | BATCH3-STATUS.md, newest first (`grep -m1 '^## #'`); grep only |
-| Next planned work (temporary) | ROADMAP.md; evidence in AUDIT-REPORT.md, grep only |
-| Old history: dated ledger, s7 What remains, s10, State-after blocks, pre-#805 s9 | LEDGER.md; frozen, grep only |
+| What is next | the newest BATCH3-STATUS.md entry, then the open queue in `docs/GAMES.md` §Current state |
 
-Old pointers: "HANDOFF s0-s6, s8, s9" mean RUNBOOK.md with the same section number; "HANDOFF s7" and "s10" mean LEDGER.md.
+Old pointers: "HANDOFF s0-s6, s8, s9" mean RUNBOOK.md with the same section number. Older history = git (recovery point: tag `handoff-pre808`).

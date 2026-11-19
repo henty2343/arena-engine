@@ -9,7 +9,6 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { historyFiles } from './lib/docset.mjs';
 import { citableProbes, manifestErrors } from './lib/manifest.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [], warnings = [];
@@ -25,12 +24,11 @@ else { const b = readFileSync(basePtr,'utf8').trim();
 // file that exists. Without this the registry goes stale silently: a new proof nobody registers is
 // invisible to the battery AND to the law table.
 for (const e of manifestErrors(root)) err(e);
-// B3C: the record set is docs/GAMES.md + docs/history/*.md. The current canonical md5 must be
-// carried by AT LEAST ONE of them (the landing entry may live in a frozen era file).
-const HIST_FILES = historyFiles(root);
-const RECORD_SET = ['docs/GAMES.md', ...HIST_FILES];
+// The record is docs/GAMES.md (the docs/history era glob is gone, #808); its newest dated entry
+// must carry the current canonical md5.
+const RECORD_SET = ['docs/GAMES.md'];
 if (!RECORD_SET.some(f => existsSync(path.join(root, f)) && rd(f).includes(md5)))
-  err(`no file in the GAMES record set (docs/GAMES.md, ${RECORD_SET.length} file(s)) carries the current canonical md5 ${md5} (stale slot?)`);
+  err(`docs/GAMES.md does not carry the current canonical md5 ${md5} (stale slot?)`);
 const games = rd('docs/GAMES.md');
 const GAMES_BUDGET_TOKENS = 40000; // RUNBOOK s10: over budget = trim the next doc patch (chars/4, as STATE.md)
 { const gt = Math.round(games.length / 4);
@@ -157,23 +155,17 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
   if (/^\s*-\s*(Lines|md5|Build stamp)\s*:/mi.test(readmeSlim)) err('README repeats a mutable fact (Lines/md5/Build stamp) — link STATE.md instead');
 
   // GAMES.md's preface must not tell agents to read it whole (Phase I).
-  for (const f of ['docs/GAMES.md', ...HIST_FILES]) {
+  for (const f of RECORD_SET) {
     const head = rd(f).split('\n').slice(0, 25).join('\n');
     if (/(?<!not )(?<!never )read this file (first|whole)/i.test(head)) err(`${f} preface tells agents to read it first/whole — it is grep-only`);
   }
-  // B3E: line cap. A record-set line over LINE_CAP bytes defeats docreflow and editors (the old 14 KB mf-2 line). Check only; era files are never modified.
+  // B3E: line cap. A record line over LINE_CAP bytes defeats docreflow and editors (the old 14 KB mf-2 line). Check only.
   const LINE_CAP = 3000;
   for (const f of RECORD_SET) if (existsSync(path.join(root, f)))
-    rd(f).split('\n').forEach((l, i) => { const b = Buffer.byteLength(l); if (b > LINE_CAP) err(`${f}:${i + 1} is ${b} bytes, over the ${LINE_CAP}-byte line cap - re-wrap it (whitespace only in era files)`); });
-  // B3C: every frozen era file must be routed to from GAMES, and every history path GAMES
-  // names must exist. (lintRefs only scans §Current state, so the nav block needs this.)
-  for (const f of HIST_FILES)
-    if (!games.includes(f)) err(`${f} is not named in docs/GAMES.md — the nav block must route to every era file`);
-  for (const mm of games.matchAll(/`(docs\/history\/[A-Za-z0-9_.\-]+\.md)`/g))
-    if (!existsSync(path.join(root, mm[1]))) err(`docs/GAMES.md references missing history file: ${mm[1]}`);
+    rd(f).split('\n').forEach((l, i) => { const b = Buffer.byteLength(l); if (b > LINE_CAP) err(`${f}:${i + 1} is ${b} bytes, over the ${LINE_CAP}-byte line cap - re-wrap it (whitespace only)`); });
 
   // Hand-typed token costs drift; the only cost source is STATE.md (Phase I).
-  for (const f of ['AGENTS.md','docs/CODEMAP.md','docs/LAWS.md','docs/RECIPES.md','docs/planned/SPEC.md','docs/planned/CONTRACT.md','docs/planned/BUILD.md','docs/GAMES.md', ...HIST_FILES])
+  for (const f of ['AGENTS.md','docs/CODEMAP.md','docs/LAWS.md','docs/RECIPES.md','docs/planned/SPEC.md','docs/planned/CONTRACT.md','docs/planned/BUILD.md','docs/GAMES.md'])
     if (existsSync(path.join(root,f)) && /Approx token cost:\s*~?\d/.test(rd(f).split('\n').slice(0, 12).join('\n')))
       err(f + ' header has a hand-typed token cost — point to STATE.md §Documentation cost instead');
 
@@ -237,13 +229,12 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
   if (!rows) err('docs/LAWS.md law table has no rows');
 })();
 
-// docs/handoff/*.md profile (audit Phases 2-3). These files stay OUT of the history glob (control C5).
-// Errors: missing Contains:/Read when: header, hand-typed token cost, dead refs in the live files (HANDOFF,
-// RUNBOOK, ROADMAP; the ledgers quote retired paths on purpose), RUNBOOK losing the s1/s6 headings AGENTS relies on,
-// a ROADMAP that AGENTS does not route to. Warnings only: lines >2000 chars and files over the size budget in the
-// live files (the ARCHIVES - ledgers, frozen history, audit snapshot - are grep-only and exempt), and lines >400
-// chars in the always-load docs. No md5 check: the ledgers legitimately quote old canonical md5s.
-const ARCHIVES = new Set(['BATCH3-STATUS.md', 'LEDGER.md', 'AUDIT-REPORT.md']);
+// docs/handoff/*.md profile. Errors: missing Contains:/Read when: header, hand-typed token cost, dead refs
+// in the live files (HANDOFF, RUNBOOK; the landing ledger quotes retired paths on purpose), RUNBOOK losing
+// the s1/s6 headings AGENTS relies on. Warnings only: lines >2000 chars and files over the size budget in
+// the live files (the ARCHIVES - the landing ledger - are grep-only and exempt), and lines >400 chars in
+// the always-load docs. No md5 check: the ledger legitimately quotes old canonical md5s.
+const ARCHIVES = new Set(['BATCH3-STATUS.md']);
 (function lintHandoff() {
   const dir = 'docs/handoff'; if (!existsSync(path.join(root, dir))) return;
   const files = readdirSync(path.join(root, dir)).filter(f => f.endsWith('.md')).sort().map(f => dir + '/' + f);
@@ -254,11 +245,6 @@ const ARCHIVES = new Set(['BATCH3-STATUS.md', 'LEDGER.md', 'AUDIT-REPORT.md']);
     const long = ARCHIVES.has(path.basename(f)) ? [] : lines.filter(l => l.length > 2000);
     if (long.length) warn(`${f}: ${long.length} line(s) over 2000 chars (max ${Math.max(...long.map(l => l.length))}) - split into entries`);
     if (!ARCHIVES.has(path.basename(f)) && text.length / 4 > 20000) warn(`${f}: ~${Math.round(text.length / 4)} tokens, over the 20000-token handoff budget`);
-  }
-  if (existsSync(path.join(root, dir, 'ROADMAP.md'))) {
-    lintRefs(dir + '/ROADMAP.md', rd(dir + '/ROADMAP.md'));
-    if (existsSync(path.join(root, 'AGENTS.md')) && !rd('AGENTS.md').includes(dir + '/ROADMAP.md'))
-      err(dir + '/ROADMAP.md exists but AGENTS.md does not route to it');
   }
   for (const n of ['HANDOFF.md', 'RUNBOOK.md']) if (existsSync(path.join(root, dir, n))) lintRefs(dir + '/' + n, rd(dir + '/' + n));
   if (existsSync(path.join(root, dir, 'RUNBOOK.md'))) {

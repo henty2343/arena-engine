@@ -2,7 +2,7 @@
 # STATE — current project facts
 
 Contains: the mutable facts of the repo, derived from the canonical and the tree.
-Read when: every session, alongside AGENTS.md. Approx token cost: ~1.0k (computed).
+Read when: every session, alongside AGENTS.md. Approx token cost: ~0.9k (computed).
 
 ## Canonical (the one live game)
 - File: `previews/spinclash-preview.html`
@@ -20,7 +20,7 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~1.0k (compute
 ## Tooling inventory
 - Root tools (3): `chromecheck.mjs` · `ingest.mjs` · `measure.mjs`
 - scripts/ (1): `run-battery.mjs`
-- tools/ (11, incl. doc/ and lib/): `gen-codemap.mjs` · `gen-state.mjs` · `lint-docs.mjs` · `lint-markers.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/docset.mjs` · `lib/load-sim.mjs` · `lib/manifest.mjs` · `lib/strip-comments.mjs`
+- tools/ (10, incl. doc/ and lib/): `gen-codemap.mjs` · `gen-state.mjs` · `lint-docs.mjs` · `lint-markers.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/load-sim.mjs` · `lib/manifest.mjs` · `lib/strip-comments.mjs`
 - scratch/: gitignored RUNTIME temp dir (bake/gate temp copies, battery logs) — not source; nothing in it is tracked except `.gitkeep`.
 - .qa/ proofs (21): `bake-rows.mjs` · `bloom-proof.mjs` · `contact-proof.mjs` · `fingerprint.mjs` · `flip-seeds.mjs` · `flipproof.mjs` · `frame-proof.mjs` · `inscribe.mjs` · `law-proof.mjs` · `leadproof.mjs` · `lengrow-bake.mjs` · `lengrow-build-proof.mjs` · `lengrow-gate.mjs` · `lengrow-proof.mjs` · `lenstep-proof.mjs` · `pair-proof.mjs` · `seam-proof.mjs` · `shot-proof.mjs` · `stride-proof.mjs` · `strip-hash.mjs` · `verdict-proof.mjs`
 - .qa/ baselines (1): `fp-flailfix-r88.json`
@@ -30,20 +30,17 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~1.0k (compute
 | file | ~tokens | read policy |
 |---|---:|---|
 | README.md | 310 | router only |
-| AGENTS.md | 1,929 | always |
+| AGENTS.md | 1,940 | always |
 | docs/CODEMAP.md | 1,515 | before opening the canonical |
 | docs/LAWS.md | 3,962 | before any sim/doc edit |
 | docs/RECIPES.md | 1,244 | adding a trait/skill/bot |
-| docs/GAMES.md | 38,650 | GREP ONLY — never load whole |
+| docs/GAMES.md | 38,630 | GREP ONLY — never load whole |
 | docs/planned/SPEC.md | 12,990 | PLANNED engine work only |
 | docs/planned/CONTRACT.md | 4,226 | PLANNED engine work only |
 | docs/planned/BUILD.md | 4,525 | PLANNED engine work only |
-| docs/handoff/AUDIT-REPORT.md | 6,487 | SLICE ONLY — grep by finding ID (temporary) |
-| docs/handoff/BATCH3-STATUS.md | 50,495 | GREP ONLY — landing ledger, newest entry first |
-| docs/handoff/HANDOFF.md | 398 | router: freshness check, which handoff file to read |
-| docs/handoff/LEDGER.md | 87,305 | GREP ONLY — frozen history |
-| docs/handoff/ROADMAP.md | 816 | audit work: read first while it exists (temporary) |
-| docs/handoff/RUNBOOK.md | 4,584 | before the first delivery (s1, s6); else grep headings |
+| docs/handoff/BATCH3-STATUS.md | 2,430 | GREP ONLY — landing ledger, newest entry first |
+| docs/handoff/HANDOFF.md | 379 | router: freshness check, which handoff file to read |
+| docs/handoff/RUNBOOK.md | 4,522 | before the first delivery (s1, s6); else grep headings |
 
 ## Design state (canonical source: LAWS.md; history: GAMES.md §Current state)
 - The current laws, the weapon-trait count and the law-to-probe table are design facts, NOT generated here.

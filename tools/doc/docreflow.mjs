@@ -14,10 +14,6 @@
  * usage: node tools/doc/docreflow.mjs [file] [--check] [--max N]
  *        --check = report what WOULD change, write nothing (idempotency proof) */
 import { readFileSync, writeFileSync } from 'node:fs';
-import { spawnSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
-import path from 'node:path';
-import { historyFiles } from '../lib/docset.mjs';
 
 const args = process.argv.slice(2);
 const FILE = args.find((a, i) => !a.startsWith('--') && args[i - 1] !== '--max') || 'docs/GAMES.md';
@@ -27,25 +23,9 @@ const MAX = mi >= 0 ? +args[mi + 1] : 600;      // target paragraph length, char
 const MIN_BREAK = 200;                            // never break a short tail off
 const BIG = 600;   // B3-REFLOW: lower threshold - most long lines were never eligible                                 // only reflow lines above this, bytes
 
-/* B3C: with no explicit path the record set is GAMES.md + docs/history/*.md. Each era file
- * is reflowed by re-invoking this same script, so the per-file whitespace proofs below are
- * unchanged; --check reports pending work in ANY file and exits 1 (it used to always exit 0,
- * which made the gate unable to fail — verify judges by exit code). */
-const SELF = fileURLToPath(import.meta.url);
-const ROOT = path.resolve(path.dirname(SELF), '..', '..');
-const EXPLICIT = args.some((a, i) => !a.startsWith('--') && args[i - 1] !== '--max');
-let histPending = 0, histFiles = 0;
-if (!EXPLICIT) {
-  for (const f of historyFiles(ROOT)) {
-    histFiles++;
-    const a = [SELF, f, ...(args.includes('--max') ? ['--max', String(MAX)] : []), ...(CHECK ? ['--check'] : [])];
-    const r = spawnSync(process.execPath, a, { cwd: ROOT, encoding: 'utf8' });
-    process.stdout.write(r.stdout || ''); process.stderr.write(r.stderr || '');
-    if (r.status !== 0 && !CHECK) process.exit(r.status || 2);
-    if ((r.stdout || '').includes('CHANGES PENDING')) histPending++;
-  }
-}
-
+/* The record is docs/GAMES.md alone (the docs/history era glob is gone, #808); --check reports
+ * pending work and exits 1 (it used to always exit 0, which made the gate unable to fail —
+ * verify judges by exit code). */
 const src = readFileSync(FILE, 'utf8');
 const nl = src.includes('\r\n') ? '\r\n' : '\n';
 const lines = src.split(/\r?\n/);
@@ -167,10 +147,8 @@ if (headsBefore !== headsAfter) { console.error(`reflow: entry heading count ${h
 
 console.log(`reflow: ${changed} paragraph(s) split, ${headsAfter} entry headings preserved, whitespace-only edit proven${skippedFence ? ' (some long lines had no safe break point — left alone)' : ''}`);
 if (CHECK) {
-  const pending = changed || histPending;
-  console.log(`docreflow --check: ${pending ? 'CHANGES PENDING' : 'already reflowed (idempotent)'} — ${histFiles + 1} file(s) in the record set`);
-  process.exit(pending ? 1 : 0);
+  console.log(`docreflow --check: ${changed ? 'CHANGES PENDING' : 'already reflowed (idempotent)'}`);
+  process.exit(changed ? 1 : 0);
 }
 writeFileSync(FILE, out);
 console.log(`wrote ${FILE} — ${outLines.length} lines, ${(Buffer.byteLength(out) / 1024) | 0} KB`);
-console.log(`docreflow: ${histFiles + 1} file(s) in the record set (GAMES.md)`);

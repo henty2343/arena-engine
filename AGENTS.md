@@ -7,7 +7,7 @@ Canonical for: agent workflow and loading order. Mutable facts live in STATE.md 
 ## What this repo is
 
 A localhost-only Node tool that renders seeded game simulations into publishable MP4s. **The engine is PLANNED, not built**
-(`docs/planned/BUILD.md` Phases 0–8; `packages/`, `apps/`, `games/` are placeholders). The **only live code** is game #1, SPINCLASH:
+(`docs/planned/BUILD.md` Phases 0–8; none of its tree exists yet — BUILD Phase 0 creates it). The **only live code** is game #1, SPINCLASH:
 a single-file browser sim, `previews/spinclash-preview.html` (the ONE canonical), plus a dependency-free bare-Node proof harness.
 The video file is the product; everything else is scaffolding (`docs/planned/SPEC.md` §Purpose before any tradeoff).
 
@@ -17,14 +17,13 @@ The video file is the product; everything else is scaffolding (`docs/planned/SPE
 |---|---|---|
 | Always | `AGENTS.md` + `STATE.md` | every session |
 | Deliver a patch / process rules | `docs/handoff/RUNBOOK.md` §1 + §6 | before the first delivery of a session |
-| Audit work (temporary) | `docs/handoff/ROADMAP.md` | every session while it exists: it names the next open phase; evidence by finding ID in `docs/handoff/AUDIT-REPORT.md` (grep only) |
 | Before opening the canonical | `docs/CODEMAP.md` | never read the canonical whole — enter at one symbol |
 | Before any sim/doc edit | `docs/LAWS.md` | the standing game laws |
 | Add a weapon trait / bot | `docs/RECIPES.md` + the canonical `TRAIT / SKILL REGISTRY` | the cheap-class pattern |
 | Engine work | `docs/planned/SPEC.md` · `CONTRACT.md` · `BUILD.md` | only when building the platform |
 | A past decision / design detail | `docs/GAMES.md` | grep by `#NNN`, symbol or heading — NEVER read whole; older history = git |
 
-Never load `docs/GAMES.md` or the ledgers whole (costs in `STATE.md`). Grep a `#NNN`, a symbol or a heading
+Never load `docs/GAMES.md` or the landing ledger whole (costs in `STATE.md`). Grep a `#NNN`, a symbol or a heading
 (`grep -n '^## ' docs/GAMES.md`), and read only that region. The nav block in `docs/GAMES.md` indexes
 every file by key + line. `STATE.md` carries the current md5/stamp/line-count/baseline.
 
@@ -38,6 +37,7 @@ every file by key + line. `STATE.md` carries the current md5/stamp/line-count/ba
   `gen-codemap`; refresh `STATE.md` if facts moved; run `node tools/verify.mjs`.
   Order: `docreflow → navgen → gen-codemap → gen-state → verify --quick`.
 - **Check repo health** → `node tools/verify.mjs` (`--quick` skips the sim, `--battery` adds the full proof battery).
+- **Add a tool / proof** → placement: proofs in `.qa/`, generators and lints in `tools/` (shared code in `tools/lib/`), the battery runner in `scripts/`, standalone runtime tools at the root; register it in `tools/manifest.json` (verify and the battery read it).
 - **Prove a behaviour-identical edit** → `node .qa/fingerprint.mjs --compare` (8/8 vs `.qa/BASELINE`, exit 0).
 
 ## Workflow: orient, propose, change, prove, deliver
@@ -83,6 +83,6 @@ every file by key + line. `STATE.md` carries the current md5/stamp/line-count/ba
 - Landing recipes → `docs/RECIPES.md`. Workflow and loading order → this file. Platform rules → `docs/planned/SPEC.md`.
 - Decisions, owner quotes, design detail → `docs/GAMES.md` (budget: RUNBOOK §10). Older history = git; there is no archive directory.
 - AI-session process: `docs/handoff/HANDOFF.md` (router + freshness check), `docs/handoff/RUNBOOK.md` (rules, delivery routes),
-  `docs/handoff/BATCH3-STATUS.md` (landing ledger, newest first); `docs/handoff/LEDGER.md` is frozen history. The repo outranks any
+  `docs/handoff/BATCH3-STATUS.md` (landing ledger, newest first). The repo outranks any
   chat attachment; lint-docs covers them.
 - `tools/lint-docs.mjs` fails the build on drift (dead refs, stale md5, trait-count disagreement, retired rules stated as live, a broken law-to-probe table).
