@@ -32,9 +32,27 @@ function facts() {
   const tools = [...list(path.join(root, 'tools'), /\.mjs$/),
     ...list(path.join(root, 'tools', 'doc'), /\.mjs$/).map(x => 'doc/' + x),
     ...list(path.join(root, 'tools', 'lib'), /\.mjs$/).map(x => 'lib/' + x)];
-  const tok = p => existsSync(p) ? Math.round(readFileSync(p, 'utf8').length / 4) : 0;
+  /* THE TOKEN MODEL. chars/4 is an ESTIMATE and it is wrong for the file that dominates the budget:
+   * the canonical is dense JavaScript, so its real token cost is ~29% ABOVE chars/4 (measured with a
+   * real BPE tokenizer), while prose Markdown is within ~8%. The repo has no dependencies and no
+   * package.json (SPEC repo-organization law 7), so no tokenizer can be shipped - instead the MEASURED
+   * costs live in docs/token-costs.json, keyed by the file's md5. A measured entry is used only while
+   * its md5 still matches the file on disk; the moment the file changes, the row falls back to the
+   * estimate automatically, so a stale measurement can never be quoted as fact. */
+  let COSTS = { files: {} };
+  try { COSTS = JSON.parse(readFileSync(path.join(root, 'docs', 'token-costs.json'), 'utf8')); } catch {}
+  const md5Of = p => createHash('md5').update(readFileSync(p)).digest('hex');
+  const tokenCost = (rel) => {
+    const p = path.join(root, rel);
+    if (!existsSync(p)) return { tokens: 0, exact: false };
+    const bytes = readFileSync(p, 'utf8').length;
+    const m = (COSTS.files || {})[rel];
+    if (m && m.md5 === md5Of(p)) return { tokens: m.tokens, exact: true };
+    return { tokens: Math.round(bytes / 4), exact: false };
+  };
   const POLICY = { 'README.md': 'router only', 'AGENTS.md': 'always', 'docs/CODEMAP.md': 'before opening the canonical', 'docs/LAWS.md': 'before any sim/doc edit',
     'docs/RECIPES.md': 'adding a trait/skill/bot', 'docs/GAMES.md': 'GREP ONLY — never load whole',
+    'docs/planned/INDEX.md': 'PLANNED engine work only — the island\'s entry point',
     'docs/planned/SPEC.md': 'PLANNED engine work only', 'docs/planned/CONTRACT.md': 'PLANNED engine work only', 'docs/planned/BUILD.md': 'PLANNED engine work only' };
   const policy = { ...POLICY };
   // Handoff files: listed so their cost is visible; read one section, never whole.
@@ -46,11 +64,16 @@ function facts() {
   const walk = d => existsSync(d) ? readdirSync(d, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk(path.join(d, e.name))
     : e.name.endsWith('.md') ? [path.relative(root, path.join(d, e.name)).split(path.sep).join('/')] : []) : [];
   const unlisted = [...list(root, /\.md$/).filter(x => x !== 'STATE.md'), ...walk(path.join(root, 'docs'))].filter(x => !(x in policy)).sort();
-  const docs = Object.keys(policy).map(f => ({ file: f, policy: policy[f], approxTokens: tok(path.join(root, f)) }));
+  const docs = Object.keys(policy).map(f => {
+    const c = tokenCost(f);
+    return { file: f, policy: policy[f], approxTokens: c.tokens, exact: c.exact };
+  });
   return { canonical:'previews/spinclash-preview.html', md5, lines, stamp, baseline, baselineOk,
     labelNote, archivedBaselines: archived.length, unlisted,
     counts:{proofs:proofs.length,baselines:baselines.length,rootTools:rootTools.length,scripts:scripts.length,tools:tools.length},
-    proofs, baselines, rootTools, scripts, tools, docs, approxCanonicalTokens: Math.round(html.length/4) };
+    proofs, baselines, rootTools, scripts, tools, docs,
+    approxCanonicalTokens: tokenCost('previews/spinclash-preview.html').tokens,
+    canonicalTokensExact: tokenCost('previews/spinclash-preview.html').exact };
 }
 function render(f, cost = '~0.7k') {
   const L = [];
@@ -62,7 +85,7 @@ function render(f, cost = '~0.7k') {
   L.push(`- File: \`${f.canonical}\``); L.push(`- md5: \`${f.md5}\``);
   L.push(`- Lines: ${f.lines.toLocaleString('en-US')}`);
   L.push(`- Build stamp (\`<title>\`): \`${f.stamp}\``);
-  L.push(`- Approx token cost (chars/4): ~${f.approxCanonicalTokens.toLocaleString('en-US')}`); L.push('');
+  L.push(`- Token cost: **${f.approxCanonicalTokens.toLocaleString('en-US')}**${f.canonicalTokensExact ? ' (MEASURED with a real BPE tokenizer)' : ' (chars/4 ESTIMATE — the measured value is in docs/token-costs.json)'}`); L.push('');
   L.push('## Fingerprint baseline');
   L.push(`- Pointer: \`.qa/BASELINE\` → \`${f.baseline}\`${f.baselineOk ? '' : '  ⚠ MISSING'}`);
   L.push('- Judge: `node .qa/fingerprint.mjs --compare` (8/8 = behaviour-identical, exit 0).');
@@ -76,9 +99,14 @@ function render(f, cost = '~0.7k') {
   L.push(`- .qa/ proofs (${f.counts.proofs}): ${f.proofs.map(x => '`'+x+'`').join(' · ')}`);
   L.push(`- .qa/ baselines (${f.counts.baselines}): ${f.baselines.map(x => '`'+x+'`').join(' · ')}`);
   L.push('- Probe registry: `tools/manifest.json` — every proof and tool in one list: what it asserts, whether the battery runs it, whether a law row may cite it, whether an agent may run it. Read it before running anything; `tools/lib/manifest.mjs` loads it and checks it is complete.'); L.push('');
-  L.push('## Documentation cost (chars/4 estimate)');
-  L.push('| file | ~tokens | read policy |'); L.push('|---|---:|---|');
-  for (const d of f.docs) L.push(`| ${d.file} | ${d.approxTokens.toLocaleString('en-US')} | ${d.policy} |`); L.push('');
+  L.push('## Documentation cost');
+  L.push('**MEASURED** = counted with a real BPE tokenizer (see `docs/token-costs.json` for the method). **estimate** = the');
+  L.push('`chars/4` heuristic, which is accurate for prose Markdown but ~29% LOW for dense code. A measured');
+  L.push('number is used only while the file it describes is unchanged; otherwise the row falls back to the');
+  L.push('estimate, so a stale figure is never presented as fact.');
+  L.push('');
+  L.push('| file | tokens | basis | read policy |'); L.push('|---|---:|---|---|');
+  for (const d of f.docs) L.push(`| ${d.file} | ${d.approxTokens.toLocaleString('en-US')} | ${d.exact ? 'measured' : 'estimate'} | ${d.policy} |`); L.push('');
   L.push('## Design state (canonical source: LAWS.md; history: GAMES.md §Current state)');
   L.push('- The current laws, the weapon-trait count and the law-to-probe table are design facts, NOT generated here.');
   L.push('  `docs/LAWS.md` is the sole authority for them; the open queue and owner quotes are in `docs/GAMES.md` §Current state. `tools/lint-docs.mjs` checks the count and the table.');

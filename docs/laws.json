@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "note": "MACHINE-READABLE COMPANION to docs/LAWS.md (the SOLE AUTHORITY for the current laws). Authored once; tools/lint-docs.mjs VERIFIES it against the LAWS.md law-to-probe table on every run, so it cannot drift: every id must exist in the table, every status must agree, every probe anchor must agree, and every retired rule's `since` tag must appear in LAWS.md. The retiredRules[] vocabularies below are the machine form of the retired rules LAWS.md states in prose - they replace the five hard-coded English phrases that used to live inside the lint (a list of past bugs, which any rewording escaped).",
+  "laws": [
+    {
+      "id": "C1",
+      "status": "partial",
+      "retired": [
+        "R1"
+      ]
+    },
+    {
+      "id": "C2",
+      "status": "partial",
+      "retired": []
+    },
+    {
+      "id": "C3",
+      "status": "partial",
+      "retired": []
+    },
+    {
+      "id": "C4",
+      "status": "probed",
+      "retired": []
+    },
+    {
+      "id": "C5",
+      "status": "probed",
+      "retired": []
+    },
+    {
+      "id": "C6",
+      "status": "partial",
+      "retired": []
+    },
+    {
+      "id": "S1",
+      "status": "partial",
+      "retired": [
+        "R1"
+      ]
+    },
+    {
+      "id": "S2",
+      "status": "partial",
+      "retired": []
+    },
+    {
+      "id": "S3",
+      "status": "partial",
+      "retired": []
+    },
+    {
+      "id": "S4",
+      "status": "partial",
+      "retired": []
+    },
+    {
+      "id": "S5",
+      "status": "probed",
+      "retired": []
+    },
+    {
+      "id": "S6",
+      "status": "partial",
+      "retired": []
+    },
+    {
+      "id": "B1",
+      "status": "probed",
+      "retired": []
+    },
+    {
+      "id": "B2",
+      "status": "probed",
+      "retired": []
+    },
+    {
+      "id": "B3",
+      "status": "partial",
+      "retired": []
+    },
+    {
+      "id": "B4",
+      "status": "partial",
+      "retired": []
+    },
+    {
+      "id": "B5",
+      "status": "partial",
+      "retired": []
+    },
+    {
+      "id": "U1",
+      "status": "probed",
+      "retired": []
+    },
+    {
+      "id": "G1",
+      "status": "partial",
+      "retired": []
+    },
+    {
+      "id": "G2",
+      "status": "partial",
+      "retired": []
+    },
+    {
+      "id": "G3",
+      "status": "partial",
+      "retired": []
+    },
+    {
+      "id": "T1",
+      "status": "probed",
+      "retired": []
+    },
+    {
+      "id": "T2",
+      "status": "partial",
+      "retired": []
+    },
+    {
+      "id": "T3",
+      "status": "partial",
+      "retired": []
+    },
+    {
+      "id": "X1",
+      "status": "probed",
+      "retired": []
+    }
+  ],
+  "retiredRules": {
+    "R1": {
+      "since": "allcut-r62",
+      "what": "the projectile-spine rule (ranged weapons deal no spine damage) and the shield's tangential no-damage clause - shot law 7s was its last remnant",
+      "subjects": [
+        "shield",
+        "launchers?",
+        "ranged",
+        "projectiles?",
+        "spines?"
+      ],
+      "negations": [
+        "cannot",
+        "can not",
+        "can't",
+        "never",
+        "deals? no",
+        "does not",
+        "doesn't",
+        "no",
+        "zero",
+        "none"
+      ],
+      "damages": [
+        "damage",
+        "damaging",
+        "cuts?",
+        "hurts?",
+        "hits?"
+      ],
+      "authorityMustState": true,
+      "note": "A line stating a retired form is an ERROR unless the line itself marks it as history (retired / was / no longer / used to / instead / since allcut-r62). LAWS.md must also state the LIVE form affirmatively - a subject plus a damage verb with no negation - so deleting the live rule is caught too, not only re-adding the old one."
+    }
+  },
+  "staleCounts": [
+    {
+      "text": "Seven shot-law checks",
+      "since": "allcut-r62",
+      "why": "shot law 7s was retired; six shot laws are live (1s-6s)"
+    },
+    {
+      "text": "Seven shot laws",
+      "since": "allcut-r62",
+      "why": "shot law 7s was retired; six shot laws are live (1s-6s)"
+    }
+  ],
+  "budgets": {
+    "canonicalCommentChars": 180000,
+    "note": "The canonical's comment layer may not exceed this many characters. It was 195,690 before the 2026-11-19 audit (audit finding W-01: 47% of the file, 49,329 tokens, and the file is loaded IN FULL by every agent that touches the game). The budget exists so the layer cannot re-grow: the WHY stays, the archaeology does not. The audit estimated ~56KB of removable archaeology; the realised removal is ~16KB, because most of the bytes in an owner/date-bearing comment are the LIVE LAW attached to the attribution, and the owner's ruling keeps the law.",
+    "since": "2026-11-19 audit"
+  }
+}

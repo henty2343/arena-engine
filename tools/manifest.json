@@ -276,7 +276,64 @@
       "citable": false,
       "runnable": false,
       "ownerOnly": true,
-      "about": "The roster/tooling ingester - it writes back. The owner's alone."
+      "about": "The weapon-art merge gate - DORMANT (superseded by the in-file poly builder) and OWNER-GATED: it exits 2 unless the owner passes --owner-go (or sets ARENA_OWNER_GO=1). It can WRITE the canonical with --into, so an agent never runs it."
+    },
+    {
+      "name": "run-battery",
+      "file": "scripts/run-battery.mjs",
+      "exit": 0,
+      "battery": false,
+      "citable": false,
+      "runnable": true,
+      "about": "THE ONE-COMMAND PROOF BATTERY: runs every battery:true probe in order, judges each against the exit code the registry declares, writes a JSON verdict and exits 0 (all matched) / 1 (an unexpected code) / 2 (the canonical moved). It is what `tools/verify.mjs --battery` calls; the step list comes from this same registry, so it is not kept twice."
+    },
+    {
+      "name": "lint-controls",
+      "file": "tools/lint-controls.mjs",
+      "exit": 0,
+      "battery": false,
+      "citable": false,
+      "runnable": true,
+      "tier": "quick",
+      "about": "NEGATIVE CONTROLS for the docs lint: copies the tree to a temp dir, applies one mutation per check and asserts the lint REPORTS IT. A lint that never fails is not a lint (RUNBOOK s8). The working tree is never touched."
+    },
+    {
+      "name": "gen-tree",
+      "file": "tools/gen-tree.mjs",
+      "args": [
+        "--check"
+      ],
+      "exit": 0,
+      "battery": false,
+      "citable": false,
+      "runnable": true,
+      "tier": "quick",
+      "about": "The GENERATED repository tree: the structure is read from the filesystem, so a hand-written tree cannot go stale (docs/planned/SPEC.md had one that claimed five deleted directories). --check fails if the tree in SPEC.md is out of date."
+    },
+    {
+      "name": "canon-comments",
+      "file": "tools/canon-comments.mjs",
+      "args": [
+        "--audit"
+      ],
+      "exit": 0,
+      "battery": false,
+      "citable": false,
+      "tier": "quick",
+      "about": "The canonical's comment layer census: how many comments, how many characters, and how much of it is decision archaeology (owner quotes, who/when, superseded approaches)."
+    },
+    {
+      "name": "docs-archaeology",
+      "file": "tools/docs-archaeology.mjs",
+      "args": [
+        "docs/GAMES.md",
+        "--check"
+      ],
+      "exit": 0,
+      "battery": false,
+      "citable": false,
+      "tier": "quick",
+      "about": "The design record's prose carries no decision archaeology: no owner quotes, no who/when, no record of rejected approaches (the same rule catalogue the canonical's comment layer uses)."
     }
   ]
 }

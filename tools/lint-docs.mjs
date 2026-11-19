@@ -1,19 +1,40 @@
 #!/usr/bin/env node
 /* tools/lint-docs.mjs — documentation consistency gate (machine-readable).
  * Catches: dead live refs, stale canonical md5 slots, trait-count disagreement, retired rules stated
- * as live, missing baseline, a broken law-to-probe table (B3D: docs/LAWS.md is the sole authority). Usage: node tools/lint-docs.mjs [--json]. Exit 0 = no errors; 1 = errors.
- * Scope: operational docs lint fully; GAMES.md is the archive (only §Current state linted for live refs);
+ * as live, missing baseline, a broken law-to-probe table (B3D: docs/LAWS.md is the sole authority).
+ * Usage: node tools/lint-docs.mjs [--json]. Exit 0 = no errors; 1 = errors.
+ * Scope: operational docs lint fully; GAMES.md is the record (only §Current state linted for live refs);
  * fp-*.json + scratch/ artifacts are exempt (history). Read-only, bare Node.
+ *
+ * THE RULE OF THIS FILE: a check must ask a question about a FACT, of a FACT. Never a check that
+ * remembers a BUG. The five hard-coded English phrases this file used to match for retired rules
+ * were a description of past defects, so any rewording of the prose escaped them - and a live
+ * contradiction (the shield's retired "cannot damage" rule, docs/GAMES.md:84) survived two audits.
+ * The vocabulary now lives in docs/laws.json, beside the laws it belongs to, and is verified against
+ * docs/LAWS.md on every run.
  */
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { citableProbes, manifestErrors } from './lib/manifest.mjs';
+import { wrappable, isTableRow, DEFAULT_MAX } from './lib/reflow.mjs';
+import { scan } from './lib/strip-comments.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [], warnings = [];
 const err = m => errors.push(m); const warn = m => warnings.push(m);
 const rd = p => readFileSync(path.join(root, p), 'utf8');
+
+/* The operational docs: the ones an agent loads and the lint reads whole. docs/planned/* are in the
+ * list (they are agent-facing) but are EXEMPT from the retired-rule check - they describe a target
+ * platform, not the shipped game. */
+const operational = ['README.md','AGENTS.md','STATE.md','docs/CODEMAP.md','docs/LAWS.md','docs/RECIPES.md',
+  'docs/planned/SPEC.md','docs/planned/CONTRACT.md','docs/planned/BUILD.md','.github/copilot-instructions.md'];
+/* The docs whose text states what is TRUE RIGHT NOW: a retired rule stated in one of these is an error. */
+const liveDocs = ['README.md','AGENTS.md','STATE.md','docs/CODEMAP.md','docs/LAWS.md','docs/RECIPES.md',
+  'docs/handoff/HANDOFF.md','docs/handoff/RUNBOOK.md'];
+const refRe = /`([A-Za-z0-9_./\-]+\.(?:mjs|md|json|html|ts|js|svg|csv|txt|sh))`|\]\(([^)\s]+)\)/g;
+
 const cbuf = readFileSync(path.join(root, 'previews', 'spinclash-preview.html'));
 const md5 = createHash('md5').update(cbuf).digest('hex');
 const basePtr = path.join(root, '.qa', 'BASELINE');
@@ -24,12 +45,29 @@ else { const b = readFileSync(basePtr,'utf8').trim();
 // file that exists. Without this the registry goes stale silently: a new proof nobody registers is
 // invisible to the battery AND to the law table.
 for (const e of manifestErrors(root)) err(e);
-// The record is docs/GAMES.md (the docs/history era glob is gone, #808); its newest dated entry
+// The record is docs/GAMES.md (the docs/history era glob is gone, #808); its NEWEST dated entry
 // must carry the current canonical md5.
 const RECORD_SET = ['docs/GAMES.md'];
-if (!RECORD_SET.some(f => existsSync(path.join(root, f)) && rd(f).includes(md5)))
-  err(`docs/GAMES.md does not carry the current canonical md5 ${md5} (stale slot?)`);
 const games = rd('docs/GAMES.md');
+/* The md5 slot is scoped to the NEWEST dated entry of the record, not the whole file: a whole-file
+ * substring search is satisfied by an old entry, a quoted message or a historical note, so it can
+ * never fire on a genuinely stale build. (Audit finding D-13.) */
+function newestDatedEntry(text) {
+  const lines = text.split('\n');
+  let start = -1;
+  /* The LAST dated heading is the newest entry. This used to take the FIRST match, which was
+   * correct only while the record carried exactly one dated entry - with two, the md5 slot was
+   * checked against the OLDER one and a fresh landing could never satisfy it. */
+  for (let i = 0; i < lines.length; i++) if (/^## \d{4}-\d{2}-\d{2}\b/.test(lines[i])) start = i;
+  if (start < 0) return null;
+  let end = lines.length;
+  for (let i = start + 1; i < lines.length; i++) if (/^## /.test(lines[i])) { end = i; break; }
+  return lines.slice(start, end).join('\n');
+}
+const newestEntry = newestDatedEntry(games);
+if (!newestEntry) err('docs/GAMES.md has no dated entry (## YYYY-MM-DD ...) to carry the canonical md5 slot');
+else if (!newestEntry.includes(md5))
+  err(`docs/GAMES.md's NEWEST dated entry does not carry the current canonical md5 ${md5} (stale slot?)`);
 const GAMES_BUDGET_TOKENS = 40000; // RUNBOOK s10: over budget = trim the next doc patch (chars/4, as STATE.md)
 { const gt = Math.round(games.length / 4);
   if (gt > GAMES_BUDGET_TOKENS) warn(`docs/GAMES.md is ~${gt} tokens, over the ${GAMES_BUDGET_TOKENS} budget - trim it (RUNBOOK s10)`); }
@@ -60,25 +98,142 @@ else {
       err(`docs/GAMES.md:${line} (§Current state) says "${mm[0]}" but docs/LAWS.md pins ${canonicalTraits} of 22 — LAWS wins, fix the record`);
     }
   }
+  /* The count is pinned in ONE place only: docs/LAWS.md (RUNBOOK s8). docs/GAMES.md does not carry it -
+   * the copy moved to LAWS at #747 while the old rule still told agents to bump both. A second copy is
+   * a second thing to drift, so its presence is now an error rather than a no-op. (D-06) */
+  if (/(\d+)\s+of\s+22\s+weapon\s+traits\s+landed/.test(games))
+    err('docs/GAMES.md carries the weapon-trait count - it is pinned in docs/LAWS.md ONLY (the sole authority). Remove the copy; do not add a second one.');
 }
-const retiredSignatures = ['spine never damages','deals no damage and emits no hit event',
-  'zero melee hits by projectile weapons','Seven shot-law checks','The projectile-rule exception (owner 2026-10-19)'];
-function checkRetired(text, label) {
-  text.split('\n').forEach((line,i) => {
-    for (const sig of retiredSignatures)
-      if (line.includes(sig) && !/retired|RETIRED|was |no longer|former|history/i.test(line))
-        err(`${label} (line ${i+1}) states a retired rule as live: "${sig}"`);
+
+/* THE RETIRED-RULE CHECK IS DERIVED FROM A MACHINE-READABLE SOURCE, NOT FROM A LIST OF PAST BUGS.
+ * It used to match five hard-coded English phrases copied from the text as it stood when each bug was
+ * found - so any rewording escaped it, and a live contradiction (the shield's retired "cannot damage"
+ * rule, docs/GAMES.md:84) survived two audits. The vocabulary now lives in docs/laws.json, beside the
+ * laws it belongs to, and is verified against docs/LAWS.md on every run (see the laws.json check below).
+ * The check has two halves:
+ *   NEGATIVE  a current-state section must not state a retired form affirmatively;
+ *   POSITIVE  docs/LAWS.md (the authority) must state the LIVE form affirmatively.
+ * The second half matters as much as the first: it catches the live rule being deleted. */
+const lawsPath = path.join(root, 'docs', 'laws.json');
+let LAWREG = null;
+if (!existsSync(lawsPath)) err('docs/laws.json is missing - the retired-rule check is derived from it');
+else {
+  try { LAWREG = JSON.parse(readFileSync(lawsPath, 'utf8')); }
+  catch (e) { err('docs/laws.json is not valid JSON: ' + e.message); }
+}
+/* A PARAGRAPH (a blank-line-separated block) is the unit a reader sees - and the unit docreflow
+ * operates on. Every MARKER EXEMPTION below is therefore evaluated over the whole paragraph, not
+ * over one line: docreflow is a whitespace-only rewrap, so a "retired"/"was" marker that used to sit
+ * on the same line as the claim it qualifies can legitimately move to a neighbouring line of the
+ * same paragraph. The PATTERN scope deliberately stays line-tight (no new false positives); only the
+ * exemption scope widened (no new false errors). */
+function paragraphs(text) {
+  const paras = [];
+  let cur = null;
+  text.split('\n').forEach((l, i) => {
+    if (!l.trim()) { if (cur) { paras.push(cur); cur = null; } return; }
+    if (!cur) cur = { start: i + 1, lines: [], text: '' };
+    cur.lines.push(l);
+    cur.text += (cur.text ? '\n' : '') + l;
   });
+  if (cur) paras.push(cur);
+  return paras;
+}
+
+const RETIRED_MARK = /\b(retired|retirement|formerly|former|no longer|not any more|used to|instead|history|since allcut-r62)\b|\bwas\b/i;
+function rulePattern(r) {
+  const subj = r.subjects.join('|'), neg = r.negations.join('|'), dam = r.damages.join('|');
+  /* The gaps matter. The negation must sit CLOSE to the damage verb (<=14 chars, no sentence
+   * break): "the shield cannot damage" is the retired claim; "the shield cannot do is WIN: its
+   * damage and spin are the lowest" is a statement about BALANCE and must not match. */
+  return {
+    negative: new RegExp('\\b(' + subj + ')\\b[^.\\n]{0,50}?\\b(' + neg + ')\\b[^.\\n]{0,14}?\\b(' + dam + ')\\b', 'i'),
+    positive: new RegExp('\\b(' + subj + ')\\b[^.\\n]{0,80}?\\b(' + dam + ')\\b', 'i'),
+  };
+}
+function checkRetired(text, label) {
+  if (!LAWREG || !LAWREG.retiredRules) return;
+  for (const [rid, r] of Object.entries(LAWREG.retiredRules)) {
+    const pat = rulePattern(r);
+    for (const para of paragraphs(text)) {
+      for (const line of para.lines) {
+        if (!pat.negative.test(line)) continue;
+        if (RETIRED_MARK.test(para.text)) break;                 // the PARAGRAPH marks it as history
+        err(`${label} (line ${para.start}) states a retired rule as live (${rid}, retired at ${r.since}): ${r.what}`);
+      }
+    }
+  }
 }
 checkRetired(currentState, 'GAMES §Current state');
 if (!currentState.includes('LAWS.md')) err('GAMES §Current state does not point to LAWS.md (the current-laws quick reference)');
-if (existsSync(path.join(root,'docs/LAWS.md'))) checkRetired(rd('docs/LAWS.md'), 'docs/LAWS.md');
+for (const f of liveDocs) if (existsSync(path.join(root, f))) checkRetired(rd(f), f);
+/* POSITIVE half: the authority must state the live form of every rule that has a retired form. */
+if (LAWREG && LAWREG.retiredRules && existsSync(path.join(root,'docs/LAWS.md'))) {
+  for (const [rid, r] of Object.entries(LAWREG.retiredRules)) {
+    if (!r.authorityMustState) continue;
+    const pat = rulePattern(r);
+    const stated = lawsText.split('\n').some(line => pat.positive.test(line) && !pat.negative.test(line));
+    if (!stated) err(`docs/LAWS.md does not state the LIVE form of ${rid} (${r.what}) - the authority must state what is true, not only what was retired`);
+  }
+}
+/* Stale counts: a retired law leaves a number behind. The retired counts live in laws.json too. */
+if (LAWREG && LAWREG.staleCounts) {
+  const scope = [['docs/GAMES.md', currentState], ...liveDocs.map(f => [f, rd(f)])];
+  for (const [f, text] of scope) {
+    if (!text) continue;
+    for (const c of LAWREG.staleCounts) {
+      for (const para of paragraphs(text)) {
+        if (!para.lines.some(l => l.includes(c.text))) continue;
+        if (RETIRED_MARK.test(para.text)) continue;
+        err(`${f}:${para.start} quotes a stale count "${c.text}" (${c.since}): ${c.why}`);
+      }
+    }
+  }
+}
+
+/* THE LAW-TO-PROBE TALLY IS DERIVED, NEVER HAND-COPIED. It used to be quoted in prose
+ * (docs/handoff/RUNBOOK.md said 8/16/1 when the table said 8 probed / 17 partial / 0 owner-run only).
+ * Any document that quotes a tally is now compared against the derived one. */
+(function lintTally() {
+  const start = lawsText.indexOf('## Law-to-probe table');
+  if (start < 0) return;
+  const rows = lawsText.slice(start).split('\n').filter(l => /^\|\s*[A-Z]\d+\s*\|/.test(l));
+  const tally = { probed: 0, partial: 0, 'owner-run only': 0, unprobed: 0 };
+  for (const r of rows) {
+    const c = r.split('|').map(x => x.trim());
+    if (tally[c[4]] !== undefined) tally[c[4]]++;
+  }
+  const total = rows.length;
+  const derived = `probed ${tally.probed}, partial ${tally.partial}, owner-run only ${tally['owner-run only']}, unprobed ${tally.unprobed}`;
+  const scope = [['docs/GAMES.md', currentState], ...liveDocs.map(f => [f, rd(f)])];
+  for (const [f, text] of scope) {
+    if (!text) continue;
+    for (const para of paragraphs(text)) {
+      const mm = para.text.match(/(\d+)\s+probed\b[^\n]*?(\d+)\s+partial\b[^\n]*?(\d+)\s+owner-run only\b[^\n]*?(\d+)\s+unprobed\b/);
+      if (!mm) continue;
+      if (RETIRED_MARK.test(para.text)) continue;
+      const got = { probed: +mm[1], partial: +mm[2], 'owner-run only': +mm[3], unprobed: +mm[4] };
+      if (got.probed !== tally.probed || got.partial !== tally.partial ||
+          got['owner-run only'] !== tally['owner-run only'] || got.unprobed !== tally.unprobed)
+        err(`${f}:${para.start} quotes the law tally "${mm[0].trim()}" but the table in docs/LAWS.md says ${derived} (${total} rows). Read the table; do not carry a tally.`);
+    }
+  }
+})();
+
 const PLANNED = new Set(['package.json','render.json','targets.ts','characters.json','tasks.json',
   'launch.json','settings.json','extensions.json','doctor.mjs','generate.mjs','inspect.mjs']);
 const PLANNED_DIR = /^(packages|apps|games|output|assets\/pools|assets\/fonts|\.vscode)\//;
 const HIST = /retired|purged|recover|git show|docs-precleanup|item3-closed|never committed|unrecoverable|former|removed|deleted|was\b|tombstone|archived|RETIRED|DORMANT|reverted|parked|pruned|gone|no longer|since retired/i;
-const SEARCH_DIRS = ['', '.qa','docs','docs/planned','tools','scripts','scratch','previews'];
-function resolves(ref) {
+/* A path reference must resolve WHERE IT IS WRITTEN. The rule:
+ *   - a path with a slash is repo-root relative (and a leading ./ or ../ is honoured as written);
+ *   - a BARE name may name a TOOL (the repo's tool directories) or a file in the referrer's own
+ *     directory or at the repo root;
+ *   - a bare name may NOT name a DOCUMENT under docs/ - documents must carry their directory.
+ * The old resolver accepted a bare name found ANYWHERE in the tree, which is why 32 references to the
+ * relocated platform docs (bare `CONTRACT.md`, `BUILD.md`, `SPEC.md`) went unnoticed - `cat
+ * CONTRACT.md` from the repo root fails. (D-05) */
+const TOOL_DIRS = ['.qa','tools','tools/doc','tools/lib','scripts','previews'];
+function resolves(ref, fromDir) {
   const clean = ref.split('#')[0]; if (!clean) return true;
   if (PLANNED.has(path.basename(clean)) || PLANNED_DIR.test(clean)) return true;
   if (clean.includes('/')) {
@@ -86,22 +241,25 @@ function resolves(ref) {
     for (const d of ['docs','tools']) if (existsSync(path.join(root,d,clean))) return true;
     return false;
   }
-  for (const d of SEARCH_DIRS) if (existsSync(path.join(root,d,clean))) return true;
-  return false;
+  if (existsSync(path.join(root, clean))) return true;                            // repo root
+  if (fromDir && existsSync(path.join(root, fromDir, clean))) return true;        // the referrer's own directory
+  for (const d of TOOL_DIRS) if (existsSync(path.join(root, d, clean))) return true;  // tools by short name
+  return false;                                                                    // a DOCUMENT must carry its directory
 }
-const refRe = /`([A-Za-z0-9_./\-]+\.(?:mjs|md|json|html|ts|js|svg|csv|txt|sh))`|\]\(([^)\s]+)\)/g;
-const operational = ['README.md','AGENTS.md','STATE.md','docs/CODEMAP.md','docs/LAWS.md','docs/RECIPES.md','docs/planned/SPEC.md','docs/planned/CONTRACT.md','docs/planned/BUILD.md'];
 function lintRefs(f, text, off=0) {
-  text.split('\n').forEach((line,i) => {
-    for (const mm of line.matchAll(refRe)) {
-      const ref = mm[1]||mm[2];
-      if (!ref || /^(https?:|#|mailto:)/.test(ref)) continue;
-      if (/^fp-.*\.json$/.test(path.basename(ref)) || ref.startsWith('scratch/')) continue;
-      if (resolves(ref)) continue;
-      if (HIST.test(line)) continue;
-      err(`${f}:${off+i+1} references missing path: ${ref}`);
+  const fromDir = path.dirname(f);
+  for (const para of paragraphs(text)) {
+    for (const line of para.lines) {
+      for (const mm of line.matchAll(refRe)) {
+        const ref = mm[1]||mm[2];
+        if (!ref || /^(https?:|#|mailto:)/.test(ref)) continue;
+        if (/^fp-.*\.json$/.test(path.basename(ref)) || ref.startsWith('scratch/')) continue;
+        if (resolves(ref, fromDir)) continue;
+        if (HIST.test(para.text)) continue;                       // the PARAGRAPH marks it as history
+        err(`${f}:${off+para.start} references missing path: ${ref}`);
+      }
     }
-  });
+  }
 }
 for (const f of operational) if (existsSync(path.join(root,f))) lintRefs(f, rd(f));
 // Section pointers ("`FILE.md` §Heading words") must name a heading that exists in FILE (Phase I).
@@ -112,19 +270,44 @@ function lintSectionPointers(f, text) {
       const target = ['', 'docs/'].map(d => d + mm[1]).find(p => existsSync(path.join(root, p)))
         || (mm[1].includes('/') ? null : ['docs/' + mm[1], mm[1]].find(p => existsSync(path.join(root, p))));
       if (!target) continue;                                  // unresolved file: lintRefs reports it
-      if (HIST.test(line)) continue;
-      const heads = rd(target).split('\n').filter(l => /^#{1,6}\s/.test(l)).map(l => l.toLowerCase());
-      const words = mm[2].trim().split(/\s+/).slice(0, 4);
-      let ok = false;
-      for (let n = words.length; n >= 1 && !ok; n--) {
-        const needle = words.slice(0, n).join(' ').toLowerCase();
-        ok = heads.some(h => h.includes(needle));
+      /* NO HIST EXEMPTION HERE, unlike the path check. A §-pointer is a PRECISE claim - "this file,
+       * this section" - so it is dead whether or not the sentence around it talks about history. The
+       * two dead `docs/LAWS.md` §Retired rules pointers in docs/GAMES.md said "Retired rule text:",
+       * which the path check's HIST exemption forgave; a pointer is a pointer. */
+      /* A §-pointer is resolved by PREFIX against the target's headings: the pointer must name the
+       * start of a real heading. The old rule ("any heading CONTAINS the first 1-4 words") was so
+       * loose that "§Weapon art table" passed because some heading merely contained the word
+       * "weapon" - which is why the two dead `docs/LAWS.md` §Retired rules pointers were never
+       * caught, and why the law table's own anchors were the only thing being checked.
+       * Two rules keep it honest without being pedantic:
+       *   - the pointer must match at least TWO leading heading words (a one-word pointer is allowed
+       *     only if it is one word long: "§Purpose");
+       *   - trailing prose after the section name is not part of the pointer ("§Purpose before any
+       *     tradeoff" means "§Purpose"), so a connective word ends the pointer. */
+      const heads = rd(target).split('\n').filter(l => /^#{1,6}\s/.test(l))
+        .map(l => l.replace(/^#{1,6}\s+/, '').toLowerCase().split(/[^a-z0-9-]+/).filter(Boolean));
+      let words = mm[2].trim().split(/\s+/).map(w => w.replace(/[^A-Za-z0-9-]/g, '')).filter(Boolean).slice(0, 4);
+      const CONNECTIVE = new Set(['and','or','but','that','which','before','after','when','if','so','then','because',
+        'while','since','until','unless','whether','into','onto','with','without','from','for','to','at','in','on','of',
+        'as','by','is','are','was','were','be','been','being','not','no','never','always','also','even','just','only','per',
+        'via','versus','vs','override','overrides','everything','else','come','first','read','has','have','had']);
+      for (let i = 1; i < words.length; i++) if (CONNECTIVE.has(words[i].toLowerCase())) { words = words.slice(0, i); break; }
+      if (!words.length) continue;
+      let best = 0;
+      for (const h of heads) {
+        let k = 0;
+        while (k < words.length && k < h.length && h[k] === words[k].toLowerCase()) k++;
+        if (k > best) best = k;
       }
+      const ok = best >= 2 || (words.length === 1 && best === 1);
       if (!ok) err(`${f}:${i + 1} points to "${mm[1]} §${words.join(' ')}" but ${target} has no such heading`);
     }
   });
 }
 for (const f of operational) if (existsSync(path.join(root,f))) lintSectionPointers(f, rd(f));
+/* The record's §Current state carries section pointers too, and two of them pointed at a
+ * docs/LAWS.md section that was deleted at #806. The pointer lint now covers it. (D-04) */
+lintSectionPointers('docs/GAMES.md', currentState);
 lintRefs('docs/GAMES.md', currentState);
 if (existsSync(path.join(root,'AGENTS.md'))) {
   if (!rd('README.md').includes('AGENTS.md')) warn('README does not point to the AGENTS.md entry point');
@@ -169,6 +352,9 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
     if (existsSync(path.join(root,f)) && /Approx token cost:\s*~?\d/.test(rd(f).split('\n').slice(0, 12).join('\n')))
       err(f + ' header has a hand-typed token cost — point to STATE.md §Documentation cost instead');
 
+  /* The stale-text guard was README-only, so the same stale text could live in AGENTS.md, STATE.md or
+   * the platform docs. It now covers every always-or-often-loaded doc. (Audit finding: the guard
+   * listed ten strings but only checked one file.) */
   const staleTexts = [
     'Starting a new chat',
     'scratch/docreflow',
@@ -178,14 +364,189 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
     '9 of 22',
     '13 remaining',
     'fp-multgrow-r42.json',
-    'docs/HANDOFF.md',
-    'docs-precleanup'
+    'docs/HANDOFF.md'
   ];
-  for (const stale of staleTexts) {
-    if (readmeSlim.includes(stale)) err('README contains stale/non-router text: ' + stale);
+  for (const f of ['README.md','AGENTS.md','STATE.md','docs/CODEMAP.md','docs/LAWS.md','docs/RECIPES.md',
+                   'docs/planned/SPEC.md','docs/planned/CONTRACT.md','docs/planned/BUILD.md']) {
+    if (!existsSync(path.join(root, f))) continue;
+    const txt = rd(f);
+    for (const stale of staleTexts) {
+      if (txt.includes(stale)) {
+        const line = txt.slice(0, txt.indexOf(stale)).split('\n').length;
+        err(`${f}:${line} contains stale/non-router text: ${stale}`);
+      }
+    }
   }
+  /* docs-precleanup is a LEGITIMATE recovery tag in the platform docs, so it is checked only where it
+   * would be wrong: in README, which must stay a router. */
+  if (readmeSlim.includes('docs-precleanup')) err('README contains stale/non-router text: docs-precleanup');
 
-// B3D: the law-to-probe table in docs/LAWS.md. Anchors are checked mechanically; Status is hand-written judgement.
+/* THE PLATFORM ISLAND PROFILE. docs/planned/* describes a system with no code. Three things must
+ * hold, or an agent will believe the engine exists:
+ *   1 every file there carries a PLANNED banner;
+ *   2 no operational doc OUTSIDE the island describes a planned file as existing;
+ *   3 the island is never reachable from the always-load path without the banner saying so. */
+(function lintPlanned() {
+  const dir = 'docs/planned';
+  if (!existsSync(path.join(root, dir))) return;
+  for (const f of readdirSync(path.join(root, dir)).filter(f => f.endsWith('.md')).sort()) {
+    const rel = `${dir}/${f}`;
+    const head = rd(rel).split('\n').slice(0, 12).join('\n');
+    if (!/STATUS:.*PLANNED/i.test(head))
+      err(`${rel} has no "STATUS: PLANNED" banner in its first 12 lines - it describes code that does not exist`);
+  }
+  const outside = operational.filter(f => !f.startsWith('docs/planned/'));
+  for (const f of outside) {
+    if (!existsSync(path.join(root, f))) continue;
+    const text = rd(f);
+    text.split('\n').forEach((line, i) => {
+      for (const mm of line.matchAll(refRe)) {
+        const ref = mm[1] || mm[2];
+        if (!ref) continue;
+        const base = path.basename(ref.split('#')[0]);
+        if (!PLANNED.has(base) && !PLANNED_DIR.test(ref)) continue;
+        if (/planned|phase[ -]?0|target|does not exist|do not exist|not implemented|future engine|do not run|does not run|no engine code|no\s+.?package\.json/i.test(line)) continue;
+        err(`${f}:${i + 1} mentions the PLANNED path "${ref}" without marking it as planned - the engine does not exist yet`);
+      }
+    });
+  }
+})();
+
+/* THE PROSE LINE CAP. The repo already stated the policy - "Prose lines stay <= ~300 chars where
+ * practical (generated tables/data exempt)" (docs/planned/SPEC.md) - and enforced it NOWHERE: the only
+ * cap was a 3,000-BYTE limit on one file, so 257 prose lines across the documentation were over the
+ * stated limit, the worst at 2,699 characters. That is a CORRECTNESS rule, not a style rule: the
+ * repository's premise is "grep the record, do not read it", and a grep hit on a 2,699-char line costs
+ * ~2,100 tokens to answer a question worth ~20. Exempt: markdown table rows (their columns ARE the
+ * content), fenced code blocks, and the landing ledger (append-only, dated, grep-only). */
+const PROSE_CAP = 300;
+const PROSE_EXEMPT_FILES = new Set(['docs/handoff/BATCH3-STATUS.md']);
+function lintProseCap(f, text) {
+  if (PROSE_EXEMPT_FILES.has(f)) return;
+  const all = text.split('\n');
+  /* A GENERATED file is exempt: its long lines are the generator's output (a symbol index is one
+   * long line by construction), and wrapping it by hand would be undone by the next regeneration. */
+  if (/^<!-- GENERATED by /.test(all[0] || '')) return;
+  let inFence = false, inGen = false;
+  all.forEach((l, i) => {
+    if (/^\s*```/.test(l)) { inFence = !inFence; return; }
+    if (inFence) return;
+    if (/^<!-- BEGIN GENERATED /.test(l)) { inGen = true; return; }
+    if (/^<!-- END GENERATED /.test(l)) { inGen = false; return; }
+    if (inGen) return;                                     // a generated block: not prose either
+    if (isTableRow(l)) return;                            // a table row is data, not prose
+    if (l.length <= PROSE_CAP) return;
+    /* Two verdicts, one source of truth: if tools/lib/reflow.mjs CAN split the line, it is an ERROR
+     * (run docreflow - a tool fixes it); if it cannot, the line resists wrapping and needs an
+     * AUTHOR - a warning, so the gate never blocks on something no tool can solve. */
+    if (wrappable(l, PROSE_CAP))
+      err(`${f}:${i + 1} is ${l.length} chars, over the ${PROSE_CAP}-char prose cap - run \`node tools/doc/docreflow.mjs ${f}\` (whitespace-only)`);
+    else
+      warn(`${f}:${i + 1} is ${l.length} chars and RESISTS wrapping (dense marked spans) - it needs an author to shorten it`);
+  });
+}
+for (const f of operational) if (existsSync(path.join(root, f))) lintProseCap(f, rd(f));
+lintProseCap('docs/GAMES.md', games);
+for (const f of ['docs/handoff/HANDOFF.md', 'docs/handoff/RUNBOOK.md'])
+  if (existsSync(path.join(root, f))) lintProseCap(f, rd(f));
+
+/* THE CANONICAL COMMENT BUDGET (audit finding W-01; owner ruling 2026-11-19). The canonical is
+ * loaded IN FULL by every agent that touches the game, and its comment layer was 47% of the file -
+ * 49,329 tokens, a third of which was decision archaeology (owner quotes, who/when, and the record
+ * of approaches that were rejected). The owner's ruling was explicit: "you are free to remove and
+ * delete all of that, an agent doesnt need to know it." The budget exists so the layer cannot
+ * re-grow: the WHY stays, the archaeology does not. The number lives in docs/laws.json, next to the
+ * other machine-readable facts, so there is exactly one copy of it. */
+if (LAWREG && LAWREG.budgets && LAWREG.budgets.canonicalCommentChars) {
+  const budget = LAWREG.budgets.canonicalCommentChars;
+  const canonPath = path.join(root, 'previews/spinclash-preview.html');
+  if (existsSync(canonPath)) {
+    const html = readFileSync(canonPath, 'utf8');
+    let chars = 0, spans = 0;
+    for (const m of html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)) {
+      for (const c of scan(m[1])) { spans++; chars += m[1].slice(c.s + 2, c.kind === 'line' ? c.e : c.e - 2).length; }
+    }
+    if (chars > budget)
+      err(`the canonical's comment layer is ${chars} chars over the ${budget}-char budget (${spans} comments) - the WHY stays, the archaeology does not; run tools/canon-comments.mjs --audit`);
+    else
+      warn(`the canonical's comment layer is ${chars} chars of the ${budget}-char budget (${spans} comments)`);
+  }
+}
+
+/* THE TOKEN-COST REGISTRY. docs/token-costs.json records MEASURED token counts (a real BPE tokenizer),
+ * each keyed by the md5 of the file it describes, because the repo has no dependencies and so cannot
+ * ship a tokenizer. tools/gen-state.mjs uses a measured count only while its md5 matches; a file that
+ * has moved falls back to the chars/4 estimate automatically. A recorded measurement that no longer
+ * matches its file is therefore a stale number nobody is using - the lint says so, so it can be
+ * dropped or re-measured instead of lingering. */
+(function lintTokenCosts() {
+  const p = path.join(root, 'docs', 'token-costs.json');
+  if (!existsSync(p)) { warn('docs/token-costs.json is missing - the doc token costs fall back to the chars/4 estimate'); return; }
+  let reg;
+  try { reg = JSON.parse(readFileSync(p, 'utf8')); } catch (e) { err('docs/token-costs.json is not valid JSON: ' + e.message); return; }
+  for (const [rel, m] of Object.entries(reg.files || {})) {
+    const fp = path.join(root, rel);
+    if (!existsSync(fp)) { warn(`docs/token-costs.json records ${rel}, which no longer exists - drop the entry`); continue; }
+    const now = createHash('md5').update(readFileSync(fp)).digest('hex');
+    if (now !== m.md5)
+      warn(`docs/token-costs.json: ${rel} has changed since it was measured (md5 ${String(m.md5).slice(0,8)} -> ${now.slice(0,8)}) - its row now falls back to the chars/4 estimate; re-measure or drop the entry`);
+    if (!Number.isInteger(m.tokens) || m.tokens <= 0) err(`docs/token-costs.json: ${rel} has no usable token count`);
+  }
+})();
+
+/* THE COPILOT FILE MAY POINT, NEVER DUPLICATE. It is a second entry point for a different agent; if
+ * it repeats rule text, the copy drifts and the agent follows the stale one. (Audit finding: the file
+ * was not linted at all.) */
+(function lintCopilot() {
+  const f = '.github/copilot-instructions.md';
+  if (!existsSync(path.join(root, f))) return;
+  const agents = existsSync(path.join(root,'AGENTS.md')) ? rd('AGENTS.md').toLowerCase() : '';
+  const stop = new Set(['the','and','for','with','not','you','your','that','this','into','from','only','never','must','does','when','use','its','their','them','then','than','have','will','also','each','any','all','but','can','was','are','one','two','six','ten','before','after','more','most','such','they','them','them']);
+  let n = 0;
+  rd(f).split('\n').forEach((line, i) => {
+    const t = line.trim();
+    if (!t.startsWith('- ')) return;
+    const body = t.slice(2).replace(/[`*_]/g,'').toLowerCase();
+    if (body.length < 8) return;
+    const words = body.split(/[^a-z0-9.]+/).filter(w => w.length > 3 && !stop.has(w));
+    if (!words.length) return;
+    const hit = words.filter(w => agents.includes(w)).length;
+    if (hit / words.length < 0.6)
+      err(`${f}:${i + 1} states a rule that AGENTS.md does not carry ("${t.slice(2, 70)}") - the copilot file may POINT at AGENTS.md, never duplicate it`);
+    n++;
+  });
+  if (!n) warn(`${f} carries no rule bullets - it should point at AGENTS.md and STATE.md`);
+})();
+
+/* docs/laws.json IS A VERIFIED COMPANION to docs/LAWS.md, not a second source of truth: every id must
+ * exist in the law table, every status must agree, and every retired rule's `since` tag must appear
+ * in LAWS.md. If LAWS.md changes and laws.json does not, this fails. */
+(function lintLawsRegistry() {
+  if (!LAWREG || !Array.isArray(LAWREG.laws)) return;
+  const start = lawsText.indexOf('## Law-to-probe table');
+  if (start < 0) return;
+  const table = lawsText.slice(start).split('\n')
+    .filter(l => /^\|\s*[A-Z]\d+\s*\|/.test(l))
+    .map(l => l.split('|').slice(1, -1).map(x => x.trim()));
+  const byId = new Map(table.map(c => [c[0], c]));
+  for (const l of LAWREG.laws) {
+    const row = byId.get(l.id);
+    if (!row) { err(`docs/laws.json lists law ${l.id}, which has no row in the docs/LAWS.md law table`); continue; }
+    if (row[4] !== l.status)
+      err(`docs/laws.json says ${l.id} is "${l.status}" but docs/LAWS.md says "${row[4]}" - LAWS wins`);
+  }
+  for (const c of table) if (!LAWREG.laws.some(l => l.id === c[0]))
+    err(`docs/LAWS.md law table has a row for ${c[0]} that docs/laws.json does not list`);
+  for (const [rid, r] of Object.entries(LAWREG.retiredRules || {})) {
+    if (!lawsText.includes(r.since))
+      err(`docs/laws.json retired rule ${rid} claims it was retired at "${r.since}", which docs/LAWS.md does not mention`);
+    for (const lid of r.laws || []) if (!LAWREG.laws.some(l => l.id === lid))
+      err(`docs/laws.json retired rule ${rid} names law ${lid}, which it does not list`);
+  }
+})();
+
+/* B3D: the law-to-probe table in docs/LAWS.md. Anchors are checked mechanically; Status is hand-written judgement.
+ */
 (function lintLawTable() {
   if (!lawsText) return;
   const lines = lawsText.split('\n');

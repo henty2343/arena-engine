@@ -24,12 +24,31 @@
  *     the v0.8-step1 bound of "<=6px for <=2 ticks" was FALSIFIED 2026-10-28
  *     (20.754px flail+scythe, 14.673px crossbow+katana, both visible). See
  *     measure.mjs --band-dump and the GAMES.md entry of that date.
+ *
+ * OWNER-GO GATE: this file WRITES the canonical when given --into, so it
+ * carries the same gate measure.mjs carries. Without --owner-go (or
+ * ARENA_OWNER_GO=1 in the environment) it prints a refusal and exits 2
+ * before it loads, writes or runs anything. Put --owner-go FIRST.
+ * WHO RUNS IT: the OWNER. An agent NEVER runs this file. tools/manifest.json
+ * marks it ownerOnly (audit finding D-14, 2026-11-19).
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { mkdirSync } from 'node:fs';
+
+/* OWNER-GO GATE: the first statement after the imports - nothing below has run yet (no file read,
+ * no directory creation, no write, no gauntlet, no argument parsing). */
+const OWNER_GO =
+  process.argv.includes('--owner-go') ||
+  process.env.ARENA_OWNER_GO === '1';
+
+if (!OWNER_GO) {
+  console.error('ingest.mjs is owner-only. The owner must run it with --owner-go, or set ARENA_OWNER_GO=1. Agents must not run it.');
+  process.exit(2);
+}
+
 mkdirSync('.qa', { recursive: true });
 
-const argv = process.argv.slice(2);
+const argv = process.argv.slice(2).filter(a => a !== '--owner-go');   // consumed by the OWNER_GO gate above; never reaches the flag parser
 const flags = {};
 for (let i = 0; i < argv.length; i++) if (argv[i].startsWith('--')) flags[argv[i].slice(2)] = argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[++i] : true;
 const SRC = argv[0] && !argv[0].startsWith('--') ? argv[0] : null;

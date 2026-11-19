@@ -129,9 +129,20 @@ export function manifestErrors(root) {
       if (!files.has(rel) && !TOOLS_NOT_REGISTERED.has(rel)) errs.push(`${MANIFEST_REL} does not register the tool ${rel} - add it (tier: quick if verify should run it)`);
     }
   }
-  /* The root-level tools are part of the same surface - register them too, so the registry is total. */
-  for (const f of ['chromecheck.mjs', 'ingest.mjs', 'measure.mjs']) {
-    if (!files.has(f)) errs.push(`${MANIFEST_REL} does not register ${f} - add it`);
+  /* The root-level tools are part of the same surface - register them too, so the registry is total.
+   * The list is read from the disk, not hand-kept: a new root tool must be registered like any other,
+   * or the registry's "read it before running anything" instruction stops being safe to follow. */
+  for (const f of readdirSync(root).filter(f => f.endsWith('.mjs')).sort()) {
+    if (!files.has(f)) errs.push(`${MANIFEST_REL} does not register the root tool ${f} - add it (ownerOnly if an agent must never run it)`);
+  }
+  /* scripts/ holds the battery runner. It was the ONE tool the registry never covered - the very tool
+   * that runs every proof - so the scan now includes it. */
+  const scriptDir = path.join(root, 'scripts');
+  if (existsSync(scriptDir)) {
+    for (const f of readdirSync(scriptDir).filter(f => f.endsWith('.mjs')).sort()) {
+      const rel = `scripts/${f}`;
+      if (!files.has(rel)) errs.push(`${MANIFEST_REL} does not register the tool ${rel} - add it (it is what verify --battery runs)`);
+    }
   }
   return errs;
 }

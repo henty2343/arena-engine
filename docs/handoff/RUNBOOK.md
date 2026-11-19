@@ -50,15 +50,15 @@ docs/LAWS.md (sole authority for the current laws, the trait count, the law-to-p
 docs/RECIPES.md.
 Enter the record with `grep -n '^## ' docs/GAMES.md` or the nav block (file + line). GAMES.md is GREP ONLY.
 No line in GAMES.md may exceed 3,000 bytes (lint-docs B3E, check-only).
-Law-to-probe table (LAWS §Law-to-probe table): 25 rows; as of #753: 8 probed, 16 partial, 1 owner-run only,
-0 unprobed. The ONLY owner-run row left is S3 (shots never overlap blade/body/rim/shot) - and it is RED:
-.qa/frame-proof.mjs reproduces the owner's own law-3s pass and measures overlaps on the current build, so
-the law does not hold here (the named classes are in GAMES, the #753 entry). B1/B2/U1 were asserted by
-.qa/law-proof.mjs (#751); C4/C5 by .qa/contact-proof.mjs and S1/S5/S6 by .qa/shot-proof.mjs (#752); C3 by
-.qa/frame-proof.mjs (#753, `partial`). .qa/fingerprint.mjs is a change detector on the default cast with no
-spear, not a per-law assertion. Rows cite file::anchor items that lint-docs verifies; Status/Scope are
-hand-written judgement. RE-COUNT the rows before quoting the tally - a carried tally was wrong once (it said
-7/16/2 at the #752 landing; the table was 8/15/2).
+Law-to-probe table (LAWS §Law-to-probe table): the ROW COUNT and each row's Status live in
+`docs/LAWS.md` — that table is the source. DO NOT carry a tally of it: read the table. (A carried tally was
+wrong twice: it said 7/16/2 at the #752 landing when the table was 8/15/2, and 8/16/1 at #753 when the table
+was 8/17/0.) `tools/lint-docs.mjs` now DERIVES the tally from the table and fails any document that quotes a
+different one, so a stale tally cannot survive a landing. S3 (shots never overlap blade/body/rim/shot) is
+`partial`: .qa/frame-proof.mjs reproduces the owner's own law-3s pass and measures overlaps on the current
+build, so the law does not hold there (the named classes are in GAMES, the #753 entry). .qa/fingerprint.mjs is
+a change detector on the default cast with no spear, not a per-law assertion. Rows cite file::anchor items
+that lint-docs verifies; Status/Scope are hand-written judgement.
 The canonical is ~105k tokens — never read whole; enter via CODEMAP at one symbol grep. CODEMAP line
 numbers are valid only at the md5 in its header. Doc costs live in STATE.md §Documentation cost;
 never hand-type a token cost (lint rejects it, era files included).
@@ -154,10 +154,6 @@ The cleanup line deletes `scratch/land.mjs` but NEVER `scratch/t-lib.mjs`, `scra
   repo) and `scratch/out/*.json` (the seven cells behind the (b2) ruling). Everything else in
   scratch/ is throwaway.
 
-- THE OWNER'S RUNTIME IS NODE, NOT PYTHON. Never hand the owner a Python script; a Node .mjs one-shot
-  is the Route B artifact (§6). The artifact is pasted into VS Code, NOT the terminal.
-- AN AGENT WHOSE EXECUTION TOOL VANISHES MUST NOT DELIVER. No execution means no build, no proof and
-  no md5 — report and wait. Never hand-write a patch or an artifact from memory.
 
 - STATE.md, CODEMAP and the GAMES nav block are GENERATED — edit generators, never output.
 - Canonical-md5 slot: lint-docs requires GAMES.md to carry the current canonical md5 (a dated entry). A canonical edit MUST carry a dated entry — a build requirement.
@@ -178,14 +174,22 @@ The cleanup line deletes `scratch/land.mjs` but NEVER `scratch/t-lib.mjs`, `scra
 - Law table: renaming a quoted assert fails lint until the anchor is updated (by design). New law =
   new row; ids C1-C6, S1-S6 required, unique; status in {probed, partial, owner-run only, unprobed};
   six cells; consistency rules; anchors without backtick or |. Retire = remove row + dated entry (LAWS has no Retired-rules section since #806).
-- Trait count: bump `N of 22 weapon traits landed` in LAWS AND the CURRENT BUILD paragraph in GAMES
-  §Current state; lint checks both.
+- Trait count: it is pinned in ONE place only - `N of 22 weapon traits landed` in `docs/LAWS.md`, the sole
+  authority. `docs/GAMES.md` does NOT carry a count (it moved to LAWS at #747). lint-docs checks LAWS and
+  fails if README or AGENTS states a DIFFERENT count.
 - New lint check => negative controls (one mutation per control + a passing control). 3c ran 9 + C9.
 - Stale-but-historical: chronicle says lengrow-bake --verify exits 2 (true then, now 0) — leave it.
 - Line cap (B3E): LINE_CAP = 3000 BYTES (Buffer.byteLength, so 1,501 two-byte characters fail) on docs/GAMES.md. Check-only. Run docreflow before lint if a new GAMES entry trips it.
 - Cosmetic: .qa/fingerprint.mjs (~line 33) mentions many dated checkpoints; one live baseline. Harmless.
-- Owner-machine hygiene (#761): `git add -A` on the owner's Windows box sweeps throwaway diagnostics into the commit - #760 took diag-1s.cjs, land-760.cjs and scratch-measure.mjs that way (they sat in the repo root; the .txt reports had already moved to scratch/). Move scratch to scratch/ (gitignored) or `git add` explicit paths before committing; measure/diag reports never enter the repo.
-- measure.mjs and frame-proof's C3 recompute contacts from stored poses and, since #758, pass the PRE-TICK lenStep (§7, THE lenStep FIX). Residue: a hit that adds a link (the event stores the post-grow chain pose; the hit event is built after grow()) and any event or substep after an in-tick grow are not exact; .qa/lenstep-proof.mjs reports the count. The 2026-11-15 owner re-run on the lenStep fix confirmed it (law 1 111 -> 12, law 2 117 -> 3, law 2s 116 -> 43, law 4 283 -> 66); the residue and the defect-tracker ruling are recorded in the pre-#808 ledger entries (git history). The owner runs measure.mjs in cmd.exe with plain `>` redirects (never Git Bash `tee`, never PowerShell; GAMES) and captures `echo exit=%errorlevel%`; agents never run it.
+- Owner-machine hygiene (#761): `git add -A` on the owner's Windows box sweeps throwaway diagnostics into the commit - #760 took diag-1s.cjs, land-760.cjs and scratch-measure.mjs that way (they sat in the repo root; the .txt reports had already moved to scratch/).
+Move scratch to scratch/ (gitignored) or `git add` explicit paths before committing;
+measure/diag reports never enter the repo.
+- measure.mjs and frame-proof's C3 recompute contacts from stored poses and, since #758, pass the PRE-TICK lenStep (§7, THE lenStep FIX). Residue:
+a hit that adds a link (the event stores the post-grow chain pose; the hit event is built after grow()) and any event or substep after an in-tick grow are not exact;
+.qa/lenstep-proof.mjs reports the count.
+The 2026-11-15 owner re-run on the lenStep fix confirmed it (law 1 111 -> 12, law 2 117 -> 3, law 2s 116 -> 43, law 4 283 -> 66);
+the residue and the defect-tracker ruling are recorded in the pre-#808 ledger entries (git history).
+The owner runs measure.mjs in cmd.exe with plain `>` redirects (never Git Bash `tee`, never PowerShell; GAMES) and captures `echo exit=%errorlevel%`; agents never run it.
 - Sandbox: the execution tool can vanish for whole turns; /tmp gets wiped between calls — re-bootstrap
   and WRITE RECEIPTS INTO YOUR REPLY IMMEDIATELY. Dropped tool output (`execute error`) = UNVERIFIED.
   pkill patterns can match your own command line — use [h]ttps-style brackets. Long runs: setsid + poll.
@@ -194,7 +198,8 @@ The cleanup line deletes `scratch/land.mjs` but NEVER `scratch/t-lib.mjs`, `scra
 
 Per patch: what changed, before/after token costs, exact verification commands WITH results, anything NOT verified, the artifact (s6) + the apply/run commands + BASE hash, next proposed step. Wait for "go". Flag deviations in the same message. Quote only measured numbers.
 
-Landing record (since #805): every landing (1) adds ONE short "## #NNN <title> - ledger (this commit)" section at the top of docs/handoff/BATCH3-STATUS.md, newest first (What / Why / Approved / Deviations), removes "(this commit)" from the prior entry and records the prior landing's commit hash; (2) regenerates STATE.md. HANDOFF.md and this file change only when a rule changes.
+Landing record (since #805): every landing (1) adds ONE short "## #NNN <title> - ledger (this commit)" section at the top of docs/handoff/BATCH3-STATUS.md, newest first (What / Why / Approved / Deviations), removes "(this commit)" from the prior entry and records the prior landing's commit hash;
+(2) regenerates STATE.md. HANDOFF.md and this file change only when a rule changes.
 Freshness anchor: the commit that last touched BATCH3-STATUS.md must equal origin HEAD (see HANDOFF.md). "Where we are" = the newest BATCH3-STATUS.md entry.
 
 Owner environment (facts, not preferences):

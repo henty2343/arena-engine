@@ -3,7 +3,7 @@
 Contains: the interface a game implements in the PLANNED engine — services, hooks, timeline shape, compliance checks.
 Read when: engine work only. Canonical for: the game interface. Token cost: see STATE.md §Documentation cost.
 
-> **STATUS: PLANNED — not implemented.** This is the target interface for the future engine (BUILD.md Phases 0–8). No `games/<id>/` modules exist yet; the one live game is `previews/spinclash-preview.html` (a single-file `newGame`/`tick` sim). Read this as the goal, not as shipped code.
+> **STATUS: PLANNED — not implemented.** This is the target interface for the future engine (docs/planned/BUILD.md Phases 0–8). No `games/<id>/` modules exist yet; the one live game is `previews/spinclash-preview.html` (a single-file `newGame`/`tick` sim). Read this as the goal, not as shipped code.
 
 The interface a game implements. The platform knows nothing about any specific game: **zero `gameId` conditionals in platform code, ever.** If you find yourself adding one, the contract is wrong — fix the contract.
 
@@ -64,7 +64,10 @@ export interface GameInstance<S> {
 
 Five required members, nothing optional. Every extra hook is a promise the platform keeps forever — add nothing until a real game needs it.
 
-`getDuration` is a function because length usually depends on config. `createGame` returns a stepping instance, not a whole timeline, so memory stays bounded. `snapshot()` must be plain serializable data — it's stored at keyframes. `render` gets a snapshot rather than the instance, which makes the sim/render split physical: the renderer cannot advance the game.
+`getDuration` is a function because length usually depends on config.
+`createGame` returns a stepping instance, not a whole timeline, so memory stays bounded.
+`snapshot()` must be plain serializable data — it's stored at keyframes.
+`render` gets a snapshot rather than the instance, which makes the sim/render split physical: the renderer cannot advance the game.
 
 ---
 
@@ -118,15 +121,25 @@ type Player = {
 
 **Players live in data files, not in code.** A pool is a JSON file of players — `assets/pools/characters.json`, and others as needed. A game declares which pool it draws from, or supplies its own list. Adding player #41 is a one-line data change; the platform never learns their name.
 
-**Color is permanent.** Speedy is green in every game, forever — that's what makes them recognisable, and it's worth more than any other visual consistency. `mark` is the detailed identity drawn on the body: a glyph for a character, a flag for a nation. Color is what the *system* uses (bar, chip, territory fill); the mark is what the *body* wears. They're separate because a flag can't fill a progress bar.
+**Color is permanent.** Speedy is green in every game, forever —
+that's what makes them recognisable, and it's worth more than any other visual consistency.
+`mark` is the detailed identity drawn on the body:
+a glyph for a character, a flag for a nation.
+Color is what the *system* uses (bar, chip, territory fill); the mark is what the *body* wears.
+They're separate because a flag can't fill a progress bar.
 
 ### Colors never collide
 
 **No two players in a pool share a color.** It's a constraint on the data, checked at load — not something resolved at runtime. There is no priority order, no reassignment, no per-match logic. A player's color is simply theirs.
 
-This is easy because the numbers are small. A match shows at most four players, so only four colors ever need to be separable *at the same time* — and they're backed by names, marks and scoreboard positions, so color is reinforcement rather than the sole identifier. The palette only needs to be at least as large as the pool.
+This is easy because the numbers are small. A match shows at most four players, so only four colors ever need to be separable *at the same time* —
+and they're backed by names, marks and scoreboard positions, so color is reinforcement rather than the sole identifier.
+The palette only needs to be at least as large as the pool.
 
-The palette is **~24 colors**, differing in lightness as well as hue so they survive grayscale and red-green color vision deficiency (~8% of men). The practical ceiling on pool size is not color availability but memory: past roughly 24–30 named players, a cast stops being something an audience can hold in its head. Choose colors you can *name* — "green" and "red" are characters people discuss in comments; "chartreuse" and "olive" are not.
+The palette is **~24 colors**, differing in lightness as well as hue so they survive grayscale and red-green color vision deficiency (~8% of men).
+The practical ceiling on pool size is not color availability but memory:
+past roughly 24–30 named players, a cast stops being something an audience can hold in its head. Choose colors you can *name* —
+"green" and "red" are characters people discuss in comments; "chartreuse" and "olive" are not.
 
 ### What the platform provides
 
@@ -155,13 +168,18 @@ The split is strict:
 1. It **reads** the player and a small context, and **returns a modified value**. It never mutates state.
 2. It is **optional**. Where a game calls a hook a player doesn't implement, the base value passes through unchanged — so adding a hook never means editing every player that doesn't use it.
 
-   Optionality is a **safety net, not a design choice**. Because of it, a player can appear in a game *before* their skill is authored — they simply run on base values and the game still works. Adding player #12 therefore doesn't block on writing twelve skills; they can appear immediately and get theirs later.
+   Optionality is a **safety net, not a design choice**. Because of it, a player can appear in a game *before* their skill is authored —
+they simply run on base values and the game still works.
+Adding player #12 therefore doesn't block on writing twelve skills;
+they can appear immediately and get theirs later.
 3. It **never depends on another player's hook.**
 4. It **modifies an existing mechanic**; it never introduces a new one.
 5. It may consume the game's seeded RNG, but must **never create or seed one.**
 6. Anything time-dependent — a cycle, a timer, a cooldown — is advanced by the game's own per-tick logic. The hook only reads whatever has already been decided.
 
-A game may bind its hooks tighter than these six rules. SPINCLASH's standing ruling (owner, 2026-10-31, recorded in its `GAMES.md`): a player **skill** and an equipment **trait** may stack **only by addition on a shared axis** — neither may reach into the other's mechanic, and no unique player×equipment combinations may exist.
+A game may bind its hooks tighter than these six rules. SPINCLASH's standing ruling (owner, 2026-10-31, recorded in its `docs/GAMES.md`):
+a player **skill** and an equipment **trait** may stack **only by addition on a shared axis** —
+neither may reach into the other's mechanic, and no unique player×equipment combinations may exist.
 
 ### Hook names belong to the game
 
@@ -171,7 +189,7 @@ That's what keeps rule 6 true: adding a game never edits the platform, and addin
 
 A consequence worth stating, because it settles a question we'd deferred: **there is no platform-level skill system, no archetype taxonomy, and no ability registry.** The platform provides the shape; games provide the content.
 
-An earlier design had six archetypes as buckets implying behaviour. They were dropped: **a well-chosen name does the same job and is visible to the audience.** "Heavy" tells a viewer what to expect; `front-runner` never would. See SPEC.md for the naming rules.
+An earlier design had six archetypes as buckets implying behaviour. They were dropped: **a well-chosen name does the same job and is visible to the audience.** "Heavy" tells a viewer what to expect; `front-runner` never would. See docs/planned/SPEC.md for the naming rules.
 
 ---
 
@@ -206,7 +224,10 @@ const config = z.object({
 });
 ```
 
-The platform resolves `matchup` into a list of player ids and hands them to the game. The studio renders `MatchupSchema` as the same control in every game — a grid of the available players you tick, plus a "random" option — so the picker looks and behaves identically everywhere and no game writes matchup UI. Display names come from the game.
+The platform resolves `matchup` into a list of player ids and hands them to the game.
+The studio renders `MatchupSchema` as the same control in every game —
+a grid of the available players you tick, plus a "random" option —
+so the picker looks and behaves identically everywhere and no game writes matchup UI. Display names come from the game.
 
 ---
 
@@ -262,7 +283,9 @@ type ResultSummary = {
 
 Keyframes every 0.5s, not every tick — 7,200 full snapshots for a 60s match would be hundreds of megabytes. Sparse keyframes let the renderer re-enter cheaply, which is what makes a second aspect ratio a re-encode rather than a fresh simulation.
 
-`ResultSummary` feeds exactly three things: the outcome panel, the per-render stats breakdown, and `render.json` (which is where per-game aggregate stats come from). The platform displays these facts and does not interpret them. **There is no drama score** — an earlier weighted composite was removed; invented weights presented as measurement, when the underlying facts are more useful.
+`ResultSummary` feeds exactly three things: the outcome panel, the per-render stats breakdown, and `render.json` (which is where per-game aggregate stats come from).
+The platform displays these facts and does not interpret them. **There is no drama score** —
+an earlier weighted composite was removed; invented weights presented as measurement, when the underlying facts are more useful.
 
 ---
 

@@ -34,13 +34,28 @@ if (r.status !== 0) errors.push("gen-codemap --json failed");
 else {
   try {
     const f = JSON.parse(r.stdout.trim().split("\n").pop());
-    if (f.regions.length !== markers.length)
+    /* The CODEMAP carries two SYNTHETIC regions that no @@ marker can own: `head/shell` (the markup
+     * before the first script block) and `app/chrome` (the Chrome UI shell after it). They exist so
+     * the region table covers EVERY line of the file - the map used to omit 83 lines, including the
+     * whole public API surface (audit finding D-09). The invariant is therefore: every @@ marker is a
+     * region, every region is marker-based or synthetic, and the two counts differ by exactly the
+     * number of synthetic regions. */
+    const synthetic = f.regions.filter((r) => r.kind === "synthetic");
+    const markerRegions = f.regions.filter((r) => r.kind === "marker");
+    if (markerRegions.length !== markers.length)
       errors.push(
-        `marker count ${markers.length} != CODEMAP region count ${f.regions.length}`,
+        `marker count ${markers.length} != CODEMAP marker-based region count ${markerRegions.length}`,
+      );
+    if (f.regions.length !== markers.length + synthetic.length)
+      errors.push(
+        `CODEMAP region count ${f.regions.length} != markers ${markers.length} + synthetic ${synthetic.length}`,
       );
     for (const reg of f.regions)
-      if (reg.kind !== "marker")
-        errors.push(`CODEMAP region ${reg.name} is not marker-based`);
+      if (reg.kind !== "marker" && reg.kind !== "synthetic")
+        errors.push(`CODEMAP region ${reg.name} is neither marker-based nor synthetic`);
+    for (const m of markers)
+      if (!f.regions.some((r) => r.name === m.name && r.kind === "marker"))
+        errors.push(`@@ marker ${m.name} has no CODEMAP region`);
     for (const s of f.symbols)
       if (s.region === "(unmapped)")
         errors.push(

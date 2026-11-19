@@ -1,9 +1,19 @@
 #!/usr/bin/env node
 /* tools/gen-codemap.mjs — GENERATES docs/CODEMAP.md, the navigation map for the ONE canonical.
  * Agents open CODEMAP before the canonical: it names every region and top-level symbol so a
- * 115k-token file can be entered at one grep instead of read whole.
+ * ~148k-token file can be entered at one grep instead of read whole.
  * Usage: node tools/gen-codemap.mjs | --check (exit 1 if stale) | --json | --file <path>
  * Read-only vs the canonical. Bare Node, no dependencies.
+ *
+ * COMPLETENESS (audit findings D-08, D-09). The generator used to under-report its own subject:
+ *   - its declaration regex matched EXACTLY two leading spaces, so a declaration at column 0
+ *     (WEAPON_IDS - the 22-weapon roster id list) was missing from the symbol index;
+ *   - it mapped only the first <script> block, so the 83 lines of the Chrome UI shell and the
+ *     public API object (window.APP) belonged to no region at all;
+ *   - it had no completeness assertion, so `--check` could only prove the output matched the
+ *     generator, never that the generator's model of the file was complete.
+ * It now widens the scan, covers every line of the file, and ASSERTS both properties. A map that
+ * cannot prove its own completeness is a map an agent cannot trust.
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -19,6 +29,51 @@ const CANON = argOf('--file') || path.join(root, 'previews', 'spinclash-preview.
 import { scan, strip } from './lib/strip-comments.mjs';
 
 const tok = s => Math.round(s.length / 4);
+
+/* A top-level declaration of a script IIFE. Block 0's IIFE body sits at indent 2; block 1's sits
+ * at indent 4. `window.APP = {` is an assignment, not a declaration, so it is matched separately. */
+function declRe(indent) {
+  return new RegExp('^\\s{' + indent + '}(const|let|var|function|class|async function)\\s+([A-Za-z_$][\\w$]*)');
+}
+function collectDecls(lines, from, to, indent, region) {
+  const out = [];
+  for (let L = from; L <= to; L++) {
+    const mm = (lines[L - 1] || '').match(declRe(indent));
+    if (mm) out.push({ name: mm[2], kind: mm[1], line: L, region });
+  }
+  return out;
+}
+/* window.APP is the canonical's PUBLIC API - the surface every probe drives - so it is indexed as a
+ * symbol with its members. The members are read from the object literal itself, not hand-listed. */
+function collectAppApi(lines, masked, region) {
+  const out = [];
+  for (let L = 1; L <= lines.length; L++) {
+    if (!/^\s{2}window\.APP\s*=\s*\{/.test(lines[L - 1])) continue;
+    out.push({ name: 'window.APP', kind: 'api', line: L, region });
+    /* The members are read from the object literal by BRACE DEPTH, not by splitting on commas: the
+     * inline `info: function () { return { seed: seed, paused: paused, ... }; }` bodies are full of
+     * `key:` pairs that are NOT members of the API. Only keys at depth 1 are members. */
+    let end = L;
+    while (end <= lines.length && !/^\s{2}\};/.test(lines[end])) end++;
+    let depth = 1, inStr = null, member = null;
+    for (let k = L + 1; k <= end && k <= lines.length; k++) {
+      const line = masked[k - 1];
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (inStr) { if (ch === '\\') i++; else if (ch === inStr) inStr = null; continue; }
+        if (ch === '"' || ch === "'" || ch === '`') { inStr = ch; continue; }
+        if (ch === '{' || ch === '[' || ch === '(') { depth++; continue; }
+        if (ch === '}' || ch === ']' || ch === ')') { depth--; continue; }
+        if (depth === 1) {
+          const mm = /^\s*([A-Za-z_$][\w$]*)\s*:/.exec(line.slice(i));
+          if (mm) { out.push({ name: 'window.APP.' + mm[1], kind: 'api-member', line: k, region }); i += mm[0].length - 1; }
+        }
+      }
+    }
+    break;
+  }
+  return out;
+}
 
 function facts() {
   const buf = readFileSync(CANON); const html = buf.toString('utf8');
@@ -37,6 +92,19 @@ function facts() {
   }
   const main = blocks[0];
   const stripped = strip(main.body, main.comments);
+  /* A COMMENT-BLANKED copy of the file: every comment character becomes a space, newlines are kept,
+   * so line numbers stay exact. The API-member scan runs on this, because a trailing comment like
+   * "// pairing: pick 2 of the cast" would otherwise be read as a member named "pairing" - and a
+   * quote inside a comment ("the owner's own eyes") would throw the brace-depth scan off entirely. */
+  const maskedChars = html.split('');
+  for (const blk of blocks) {
+    const bodyOffsetInFile = html.indexOf(blk.body, html.indexOf('<script'));
+    for (const c of blk.comments) {
+      for (let i = bodyOffsetInFile + c.s; i < bodyOffsetInFile + c.e && i < maskedChars.length; i++)
+        if (maskedChars[i] !== '\n') maskedChars[i] = ' ';
+    }
+  }
+  const masked = maskedChars.join('').split('\n');
   // comment char count per file line (for per-region code-only cost)
   const commentChars = new Array(lines.length + 2).fill(0);
   const bodyLineStart = [0];
@@ -71,24 +139,38 @@ function facts() {
     }
     name = name.replace(/\s*----.*$/, '').replace(/\s*=+\s*$/, '').trim();
     // short, stable handle: first clause only, so the map stays scannable
-    name = name.split(/\s+—\s+|\s+–\s+|\s*\(|:\s|\s+\d{4}-/)[0].trim();
+    name = name.split(/\s+—\s+|\s+–\s+|\s*\(|\s+\d{4}-/)[0].trim();
     if (name.length > 48) name = name.slice(0, 48).replace(/\s+\S*$/, '') + '…';
     marks.push({ line: L, name: name || '(unnamed)', kind: 'banner' });
   }
   const endLine = main.startLine + main.body.split('\n').length - 2;
+  /* Two SYNTHETIC regions so the region table covers the WHOLE file: the markup before the first
+   * script block, and the Chrome UI shell after it. Without them the map silently omitted 83 lines
+   * of the file - including the whole public API surface. */
+  const chromeStart = endLine + 1;
+  marks.unshift({ line: 1, name: 'head/shell', kind: 'synthetic' });
+  marks.push({ line: chromeStart, name: 'app/chrome', kind: 'synthetic' });
   const regions = marks.map((mk, i) => {
-    const from = mk.line, to = (i + 1 < marks.length ? marks[i + 1].line - 1 : endLine);
+    const from = mk.line, to = (i + 1 < marks.length ? marks[i + 1].line - 1 : lines.length - 1);
     const text = lines.slice(from - 1, to).join('\n');
     const cc = commentChars.slice(from, to + 1).reduce((a, b) => a + b, 0);
     return { name: mk.name, kind: mk.kind, from, to, tokens: tok(text), codeTokens: Math.max(0, tok(text) - Math.round(cc / 4)) };
   });
-  // top-level symbols of the IIFE (indent 2)
+  /* Symbols of the sim IIFE: indent 0 (a module-level const) OR indent 2 (the IIFE body). */
   const symbols = [];
-  for (let L = main.startLine + 1; L <= endLine; L++) {
-    const mm = (lines[L - 1] || '').match(/^  (const|let|var|function|class|async function)\s+([A-Za-z_$][\w$]*)/);
-    if (!mm) continue;
-    const reg = regions.find(r => L >= r.from && L <= r.to);
-    symbols.push({ name: mm[2], kind: mm[1], line: L, region: reg ? reg.name : '(unmapped)' });
+  symbols.push(...collectDecls(lines, main.startLine + 1, endLine, 0, null));
+  symbols.push(...collectDecls(lines, main.startLine + 1, endLine, 2, null));
+  symbols.push(...collectAppApi(lines, masked, null));
+  /* The Chrome shell IIFE: its body is at indent 4. */
+  if (blocks[1]) {
+    const b1 = blocks[1];
+    const b1End = b1.startLine + b1.body.split('\n').length - 2;
+    symbols.push(...collectDecls(lines, b1.startLine + 1, b1End, 4, 'app/chrome'));
+  }
+  for (const s of symbols) {
+    if (s.region) continue;
+    const r = regions.find(r => s.line >= r.from && s.line <= r.to);
+    s.region = r ? r.name : '(unmapped)';
   }
   // generated data: never read these ranges
   const data = [];
@@ -109,6 +191,35 @@ function facts() {
     commentTokens: Math.round(main.comments.reduce((a, c) => a + (c.e - c.s), 0) / 4) };
 }
 
+/* THE COMPLETENESS ASSERTIONS. --check used to ask only "does the output match the generator?".
+ * These ask the question an agent actually depends on: does the map cover the file? */
+function completeness(f, lines) {
+  const problems = [];
+  // 1. every line of the file belongs to some region
+  const covered = new Array(f.lineCount + 2).fill(false);
+  for (const r of f.regions) for (let L = r.from; L <= r.to && L <= f.lineCount; L++) covered[L] = true;
+  const gaps = [];
+  for (let L = 1; L <= f.lineCount; L++) if (!covered[L]) gaps.push(L);
+  if (gaps.length) problems.push(`${gaps.length} line(s) of the canonical are in no region (first: ${gaps.slice(0, 6).join(', ')})`);
+  // 2. every symbol is mapped to a real region
+  const unmapped = f.symbols.filter(s => s.region === '(unmapped)');
+  if (unmapped.length) problems.push(`${unmapped.length} symbol(s) are in no region: ${unmapped.slice(0, 6).map(s => s.name).join(', ')}`);
+  // 3. an independent declaration scan must find exactly as many top-level declarations as the map lists
+  const independent = [];
+  for (let L = 1; L <= lines.length; L++) {
+    const t = lines[L - 1] || '';
+    if (/^\s{0,2}(const|let|var|function|class|async function)\s+[A-Za-z_$]/.test(t)) independent.push(L);
+  }
+  const mapped = new Set(f.symbols.filter(s => s.kind !== 'api-member').map(s => s.line + ':' + s.name));
+  const missing = independent.filter(L => {
+    const t = lines[L - 1];
+    const mm = t.match(declRe(0)) || t.match(declRe(2));
+    return mm && !mapped.has(L + ':' + mm[2]);
+  });
+  if (missing.length) problems.push(`${missing.length} top-level declaration(s) are not in the symbol index (first at line ${missing[0]})`);
+  return problems;
+}
+
 function render(f) {
   const L = [];
   L.push('<!-- GENERATED by tools/gen-codemap.mjs — DO NOT EDIT BY HAND. Run `node tools/gen-codemap.mjs` to refresh. -->');
@@ -123,6 +234,8 @@ function render(f) {
   L.push(`Canonical ≈ ${f.canonicalTokens.toLocaleString('en-US')} tokens; script block 0 carries ${f.commentSpans} comment spans ≈ ${f.commentTokens.toLocaleString('en-US')} tokens.`);
   L.push('');
   L.push('## Regions');
+  L.push('');
+  L.push('Every line of the file belongs to exactly one region — the generator asserts it.');
   L.push('');
   L.push('| region | lines | ~tokens | ~code-only |');
   L.push('|---|---|---:|---:|');
@@ -161,9 +274,13 @@ if (args.includes('--json')) { console.log(JSON.stringify(f)); process.exit(0); 
 const target = path.join(root, 'docs', 'CODEMAP.md');
 if (args.includes('--check')) {
   const cur = existsSync(target) ? readFileSync(target, 'utf8') : '';
-  if (cur === out) { console.log('gen-codemap --check: CODEMAP.md CURRENT'); console.log(JSON.stringify({ check:'gen-codemap', ok:true })); process.exit(0); }
-  console.log('gen-codemap --check: CODEMAP.md STALE — run node tools/gen-codemap.mjs');
-  console.log(JSON.stringify({ check:'gen-codemap', ok:false, errors:['CODEMAP.md stale'] })); process.exit(1);
+  const problems = completeness(f, readFileSync(CANON, 'utf8').split('\n'));
+  const ok = cur === out && problems.length === 0;
+  if (ok) { console.log('gen-codemap --check: CODEMAP.md CURRENT'); console.log(JSON.stringify({ check:'gen-codemap', ok:true, regions:f.regions.length, symbols:f.symbols.length })); process.exit(0); }
+  if (cur !== out) console.log('gen-codemap --check: CODEMAP.md STALE — run node tools/gen-codemap.mjs');
+  for (const p of problems) console.log('gen-codemap --check: INCOMPLETE — ' + p);
+  console.log(JSON.stringify({ check:'gen-codemap', ok:false, errors: problems.length ? problems : ['CODEMAP.md stale'] }));
+  process.exit(1);
 }
 writeFileSync(target, out);
 console.log(`gen-codemap: wrote docs/CODEMAP.md — ${f.regions.length} regions, ${f.symbols.length} symbols, md5 ${f.md5}`);

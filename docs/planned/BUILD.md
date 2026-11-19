@@ -3,6 +3,10 @@
 Contains: the PLANNED engine build order — Phases 0–8 with pass/fail gates and quality checklists.
 Read when: engine work only. Canonical for: what to build next for the engine. Token cost: see STATE.md §Documentation cost.
 
+> **STATUS: PLANNED — not implemented.** This is the build order for the future engine (`docs/planned/SPEC.md` Phases 0–8). No engine code exists yet;
+the only live game is `previews/spinclash-preview.html` (a single-file sim) with its bare-Node harness. Every phase below is unchecked.
+Read this as the plan, not as shipped work.
+
 Phases, not dates. **Advance only when the gate is genuinely green** — each phase is built on the one below it.
 
 **Hard rule:** Phase 1 ends with a real MP4 playing on a phone. Architecture does not get to run ahead of that.
@@ -51,8 +55,8 @@ Ignore architecture elegance. Get a video out.
 - [ ] Services: `rng`, `config`, `clock`, `emit`, `say`, `sfx`
 - [ ] `MatchupSchema` config helper → resolves to a list of player ids; display names connected by the game
 - [ ] Core event vocabulary (seven kinds) and the platform's reaction to each
-- [ ] Skills: games define their own local hook interface; the platform supplies only the generic hook shape and never learns a hook name (CONTRACT.md §Skills)
-- [ ] Contract-compliance suite: one Vitest file looping over registered games, eight checks (CONTRACT.md)
+- [ ] Skills: games define their own local hook interface; the platform supplies only the generic hook shape and never learns a hook name (docs/planned/CONTRACT.md §Skills)
+- [ ] Contract-compliance suite: one Vitest file looping over registered games, eight checks (docs/planned/CONTRACT.md)
 - [ ] ESLint `no-restricted-imports` / `no-restricted-globals` for `games/` and `packages/core`
 
 **Gate:** Probe A passes all eight checks, refactored onto the contract, with its output hash unchanged from Phase 1.
@@ -61,7 +65,9 @@ Ignore architecture elegance. Get a video out.
 
 ## Phase 3 — Design system + Probe B
 
-- [ ] Tokens: the canonical token table for the locked theme PEBBLE (SPEC.md "The paper theme"; lift it from `spinclash-preview.html`'s `TH` object and `:root` tokens); type scale; semantic colors; player palette of ~24 colors — mid-lightness, high saturation, no pastels, no near-ink, lightness bands × hue families; grayscale + deuteranopia checked
+- [ ] Tokens: the canonical token table for the locked theme PEBBLE (docs/planned/SPEC.md "The paper theme"; lift it from `spinclash-preview.html`'s `TH` object and `:root` tokens); type scale;
+semantic colors; player palette of ~24 colors —
+mid-lightness, high saturation, no pastels, no near-ink, lightness bands × hue families; grayscale + deuteranopia checked
 - [ ] Pool validation at load — no two players share a color, every color is in the palette, ids unique
 - [ ] `gfx`: `bar` `chip` `badge` `meter` `countdown` `leaderboard` `bracket` `swoosh` `flash` `vignette` `grid` `body` `zoom` `pan` — no particles/confetti/shake primitives (house style: flash and type only)
 - [ ] `layout.arena` — one fixed square, centred in the frame at every aspect ratio, identical in every game; compliance asserts no action outside it
@@ -137,13 +143,21 @@ Platform work resumes only when a real game needs something it doesn't have.
 
 Before any engine code exists, a game is designed as a **dependency-free HTML preview**: one file, no build step, no imports, openable directly by the owner. Naming convention: **`<game-name>-preview.html`**, kebab-case game name, living in `previews/`.
 
-Why this lane exists: the owner playtests personally and reports symptoms, and rules get judged by feel plus headless measurement before a single line of engine code is written. The preview is a design toy, not a port source: when a game moves into the engine (Phase 8), it is rebuilt against the contract from `games/_template/` — the preview's *rules and measured facts* transfer, its code does not.
+Why this lane exists: the owner playtests personally and reports symptoms, and rules get judged by feel plus headless measurement before a single line of engine code is written.
+The preview is a design toy, not a port source:
+when a game moves into the engine (Phase 8), it is rebuilt against the contract from `games/_template/` —
+the preview's *rules and measured facts* transfer, its code does not.
 
-**Sequencing.** This lane runs parallel to the platform phases, not inside them — a preview needs nothing from the engine, so game design starts whenever the owner says go. One hard dependency exists: Phase 3's token table lifts the theme the first game's preview locks, so the first preview ideally lands before Phase 3 — if it hasn't, Phase 3 builds the tokens from SPEC.md's starting direction and re-derives them once the preview decides.
+**Sequencing.** This lane runs parallel to the platform phases, not inside them —
+a preview needs nothing from the engine, so game design starts whenever the owner says go. One hard dependency exists:
+Phase 3's token table lifts the theme the first game's preview locks, so the first preview ideally lands before Phase 3 —
+if it hasn't, Phase 3 builds the tokens from docs/planned/SPEC.md's starting direction and re-derives them once the preview decides.
 
 Conventions:
 
-- **Pure sim at the top of the `<script>`** (`newGame` / `tick` / count-style helpers) with no DOM until `draw()`, so a harness can extract it, stub the DOM and loop `tick()` headlessly. The harness (`measure.mjs`) takes the preview file as its first argument; one is written for the first preview — keep one harness per preview or reuse it.
+- **Pure sim at the top of the `<script>`** (`newGame` / `tick` / count-style helpers) with no DOM until `draw()`, so a harness can extract it, stub the DOM and loop `tick()` headlessly.
+The harness (`measure.mjs`) takes the preview file as its first argument; one is written for the first preview —
+keep one harness per preview or reuse it.
 - **Metrics after every rule change** — the standing list in GAMES.md's testing recipe, plus whatever the game's own rules need (including a violation scan for every invariant the mechanics imply).
 - **Design toggles are welcome during iteration, stripped at lock.** Skins, banners, scoreboard variants — as many as needed to decide; the moment a design is locked the toggle and its losers leave the file. A preview ships with one look.
 - **A preview graduates when the owner says the rules feel right.** Its ruleset is written into GAMES.md before engine work begins; until then the preview and the owner's playtests are the only sources of truth.
@@ -271,7 +285,10 @@ A game does not ship until every box is checked.
 - [ ] One easing family throughout; staggered entrances; nothing linear that should feel alive
 - [ ] Every impact within ~40ms of its visual
 - [ ] Uses the shared intro, scoreboard, caption bars and outro — identifiable from a single screenshot
-- [ ] Weapon and prop art follows GAMES.md "Weapon art" — the convention **CLOSED 2026-10-27** (landed at roster-r12 2026-10-25; the prescriptive lock lives in GAMES.md, "Weapon art — the closed convention"); new art arrives through the artist-kit route and its intake audit — *the kit tooling was purged 2026-10-28 at the pre-balance checkpoint and is retired verbatim (recover with `git show docs-precleanup:docs/CHRONICLE-archive.md`), so the route is prescriptive-only until the owed kit-route rebuild (GAMES.md hygiene pass #2)*; `ingest.mjs` stands dormant/superseded (close item 2a)
+- [ ] Weapon and prop art follows GAMES.md "Weapon art" — the convention **CLOSED 2026-10-27** (landed at roster-r12 2026-10-25; the prescriptive lock lives in GAMES.md, "Weapon art — the closed convention");
+new art arrives through the artist-kit route and its intake audit —
+*the kit tooling was purged 2026-10-28 at the pre-balance checkpoint and is retired verbatim (recover with `git show docs-precleanup:docs/CHRONICLE-archive.md`), so the route is prescriptive-only until the owed kit-route rebuild (GAMES.md hygiene pass #2)*;
+`ingest.mjs` stands dormant/superseded (close item 2a)
 
 **Engineering**
 - [ ] Passes all eight contract-compliance checks

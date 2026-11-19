@@ -2,14 +2,14 @@
 # STATE — current project facts
 
 Contains: the mutable facts of the repo, derived from the canonical and the tree.
-Read when: every session, alongside AGENTS.md. Approx token cost: ~0.9k (computed).
+Read when: every session, alongside AGENTS.md. Approx token cost: ~1.1k (computed).
 
 ## Canonical (the one live game)
 - File: `previews/spinclash-preview.html`
-- md5: `5de162de46eb4fa3204e3ee636f2aff3`
-- Lines: 4,716
+- md5: `9b193635db219fa81fb05eed8f64fcb9`
+- Lines: 4,694
 - Build stamp (`<title>`): `links-r87`
-- Approx token cost (chars/4): ~104,971
+- Token cost: **142,931** (MEASURED with a real BPE tokenizer)
 
 ## Fingerprint baseline
 - Pointer: `.qa/BASELINE` → `fp-flailfix-r88.json`
@@ -20,27 +20,33 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~0.9k (compute
 ## Tooling inventory
 - Root tools (3): `chromecheck.mjs` · `ingest.mjs` · `measure.mjs`
 - scripts/ (1): `run-battery.mjs`
-- tools/ (10, incl. doc/ and lib/): `gen-codemap.mjs` · `gen-state.mjs` · `lint-docs.mjs` · `lint-markers.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/load-sim.mjs` · `lib/manifest.mjs` · `lib/strip-comments.mjs`
+- tools/ (16, incl. doc/ and lib/): `canon-comments.mjs` · `docs-archaeology.mjs` · `gen-codemap.mjs` · `gen-state.mjs` · `gen-tree.mjs` · `lint-controls.mjs` · `lint-docs.mjs` · `lint-markers.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/archaeology.mjs` · `lib/load-sim.mjs` · `lib/manifest.mjs` · `lib/reflow.mjs` · `lib/strip-comments.mjs`
 - scratch/: gitignored RUNTIME temp dir (bake/gate temp copies, battery logs) — not source; nothing in it is tracked except `.gitkeep`.
 - .qa/ proofs (21): `bake-rows.mjs` · `bloom-proof.mjs` · `contact-proof.mjs` · `fingerprint.mjs` · `flip-seeds.mjs` · `flipproof.mjs` · `frame-proof.mjs` · `inscribe.mjs` · `law-proof.mjs` · `leadproof.mjs` · `lengrow-bake.mjs` · `lengrow-build-proof.mjs` · `lengrow-gate.mjs` · `lengrow-proof.mjs` · `lenstep-proof.mjs` · `pair-proof.mjs` · `seam-proof.mjs` · `shot-proof.mjs` · `stride-proof.mjs` · `strip-hash.mjs` · `verdict-proof.mjs`
 - .qa/ baselines (1): `fp-flailfix-r88.json`
 - Probe registry: `tools/manifest.json` — every proof and tool in one list: what it asserts, whether the battery runs it, whether a law row may cite it, whether an agent may run it. Read it before running anything; `tools/lib/manifest.mjs` loads it and checks it is complete.
 
-## Documentation cost (chars/4 estimate)
-| file | ~tokens | read policy |
-|---|---:|---|
-| README.md | 310 | router only |
-| AGENTS.md | 1,940 | always |
-| docs/CODEMAP.md | 1,515 | before opening the canonical |
-| docs/LAWS.md | 3,962 | before any sim/doc edit |
-| docs/RECIPES.md | 1,244 | adding a trait/skill/bot |
-| docs/GAMES.md | 38,630 | GREP ONLY — never load whole |
-| docs/planned/SPEC.md | 12,990 | PLANNED engine work only |
-| docs/planned/CONTRACT.md | 4,226 | PLANNED engine work only |
-| docs/planned/BUILD.md | 4,525 | PLANNED engine work only |
-| docs/handoff/BATCH3-STATUS.md | 2,430 | GREP ONLY — landing ledger, newest entry first |
-| docs/handoff/HANDOFF.md | 379 | router: freshness check, which handoff file to read |
-| docs/handoff/RUNBOOK.md | 4,522 | before the first delivery (s1, s6); else grep headings |
+## Documentation cost
+**MEASURED** = counted with a real BPE tokenizer (see `docs/token-costs.json` for the method). **estimate** = the
+`chars/4` heuristic, which is accurate for prose Markdown but ~29% LOW for dense code. A measured
+number is used only while the file it describes is unchanged; otherwise the row falls back to the
+estimate, so a stale figure is never presented as fact.
+
+| file | tokens | basis | read policy |
+|---|---:|---|---|
+| README.md | 321 | measured | router only |
+| AGENTS.md | 2,755 | measured | always |
+| docs/CODEMAP.md | 2,621 | measured | before opening the canonical |
+| docs/LAWS.md | 4,294 | measured | before any sim/doc edit |
+| docs/RECIPES.md | 1,405 | measured | adding a trait/skill/bot |
+| docs/GAMES.md | 33,653 | measured | GREP ONLY — never load whole |
+| docs/planned/INDEX.md | 578 | estimate | PLANNED engine work only — the island's entry point |
+| docs/planned/SPEC.md | 9,522 | measured | PLANNED engine work only |
+| docs/planned/CONTRACT.md | 4,060 | measured | PLANNED engine work only |
+| docs/planned/BUILD.md | 4,709 | measured | PLANNED engine work only |
+| docs/handoff/BATCH3-STATUS.md | 5,271 | measured | GREP ONLY — landing ledger, newest entry first |
+| docs/handoff/HANDOFF.md | 385 | measured | router: freshness check, which handoff file to read |
+| docs/handoff/RUNBOOK.md | 4,783 | measured | before the first delivery (s1, s6); else grep headings |
 
 ## Design state (canonical source: LAWS.md; history: GAMES.md §Current state)
 - The current laws, the weapon-trait count and the law-to-probe table are design facts, NOT generated here.

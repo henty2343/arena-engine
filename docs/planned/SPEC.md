@@ -4,11 +4,11 @@ Contains: platform rules for the PLANNED engine — purpose, overriding rules, s
 Read when: engine/platform work only — EXCEPT `docs/planned/SPEC.md` §Purpose and §Rules that override everything else, which come before any tradeoff.
 Canonical for: platform rules (game design lives in `docs/GAMES.md` and `docs/LAWS.md`). Token cost: see STATE.md §Documentation cost.
 
-> **STATUS: the platform described here is PLANNED (BUILD.md Phases 0–8) — there is no engine code yet.** The one live game is `previews/spinclash-preview.html` (a single-file sim) with its bare-Node harness; the rules, stack and pipeline below are the target, not shipped code.
+> **STATUS: the platform described here is PLANNED (docs/planned/BUILD.md Phases 0–8) — there is no engine code yet.** The one live game is `previews/spinclash-preview.html` (a single-file sim) with its bare-Node harness; the rules, stack and pipeline below are the target, not shipped code.
 
 A localhost-only Node.js tool: pick a game → set options → generate → watch it → download the MP4.
 
-Read this with `CONTRACT.md` (the game interface) and `BUILD.md` (what to build next).
+Read this with `docs/planned/CONTRACT.md` (the game interface) and `docs/planned/BUILD.md` (what to build next).
 
 ---
 
@@ -18,7 +18,10 @@ This tool exists to produce one thing: **a video that gets published to ad-suppo
 
 Ad revenue follows watch time. A video earns when people watch it, keep watching it, and come back for more. That single fact explains almost every rule in this document.
 
-**The video file is the product.** Everything else here — the contract, the server, the studio, the CLI — is scaffolding whose only job is to produce that file. No feature justifies itself by being elegant, general-purpose, or convenient. It justifies itself by making the video better, or by making a video faster to produce without making it worse.
+**The video file is the product.** Everything else here — the contract, the server, the studio, the CLI —
+is scaffolding whose only job is to produce that file.
+No feature justifies itself by being elegant, general-purpose, or convenient.
+It justifies itself by making the video better, or by making a video faster to produce without making it worse.
 
 Five consequences to hold onto when making tradeoffs:
 
@@ -26,7 +29,9 @@ Five consequences to hold onto when making tradeoffs:
 2. **Platform compliance is revenue, not pedantry.** Resolution, framerate, codec, loudness, duration and safe zones decide whether a video is eligible and how it's treated. These are hard requirements, not preferences.
 3. **Consistent house style is a growth mechanism.** Recognisable videos convert a one-off viewer into a subscriber, and subscribers are what turn watch time into compounding watch time. Ten unrelated-looking games is ten times worse than one channel.
 4. **"Works on my machine" is failure.** The bar is: published, watched by a stranger on a phone, monetized. A video is not done when it renders — it's done when it would survive being uploaded.
-5. **The tool never touches publishing, accounts or revenue.** It makes the file; a human uploads it. Don't build upload automation, analytics, scheduling or account features — they are permanently out of scope, both because platforms prohibit them and because they distract from the only thing that matters.
+5. **The tool never touches publishing, accounts or revenue.** It makes the file; a human uploads it.
+Don't build upload automation, analytics, scheduling or account features —
+they are permanently out of scope, both because platforms prohibit them and because they distract from the only thing that matters.
 
 ---
 
@@ -111,7 +116,9 @@ Cleanliness — **built into the primitives so an author cannot opt out:**
 - All positions snap to the pixel grid. Fractional positions shimmer in motion.
 - Minimum stroke 2px at 1080-wide. No 1px lines.
 - Minimum text 28px at 1080-wide. Heavy weights only. Numerics in tabular figures.
-- Subtle dither overlay (~1.5%, fixed per render) on large smooth gradients — prevents banding after platform recompression. _(Deferral noted 2026-10-19: the locked PEBBLE frame is a LIGHT ground with no dark areas — at Phase 3, re-scope this to whatever gradients the theme actually ships, or drop it. Until then it stays a requirement on paper only.)_
+- Subtle dither overlay (~1.5%, fixed per render) on large smooth gradients —
+prevents banding after platform recompression.
+_(Deferral noted 2026-10-19: the locked PEBBLE frame is a LIGHT ground with no dark areas — at Phase 3, re-scope this to whatever gradients the theme actually ships, or drop it. Until then it stays a requirement on paper only.)_
 - No pure `#000000` or `#FFFFFF` in large areas. (PEBBLE's values: page mid-stop `#bab09b`, arena floor `#e7dfca`, card cream `#ede7d6`, ink `#2e2b22`.)
 - Bold simple shapes over fine detail; high contrast. Fine detail dies in platform recompression.
 
@@ -133,9 +140,17 @@ Audio:
 
 Decided up front, because these are the things that make ten games read as one channel — and each one is cheap to fix now and expensive to retrofit.
 
-**Every game is a competition with a winner.** The concept is always _X versus Y_, from a head-to-head up to a multi-player free-for-all. There are no winner-less games, no pure spectacle, no ambient visuals. `ResultSummary.winnerId` and `standings` are therefore required, and the outcome panel, outro card and stats always have something to show.
+**Every game is a competition with a winner.** The concept is always _X versus Y_, from a head-to-head up to a multi-player free-for-all.
+There are no winner-less games, no pure spectacle, no ambient visuals.
+`ResultSummary.winnerId` and `standings` are therefore required, and the outcome panel, outro card and stats always have something to show.
 
-**One arena, centred.** The play area is a single fixed square, the same size in every game, **centred in the frame at every aspect ratio**. 9:16 leaves more space above and below; 16:9 leaves more at the sides. The surrounding overlay — scoreboard, title, caption bars, intro, outro card — sits in that margin at fixed positions. The fixed square is the _bounds_; the playable boundary inside it is game-defined — SPINCLASH plays in a circle inscribed in the bounds. Either way, all action stays inside the bounds and compliance verifies that.
+**One arena, centred.** The play area is a single fixed square, the same size in every game, **centred in the frame at every aspect ratio**. 9:16 leaves more space above and below;
+16:9 leaves more at the sides. The surrounding overlay —
+scoreboard, title, caption bars, intro, outro card —
+sits in that margin at fixed positions. The fixed square is the _bounds_;
+the playable boundary inside it is game-defined —
+SPINCLASH plays in a circle inscribed in the bounds.
+Either way, all action stays inside the bounds and compliance verifies that.
 
 This is better than per-target layouts: one set of arena coordinates to design against, the same framing in every video, and switching aspect ratio is a pure re-encode with nothing to re-lay-out. A viewer recognises the frame before they recognise the game.
 
@@ -145,9 +160,17 @@ This is better than per-target layouts: one set of arena coordinates to design a
 
 **One default body.** `gfx.body(player, opts)` draws a player from its color, mark and name, so a game that doesn't need a bespoke look gets a consistent one for free. Games override it only where their subject genuinely demands.
 
-**Permanent, unique colors.** Every player has a color that is theirs in every game — Speedy is green everywhere, which is what makes them recognisable. **No two players in a pool share a color**; that's a constraint on the data, checked at load, not logic resolved at runtime. All colors are distinguishable in grayscale and under deuteranopia simulation.
+**Permanent, unique colors.** Every player has a color that is theirs in every game —
+Speedy is green everywhere, which is what makes them recognisable.
+**No two players in a pool share a color**;
+that's a constraint on the data, checked at load, not logic resolved at runtime.
+All colors are distinguishable in grayscale and under deuteranopia simulation.
 
-**Players come from data files.** A _pool_ is a JSON file of players. A game declares which pool it draws from — so character games can share a recurring cast while other games define their own, and the platform never learns anyone's name. Adding a player is a data change, never code. Full model in `CONTRACT.md`.
+**Players come from data files.** A _pool_ is a JSON file of players.
+A game declares which pool it draws from —
+so character games can share a recurring cast while other games define their own, and the platform never learns anyone's name.
+Adding a player is a data change, never code.
+Full model in `docs/planned/CONTRACT.md`.
 
 **One skill per player per game.** Identity (name, color, mark) is global and lives in the pool. Skills are per-game and live in the game. So one player has as many skills as there are games they appear in, and each is that game's interpretation of the same idea about them.
 
@@ -187,7 +210,9 @@ A game's name is a channel asset: once the catalogue is bigger than one, it is w
 - **One or two words, one breath.** It must sit on the name stamp as a single plate: no punctuation, no leading "the". One word preferred; a two-word name must still sit stacked without breaking the plate, and never more than two.
 - **US spelling in names.** Names use US forms (color, not colour) regardless of doc prose — search and social are the name's habitat, and they run American. Prose stays as written; a name stands as spelled.
 - **Evoke the fantasy, not the ruleset.** The name says what the game feels like or what it is made of — never how it scores. Rules evolve during design; the name is forever, and the engine id (kebab-case, CONTRACT) is derived from it on day one and never changes.
-- **Ownable.** Before locking, the word must not collide with an existing franchise or major title — the same check players get. Coined compounds (a material plus a verb) or real words with a double life are the cheapest way to be unique and searchable at once; the strongest names are words whose dictionary meaning _is_ the game's doctrine.
+- **Ownable.** Before locking, the word must not collide with an existing franchise or major title — the same check players get.
+Coined compounds (a material plus a verb) or real words with a double life are the cheapest way to be unique and searchable at once;
+the strongest names are words whose dictionary meaning _is_ the game's doctrine.
 - **A set, not a template.** Names should read as volumes from one press without sharing a prefix or suffix. The channel's visual system is the family resemblance; the name is the individual volume. No forced series prefix, ever.
 - **Tagline: one line, six words max, present tense.** It says what the viewer watches or feels, never the scoring rule.
 - **Placement.** The name appears on the outro card and in the title and description for search — **never inside the match frame** (owner decision: no game name on screen; the match is the headline). The old name-stamp concept is retired with it.
@@ -212,7 +237,30 @@ Fixed across all games (the palette is the one starting direction, locked by the
 | Arena                         | One fixed square, the same size in every game, **centred in the frame at every aspect ratio**. All action stays inside it; compliance verifies this.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | Weapon art                    | **LANDED at build roster-r12** (2026-10-25; convention CLOSED 2026-10-27 — the prescriptive lock lives in GAMES.md, "Weapon art — the closed convention"). The practiced grammar is now prescribed by the landed art: flat fills, one uniform ink outline #2e2b22, no gradients/texture/glow; the locked paints (KW/KD/KS/KP/KB in art; KG RETIRED from art at sweep-r15, owner 2026-10-27, surviving only as the carrier-less sigil fallback) plus the sigil tag KC (carrier colour at draw), the scroll's four local reference colours, and the spell-family affinity locals (fire / poison / frost / fire-orange — owner word 2026-10-25, pre-figuring the skill pass). One diegetic sigil element per weapon (doctrine 2026-10-23, realized in the return-1 blocks); copy-kind throws draw the wielder's weapon polys at area-centroid pivots. The canonical art path is the in-file poly builder; `ingest.mjs` stands DORMANT/superseded (close item 2a). State lives in GAMES.md "Weapon art"; the 2026-10-18 locked convention and the rider-brief era are preserved in git history (`git show docs-precleanup:docs/CHRONICLE-archive.md`). |
 
-**The paper theme — locked as PEBBLE (owner, 2026-10-15).** The channel's frame is settled: a quiet printed game sheet — warm gray-taupe page (radial `#c6bda9 → #bab09b → #aca18b`), a light warm-sand arena floor (`#e7dfca`) that always reads _lighter than the page but never glaring_, a thin mid-tone hairline rim (`#a99f86`, edge `#8d8369` — locked at rim cut two, toggle stripped), cream cards (`#ede7d6`) with warm-ink text (`#2e2b22`) and gray secondary (`#807a68`), teal chips with amber active (**preview tooling only — chips never render into a recorded frame**). The type system is three roles: **tint = who** (bot names in scorebug and legend — one reused deepened pair), **ink bold = facts** (series score, weapon names, growth stats), **gray = explanations** (skill and trait codes); cast colors set no type and appear only as fills (bots, swatches, bars). The reference implementation is `spinclash-preview.html` (its `TH` object and `:root` tokens — the picker and theme ids were stripped at lock); Phase 3 lifts the exact token table from it. Three color roles, never crossed: _color_ (the player's own, permanent and vivid) for actors — bodies, bars, pills, names; _secondary gray_ for explanations and numerals; _warm ink_ for everything structural — lines, borders, headlines, game-defined marks. Event punctuation on the light ground: the 3-beat strike flashes ink; the hit flash is white on the struck body. The player palette requirement stands: ~24 colors, mid-lightness, high saturation on the light ground, distinguishable in grayscale and under deuteranopia simulation; each player owns one color and one tint permanently. Frame overlays follow the preview's locked frame: the **scorebug above the arena** (mini-bot discs — cast color with the bots' ink border — beside names in the players' deep tints, the series score big in ink — a plain row on the page, no container) and the **legend rows below on cream cards** — the frame's single sanctioned container, restored at the owner's request because the cards are what group each fighter's facts (deep-tint names, subtle by size; the skill and the weapon's trait as shorthand codes — `+SPD / Hit`, `+DMG / Hit`, the reveal poster also teaching the full sentences; the weapon in ink bold at the same weight as the bot names; codes and weapons stacked in a real table (auto layout aligns every column across both rows and hugs the names); growth stats as bold tabular numbers in fixed 3ch boxes, so the stats column can never grow and nothing ever reflows; no HP, which lives only on the bot bodies). The locked layout is **Columns**: one card, two rows — identity group, air, loadout group, air, stats. In-arena moments — round banners, K.O. — are type directly on the floor (SPINCLASH's K.O. card type removed at owner word 2026-10-21, "i dont want it to be announced": the round's end reads as the kill-still freeze, the faded disc and the scorebug tick; type-on-floor remains the channel rule for banners and future in-arena moments); the winner is type on the scrim. SPINCLASH's dice reveal is the owner-designed exception (2026-10-19): the VS poster covers the arena disc for its ~2.4s, then dissolves. Everywhere else the recorded frame carries no containers: emphasis is weight, size and color only. Raw cast colors set no type — actors and fills only. A game that cannot sit on this sheet (glow, neon, darkness-as-subject) is not a game for this channel. The default body is `gfx.body`; games override it only where their subject demands.
+**The paper theme — locked as PEBBLE (owner, 2026-10-15).** The channel's frame is settled: a quiet printed game sheet —
+warm gray-taupe page (radial `#c6bda9 → #bab09b → #aca18b`),
+a light warm-sand arena floor (`#e7dfca`) that always reads _lighter than the page but never glaring_,
+a thin mid-tone hairline rim (`#a99f86`, edge `#8d8369` — locked at rim cut two, toggle stripped),
+cream cards (`#ede7d6`) with warm-ink text (`#2e2b22`) and gray secondary (`#807a68`),
+teal chips with amber active (**preview tooling only — chips never render into a recorded frame**). The type system is three roles:
+**tint = who** (bot names in scorebug and legend — one reused deepened pair),
+**ink bold = facts** (series score, weapon names, growth stats),
+**gray = explanations** (skill and trait codes);
+cast colors set no type and appear only as fills (bots, swatches, bars).
+The reference implementation is `spinclash-preview.html` (its `TH` object and `:root` tokens — the picker and theme ids were stripped at lock);
+Phase 3 lifts the exact token table from it. Three color roles, never crossed:
+_color_ (the player's own, permanent and vivid) for actors — bodies, bars,
+pills, names; _secondary gray_ for explanations and numerals; _warm ink_ for everything structural —
+lines, borders, headlines, game-defined marks.
+Event punctuation on the light ground: the 3-beat strike flashes ink;
+the hit flash is white on the struck body. The player palette requirement stands:
+~24 colors, mid-lightness, high saturation on the light ground,
+distinguishable in grayscale and under deuteranopia simulation;
+each player owns one color and one tint permanently.
+Frame overlays follow the preview's locked frame:
+the **scorebug above the arena** (mini-bot discs — cast color with the bots' ink border — beside names in the players' deep tints, the series score big in ink — a plain row on the page, no container) and the **legend rows below on cream cards** —
+the frame's single sanctioned container,
+restored at the owner's request because the cards are what group each fighter's facts (deep-tint names, subtle by size; the skill and the weapon's trait as shorthand codes — `+SPD / Hit`, `+DMG / Hit`, the reveal poster also teaching the full sentences; the weapon in ink bold at the same weight as the bot names; codes and weapons stacked in a real table (auto layout aligns every column across both rows and hugs the names); growth stats as bold tabular numbers in fixed 3ch boxes, so the stats column can never grow and nothing ever reflows; no HP, which lives only on the bot bodies). The locked layout is **Columns**: one card, two rows — identity group, air, loadout group, air, stats. In-arena moments — round banners, K.O. — are type directly on the floor (SPINCLASH's K.O. card type removed at owner word 2026-10-21, "i dont want it to be announced": the round's end reads as the kill-still freeze, the faded disc and the scorebug tick; type-on-floor remains the channel rule for banners and future in-arena moments); the winner is type on the scrim. SPINCLASH's dice reveal is the owner-designed exception (2026-10-19): the VS poster covers the arena disc for its ~2.4s, then dissolves. Everywhere else the recorded frame carries no containers: emphasis is weight, size and color only. Raw cast colors set no type — actors and fills only. A game that cannot sit on this sheet (glow, neon, darkness-as-subject) is not a game for this channel. The default body is `gfx.body`; games override it only where their subject demands.
 
 **Channel test:** render one frame from every game, tile them in a grid. They must look like one channel. Run it whenever a game is added or the design system changes.
 
@@ -223,7 +271,12 @@ Fixed across all games (the palette is the one starting direction, locked by the
 `npm run dev` → `http://127.0.0.1:5173`. Four screens. Nothing runs until the user picks a game.
 
 1. **Games** — card per registered module: name, tagline, category, supported shapes. A broken module renders as an error card explaining itself; it must not crash the app.
-2. **Setup** — left: options auto-generated from the Zod schema. Right: duration, seed field, dice, and the **outcome, visible by default** (winner, margin, lead changes, biggest comeback) — the user is a curator judging whether a render is worth publishing, not a viewer being spoiled. Below it, **per-game stats** derived on demand from `output/*/render.json`: number of renders, closest finish, biggest margin, most lead changes, biggest upset, last render. No store, no cache. Game switcher at top. One **Generate** button.
+2. **Setup** — left: options auto-generated from the Zod schema. Right:
+duration, seed field, dice, and the **outcome, visible by default** (winner, margin, lead changes, biggest comeback) —
+the user is a curator judging whether a render is worth publishing, not a viewer being spoiled.
+Below it, **per-game stats** derived on demand from `output/*/render.json`:
+number of renders, closest finish, biggest margin, most lead changes, biggest upset, last render. No store, no cache.
+Game switcher at top. One **Generate** button.
 3. **Render** — progress bar, frame count, ETA, cancel. Runs in the server, so closing the tab doesn't kill it.
 4. **Watch & download** — finished MP4 inline with native controls. Shape ticks (`vertical` pre-ticked) re-encode the same timeline. Download / Open output folder / Discard.
 
@@ -270,31 +323,36 @@ Excluded from the production build of `apps/studio`.
 
 ## Repo
 
+<!-- BEGIN GENERATED TREE - tools/gen-tree.mjs -->
 ```
 arena-engine/
-├─ README.md               # human-facing overview + detailed standing rules; agents start at AGENTS.md
-├─ AGENTS.md               # THE agent entry point — loading order, standing rules, task→file map
-├─ STATE.md                # GENERATED mutable facts (md5/stamp/lines/baseline/inventory) — tools/gen-state.mjs
-├─ .gitignore              # scratch/
-├─ docs/                   # LAWS.md (current laws) · RECIPES.md (add trait/bot) · SPEC.md CONTRACT.md BUILD.md GAMES.md
-├─ previews/               # spinclash-preview.html — THE canonical game (single file, dependency-free)
-├─ chromecheck.mjs         # fast boot + pairing check (~4s) — runs today on bare Node
-├─ measure.mjs             # the sanctioned law matrix — OWNER-GATED, never runs without his explicit go
-├─ ingest.mjs              # weapon-art merge gate + combat gauntlet (DORMANT since roster-r12)
-├─ .qa/                    # proof probes: inscribe · fingerprint · leadproof · flipproof · pair-proof · seam-proof · the lengrow-* suite · bake-rows + the fp-*.json baselines + BASELINE (pointer to the active baseline; judge with `fingerprint --compare`)
-├─ tools/                  # LIVE agent tooling: gen-state.mjs · lint-docs.mjs · verify.mjs (judges repo health, JSON verdict)
-├─ scratch/                # gitignored, TEMPORARY ONLY (per-build smokes live here until the next purge; no live tools)
-├─ tools/                  # LIVE agent tooling: gen-state.mjs · lint-docs.mjs · verify.mjs · doc/ (navgen · docreflow) · lib/ (load-sim.mjs, shared sim loader)
-├─ .vscode/                # Phase-0 placeholder (.gitkeep) — tasks/launch/settings/extensions land with the engine
-├─ assets/fonts/           # Phase-0 placeholder (.gitkeep) — Inter + JetBrains Mono (OFL) arrive with `npm install` at Phase 0 (NOT committed; README's Requirements line is the authority)
-├─ packages/               # Phase-0 placeholders (.gitkeep): core (pure TS sim) · render (node-canvas + ffmpeg) · server (Fastify loopback, single job slot)
-├─ apps/studio/            # Phase-0 placeholder (.gitkeep) — Vite + React
-├─ games/                  # Phase-0 placeholders (.gitkeep) — _probe (contract fixtures) · _template (commented scaffold)
-├─ scripts/                # run-battery.mjs (LIVE — one-command proof battery) + Phase-0 placeholders: doctor.mjs, generate.mjs, inspect.mjs
-└─ output/                 # gitignored, created at runtime; one folder per render; also the stats source
+├─ README.md  # the router: where to start (agents start at AGENTS.md)
+├─ AGENTS.md  # THE agent entry point — loading order, standing rules, task→file map
+├─ STATE.md  # GENERATED mutable facts (md5/stamp/lines/baseline/inventory) — tools/gen-state.mjs
+├─ .gitignore  # scratch/ (+ .qa/fingerprint.json, the fingerprint tool's scratch output)
+├─ .gitattributes  # LF enforcement for md/mjs/html — the md5 and fingerprint checks depend on it
+├─ docs/  # LAWS.md (current laws) · RECIPES.md (add trait/bot) · GAMES.md (design record) · CODEMAP.md (generated) · laws.json (machine form of the laws) · token-costs.json (measured token costs)
+├─ docs/planned/  # SPEC.md · CONTRACT.md · BUILD.md — the PLANNED platform (no code yet)
+├─ docs/handoff/  # HANDOFF.md (router) · RUNBOOK.md (rules) · BATCH3-STATUS.md (landing ledger)
+├─ previews/  # spinclash-preview.html — THE canonical game (single file, dependency-free)
+├─ chromecheck.mjs  # fast boot + pairing check (~4s) — runs today on bare Node
+├─ measure.mjs  # the sanctioned law matrix — OWNER-GATED, never runs without his explicit go
+├─ ingest.mjs  # weapon-art merge gate — DORMANT and OWNER-GATED (same --owner-go gate as measure.mjs)
+├─ .qa/  # proof probes + BASELINE (pointer to the active baseline; judge with `fingerprint --compare`)
+├─ .qa/BASELINE  # pointer to the standing fingerprint baseline (one line, read by fingerprint --compare)
+├─ .qa/archive/  # historical baselines — history only; they prove nothing about the current build
+├─ tools/  # LIVE agent tooling: verify.mjs (health judge, JSON verdict) · lint-docs.mjs · lint-markers.mjs · lint-controls.mjs · gen-state.mjs · gen-codemap.mjs · gen-tree.mjs · manifest.json (the probe registry) · doc/ (navgen · docreflow) · lib/ (load-sim.mjs, shared sim loader)
+├─ scripts/  # run-battery.mjs (LIVE — one-command proof battery)
+├─ scratch/  # gitignored, TEMPORARY ONLY (per-build smokes live here until the next purge)
+└─ .github/  # copilot-instructions.md — a second entry point for a different agent (points, never duplicates)
 ```
+<!-- END GENERATED TREE -->
 
-The engine dirs are Phase-0 placeholders (`.gitkeep` only) until the matching `BUILD.md` phase lands; the LIVE tree today is the SpinClash harness — the root `.mjs` tools, `.qa/`, `scratch/` and `previews/spinclash-preview.html` (the one canonical) — which runs on bare Node with no `package.json`. Realigned to the actual tree 2026-11-12 (added AGENTS.md, STATE.md, tools/).
+**Phase 0 creates the engine dirs** (`packages/core`, `packages/render`, `packages/server`, `apps/studio`,
+`games/_probe`, `games/_template`, `assets/fonts`, `.vscode`) — they do NOT exist today and no `.gitkeep`
+placeholders are committed. The LIVE tree today is the SpinClash harness: the root `.mjs` tools, `.qa/`, `scratch/`
+and `previews/spinclash-preview.html` (the one canonical) — bare Node, no `package.json`. The live file inventory is
+GENERATED into `STATE.md` §Tooling inventory — read that, not a hand-written tree, so it cannot go stale.
 
 ### Repo-organization laws
 
@@ -308,9 +366,12 @@ The engine dirs are Phase-0 placeholders (`.gitkeep` only) until the matching `B
 
 5. **Tagged removals.** Owner-ruled removals get a recovery tag before the cleanup commit. Recover with `git show <tag>:<path>`. Pushes are the owner’s to make.
 
-6. **Agent entry + progressive disclosure.** Agents start at `AGENTS.md` + `STATE.md`, read `docs/LAWS.md` before touching the sim, and `docs/RECIPES.md` for a trait/skill/bot landing — loading only what the task needs. `GAMES.md` is grep-first (by `#NNN`, symbol, or heading) — never read whole. `LAWS.md` is the distilled current-laws quick reference and must agree with GAMES §Current state (lint-checked).
+6. **Agent entry + progressive disclosure.** Agents start at `AGENTS.md` + `STATE.md`, read `docs/LAWS.md` before touching the sim, and `docs/RECIPES.md` for a trait/skill/bot landing — loading only what the task needs.
+`docs/GAMES.md` is grep-first (by `#NNN`, symbol, or heading) —
+never read whole. `docs/LAWS.md` is the distilled current-laws quick reference and must agree with GAMES §Current state (lint-checked).
 
-7. **Generated facts.** Mutable facts (md5, stamp, line count, baseline, inventory, doc costs) are generated into `STATE.md` by `tools/gen-state.mjs` — never hand-pinned in prose. Design facts (e.g. the trait count) have ONE canonical home (`GAMES.md` §Current state) and are validated across docs, not duplicated.
+7. **Generated facts.** Mutable facts (md5, stamp, line count, baseline, inventory, doc costs) are generated into `STATE.md` by `tools/gen-state.mjs` — never hand-pinned in prose.
+Design facts (e.g. the trait count) have ONE canonical home (`docs/GAMES.md` §Current state) and are validated across docs, not duplicated.
 
 8. **Doc lint is a gate.** `tools/lint-docs.mjs` fails on dead live refs, stale canonical md5 slots, trait-count disagreement, retired rules stated as live, and a missing baseline. Run it via `tools/verify.mjs` after doc changes.
 
@@ -326,7 +387,7 @@ Run IDs: `<game>-<YYYY-MM-DD>-<HHMMSS>`. Sortable, readable, no library.
 
 - **Determinism:** same seed twice → identical SHA-256 on the encoded file.
 - **Golden frames:** committed reference PNG hash per game per version.
-- **Contract compliance:** one Vitest file looping over registered games, running the eight checks in `CONTRACT.md`. Not a framework.
+- **Contract compliance:** one Vitest file looping over registered games, running the eight checks in `docs/planned/CONTRACT.md`. Not a framework.
 - **ESLint:** `no-restricted-imports` / `no-restricted-globals`, stricter for `games/` than platform code.
 
 ---
@@ -367,7 +428,7 @@ Settled as "decide later," with the phase where each gets decided:
 |                                                                                                                                      | When                  | Why wait                                                                                                                                                                                    |
 | ------------------------------------------------------------------------------------------------------------------------------------ | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **The games** — mechanics, arenas, pacing                                                                                            | Phase 8               | Designing them before any frame has been rendered is guessing                                                                                                                               |
-| **Players and pools** — the roster: names, colors, marks, how many                                                                   | Phase 8               | Depends on the games. The _mechanism_ is settled (CONTRACT.md §Skills); the cast is not                                                                                                     |
+| **Players and pools** — the roster: names, colors, marks, how many                                                                   | Phase 8               | Depends on the games. The _mechanism_ is settled (docs/planned/CONTRACT.md §Skills); the cast is not                                                                                                     |
 | **Concrete visual identity** — engine token table, type scale, scoreboard layout, the designed intro and outro                       | Phase 3               | Theme **locked** (PEBBLE, paper-sheet family, owner 2026-10-15); what remains is the engineered token set lifted from `spinclash-preview.html`, the type scale and the designed intro/outro |
 | **Audio identity** — the sound palette, what a match's turning points and its ending sound like, whether there's a musical signature | Phase 3               | Same. Technical requirements are locked; the sounds are not                                                                                                                                 |
 | **Non-Latin scripts, long player names**                                                                                             | When pools exist      | Nations were an example, not a commitment                                                                                                                                                   |
@@ -375,9 +436,12 @@ Settled as "decide later," with the phase where each gets decided:
 | **Sound-effect vocabulary** — the set of names games call via `sfx()`                                                                | After the second game | Same                                                                                                                                                                                        |
 | **Match structure and escalation** — whether a platform-level tension system is worth having                                         | After the second game | Games may simply be designed to have shape; don't build a system to compensate for flat mechanics                                                                                           |
 
-**Settled since this table was written:** skills are per-game hooks with no platform-level system (see `CONTRACT.md`), which resolved the "signature moves" and "escalation ownership" questions.
+**Settled since this table was written:** skills are per-game hooks with no platform-level system (see `docs/planned/CONTRACT.md`), which resolved the "signature moves" and "escalation ownership" questions.
 
-**The rule for the remaining ones:** the first game is built freely, with no attempt to generalise. When the second game is designed, whatever the two share gets extracted and promoted into the platform. Extracting a standard from two real examples beats inventing one upfront — and inventing one upfront is how a platform accumulates abstractions nothing uses.
+**The rule for the remaining ones:** the first game is built freely, with no attempt to generalise.
+When the second game is designed, whatever the two share gets extracted and promoted into the platform.
+Extracting a standard from two real examples beats inventing one upfront —
+and inventing one upfront is how a platform accumulates abstractions nothing uses.
 
 None of these block Phases 0–2. The pipeline, the contract and the compliance suite need no palette, no sounds and no characters.
 

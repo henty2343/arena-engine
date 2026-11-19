@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "note": "MEASURED token counts (cl100k_base BPE), keyed by the md5 of the file they describe. The repo has no dependencies and therefore ships no tokenizer: this file is the measurement, and it is regenerated with a real tokenizer whenever a file changes. tools/gen-state.mjs uses a measured count only while the md5 matches; otherwise the row falls back to the chars/4 estimate and says so.",
+  "measured": "2026-11-19 audit",
+  "files": {
+    "README.md": {
+      "md5": "823fe70ff109b4db9e1bf2c5ec854070",
+      "tokens": 321
+    },
+    "AGENTS.md": {
+      "md5": "e75e251a6fa2bae3629c031f7c7d3af1",
+      "tokens": 2755
+    },
+    "STATE.md": {
+      "md5": "d4d0e3330e3a208c91c87125b1f158d4",
+      "tokens": 1304
+    },
+    "docs/CODEMAP.md": {
+      "md5": "2b0809a061ce5807f6902960e71bfeb0",
+      "tokens": 2621
+    },
+    "docs/LAWS.md": {
+      "md5": "2b9ede8d756a45dbb77975b15249f59a",
+      "tokens": 4294
+    },
+    "docs/RECIPES.md": {
+      "md5": "fe019c371be1eacc7d930f134bf27c05",
+      "tokens": 1405
+    },
+    "docs/GAMES.md": {
+      "md5": "5851b91487cf44b297e070843711b082",
+      "tokens": 33653
+    },
+    "docs/handoff/HANDOFF.md": {
+      "md5": "97d5b462da8de172227de8cad51ad90a",
+      "tokens": 385
+    },
+    "docs/handoff/RUNBOOK.md": {
+      "md5": "46d4e391e212688007eea08ece4b87be",
+      "tokens": 4783
+    },
+    "docs/handoff/BATCH3-STATUS.md": {
+      "md5": "604c3e6a1ec9d8458ea9f76289ee62a9",
+      "tokens": 5271
+    },
+    "docs/planned/SPEC.md": {
+      "md5": "f2c8e08d8aef81bdee54c23fdeb5c116",
+      "tokens": 9522
+    },
+    "docs/planned/CONTRACT.md": {
+      "md5": "a15d345ccf3c349a236cf8da63c58882",
+      "tokens": 4060
+    },
+    "docs/planned/BUILD.md": {
+      "md5": "14c2b7cdd9b5a0398ade9103e4dd9aaf",
+      "tokens": 4709
+    },
+    "previews/spinclash-preview.html": {
+      "md5": "9b193635db219fa81fb05eed8f64fcb9",
+      "tokens": 142931
+    }
+  }
+}

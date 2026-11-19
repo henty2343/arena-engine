@@ -12,4 +12,6 @@
 - Platform/engine rules (PLANNED engine): [`docs/planned/SPEC.md`](./docs/planned/SPEC.md), only for engine/platform work
 
 ## Non-negotiables
-The standing rules and the whole workflow (orient, propose, change, prove, deliver) live in [`AGENTS.md`](./AGENTS.md), the one home for them. The three that matter before you touch anything: propose before writing code; never run `measure.mjs` without the owner's explicit go; do not split the canonical.
+The standing rules and the whole workflow (orient, propose, change, prove, deliver) live in [`AGENTS.md`](./AGENTS.md), the one home for them.
+The three that matter before you touch anything: propose before writing code;
+never run `measure.mjs` without the owner's explicit go; do not split the canonical.
