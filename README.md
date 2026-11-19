@@ -7,7 +7,7 @@
 - Canonical game (the only live code): `previews/spinclash-preview.html`
 - Current game laws: [`docs/LAWS.md`](./docs/LAWS.md)
 - Landing recipes: [`docs/RECIPES.md`](./docs/RECIPES.md)
-- Design history / provenance: grep [`docs/GAMES.md`](./docs/GAMES.md) (live) and `docs/history/` (frozen eras); never read whole
+- Design detail / decisions: grep [`docs/GAMES.md`](./docs/GAMES.md); never read whole
 - Session handoff (process authority, repo-hosted; outranks any chat note): [`docs/handoff/HANDOFF.md`](./docs/handoff/HANDOFF.md)
 - Platform/engine rules (PLANNED engine): [`docs/planned/SPEC.md`](./docs/planned/SPEC.md), only for engine/platform work
 

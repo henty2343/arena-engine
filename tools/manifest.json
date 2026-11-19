@@ -21,7 +21,7 @@
       "battery": false,
       "citable": false,
       "tier": "quick",
-      "about": "The docs lint: law table anchors, record-set rules, line cap, token-cost guards, the docs/handoff profile (headers, refs, size/line warnings), and this registry's completeness."
+      "about": "The docs lint: law table anchors, GAMES.md rules, line cap, the 40k-token GAMES.md budget (warning), token-cost guards, the docs/handoff profile (headers, refs, size/line warnings), and this registry's completeness."
     },
     {
       "name": "navgen",
@@ -219,7 +219,7 @@
       "battery": false,
       "citable": true,
       "tier": "standard",
-      "about": "The change detector: hashes the full per-tick sim state over 8 cells and judges it against .qa/BASELINE. Proves 'did not move', never 'is right'."
+      "about": "The change detector: hashes the full per-tick sim state over 8 cells and judges it against .qa/BASELINE and prints the build (md5, stamp) the baseline was recorded on (its _meta key). Proves 'did not move', never 'is right'."
     },
     {
       "name": "strip-hash",

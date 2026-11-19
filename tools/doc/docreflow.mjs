@@ -173,4 +173,4 @@ if (CHECK) {
 }
 writeFileSync(FILE, out);
 console.log(`wrote ${FILE} — ${outLines.length} lines, ${(Buffer.byteLength(out) / 1024) | 0} KB`);
-console.log(`docreflow: ${histFiles + 1} file(s) in the record set (GAMES.md + docs/history/)`);
+console.log(`docreflow: ${histFiles + 1} file(s) in the record set (GAMES.md)`);

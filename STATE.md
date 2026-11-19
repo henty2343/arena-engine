@@ -14,7 +14,7 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~1.0k (compute
 ## Fingerprint baseline
 - Pointer: `.qa/BASELINE` → `fp-flailfix-r88.json`
 - Judge: `node .qa/fingerprint.mjs --compare` (8/8 = behaviour-identical, exit 0).
-- Baseline label `r88` != build stamp `r87`: the label names the checkpoint that recorded the baseline; no r88 build was stamped. The `<title>` stamp above is the build.
+- Recorded on: canonical md5 `5de162de46eb4fa3204e3ee636f2aff3`, stamp `links-r87` (the baseline file's label is a checkpoint name, not a build stamp).
 - Older baselines (11) live in `.qa/archive/` as history only — they prove nothing about the current build.
 
 ## Tooling inventory
@@ -29,28 +29,24 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~1.0k (compute
 ## Documentation cost (chars/4 estimate)
 | file | ~tokens | read policy |
 |---|---:|---|
-| README.md | 321 | router only |
-| AGENTS.md | 1,972 | always |
+| README.md | 310 | router only |
+| AGENTS.md | 1,929 | always |
 | docs/CODEMAP.md | 1,515 | before opening the canonical |
 | docs/LAWS.md | 3,962 | before any sim/doc edit |
-| docs/RECIPES.md | 1,254 | adding a trait/skill/bot |
-| docs/GAMES.md | 55,497 | GREP ONLY — never load whole |
+| docs/RECIPES.md | 1,244 | adding a trait/skill/bot |
+| docs/GAMES.md | 38,650 | GREP ONLY — never load whole |
 | docs/planned/SPEC.md | 12,990 | PLANNED engine work only |
 | docs/planned/CONTRACT.md | 4,226 | PLANNED engine work only |
 | docs/planned/BUILD.md | 4,525 | PLANNED engine work only |
-| docs/history/chronicle-722-747.md | 21,598 | GREP ONLY — frozen era |
-| docs/history/mf-1-pre667.md | 45,547 | GREP ONLY — frozen era |
-| docs/history/mf-2-667-721.md | 52,445 | GREP ONLY — frozen era |
 | docs/handoff/AUDIT-REPORT.md | 6,487 | SLICE ONLY — grep by finding ID (temporary) |
-| docs/handoff/BATCH3-STATUS.md | 50,009 | GREP ONLY — landing ledger, newest entry first |
-| docs/handoff/HANDOFF.md | 493 | router: freshness check, which handoff file to read |
+| docs/handoff/BATCH3-STATUS.md | 50,495 | GREP ONLY — landing ledger, newest entry first |
+| docs/handoff/HANDOFF.md | 398 | router: freshness check, which handoff file to read |
 | docs/handoff/LEDGER.md | 87,305 | GREP ONLY — frozen history |
-| docs/handoff/ROADMAP.md | 781 | audit work: read first while it exists (temporary) |
-| docs/handoff/RUNBOOK.md | 5,132 | before the first delivery (s1, s6); else grep headings |
+| docs/handoff/ROADMAP.md | 816 | audit work: read first while it exists (temporary) |
+| docs/handoff/RUNBOOK.md | 4,584 | before the first delivery (s1, s6); else grep headings |
 
 ## Design state (canonical source: LAWS.md; history: GAMES.md §Current state)
 - The current laws, the weapon-trait count and the law-to-probe table are design facts, NOT generated here.
   `docs/LAWS.md` is the sole authority for them; the open queue and owner quotes are in `docs/GAMES.md` §Current state. `tools/lint-docs.mjs` checks the count and the table.
-- The record is split: `docs/GAMES.md` is the live file; 3 frozen era file(s) live in `docs/history/`. The nav block in GAMES indexes every file by key + line.
 - Implemented: the SpinClash harness (this canonical + bare-Node tools).
 - Planned (no code yet): the engine — `docs/planned/BUILD.md` Phases 0–8 (PLANNED).

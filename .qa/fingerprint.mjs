@@ -102,6 +102,11 @@ const CELLS = [
   ['natural s7', 7, null],
   ['natural s11', 11, null],
 ];
+// F11: the baseline records which build it was taken on (key `_meta`; never a cell, never compared).
+const FILE_BUF = readFileSync(FILE);
+const FILE_HTML = FILE_BUF.toString('utf8');
+const META = { canonicalMd5: createHash('md5').update(FILE_BUF).digest('hex'),
+  stamp: ((FILE_HTML.match(/<title>([\s\S]*?)<\/title>/) || [, ''])[1].match(/build\s+([A-Za-z0-9._-]+)/) || [, '(unknown)'])[1] };
 const out = {};
 for (const [name, seed, weapons] of CELLS) {
   const t0 = Date.now();
@@ -125,9 +130,12 @@ if (COMPARE) {
   }
   const match = CELLS.length - moved.length;
   const ok = moved.length === 0;
+  const bm = base._meta || null;
+  console.log(bm ? `baseline recorded on: md5 ${bm.canonicalMd5}, stamp ${bm.stamp}; this build: md5 ${META.canonicalMd5}, stamp ${META.stamp}`
+                 : 'baseline records no build metadata (_meta missing)');
   console.log(`FINGERPRINT COMPARE: ${match}/${CELLS.length} vs ${ptr} — ${ok ? 'PASS' : 'FAIL'}`);
-  console.log(JSON.stringify({ check: 'fingerprint', baseline: ptr, match, total: CELLS.length, moved, ok }));
+  console.log(JSON.stringify({ check: 'fingerprint', baseline: ptr, match, total: CELLS.length, moved, ok, baselineMeta: bm, build: META }));
   process.exit(ok ? 0 : 1);
 }
-writeFileSync(OUT, JSON.stringify(out, null, 1));
+writeFileSync(OUT, JSON.stringify({ _meta: META, ...out }, null, 1));
 console.log('written: ' + OUT);

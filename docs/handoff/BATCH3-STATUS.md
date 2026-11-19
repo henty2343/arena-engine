@@ -28,7 +28,17 @@ pose (C3 → `partial`) and MEASURES law 3s, which does NOT hold on the current 
 `owner-run only`; the owner's ruling is open).
 Next: the S3 RULING, or Batch 4's tool moves.
 
-## #806 Audit Phase T: trim pass on LAWS.md, RECIPES.md, AGENTS.md; #805's hash recorded - ledger (this commit)
+## #807 Audit Phase 4: GAMES.md budget, baseline _meta, verify --orient, docs/history deleted; #806's hash recorded - ledger (this commit)
+
+What: DOCS + TOOLS. (1) GAMES.md budget 40,000 tokens: tools/lint-docs.mjs warns above it; RUNBOOK s10 gives the trim procedure (delete oldest dated entries and superseded sections; no archive; keep the newest dated entry, it carries the canonical md5). GAMES.md deleted: the duplicated core contact law and uniform base sections (LAWS.md is the authority), the reverted movement-speed section, the #748-#753 process entries, the intro bullets restating laws (one stated the retired projectile rule as live). docs/history/ (3 era files) deleted; RUNBOOK s0/s1/s3/s8 and AGENTS, README, copilot-instructions, HANDOFF, RECIPES lose their references. (2) .qa/fp-flailfix-r88.json gains `_meta` {canonicalMd5, stamp}; fingerprint.mjs writes it and prints it on --compare (8/8 confirmed on 5de162de, links-r87); gen-state prints it. (3) `node tools/verify.mjs --orient` = freshness (online: origin/main vs the ledger's last commit; offline: local HEAD, stated as unchecked) + --quick + strip-hash. AGENTS step 1 and HANDOFF use it. ROADMAP: Phase 4 DONE, D3/D4 resolved. #806 LANDED AS 730a56b is recorded. The canonical, the sim, measure.mjs and every probe are untouched.
+
+Why: the live record was ~55k tokens with a stale CURRENT BUILD, duplicate laws and a retired rule stated as live; the baseline did not say what build it was taken on; the orient step needed a network.
+
+Approved: the owner's "you do the decisions ... delete and trim where you want, dont keep history/retired".
+
+Deviations: docs/history/ (frozen, ~120k tokens) is deleted although RUNBOOK s1 forbade dropping record content; the owner overrode it and the rule is rewritten. Recover with `git show <commit-before-#807>:docs/history/<file>`. The history-glob code (tools/lib/docset.mjs and its callers) is left in place, inert with no directory.
+
+## #806 Audit Phase T: trim pass on LAWS.md, RECIPES.md, AGENTS.md; #805's hash recorded - ledger
 
 What: DOCS. Agent-facing rationale, narrative and history cut from docs/LAWS.md (Retired-rules section dropped; Scope cells of C3 and S3 shortened; all 25 law-table rows keep columns 1-5 byte-identical), docs/RECIPES.md (trap "Why" stories, bot-recipe and stamp-discipline narrative) and AGENTS.md (prose tightened, no rule dropped). Rules, commands, numbers and paths kept. Approx tokens (chars/4) before -> after: LAWS 5,037 -> 3,962; RECIPES 1,868 -> 1,254; AGENTS 2,177 -> 1,972 (STATE.md cost table, before and after). RUNBOOK s8 loses its pointer to the dropped LAWS section. ROADMAP: Phase T DONE. STATE.md regenerated. #805 LANDED AS 92dd2ae is recorded. The canonical, the sim, measure.mjs and every probe are untouched.
 

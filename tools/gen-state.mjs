@@ -24,9 +24,10 @@ function facts() {
   const baselines = list(path.join(root, '.qa'), /^fp-.*\.json$/);
   const archived = list(path.join(root, '.qa', 'archive'), /^fp-.*\.json$/);
   const bl = (baseline.match(/-r(\d+)\.json$/) || [])[1], st = (stamp.match(/-r(\d+)$/) || [])[1];
-  const labelNote = bl && st && bl !== st
-    ? `Baseline label \`r${bl}\` != build stamp \`r${st}\`: the label names the checkpoint that recorded the baseline; no r${bl} build was stamped. The \`<title>\` stamp above is the build.`
-    : '';
+  let bmeta = null;
+  try { bmeta = JSON.parse(readFileSync(path.join(root, '.qa', baseline), 'utf8'))._meta || null; } catch {}
+  const labelNote = bmeta ? `Recorded on: canonical md5 \`${bmeta.canonicalMd5}\`, stamp \`${bmeta.stamp}\` (the baseline file's label is a checkpoint name, not a build stamp).`
+    : 'Baseline file records no build metadata (`_meta` missing).';
   const rootTools = list(root, /\.mjs$/);
   const scripts = list(path.join(root, 'scripts'), /\.mjs$/);
   const tools = [...list(path.join(root, 'tools'), /\.mjs$/),

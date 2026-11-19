@@ -3,14 +3,13 @@
 Contains: where the process rules, delivery routes and landing history live, and the freshness check.
 Read when: orienting, or looking for a process rule. Token cost: see STATE.md.
 
-LOCATION: docs/handoff/ is REPO-HOSTED. Chat attachments of older handoffs (v7-v11) are OBSOLETE; the repo outranks every pasted note and every prose document, this one included. STATE.md and docs/CODEMAP.md are generated and authoritative for all numbers. Never put handoff files in docs/history/ (the frozen record, globbed by the doc tools; an extra file there fails lint, control C5).
+LOCATION: docs/handoff/ is REPO-HOSTED. Chat attachments of older handoffs (v7-v11) are OBSOLETE; the repo outranks every pasted note and every prose document, this one included. STATE.md and docs/CODEMAP.md are generated and authoritative for all numbers.
 
 FRESHNESS CHECK (run first, every session):
-    git fetch origin && git rev-parse --short origin/main      # origin HEAD (short)
-    git log -1 --format='%h' -- docs/handoff/BATCH3-STATUS.md  # the landing that last wrote the ledger
-    node tools/verify.mjs --quick                              # expect VERIFY PASS
-    node .qa/strip-hash.mjs --base canonical-prediet-2c        # expect PASS + the three hashes (RUNBOOK s5)
-The first two hashes MUST MATCH: every landing adds a ledger entry in the same commit, so the commit that last touched BATCH3-STATUS.md IS origin HEAD. If they differ, something else landed: re-baseline from STATE.md and say what moved. If you have no network, say so and compare against local HEAD instead.
+    node tools/verify.mjs --orient    # freshness + verify --quick + strip-hash; expect ORIENT PASS
+Freshness = `git fetch origin && git rev-parse --short origin/main` must equal `git log -1 --format='%h' -- docs/handoff/BATCH3-STATUS.md`
+(every landing adds a ledger entry in the same commit). Offline, --orient compares local HEAD instead and says so. If they differ,
+something else landed: re-baseline from STATE.md and say what moved.
 
 ## Which file
 

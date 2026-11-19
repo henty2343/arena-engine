@@ -3,25 +3,11 @@
 Contains: ground rules, getting live state, orientation, proof sequence, comment-only proof kit, delivery routes, gotchas, report format and landing record. Section numbers are kept from the old HANDOFF (s0-s6, s8, s9).
 Read when: before the first delivery of a session (s1 and s6) or when a rule here is needed; grep the "## " headings, do not read whole. Token cost: see STATE.md.
 
-## 0. The record is a SET (since 3c)
+## 0. The record is docs/GAMES.md
 
-docs/GAMES.md is the live file; three frozen era files live in docs/history/:
-  mf-1-pre667.md        34 unnumbered measured-facts entries (2026-10-28 -> 11-01)
-  mf-2-667-721.md       54 numbered entries #667-#721 (the #671 tombstone included)
-  chronicle-722-747.md  26 dated landings #722-#747
-tools/lib/docset.mjs exports the sorted glob (historyFiles(root)); navgen, docreflow, gen-state and
-lint-docs all consume it — a new era file needs NO tool edit (proven, control C9). gen-codemap and
-verify were not touched. GAMES keeps the preface, The documents, the nav block, §Current state
-(owner quotes, open queue, CURRENT BUILD), Weapon art, Design principles, Open design questions, a
-`## Measured facts` STUB (original tombstone + pointers), the Testing recipe, and the live landing
-area. New measured facts and dated entries are appended to GAMES; a later pass freezes them into a
-new era file. Era boundaries are POSITIONAL, never date-sorted (#711-#720 are dated 10-31 but sit
-after #706-#710 of 11-03; a date sort would reorder the record — forbidden).
-Nav block: a Frozen eras table (key · file · covers · items · size) + a `file` column on the 88-row
-entry index; line numbers are PER FILE; keys are basenames without .md; GAMES = the live file.
-Era files are READ-ONLY inputs to navgen.
-Token effect (STATE.md authoritative): GAMES 168,385 -> 50,170 (-70.2%); eras 45,547 / 52,445 /
-21,598; record set +1,375 tokens of navigation overhead for a 70% smaller live file.
+`docs/GAMES.md` is the only record file: preface, nav block (generated), §Current state (design detail), Weapon art, Design
+principles, Open design questions, a `## Measured facts` stub, the Testing recipe and dated landing entries. There is no
+`docs/history/` and no archive: history is git (`git log -S`, `git show <tag>:<path>`). Budget and trim procedure: §10.
 
 ## 1. Ground rules (owner-enforced — non-negotiable)
 
@@ -32,8 +18,7 @@ Token effect (STATE.md authoritative): GAMES 168,385 -> 50,170 (-70.2%); eras 45
 - Removals are TAGGED first (`git tag <name> HEAD`). Never force-push. Pushes are the owner's.
 - Terminology: a fighter has a SKILL, a weapon has a TRAIT. Never the bare nouns.
 - No balancing talk, no win-rate tables.
-- Don't rewrite or drop record content (owner quotes, provenance). Reflow, re-heading and MOVING
-  are fine; deleting is not. Stale-but-historical entries stay. Covers docs/history/ too.
+- Keep GAMES.md under its token budget (§10). Delete superseded, reverted and historical text rather than archiving it; git is the archive.
 - Deliver ONE artifact (§6): Route A a patch file, Route B a Node one-shot. Commit style: `docs: Phase I Batch N — <what>` / `tools: <what>`.
 - Go-against-doctrine is allowed but must be flagged IN THE SAME MESSAGE, with why.
 - Quote only numbers you measured on the artifact you are shipping. Never say a check passed
@@ -63,11 +48,8 @@ The only live code is game #1, SPINCLASH: one browser file (the ONE canonical) +
 Read first: AGENTS.md, STATE.md (generated), docs/CODEMAP.md before opening the canonical, then
 docs/LAWS.md (sole authority for the current laws, the trait count, the law-to-probe table),
 docs/RECIPES.md.
-Enter the record by grepping the SET: `grep -rn '^### 721' docs/GAMES.md docs/history/` — or use the
-nav block's Frozen eras table + entry index (file + line). All record files are GREP ONLY.
-The old worst line (mf-2 line 526 at 68e29f9, 14,343 bytes, entry #721's AT THIS LANDING sub-paragraph) was re-paragraphed by
-#749 into 26 soft-wrapped lines, each <= 560 bytes; its bold spans now CROSS soft newlines (valid CommonMark, not render-checked).
-No line in the record set exceeds 3,000 bytes, and since #750 lint-docs ENFORCES that cap (B3E, check-only). Do not re-join the 26 lines. Grep for the sub-paragraph; never hand-copy a line number.
+Enter the record with `grep -n '^## ' docs/GAMES.md` or the nav block (file + line). GAMES.md is GREP ONLY.
+No line in GAMES.md may exceed 3,000 bytes (lint-docs B3E, check-only).
 Law-to-probe table (LAWS §Law-to-probe table): 25 rows; as of #753: 8 probed, 16 partial, 1 owner-run only,
 0 unprobed. The ONLY owner-run row left is S3 (shots never overlap blade/body/rim/shot) - and it is RED:
 .qa/frame-proof.mjs reproduces the owner's own law-3s pass and measures overlaps on the current build, so
@@ -97,7 +79,7 @@ seam-proof 0 · law-proof 0 · contact-proof 0 · shot-proof 0 · frame-proof 0 
 lengrow-gate 1 (BY DESIGN;
 normalised stdout md5 a31a68c4d19d68a2988c792b481be4d5, 23 lines, 10 GATE FAIL rows) ·
 lengrow-bake --verify 0.
-Doc regen after ANY edit to GAMES or docs/history/ (both doc tools cover the set):
+Doc regen after ANY edit to GAMES:
 
     node tools/doc/docreflow.mjs && node tools/doc/navgen.mjs && node tools/gen-codemap.mjs \
       && node tools/gen-state.mjs
@@ -178,15 +160,8 @@ The cleanup line deletes `scratch/land.mjs` but NEVER `scratch/t-lib.mjs`, `scra
   no md5 — report and wait. Never hand-write a patch or an artifact from memory.
 
 - STATE.md, CODEMAP and the GAMES nav block are GENERATED — edit generators, never output.
-- Canonical-md5 slot = UNION check over GAMES + docs/history/*.md (>= 1 carrier). GAMES carries it
-  once (#748), the chronicle twice (#745/#746). A canonical edit MUST carry a dated entry in the
-  LIVE file — a build requirement.
-- 3c lint checks: every docs/history/*.md must be named in GAMES; every docs/history path GAMES
-  names must exist. lintRefs only scans §Current state — the nav block needed its own check.
-  Renaming an era file without regenerating navgen fails the build (C6). An extra file in
-  docs/history/ fails too (C5) — that is why handoff files live in docs/handoff/, NOT docs/history/.
-- Era files are archive-exempt for live-ref/retired-rule/trait lint; covered by preface + token-cost
-  guards. docs/handoff/ is outside every lint glob (verify stays green with these two files present).
+- Canonical-md5 slot: lint-docs requires GAMES.md to carry the current canonical md5 (a dated entry). A canonical edit MUST carry a dated entry — a build requirement.
+- docs/handoff/ is outside every lint glob except the handoff profile (verify stays green with these files present).
 - lint-docs §Current state slice = games.slice(0, indexOf('## Measured facts')) — keep the stub heading.
 - docreflow --check EXITS 1 on pending work in any file (v7's "always exits 0" is fixed). verify
   judges by EXIT CODE only; it never parsed docreflow's text.
@@ -207,9 +182,7 @@ The cleanup line deletes `scratch/land.mjs` but NEVER `scratch/t-lib.mjs`, `scra
   §Current state; lint checks both.
 - New lint check => negative controls (one mutation per control + a passing control). 3c ran 9 + C9.
 - Stale-but-historical: chronicle says lengrow-bake --verify exits 2 (true then, now 0) — leave it.
-- mf-2's old 14 KB line is 26 soft-wrapped lines since #749 (bold spans cross newlines on purpose). Since #750 lint-docs B3E fails any record-set line over 3,000 bytes, so a FULL re-join fails.
-  The cap is per line, so a PARTIAL re-join slips through (measured in controls on a copy): 2 or 5 re-joined lines stay green (1,120 / 2,789 bytes), 6 (3,348) or 26 (14,343) fail. Do not re-join.
-- Line cap (B3E): LINE_CAP = 3000 BYTES (Buffer.byteLength, so 1,501 two-byte characters fail), applied to docs/GAMES.md + docs/history/*.md via the docset glob. Check-only; never edit an era file to satisfy it except whitespace-only. Run docreflow before lint if a new GAMES entry trips it.
+- Line cap (B3E): LINE_CAP = 3000 BYTES (Buffer.byteLength, so 1,501 two-byte characters fail) on docs/GAMES.md. Check-only. Run docreflow before lint if a new GAMES entry trips it.
 - Cosmetic: .qa/fingerprint.mjs (~line 33) mentions many dated checkpoints; one live baseline. Harmless.
 - Owner-machine hygiene (#761): `git add -A` on the owner's Windows box sweeps throwaway diagnostics into the commit - #760 took diag-1s.cjs, land-760.cjs and scratch-measure.mjs that way (they sat in the repo root; the .txt reports had already moved to scratch/). Move scratch to scratch/ (gitignored) or `git add` explicit paths before committing; measure/diag reports never enter the repo.
 - measure.mjs and frame-proof's C3 recompute contacts from stored poses and, since #758, pass the PRE-TICK lenStep (§7, THE lenStep FIX). Residue: a hit that adds a link (the event stores the post-grow chain pose; the hit event is built after grow()) and any event or substep after an in-tick grow are not exact; .qa/lenstep-proof.mjs reports the count. The 2026-11-15 owner re-run on the lenStep fix confirmed it (law 1 111 -> 12, law 2 117 -> 3, law 2s 116 -> 43, law 4 283 -> 66); the residue and the new defect tracker live in section 7 (THE OWNER'S RE-RUN / THE DEFECT-TRACKER RULING). The owner runs measure.mjs in cmd.exe with plain `>` redirects (never Git Bash `tee`, never PowerShell; GAMES) and captures `echo exit=%errorlevel%`; agents never run it.
@@ -235,3 +208,10 @@ New-chat prompt (the whole thing, same every time; drop the ROADMAP sentence whe
     Read AGENTS.md and STATE.md, then docs/handoff/ROADMAP.md while it exists. Never read big docs whole; grep them.
     Tell me: the commit you are on, what is done, and the next open phase.
     Then propose it and wait for my "go". Follow AGENTS.md: never run measure.mjs, don't touch the canonical unless asked, deliver one patch proven on a fresh clone.
+
+## 10. GAMES.md budget and trim
+
+Budget: ~40,000 tokens (chars/4, as STATE.md). `tools/lint-docs.mjs` WARNS above it. Over budget = trim in the next doc patch:
+1. Delete the oldest dated `## YYYY-MM-DD — #NNN` landing entries and any superseded, reverted or duplicated-in-LAWS section. No archive, no `docs/history/`.
+2. Keep the NEWEST dated entry: it carries the canonical md5 (lint requirement).
+3. `docreflow -> navgen -> gen-codemap -> gen-state -> verify --quick`. Quote the before/after tokens from STATE.md.

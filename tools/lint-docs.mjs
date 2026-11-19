@@ -30,8 +30,11 @@ for (const e of manifestErrors(root)) err(e);
 const HIST_FILES = historyFiles(root);
 const RECORD_SET = ['docs/GAMES.md', ...HIST_FILES];
 if (!RECORD_SET.some(f => existsSync(path.join(root, f)) && rd(f).includes(md5)))
-  err(`no file in the GAMES record set (docs/GAMES.md + docs/history/, ${RECORD_SET.length} file(s)) carries the current canonical md5 ${md5} (stale slot?)`);
+  err(`no file in the GAMES record set (docs/GAMES.md, ${RECORD_SET.length} file(s)) carries the current canonical md5 ${md5} (stale slot?)`);
 const games = rd('docs/GAMES.md');
+const GAMES_BUDGET_TOKENS = 40000; // RUNBOOK s10: over budget = trim the next doc patch (chars/4, as STATE.md)
+{ const gt = Math.round(games.length / 4);
+  if (gt > GAMES_BUDGET_TOKENS) warn(`docs/GAMES.md is ~${gt} tokens, over the ${GAMES_BUDGET_TOKENS} budget - trim it (RUNBOOK s10)`); }
 const csEnd = games.indexOf('## Measured facts');
 const currentState = games.slice(0, csEnd>0?csEnd:games.length);
 // B3D: docs/LAWS.md is the SOLE AUTHORITY for the weapon-trait count (it was GAMES §Current state before #747).

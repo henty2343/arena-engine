@@ -28,7 +28,7 @@ against its stretched art. Only the spear's `len` is expensive so far. Expensive
 Tier 1 (`inscribe`, `bake --verify`, `leadproof`, `flipproof`) only if art, polys, coverings or scale moved.
 Tier 2 (differential sweeps, cost, the 484-cell run) only on suspicion or once at the end of the pass.
 
-**Traps (grep the tag in `docs/GAMES.md` and `docs/history/` for the story: `pair-r31`, `shot.mult`, `cleanup #4`).**
+**Traps (story: `git log -S` the tag; `pair-r31`, `shot.mult`, `cleanup #4`).**
 1. **Author the label for any axis the derivation does not know.** A derived label prints the WRONG text; the step-4 guard throws.
 2. **A declared multiplier is not the realised one.** `shot.mult` 2 realises as 2.15x, 4 as ~7x. Measure; never quote the declared figure.
 3. **Prove every boot guard fires** (step 5). An unproven guard reads as coverage.
