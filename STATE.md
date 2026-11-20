@@ -6,10 +6,10 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~1.0k (compute
 
 ## Canonical (the one live game)
 - File: `previews/spinclash-preview.html`
-- md5: `b6703e08cec99404abc11d907619245d`
-- Lines: 4,711
-- Build stamp (`<title>`): `links-r87`
-- Token cost: **143,268** (MEASURED with a real BPE tokenizer)
+- md5: `2349ae332994cfe41b8ef6d27ff2c1da`
+- Lines: 4,963
+- Build stamp (`<title>`): `links-r88`
+- Token cost: **104,618** (chars/4 ESTIMATE — the measured value is in docs/token-costs.json)
 
 ## Fingerprint baseline
 - Pointer: `.qa/BASELINE` → `fp-flailfix-r88.json`
@@ -34,10 +34,10 @@ estimate, so a stale figure is never presented as fact.
 |---|---:|---|---|
 | README.md | 321 | measured | router only |
 | AGENTS.md | 2,909 | measured | always |
-| docs/CODEMAP.md | 2,619 | measured | before opening the canonical |
-| docs/LAWS.md | 4,290 | measured | before any sim/doc edit |
-| docs/RECIPES.md | 2,016 | measured | adding a trait/skill/bot |
-| docs/GAMES.md | 30,449 | measured | GREP ONLY — never load whole |
+| docs/CODEMAP.md | 1,729 | estimate | before opening the canonical |
+| docs/LAWS.md | 3,996 | estimate | before any sim/doc edit |
+| docs/RECIPES.md | 1,874 | estimate | adding a trait/skill/bot |
+| docs/GAMES.md | 33,043 | estimate | GREP ONLY — never load whole |
 | docs/planned/INDEX.md | 598 | measured | PLANNED engine work only — the island's entry point |
 | docs/planned/SPEC.md | 9,416 | measured | PLANNED engine work only |
 | docs/planned/CONTRACT.md | 4,040 | measured | PLANNED engine work only |

@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>spinclash preview — build links-r87</title>
+<title>spinclash preview — build links-r88</title>
 <style>
 /* ---------------------------------------------------------------
    Design tokens — sumo-war UI language (light/dark page chrome).
@@ -549,6 +549,8 @@ body {
  * trait.fan    fan-tier growth rate -> grow advances f.shotStep (knives)
  * trait.fig    transfiguration seconds -> the bloom gates (bladeVsBody, shotHitBody)
  * trait.ember  ember-spill cadence -> the shot's birth (scroll)
+ * trait.plate  plates gained per damaging hit -> grow (the shield's BULWARK ring)
+ * trait.plateN the ring's arc count -> the plate array + the arc index
  *
  * SKILL axes (on the fighter row):
  * skill.spin   fighter's spin bonus -> grow
@@ -633,7 +635,16 @@ body {
     spear:  { ...WDEF, name: 'Spear',  len: LT, trait: { spin: 0.0, dmg: 0.3, len: 0.0959 }, lenJ: 69.23 / 113.38, brief: '+DMG +LEN / Hit', line: 'grows 9.6% longer per damaging hit', poly: INGR_SPEAR },
     mace:   { ...WDEF, name: 'Mace',   len: LT, trait: { spin: 0.0, dmg: 0.7 }, line: 'gains damage per damaging hit', poly: INGR_MACE },
     shield: { ...WDEF, name: 'Shield', len: 110, hold: 'tangential',
-      trait: { spin: 0.0, dmg: 0.7 }, line: 'parries · and cuts on touch like every weapon', poly: INGR_SHIELD },   // allcut-r62: ends the no-damage design — trait.dmg 0.7, INERT since birth (grow fires only on a damaging hit and the shield could never land one — open question 4), is LIVE
+      trait: { spin: 0.0, dmg: 0.7, plate: 1, plateN: 3 },
+      brief: '+PLATE / Hit',
+      line: 'each blow it lands plates its wielder · a plate eats one hit · three seal the ring, then it hardens to steel',
+      /* BULWARK — THE SHIELD'S TRAIT: the shield PLATES ITS WIELDER. Every blow it lands adds a
+       * plate around its wielder's body; a plate eats one enemy blow instead of HP. N = 3 arcs of
+       * 120°, WORLD-FIXED, so the wall grows where the fight is. Three plates seal the ring;
+       * later blows harden the nearest wood plate to steel (steel eats two), so the ceiling is
+       * 2N = 6 absorbs. The ring clears every round (the LAW). The plate is BODY ARMOUR, never a
+       * parry: an absorbed blow denies the attacker's growth and every rider, keeps the knock.*/
+      poly: INGR_SHIELD },
     staff:  { ...WDEF, name: 'Staff',  len: 100, lead: -1,
              /* Staff trait (shotR, pick from a measured menu): every orb LANDING
         * grows the holder's NEXT orb's radius by this rate, compounding, per fighter, reset
@@ -1072,6 +1083,11 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     if (tr.cycle != null && !(Number.isFinite(tr.cycle) && tr.cycle > 0)) throw new Error(`${id}: trait.cycle ${tr.cycle} is not a positive finite growth rate — loops would slow toward frozen or NaN would poison the birth speed`);
     if (tr.mult != null && !(Number.isFinite(tr.mult) && tr.mult > 0)) throw new Error(`${id}: trait.mult ${tr.mult} is not a positive finite growth rate — the rain would thin toward still or NaN would poison the launch cadence`);
     if (tr.fan != null && !(Number.isFinite(tr.fan) && tr.fan > 0)) throw new Error(`${id}: trait.fan ${tr.fan} is not a positive finite growth rate — the fan would never widen or NaN would poison the volley`);
+    /* BULWARK's plate axis: the arc count is the DIVISOR of the contact-angle index, so 0, a
+     * fraction, or `plate` without `plateN` are boot errors, never silent defaults.*/
+    if (tr.plate != null && !(Number.isInteger(tr.plate) && tr.plate >= 1)) throw new Error(`${id}: trait.plate ${tr.plate} is not an integer >= 1 — plates gained per damaging hit must be a whole number of plates`);
+    if (tr.plateN != null && !(Number.isInteger(tr.plateN) && tr.plateN >= 1)) throw new Error(`${id}: trait.plateN ${tr.plateN} is not an integer >= 1 — the arc count divides the contact angle (0 divides by zero, a fraction slices the ring)`);
+    if (tr.plate != null && tr.plateN == null) throw new Error(`${id}: trait.plate needs trait.plateN on the same row — the arc count is the divisor of the contact-angle index; there is no silent default`);
     if ((Wr.trait && Wr.trait.turn != null) || (Wr.shot && Wr.shot.turn != null)) throw new Error(`${id}: trait.turn / shot.turn are RETIRED (hexfam-r68) — the bend+hunt is the FAMILY FLIGHT LAW, derived in bornBend from shot.hex + the row's speed ÷ HEXFAM.ref; a declared field here would be dead law (the flagfix-r64 lesson: dead fields rot silently and every gate built on them goes dark)`);   // hexfam-r68 —
     if (Wr.shot && Wr.shot.hex && (Wr.shot.returns || Wr.shot.ricochet || Wr.shot.pin || Wr.shot.skewer)) throw new Error(`${id}: shot.hex requires a PLAIN flight path — the orbit, the ricochet, the pin and the skewer each own their row's path outright; the family flight law (hexfam-r68) rides no other law's shot`);   // hexfam-r68 —(turn is derived now, never declared)
     if (Wr.shot && Wr.shot.pin && (Wr.shot.ricochet || Wr.shot.returns)) throw new Error(`${id}: shot.pin conflicts with ${Wr.shot.ricochet ? 'shot.ricochet' : 'shot.returns'} — a row may own exactly ONE rim-law exception (pin nails it, ricochet bounces it, returns pierce it)`);
@@ -1484,6 +1500,21 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     }
     return best;
   }
+  const _bc = { gap: Infinity, x: 0, y: 0 };
+  /* the TRUE CONTACT POINT of a blade against a body: the surface point of the DEEPEST blade
+   * circle, facing the body's centre — the plate law needs the contact arc, never the centre
+   * line. The result object is reused (the hot path allocates nothing per substep).*/
+  function bladeBodyContact(circ, x, y) {
+    let best = Infinity, bx = 0, by = 0;
+    for (let i = 0; i < circ.length; i += 3) {
+      const dx = x - circ[i], dy = y - circ[i + 1];
+      const d = Math.hypot(dx, dy);
+      const g = d - circ[i + 2];
+      if (g < best) { best = g; const u = d > 1e-9 ? circ[i + 2] / d : 0; bx = circ[i] + dx * u; by = circ[i + 1] + dy * u; }
+    }
+    _bc.gap = best; _bc.x = bx; _bc.y = by;
+    return _bc;
+  }
 
   const _pg = { gap: Infinity, x: 0, y: 0, nx: 0, ny: 0 };
   const _pA = { x: 0, y: 0, ang: 0, w: null, fl: null, fp: 1, ls: 0 }, _pB = { x: 0, y: 0, ang: 0, w: null, fl: null, fp: 1, ls: 0 };   // pose scratch for bladeVsBlade's parryGap call — the sim's hottest path allocates nothing per substep
@@ -1593,6 +1624,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       wAngle: 0, spin: 0, dmg: 0,
       lenStep: 0,                          // length-growth ladder position (0..LEN_STEPS) — the spear's trait, capped UNIFORM for every holder since nocombo-r34; reset per round like spin/dmg
       shotStep: 0,                         // shot-radius growth count — the staff's trait (shotgrow-r33): landings so far this round; the next born shot scales by (1+trait.shotR)^shotStep; UNCAPPED (the rim is the wall), reset per round
+      plate: [],                           // BULWARK: the plate ring — 0 empty / 1 wood / 2 steel per arc; sized by trait.plateN, rebuilt at every roll
       prev: { x: SPAWN[slot].x, y: SPAWN[slot].y }, pwAngle: 0,   // render-interpolation base (v0.8.2) — pose at this tick's start
       bladeStuck: false, wallCd: 0,
       bladeLatchTick: 0, bladeClearPeak: 0,   // deep-disengage gate state (law 4's re-arm extension): the tick the current blade latch fired + the peak body clearance (px) reached since — both written fresh at every latch and every round roll, never read while unstuck
@@ -1705,6 +1737,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       f.wAngle = 0; f.spin = 0; f.dmg = W.dmg;
       f.lenStep = 0;                       // growth resets with the round — the round IS the cap (no lenCap constant)
       f.shotStep = 0;                      // shot-radius / cycle / rain growth resets with the round — same LAW, same place
+      f.plate = plateRing(f);              // BULWARK: the ring clears with the round — same LAW, same place
       f.bladeStuck = false; f.wallCd = 0; f.fireAcc = 0; f.deathSeq = 0; f.cycleIdx = 0;
       f.bladeLatchTick = 0; f.bladeClearPeak = 0;   // teleport: the deep-disengage gate starts the new round fresh
       f.nudgeTick = -1;                    // teleport: no carried nudge gate into the new round
@@ -2060,12 +2093,78 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     if (rv > 60 && G.bounceT !== G.t) { G.bounceT = G.t; emit(G, 'bounce', { x: a.pos.x + nx * CFG.bodyR, y: a.pos.y + ny * CFG.bodyR, intensity: Math.min(1, rv / 1600) }); }   // v0.8-step1b: once per tick (was per substep: event churn fed GC pauses that read as slow-motion in the preview)
   }
 
+  /* BULWARK — THE PLATE RING (the shield's trait) ----
+   * One entry per arc: 0 = empty, 1 = wood, 2 = steel. The arcs are WORLD-FIXED (they do not
+   * turn with the weapon or the body). An arc's index is the angle from the HOLDER'S OWN CENTRE
+   * to the TRUE CONTACT POINT, floored into the equal arcs — from the holder's centre on BOTH
+   * sides (wielder when it gains, defender when one absorbs), so a plate faces the foe. The arcs
+   * are half-open: a bearing on a boundary belongs to the arc that STARTS there, and that arc is
+   * the nearest one, so it wins every tie.*/
+  function plateRing(f) {
+    const W = WEAPONS[f.weapon];
+    const n = (W && W.trait && W.trait.plateN) || 0;
+    return new Array(n).fill(0);
+  }
+  function plateBearing(f, cx, cy) {
+    let a = Math.atan2(cy - f.pos.y, cx - f.pos.x);
+    if (a < 0) a += TAU;
+    return a;
+  }
+  function plateArc(f, cx, cy) {
+    const n = f.plate.length;
+    if (!n) return -1;
+    const step = TAU / n;
+    let i = Math.floor(plateBearing(f, cx, cy) / step);
+    if (i >= n) i = n - 1;
+    return i < 0 ? 0 : i;
+  }
+  /* the nearest arc in a state (0 = empty, 1 = wood). The arc CONTAINING the bearing is the
+   * nearest, always — checked first, so it wins every tie.*/
+  function plateNearest(f, ang, state) {
+    const n = f.plate.length;
+    if (!n) return -1;
+    const step = TAU / n;
+    let ci = Math.floor(ang / step);
+    if (ci >= n) ci = n - 1;
+    if (ci < 0) ci = 0;
+    if (f.plate[ci] === state) return ci;
+    let best = -1, bestD = Infinity;
+    for (let j = 0; j < n; j++) {
+      if (j === ci || f.plate[j] !== state) continue;
+      let ds = ang - j * step; if (ds > Math.PI) ds -= TAU; else if (ds < -Math.PI) ds += TAU;
+      let de = ang - (j + 1) * step; if (de > Math.PI) de -= TAU; else if (de < -Math.PI) de += TAU;
+      const d = Math.min(Math.abs(ds), Math.abs(de));
+      if (d < bestD - 1e-12) { bestD = d; best = j; }
+    }
+    return best;
+  }
+  /* the GAIN: a landed blow plates the wielder — the nearest EMPTY arc takes a wood plate, else
+   * the nearest WOOD arc hardens to steel, else there is nothing left to plate.*/
+  function plateGain(f, cx, cy) {
+    const ab = WEAPONS[f.weapon].trait;
+    if (!ab.plate || !f.plate || !f.plate.length) return;
+    const ang = plateBearing(f, cx, cy);
+    for (let k = 0; k < ab.plate; k++) {
+      const e = plateNearest(f, ang, 0);
+      if (e >= 0) { f.plate[e] = 1; continue; }
+      const w = plateNearest(f, ang, 1);
+      if (w >= 0) { f.plate[w] = 2; continue; }
+      break;
+    }
+  }
+  /* the SPEND: a plated arc breaks. Steel eats two blows; wood eats one.*/
+  function plateDemote(f, i) {
+    if (!f.plate || i < 0 || i >= f.plate.length) return;
+    if (f.plate[i] === 2) f.plate[i] = 1;
+    else if (f.plate[i] === 1) f.plate[i] = 0;
+  }
+
   /* growth: fighter skill + weapon trait, both on every damaging hit — one shared block for
    * blade hits and shot landings alike. Spin is bounded by CFG.omegaCap (dormant today); damage
    * is uncapped; length advances one pre-baked ladder step and stops at the UNIFORM ladder top
    * (LEN_STEPS), which is the de facto ceiling — there is no lenCap constant. All three axes
    * reset with the round, by law.*/
-  function grow(G, f) {
+  function grow(G, f, cx, cy) {
     const sk = FIGHTERS[f.idx].skill, ab = WEAPONS[f.weapon].trait;
     const spinGain = sk.spin + ab.spin;
     const dmgGain = sk.dmg + ab.dmg;
@@ -2089,6 +2188,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
    * touches included — advances the shared counter, so launchers gain growth in the early melee
    * they.*/
     if (ab.shotR || ab.cycle || ab.mult || ab.fan || (WEAPONS[f.weapon].shot && WEAPONS[f.weapon].shot.hex)) f.shotStep++;   // returngrow-r37: the shared counter serves every shot-growth axis — bendspark-r61 joined the wand's bend, and hexfam-r68 retired the gate's ab.turn term in favour of shot.hex: the FAMILY FLIGHT LAW is itself a growth axis (the hex deepens off this counter), so every spell row feeds it. For the wand the gate opens on exactly the same hits as before (bit-identical counter timeline); the scroll joins it for the first time. cycle caps at READ time (CYCLE_STEPS), shotR stays uncapped (the rim is its wall).
+    if (ab.plate) plateGain(f, cx, cy);   // BULWARK: the shield plates its wielder — the plate rides THIS moment
     G.stats.hits++;
   }
 
@@ -2096,7 +2196,8 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     if (!a.alive || a.figT > 0) return;   // bloom-r73 — a bloomed weapon cuts nothing
     const b = G.fighters[1 - a.slot];
     if (!b.alive) return;
-    const gap = bladeBodyGap(bladeCircles(a.pos.x, a.pos.y, a.wAngle, a.weapon, a.slot === 0 ? C0 : C1, a.fl.u, leadFlip(a.weapon, a.spin), a.lenStep), b.pos.x, b.pos.y);
+    const ct = bladeBodyContact(bladeCircles(a.pos.x, a.pos.y, a.wAngle, a.weapon, a.slot === 0 ? C0 : C1, a.fl.u, leadFlip(a.weapon, a.spin), a.lenStep), b.pos.x, b.pos.y);
+    const gap = ct.gap;
     if (a.bladeStuck) {
       /* DEEP-DISENGAGE GATE (law 4's re-arm-side sanctioned extension; the trigger side — one
    * damage per touch — is unchanged). reArmPad clearance alone let a rocked blade machine-gun
@@ -2116,6 +2217,24 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     a.bladeStuck = true;
     a.bladeLatchTick = G.t; a.bladeClearPeak = 0;
 
+    /* BULWARK — THE PLATED ARC ABSORBS. The CONTACT ARC decides, so a hit through a gap draws
+     * blood even at 2/3 coverage. A plated arc eats it: the plate breaks (steel -> wood -> gone)
+     * and the victim takes the knock, but the hit NEVER HAPPENS — no HP loss, no growth (trait
+     * nor skill), no rider.*/
+    if (b.plate.length) {
+      const ai = plateArc(b, ct.x, ct.y);
+      if (ai >= 0 && b.plate[ai] > 0) {
+        plateDemote(b, ai);
+        const px = b.pos.x - a.pos.x, py = b.pos.y - a.pos.y, pd = Math.hypot(px, py) || 1;
+        b.vel.x += (px / pd) * CFG.hitKnock;
+        b.vel.y += (py / pd) * CFG.hitKnock;
+        const hev = { by: a.slot, to: b.slot, dealt: 0, kill: false, x: b.pos.x, y: b.pos.y, aFl: a.fl.u.slice(), ax: a.pos.x, ay: a.pos.y, aAng: a.wAngle, aW: a.weapon, spin: Math.abs(a.spin), dmg: a.dmg, abs: 1 };   // abs: 1 flags the absorbed blow
+        if (WEAPONS[a.weapon].lead || WEAPONS[a.weapon].headLead) hev.aSp = a.spin;
+        emit(G, 'hit', hev);
+        return;
+      }
+    }
+
     /* ALLCUT — EVERY weapon cuts on body touch.
    * This RETIRES the PROJECTILE-WEAPON rule (ranged weapons deal no spine damage) AND its last
    * remnant, the shield's tangential no-damage clause. The knock-only contact class is GONE:
@@ -2133,7 +2252,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     b.vel.y += (ky / kd) * CFG.hitKnock;
     const dealt = a.dmg;
     b.hp = Math.max(0, b.hp - dealt);
-    grow(G, a);
+    grow(G, a, ct.x, ct.y);
     if (a.weapon === 'wand' && WEAPONS.wand.trait.fig > 0) tryFig(G, WEAPONS.wand, a, b);   // bloom-r73 — the spine touch blooms too (allcut: every touch is a wand hit)
 
     const kill = b.hp <= 0;
@@ -2765,8 +2884,43 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     }
   }
 
+  /* the TRUE CONTACT POINT of a shot against a body: the surface point of the hitting geometry,
+   * facing the body's centre — a plain shot is a disc, a RETURNING shot's hitbox its DRAWN ARC.*/
+  function shotContact(G, st, fx, fy) {
+    if (st.returns) {
+      const BC = boomCircles(G, st, BOOM_CS);
+      let best = Infinity, bx = 0, by = 0;
+      for (let i = 0; i < BC.length; i += 3) {
+        const dx = fx - BC[i], dy = fy - BC[i + 1];
+        const d = Math.hypot(dx, dy);
+        const g = d - BC[i + 2];
+        if (g < best) { best = g; const u = d > 1e-9 ? BC[i + 2] / d : 0; bx = BC[i] + dx * u; by = BC[i + 1] + dy * u; }
+      }
+      return { x: bx, y: by };
+    }
+    const dx = fx - st.x, dy = fy - st.y, d = Math.hypot(dx, dy) || 1;
+    return { x: st.x + (dx / d) * st.r, y: st.y + (dy / d) * st.r };
+  }
+
   function shotHitBody(G, fs, st, foe, bd) {
     const owner = fs[st.o];
+    const ct = shotContact(G, st, foe.pos.x, foe.pos.y);
+    /* BULWARK — THE PLATED ARC ABSORBS: the shot's contact arc decides, as a blade's. The shot
+     * dies like a landed one (damageless) and the victim takes the knock; the hit never happens —
+     * no HP loss, no growth, no rider (poison, chill, bloom, pool).*/
+    if (foe.plate.length) {
+      const ai = plateArc(foe, ct.x, ct.y);
+      if (ai >= 0 && foe.plate[ai] > 0) {
+        plateDemote(foe, ai);
+        const vd = Math.hypot(st.vx, st.vy) || 1;            // knock along the shot's flight line — except a NAIL's (pinfix-r45): its velocity is the frozen impact facing (art), so the knock reads the stored inward normal pnx/pny instead
+        const kx = st.pinned ? st.pnx : st.vx / vd, ky = st.pinned ? st.pny : st.vy / vd;
+        foe.vel.x += kx * CFG.hitKnock;
+        foe.vel.y += ky * CFG.hitKnock;
+        G.stats.landed++;
+        emit(G, 'hit', { by: owner.slot, to: foe.slot, dealt: 0, kill: false, shot: true, sid: st.sid, abs: 1, x: foe.pos.x, y: foe.pos.y, sx: st.x, sy: st.y, sr: st.r, gap: bd - (CFG.bodyR + st.r), spin: Math.abs(owner.spin), dmg: owner.dmg });
+        return;
+      }
+    }
     const dealt = st.dmg;
     foe.hp = Math.max(0, foe.hp - dealt);
     const vd = Math.hypot(st.vx, st.vy) || 1;            // knock along the shot's flight line — except a NAIL's (pinfix-r45): its velocity is the frozen impact facing (art), so the knock reads the stored inward normal pnx/pny instead
@@ -2774,7 +2928,7 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
     foe.vel.x += kx * CFG.hitKnock;
     foe.vel.y += ky * CFG.hitKnock;
     G.stats.landed++;
-    if (!st.returns) grow(G, owner);
+    if (!st.returns) grow(G, owner, ct.x, ct.y);
     /* affinity-r66 — THE TRIO'S VICTIM-SIDE PAYLOADS: the page's KIND carries its element (AFFINITY's
      * keys are tome-only art kinds), applied on the damaging hit — the ONE trigger. Fire needs no
      * status: its payload was the birth size (trioRadius). Kills apply too — the round ends anyway.*/
@@ -3432,6 +3586,12 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
    * fed by the 'parry' event, aged on the fxRate'd wall clock, never read by the sim. Zero rng — the position seeds the spark phase.*/
   const parryFx = [];
   const PARRY_FX_T = 21;
+  /* BULWARK — THE PLATE MOMENTS (renderer-only; the sim never reads this). plateState: per SLOT,
+   * the plate array as it was at the last drawn frame — the difference against the live array
+   * fires the break pop and the seal flash (a NEW array = the round rolled, so no moment).*/
+  const plateState = [{ arr: null, vals: [] }, { arr: null, vals: [] }];
+  const plateFx = [[], []];
+  const PLATE_FX_T = 18;
   const addGlint = (x, y, s) => { if (parryFx.length < 8) parryFx.push({ x, y, age: 0, s }); };
   const CGHOST_T = Math.round(0.25 * CFG.tickHz);
   function resetFx() {
@@ -3603,6 +3763,73 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
    * viewA = leftover tick fraction, set in the frame loop). vx/vy/va are the
    * blended body centre and weapon angle; the sim's f.pos/f.wAngle stay the
    * exact tick poses the laws use. Pattern from sumo_war (2).html.*/
+  /* BULWARK — THE PLATE RING, drawn from the sim's own array (no copy, no drift). The plates sit
+   * INSIDE the rim (0.72..0.97 of the body radius) — outside-rim plating would be a NEW hitbox
+   * surface. Each plate wears the shield's face language (ink rim, boss, plank line, rivets) in
+   * wood (KW) or steel (KS), and covers its WHOLE arc, as the absorb zone does.*/
+  function drawPlates(f, vx, vy) {
+    const ring = f.plate;
+    const n = ring.length, step = TAU / n;
+    const r0 = CFG.bodyR * 0.72, r1 = CFG.bodyR * 0.97, mid = (r0 + r1) / 2;
+    for (let j = 0; j < n; j++) {
+      const s = ring[j];
+      if (!s) continue;
+      const a0 = j * step, a1 = (j + 1) * step, ac = (j + 0.5) * step;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(vx, vy, r1, a0, a1);
+      ctx.arc(vx, vy, r0, a1, a0, true);
+      ctx.closePath();
+      ctx.fillStyle = s === 2 ? KS : KW;
+      ctx.fill();
+      ctx.strokeStyle = TH.botInk; ctx.lineWidth = 3; ctx.stroke();
+      ctx.strokeStyle = KD; ctx.lineWidth = 1.6;            // rim
+      ctx.beginPath(); ctx.arc(vx, vy, r1 - 3.5, a0 + 0.02, a1 - 0.02); ctx.stroke();
+      ctx.strokeStyle = KD; ctx.lineWidth = 2.5;            // plank
+      ctx.beginPath();
+      ctx.moveTo(vx + Math.cos(ac) * (r0 + 5), vy + Math.sin(ac) * (r0 + 5));
+      ctx.lineTo(vx + Math.cos(ac) * (r1 - 8), vy + Math.sin(ac) * (r1 - 8));
+      ctx.stroke();
+      ctx.fillStyle = KD;                                   // boss
+      ctx.beginPath(); ctx.arc(vx + Math.cos(ac) * mid, vy + Math.sin(ac) * mid, 4.6, 0, TAU); ctx.fill();
+      ctx.fillStyle = s === 2 ? KW : KS;                    // its light
+      ctx.beginPath(); ctx.arc(vx + Math.cos(ac) * (mid - 1.3), vy + Math.sin(ac) * (mid - 1.3), 1.6, 0, TAU); ctx.fill();
+      ctx.fillStyle = KD;                                   // rivets
+      for (let k = -1; k <= 1; k += 2) {
+        const ra = ac + k * step * 0.28;
+        ctx.beginPath(); ctx.arc(vx + Math.cos(ra) * mid, vy + Math.sin(ra) * mid, 2.1, 0, TAU); ctx.fill();
+      }
+      ctx.restore();
+    }
+  }
+  /* the two plate moments: the break pop and the seal flash. Renderer-only.*/
+  function drawPlateFx(f, vx, vy) {
+    const list = plateFx[f.slot];
+    if (!list.length) return;
+    const r0 = CFG.bodyR * 0.72, r1 = CFG.bodyR * 0.97;
+    for (const fx of list) {
+      const p = Math.min(1, fx.t / PLATE_FX_T), a = fx.ang;
+      ctx.save();
+      if (fx.kind === 'break') {
+        ctx.globalAlpha = (1 - p) * 0.95;
+        ctx.strokeStyle = TH.botInk; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(vx, vy, r1 + 3 * p, a - 0.26, a + 0.26); ctx.stroke();
+        ctx.lineWidth = 2;
+        for (let k = -2; k <= 2; k++) {
+          const sa = a + k * 0.10, rr = r1 + 2 + 8 * p;
+          ctx.beginPath();
+          ctx.moveTo(vx + Math.cos(sa) * (rr - 6), vy + Math.sin(sa) * (rr - 6));
+          ctx.lineTo(vx + Math.cos(sa) * rr, vy + Math.sin(sa) * rr);
+          ctx.stroke();
+        }
+      } else {
+        ctx.globalAlpha = (1 - p) * 0.9;
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 2 + 3 * (1 - p);
+        ctx.beginPath(); ctx.arc(vx, vy, r0 + (r1 - r0) * (0.4 + 0.6 * p), 0, TAU); ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
   function drawBody(f, vx, vy) {
     const col = COLS[f.idx];
     const al = f.alive ? 1 : 0.5;
@@ -3620,6 +3847,26 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
       ctx.fillStyle = '#fff';
       ctx.beginPath(); ctx.arc(vx, vy, CFG.bodyR, 0, TAU); ctx.fill();
       ctx.restore();
+    }
+    /* BULWARK — THE PLATE RING. The dead keep no plate (the faded disc is the death mark). The
+   * moments are the difference against the last drawn frame (a NEW array = the round rolled).*/
+    const ring = f.plate;
+    if (f.alive && ring.length) {
+      const ps = plateState[f.slot];
+      if (ps.arr !== ring) { ps.arr = ring; ps.vals = ring.slice(); plateFx[f.slot].length = 0; }
+      else {
+        let filled = 0, wasFilled = 0;
+        for (let j = 0; j < ring.length; j++) {
+          const pv = ps.vals[j] || 0;
+          if (ring[j]) filled++;
+          if (pv) wasFilled++;
+          if (ring[j] < pv) { const list = plateFx[f.slot]; if (list.length < 8) list.push({ kind: 'break', ang: (j + 0.5) * (TAU / ring.length), t: 0 }); }
+          ps.vals[j] = ring[j];
+        }
+        if (filled === ring.length && wasFilled < ring.length) { const list = plateFx[f.slot]; if (list.length < 8) list.push({ kind: 'seal', ang: 0, t: 0 }); }
+      }
+      drawPlates(f, vx, vy);
+      drawPlateFx(f, vx, vy);
     }
     /* affinity-r66 — THE STATUS RINGS: ONE design, fixed inside-out slots — DoT tight against
    * the body (it is eating him), the curse band outside it, the buff slot outermost (RESERVED
@@ -4514,6 +4761,11 @@ const WEAPON_IDS = ['bow', 'hammer', 'dagger', 'axe', 'sword', 'spear', 'mace', 
 
     // flash decay (renderer-side timing)
     for (let i = 0; i < 2; i++) { flashV[i] *= Math.pow(0.88, dtFrames); poisonPulse[i] *= Math.pow(0.82, dtFrames); }   // affinity-r66: the bite flash decays on the same wall-time clock (fxRate'd dtFrames — it throbs in slow-mo, freezes at the KO) // the flip transition's clock lives in the view build (same frozen dtFrames)
+    for (let i = 0; i < 2; i++) {
+      const list = plateFx[i];
+      for (const fx of list) fx.t += dtFrames;
+      while (list.length && list[0].t > PLATE_FX_T) list.shift();
+    }
   }
 
   // @@app/loop

@@ -87,9 +87,14 @@ const core=base.slice(base.indexOf(op)+op.length, base.lastIndexOf('})();'));
 const fake=()=>new Proxy(function(){},{get(x,p){if(p===Symbol.toPrimitive)return ()=>0;if(!(p in x))x[p]=fake();return x[p];},set(x,p,v){x[p]=v;return true;},apply(){return fake();}});
 const ARGS={getElementById:()=>fake(),createElement:()=>fake(),querySelectorAll:()=>[],addEventListener:()=>{},activeElement:null};
 const WIN={devicePixelRatio:1,innerWidth:1200,innerHeight:900,addEventListener:()=>{}};
+/* The BULWARK probe surface: the plate seam's own functions, injected at the boot-guard point so
+ * the probe drives THE SAME code the sim runs (the seam-proof house rule: never re-implement the
+ * law inside the test). The functions are hoisted declarations, so the injection may name them
+ * before their definition — the guard point sits earlier in the file than the sim. */
+const PROBE='const __probe={bladeVsBody,shotHitBody,grow,dotStep,plateArc,plateNearest,plateGain,plateRing,bladeBodyContact,bladeCircles,leadFlip,CFG,TAU};';
 const load=(inject)=>new Function('document','window','performance','requestAnimationFrame','console',
-  (inject? core.replace('const TRAIT_DERIVABLE', inject+'\n  const TRAIT_DERIVABLE') : core)
-  +`\n;return {WEAPONS,WEAPON_IDS,FIGHTERS,newGame,tick,CYCLE_STEPS,MULT_STEPS,APP_META_BRIEFS:null};`)(ARGS,WIN,{now:()=>0},()=>0,console);
+  core.replace('const TRAIT_DERIVABLE', (inject?inject+'\n  ':'')+PROBE+'\n  const TRAIT_DERIVABLE')
+  +`\n;return {WEAPONS,WEAPON_IDS,FIGHTERS,newGame,tick,CYCLE_STEPS,MULT_STEPS,__probe,APP_META_BRIEFS:null};`)(ARGS,WIN,{now:()=>0},()=>0,console);
 let pass=0,fail=0; const ok=(n,c,d)=>{c?pass++:fail++;console.log(`  ${c?'ok  ':'FAIL'} ${n}${d?'  — '+d:''}`);};
 /* Item-3 triage 2026-11-10: a RETIRED cell is printed, counted, and named in the summary — never
  * deleted silently. The failure mode this kills is "red becomes normal"; its twin is "gone becomes
@@ -98,7 +103,7 @@ let retiredN=0; const retired=(n,d)=>{retiredN++;console.log(`  RETIRED ${n}${d?
 
 console.log('seam probe — the seam-r30 hooks (authored brief + shot-cadence multiplier)');
 const api=load(null);
-const {WEAPONS,WEAPON_IDS,FIGHTERS,newGame,tick}=api;
+const {WEAPONS,WEAPON_IDS,FIGHTERS,newGame,tick,__probe}=api;
 // (a) briefs
 const spearBrief=WEAPONS.spear.brief;
 ok('the spear row carries an AUTHORED brief', typeof spearBrief==='string'&&spearBrief.length>0, `"${spearBrief}"`);
@@ -617,6 +622,168 @@ ok('I1 SOURCE LAW: every same-owner shot pair skips the cross test (the generali
   ok('I7 the FAN IDENTITY is untouched: the knives keep their 3-anchor static volley — the rain is an accelerating STREAM, not a fan',
     (WEAPONS.knives.shot.volley||[]).length===3, `knives anchors ${JSON.stringify(WEAPONS.knives.shot.volley)}`);
 }
+
+/* ── J — BULWARK: the shield's plate trait ────────────────────────────────────────────────────
+ * The shield PLATES ITS WIELDER: every blow it lands adds a plate around its wielder's body,
+ * and a plate eats one enemy blow instead of HP. The mechanism is inert under the default play
+ * (RECIPES trap 6), so every cell here FORCES the shield or drives the hit resolution directly.
+ * The probe never re-implements the law: it calls the sim's OWN functions through __probe.
+ */
+console.log("J — BULWARK: the shield's plate trait (trait.plate / trait.plateN)");
+const TAU=Math.PI*2, NP=3;
+const units=(f)=>f.plate.reduce((a,b)=>a+b,0);
+const fight=(seed,ws,cast)=>{ const G=newGame(seed,{weapons:ws,cast:cast||[0,1]}); let n=0; while(G.phase!=='fight'&&n++<3000) tick(G); return G; };
+/* a synthetic shot, placed so that its CONTACT POINT sits at a chosen bearing from the defender:
+ * the shot's surface point toward the body is on the shot->body line, so the arc index is exact.*/
+const shotAt=(owner,foe,ang,kind,sid)=>({ o:owner.slot, x:foe.pos.x+Math.cos(ang)*120, y:foe.pos.y+Math.sin(ang)*120,
+  vx:-Math.cos(ang)*600, vy:-Math.sin(ang)*600, r:6, dmg:5, sid:sid||1, kind:kind||'arrow', pinned:false, returns:false });
+ok('J0 the shield row carries the BULWARK trait with its authored brief and line',
+  WEAPONS.shield.trait.plate===1 && WEAPONS.shield.trait.plateN===NP &&
+  WEAPONS.shield.brief==='+PLATE / Hit' &&
+  WEAPONS.shield.line==='each blow it lands plates its wielder · a plate eats one hit · three seal the ring, then it hardens to steel',
+  `trait ${JSON.stringify(WEAPONS.shield.trait)}, brief "${WEAPONS.shield.brief}"`);
+ok('J0b no OTHER row carries the plate axis (the shield is the only plate carrier)',
+  WEAPON_IDS.filter(id=>id!=='shield').every(id=>!((WEAPONS[id].trait||{}).plate)),
+  WEAPON_IDS.filter(id=>id!=='shield').join(' '));
+{ // J1 — the GAIN, exactly: one unit per landed blow, up to the 2N ceiling. Driven through the
+  // sim's own grow() so the probe never re-implements the law; the contact bearing names the arc.
+  const G=fight(3,['shield','dagger']);
+  const S=G.fighters[0];
+  const ang=Math.PI/6, cx=S.pos.x+100*Math.cos(ang), cy=S.pos.y+100*Math.sin(ang);
+  const seq=[]; S.plate=[0,0,0];
+  for(let k=0;k<8;k++){ __probe.grow(G,S,cx,cy); seq.push(S.plate.join(',')); }
+  const us=seq.map(x=>x.split(',').reduce((a,b)=>a+Number(b),0));
+  ok('J1 GAIN (exact): every landed blow adds exactly one unit until the ring is all steel, then the ring stops',
+    us.join(',')==='1,2,3,4,5,6,6,6', `unit ladder ${us.join(',')}`);
+  ok('J1b the GAIN puts the plate on the arc the contact bearing names (the wall grows where it fights)',
+    seq[0]==='1,0,0'&&seq[1]==='1,0,1'&&seq[2]==='1,1,1'&&seq[3]==='2,1,1',
+    `states ${seq.slice(0,4).join(' | ')} at contact bearing 30°`);
+}
+{ // J1c — the GAIN, live: the ring rises ONLY on the wielder's own landed blows and never exceeds 2N
+  const G=fight(3,['shield','dagger']);
+  const S=G.fighters[0];
+  let prev=0,hits=0,rises=0,illegal=0,maxU=0,seal=false;
+  while(!G.over&&G.t<20000){
+    tick(G);
+    let h=0; for(const e of G.events) if(e.kind==='hit'&&e.by===0) h++;
+    const u=units(S);
+    if(u>prev){ rises++; if(!h) illegal++; }
+    if(u>maxU) maxU=u;
+    if(S.plate.filter(x=>x===1).length===3) seal=true;
+    prev=u; hits+=h;
+  }
+  ok('J1c GAIN (live): the ring rises only on the wielder\'s own landed blows, seals at N wood and tops out at 2N',
+    hits>=6&&illegal===0&&maxU===2*NP&&seal, `${hits} shield hits, ${rises} rises (${illegal} without a hit), peak ${maxU} units, the 3-wood seal seen ${seal}`);
+}
+{ // J2 — SEAL: the live ring passes through the N-wood seal and on to the all-steel overplate
+  const G=fight(3,['shield','dagger']);
+  const S=G.fighters[0];
+  const states=new Set();
+  while(!G.over&&G.t<20000){ tick(G); states.add(S.plate.join(',')); }
+  ok('J2 SEAL: the ring seals at N WOOD plates first, and the overplate hardens them to steel',
+    states.has('1,1,1')&&states.has('2,2,2'), `plate states seen: ${[...states].join(' | ')}`);
+}
+{ // J3 — POSITIONAL SPEND (blade): the SAME contact lands through a gap and is absorbed on the plated arc
+  const G=fight(3,['dagger','shield']);
+  const A=G.fighters[0], B=G.fighters[1];
+  B.pos.x=500; B.pos.y=500; A.pos.x=630; A.pos.y=500; A.wAngle=Math.PI; A.spin=3.5; A.bladeStuck=false;
+  const arr=[]; __probe.bladeCircles(A.pos.x,A.pos.y,A.wAngle,A.weapon,arr,A.fl.u,__probe.leadFlip(A.weapon,A.spin),A.lenStep);
+  const ct=__probe.bladeBodyContact(arr,B.pos.x,B.pos.y);
+  const bearing=Math.atan2(ct.y-B.pos.y,ct.x-B.pos.x);
+  const arc=Math.floor((((bearing%TAU)+TAU)%TAU)/(TAU/NP));
+  const D0=A.dmg, S0=Math.abs(A.spin);
+  B.plate=[0,0,0]; B.hp=100; B.vel.x=0; B.vel.y=0; G.events.length=0;
+  __probe.bladeVsBody(G,A);
+  const landedHp=B.hp, landedDmg=A.dmg, landedSpin=Math.abs(A.spin);
+  A.bladeStuck=false; A.dmg=D0; A.spin=S0; B.plate=[0,0,0]; B.plate[arc]=1; B.hp=100; B.vel.x=0; B.vel.y=0; G.events.length=0;
+  __probe.bladeVsBody(G,A);
+  const absHp=B.hp, absDmg=A.dmg, absSpin=Math.abs(A.spin), knock=Math.hypot(B.vel.x,B.vel.y);
+  const absEv=G.events.find(e=>e.kind==='hit');
+  ok('J3 POSITIONAL SPEND (blade): the same blow lands through an empty arc and is absorbed on the plated arc',
+    ct.gap<64 && landedHp<100 && absHp===100 && B.plate[arc]===0 && !!absEv && absEv.abs===1,
+    `contact gap ${ct.gap.toFixed(1)}px at bearing ${(bearing*180/Math.PI).toFixed(0)}° (arc ${arc}); gap-case hp ${landedHp}, plated-case hp ${absHp}, plate now ${B.plate[arc]}`);
+  ok('J4 GROWTH DENIAL: an absorbed blow grows the attacker NEITHER its weapon trait NOR its fighter skill (the gap control grows both)',
+    landedDmg>D0 && landedSpin>S0 && absDmg===D0 && absSpin===S0,
+    `gap: dmg ${D0}->${landedDmg}, |spin| ${S0}->${landedSpin}; absorb: dmg ${absDmg}, |spin| ${absSpin}`);
+  ok('J5 KNOCK KEEPS: an absorbed blow still knocks the victim (CFG.hitKnock, as normal)',
+    Math.abs(knock-130)<1e-6, `victim speed after the absorb ${knock.toFixed(2)} (CFG.hitKnock 130)`);
+}
+{ // J6 — POSITIONAL SPEND (shot): the contact arc decides, and the shot dies damageless
+  const G=fight(3,['dagger','shield']);
+  const D=G.fighters[0], B=G.fighters[1];
+  B.pos.x=500; B.pos.y=500; D.pos.x=380; D.pos.y=500;
+  const ang=Math.PI/6;
+  B.plate=[0,0,0]; B.hp=100; B.vel.x=0; B.vel.y=0; G.events.length=0;
+  __probe.shotHitBody(G,G.fighters,shotAt(D,B,ang),B,120);
+  const hp1=B.hp, v1=Math.hypot(B.vel.x,B.vel.y);
+  B.plate=[1,0,0]; B.hp=100; B.vel.x=0; B.vel.y=0; G.events.length=0;
+  __probe.shotHitBody(G,G.fighters,shotAt(D,B,ang),B,120);
+  const hp2=B.hp, v2=Math.hypot(B.vel.x,B.vel.y), ev=G.events.find(e=>e.kind==='hit');
+  ok('J6 POSITIONAL SPEND (shot): the same shot lands through an empty arc and is absorbed on the plated arc, and the knock still lands on the absorb',
+    hp1<100 && hp2===100 && B.plate[0]===0 && !!ev && ev.abs===1 && Math.abs(v2-130)<1e-6,
+    `gap-case hp ${hp1} knock ${v1.toFixed(1)}; plated-case hp ${hp2} knock ${v2.toFixed(1)}, plate 1 -> ${B.plate[0]}`);
+}
+{ // J7 — STEEL eats two blows: steel -> wood -> gone
+  const G=fight(3,['dagger','shield']);
+  const D=G.fighters[0], B=G.fighters[1];
+  B.pos.x=500; B.pos.y=500;
+  const ang=Math.PI/6;
+  B.plate=[2,0,0];
+  __probe.shotHitBody(G,G.fighters,shotAt(D,B,ang),B,120);
+  const after1=B.plate[0];
+  __probe.shotHitBody(G,G.fighters,shotAt(D,B,ang),B,120);
+  const after2=B.plate[0];
+  const hp0=B.hp;
+  __probe.shotHitBody(G,G.fighters,shotAt(D,B,ang),B,120);
+  ok('J7 STEEL DEMOTION: steel eats two blows (steel -> wood -> gone) and the emptied arc lets the next blow through',
+    after1===1 && after2===0 && B.plate[0]===0 && B.hp<hp0, `2 -> ${after1} -> ${after2} -> ${B.plate[0]}, then hp ${hp0} -> ${B.hp}`);
+}
+{ // J8 — RIDERS DENIED on an absorb: no venom, no burning pool
+  const G=fight(3,['tome','shield']);
+  const D=G.fighters[0], B=G.fighters[1];
+  B.pos.x=500; B.pos.y=500;
+  B.plate=[1,0,0]; B.dot=null; G.events.length=0;
+  __probe.shotHitBody(G,G.fighters,shotAt(D,B,Math.PI/6,'halo'),B,120);
+  const poisoned=!!B.dot;
+  const G2=fight(3,['scroll','shield']);
+  const D2=G2.fighters[0], B2=G2.fighters[1];
+  B2.pos.x=500; B2.pos.y=500; B2.plate=[1,0,0]; G2.events.length=0;
+  __probe.shotHitBody(G2,G2.fighters,shotAt(D2,B2,Math.PI/6,'spell'),B2,120);
+  const pools=G2.pools.length;
+  ok('J8 RIDERS DENIED: an absorbed blow carries no venom and leaves no burning pool',
+    !poisoned && pools===0, `venom applied ${poisoned}, burning pools ${pools}`);
+}
+{ // J9 — DoT passes straight through the plates
+  const G=fight(3,['dagger','shield']);
+  const B=G.fighters[1];
+  B.plate=[2,2,2]; B.hp=100; B.dot={k:'poison',n:3,acc:0,ttl:1000};
+  const hp0=B.hp; let ticks=0;
+  while(B.hp===hp0&&ticks++<300) __probe.dotStep(G,B);
+  ok('J9 DoT PASSES THROUGH: an already-applied venom tick still bites a fully plated fighter',
+    B.hp<hp0, `hp ${hp0} -> ${B.hp} after ${ticks} dotSteps (the ring read ${B.plate.join(',')})`);
+}
+{ // J10 — the round-reset LAW: the ring clears every round. The roll REBUILDS the ring empty,
+  // so the ring is read at the roll (empty) against the tick before it (the round's last ring).
+  const G=fight(3,['shield','dagger']);
+  const S=G.fighters[0];
+  let maxU=0, rolls=0, resetBad=0, prevU=0;
+  while(!G.over&&G.t<20000){
+    tick(G);
+    for(const e of G.events) if(e.kind==='roll'){ rolls++; if(S.plate.some(x=>x!==0)||prevU===0) resetBad++; }
+    prevU=units(S);
+    if(prevU>maxU) maxU=prevU;
+  }
+  ok('J10 the plate ring obeys the ROUND-RESET LAW: the ring is rebuilt empty at the roll, over a ring that was full',
+    maxU>0 && rolls>0 && resetBad===0, `${rolls} roll(s) after the reveal, peak ${maxU} units, ${resetBad} bad resets`);
+}
+const g11=threw("WEAPONS.shield.trait.plateN = 0;");
+ok('GUARD FIRES: a plateN of 0 is a boot error (the arc count divides the contact angle)', !!g11&&/trait\.plateN 0 is not an integer/.test(g11), g11?g11.slice(0,96):'no throw — the angle math would divide by zero');
+const g12=threw("WEAPONS.shield.trait.plateN = 1.5;");
+ok('GUARD FIRES: a fractional plateN is a boot error (it would slice the ring)', !!g12&&/trait\.plateN 1\.5 is not an integer/.test(g12), g12?g12.slice(0,96):'no throw');
+const g13=threw("delete WEAPONS.shield.trait.plateN;");
+ok('GUARD FIRES: trait.plate without trait.plateN is a boot error (no silent default)', !!g13&&/needs trait\.plateN/.test(g13), g13?g13.slice(0,96):'no throw');
+const g14=threw("delete WEAPONS.shield.brief;");
+ok('GUARD FIRES: a plate trait with no authored brief is a boot error (the label guard)', !!g14&&/author a `brief`/.test(g14), g14?g14.slice(0,96):'no throw');
 
 /* Session 3 (2026-11-11): a retirement is a RESOLVED cell, not a failure — the denominator
  * includes them so a clean suite reads "N/N passed, M retired, 0 failed" and exits 0. fail>0

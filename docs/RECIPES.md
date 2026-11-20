@@ -13,12 +13,12 @@ placeholder — no spin growth, the usual +0.7 damage growth and no other axis �
 nothing that tells them apart.
 
 <!-- WEAPON-TRAIT-MEMBERSHIP -->
-**Weapons that still need a designed trait (9 of 22):** `hammer`, `axe`, `sword`, `mace`, `shield`, `nunchaku`, `scythe`, `katana`, `orb`
+**Weapons that still need a designed trait (8 of 22):** `hammer`, `axe`, `sword`, `mace`, `nunchaku`, `scythe`, `katana`, `orb`
 <!-- /WEAPON-TRAIT-MEMBERSHIP -->
 
 The list is DERIVED, not typed: `tools/lib/weapon-traits.mjs` reads the canonical's weapon rows and counts a weapon as
 designed when its trait is not the placeholder. The trait decides, not the line — the line is only the label, and a
-bespoke line proves nothing (the Shield's line reads like a design while its trait is still the placeholder).
+bespoke line proves nothing (the Shield's line read like a design while its trait was still the placeholder).
 `tools/lint-docs.mjs` checks this list against that derivation on every run, so the moment you design one of these,
 the lint tells you to move it here.
 
