@@ -181,9 +181,9 @@ The cleanup line deletes `scratch/land.mjs` but NEVER `scratch/t-lib.mjs`, `scra
 - Law table: renaming a quoted assert fails lint until the anchor is updated (by design). New law =
   new row; ids C1-C6, S1-S6 required, unique; status in {probed, partial, owner-run only, unprobed};
   six cells; consistency rules; anchors without backtick or |. Retire = remove row + dated entry (LAWS has no Retired-rules section since #806).
-- Trait count: it is pinned in ONE place only - `N of 22 weapon traits landed` in `docs/LAWS.md`, the sole
-  authority. `docs/GAMES.md` does NOT carry a count (it moved to LAWS at #747). lint-docs checks LAWS and
-  fails if README or AGENTS states a DIFFERENT count.
+- Trait membership: DERIVED from the canonical's weapon rows by `tools/lib/weapon-traits.mjs` and stated in ONE
+  place only - `docs/RECIPES.md` §"Which weapons still need a trait". No document carries the count; a doc that
+  needs it points at RECIPES. lint-docs compares the list against the derivation on every run.
 - New lint check => negative controls (one mutation per control + a passing control). 3c ran 9 + C9.
 - Stale-but-historical: chronicle says lengrow-bake --verify exits 2 (true then, now 0) — leave it.
 - Line cap (B3E): LINE_CAP = 3000 BYTES (Buffer.byteLength, so 1,501 two-byte characters fail) on docs/GAMES.md. Check-only. Run docreflow before lint if a new GAMES entry trips it.

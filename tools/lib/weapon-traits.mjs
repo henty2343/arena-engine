@@ -22,7 +22,7 @@
 import { readFileSync } from 'node:fs';
 
 /* The placeholder text: a line that ends with the generic damage-growth description. */
-const GENERIC_LINE = /gains damage per (?:damaging )?hit\.?$/;
+export const GENERIC_LINE = /gains damage per (?:damaging )?hit\.?$/;
 
 /* The roster rows live between `const WEAPONS = {` and the id list that follows it. */
 export function weaponRows(src) {
@@ -46,11 +46,39 @@ export function weaponLine(body) {
   return m ? m[1].trim() : '';
 }
 
+/* THE PLACEHOLDER TRAIT - what an UNDESIGNED weapon carries: no spin growth, the plain +0.7 damage
+ * growth, and no other axis. A weapon is DESIGNED when its trait differs from this.
+ *
+ * The membership used to be decided by the LINE (a designed weapon's line says something specific
+ * about its trait; an undesigned one still carries the generic placeholder sentence). That was the
+ * wrong signal, and it hid a real case: the SHIELD's line is bespoke ("parries - and cuts on touch
+ * like every weapon") while its trait was still the placeholder, so the split counted the Shield as
+ * landed and an agent reading the list would have skipped it. The TRAIT is the truth - it is the
+ * thing that has to be designed - and the line is the label for it. */
+const PLACEHOLDER_TRAIT = { spin: 0.0, dmg: 0.7 };
+
+/* The trait object a weapon row declares, or null if it declares none. */
+export function weaponTrait(body) {
+  const m = body.match(/\btrait:\s*\{([^}]*)\}/);
+  if (!m) return null;
+  const t = {};
+  for (const [, k, v] of m[1].matchAll(/(\w+)\s*:\s*(-?[\d.]+)/g)) t[k] = Number(v);
+  return t;
+}
+
+/* True when the trait IS the placeholder - nothing designed about it. */
+export function isPlaceholderTrait(t) {
+  if (!t) return true;
+  const keys = Object.keys(t).sort();
+  if (keys.length !== 2 || keys[0] !== 'dmg' || keys[1] !== 'spin') return false;
+  return t.spin === PLACEHOLDER_TRAIT.spin && t.dmg === PLACEHOLDER_TRAIT.dmg;
+}
+
 /* The membership: which weapons are landed, and which still need a designed trait. */
 export function weaponTraitMembership(src) {
   const landed = [], blank = [];
   for (const row of weaponRows(src)) {
-    (GENERIC_LINE.test(weaponLine(row.body)) ? blank : landed).push(row.name);
+    (isPlaceholderTrait(weaponTrait(row.body)) ? blank : landed).push(row.name);
   }
   return { landed, blank, total: landed.length + blank.length };
 }

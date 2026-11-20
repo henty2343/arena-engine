@@ -20,7 +20,7 @@ import path from 'node:path';
 import { citableProbes, manifestErrors } from './lib/manifest.mjs';
 import { wrappable, isTableRow, DEFAULT_MAX } from './lib/reflow.mjs';
 import { scan } from './lib/strip-comments.mjs';
-import { readMembership, weaponAxisSets, registryAxes } from './lib/weapon-traits.mjs';
+import { readMembership, weaponAxisSets, registryAxes, weaponRows, weaponLine, GENERIC_LINE } from './lib/weapon-traits.mjs';
 import { derubLine } from './lib/archaeology.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [], warnings = [];
@@ -67,11 +67,17 @@ const currentState = games.slice(0, csEnd>0?csEnd:games.length);
  * lint only checked that OTHER documents AGREED with LAWS.md. Nothing checked it against the code - and
  * it was in the wrong file: a project-progress counter is not a law.
  *
- * The MEMBERSHIP is derivable. A weapon is designed when its on-screen `line` says something specific
- * about its trait; the ones that are not designed yet still carry the generic placeholder line
- * ("... gains damage per hit"). The derivation reproduces the owner's count exactly (14 of 22) and names
- * the same eight a cold-start agent derived by hand. The list lives in docs/RECIPES.md next to the recipe
- * that uses it, and this check is what keeps it true.
+ * The MEMBERSHIP is derivable. A weapon is DESIGNED when its TRAIT is not the placeholder (no spin
+ * growth, the plain +0.7 damage growth, nothing else); the undesigned ones still carry that default.
+ *
+ * The derivation used to read the on-screen LINE instead, and that was the wrong signal: the SHIELD's
+ * line is bespoke ("parries - and cuts on touch like every weapon") while its trait was still the
+ * placeholder, so the split counted the Shield as landed and the list told an agent to skip it. The
+ * TRAIT is the thing that has to be designed, so the TRAIT decides. The line is the label for it, and
+ * a second check now makes sure a DESIGNED weapon does not hide behind the generic placeholder label.
+ *
+ * The list lives in docs/RECIPES.md next to the recipe that uses it, and this check is what keeps it
+ * true.
  */
 const lawsText = existsSync(path.join(root,'docs/LAWS.md')) ? rd('docs/LAWS.md') : '';
 {
@@ -92,6 +98,15 @@ const lawsText = existsSync(path.join(root,'docs/LAWS.md')) ? rd('docs/LAWS.md')
       const said = block[1].match(/\((\d+) of (\d+)\)/);
       if (said && (+said[1] !== derived.blank.length || +said[2] !== derived.total))
         err(`docs/RECIPES.md says "${said[0]}" but the canonical derives ${derived.blank.length} of ${derived.total}`);
+    }
+    /* A DESIGNED trait must not wear the generic placeholder label: the line is what the audience
+     * reads, so a real trait with a placeholder line is invisible on screen. */
+    const canonSrc = rd('previews/spinclash-preview.html');
+    for (const w of derived.landed) {
+      const body = weaponRows(canonSrc).find(r => r.name === w);
+      if (!body) continue;
+      if (GENERIC_LINE.test(weaponLine(body.body)))
+        err(`the canonical's ${w} row carries a designed trait but its line is still the generic placeholder - the line is the label the audience reads; author it`);
     }
   }
   /* The count is a progress counter, not a law: it must not creep back into a document. A document that
@@ -362,8 +377,6 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
     'scratch/navgen',
     'read all five',
     'read all four',
-    '9 of 22',
-    '13 remaining',
     'fp-multgrow-r42.json',
     'docs/HANDOFF.md'
   ];
@@ -376,6 +389,19 @@ if (existsSync(path.join(root,'AGENTS.md'))) {
         const line = txt.slice(0, txt.indexOf(stale)).split('\n').length;
         err(`${f}:${line} contains stale/non-router text: ${stale}`);
       }
+    }
+    /* A weapon-trait COUNT is a progress fact: it is derived from the canonical and stated in
+     * docs/RECIPES.md. It used to be caught by two hardcoded strings ("9 of 22", "13 remaining") -
+     * which are stale the moment the roster moves, and the first of them is the live count now. The
+     * rule is derived instead: a count of the form "N of 22 weapons/traits" belongs to RECIPES'
+     * membership block and nowhere else. */
+    let body = txt;
+    if (f === 'docs/RECIPES.md') {
+      body = body.replace(/<!-- WEAPON-TRAIT-MEMBERSHIP -->[\s\S]*?<!-- \/WEAPON-TRAIT-MEMBERSHIP -->/, '');
+    }
+    for (const mm of body.matchAll(/\b\d+\s+of\s+22\s+(?:weapon|weapons|trait|traits)\b/gi)) {
+      const line = txt.slice(0, txt.indexOf(mm[0])).split('\n').length;
+      err(`${f}:${line} carries the weapon-trait count ("${mm[0]}") - it is derived from the canonical and stated in docs/RECIPES.md; point at it instead`);
     }
   }
   /* docs-precleanup is a LEGITIMATE recovery tag in the platform docs, so it is checked only where it

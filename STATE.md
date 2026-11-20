@@ -36,14 +36,14 @@ estimate, so a stale figure is never presented as fact.
 | AGENTS.md | 2,909 | measured | always |
 | docs/CODEMAP.md | 2,619 | measured | before opening the canonical |
 | docs/LAWS.md | 4,290 | measured | before any sim/doc edit |
-| docs/RECIPES.md | 1,604 | measured | adding a trait/skill/bot |
-| docs/GAMES.md | 30,404 | measured | GREP ONLY — never load whole |
+| docs/RECIPES.md | 2,016 | measured | adding a trait/skill/bot |
+| docs/GAMES.md | 30,449 | measured | GREP ONLY — never load whole |
 | docs/planned/INDEX.md | 598 | measured | PLANNED engine work only — the island's entry point |
 | docs/planned/SPEC.md | 9,416 | measured | PLANNED engine work only |
 | docs/planned/CONTRACT.md | 4,040 | measured | PLANNED engine work only |
 | docs/planned/BUILD.md | 4,688 | measured | PLANNED engine work only |
 | docs/handoff/HANDOFF.md | 393 | measured | router: freshness check, which handoff file to read |
-| docs/handoff/RUNBOOK.md | 4,853 | measured | before the first delivery (s1, s6); else grep headings |
+| docs/handoff/RUNBOOK.md | 4,857 | measured | before the first delivery (s1, s6); else grep headings |
 
 ## Design state (canonical source: LAWS.md; history: GAMES.md §Current state)
 - The current laws, the weapon-trait count and the law-to-probe table are design facts, NOT generated here.

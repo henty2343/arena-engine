@@ -1,9 +1,10 @@
 # LAWS — the current standing game laws (quick reference)
 
-Contains: the CURRENT mechanical laws of SPINCLASH, the weapon-trait count, and which probe checks each law.
+Contains: the CURRENT mechanical laws of SPINCLASH and which probe checks each law.
 Read when: before any sim or game-doc edit. Token cost: see STATE.md §Documentation cost.
-Canonical for: the current laws — SOLE AUTHORITY for them, for the weapon-trait count, and for the law-to-probe table
-(`tools/lint-docs.mjs` checks the count and the table). On conflict with `docs/GAMES.md` §Current state, this file wins.
+Canonical for: the current laws — SOLE AUTHORITY for them and for the law-to-probe table (`tools/lint-docs.mjs` checks the
+table). The weapon-trait membership is derived and listed in `docs/RECIPES.md`. On conflict with `docs/GAMES.md` §Current state,
+this file wins.
 State as of build `links-r87`. Retired rules are not listed here — git history holds them.
 
 ## Battle structure

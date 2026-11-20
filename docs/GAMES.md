@@ -33,9 +33,9 @@ __
 | Current state | 42 | 88 KB |
 | Weapon art — the closed convention | 671 | 9 KB |
 | Design principles for all games | 749 | 1 KB |
-| Open design questions | 768 | 12 KB |
-| Measured facts | 854 | 0 KB |
-| Testing recipe (headless) | 861 | 17 KB |
+| Open design questions | 768 | 13 KB |
+| Measured facts | 856 | 0 KB |
+| Testing recipe (headless) | 863 | 17 KB |
 
 ---
 
@@ -799,6 +799,8 @@ The doctrine, the measured case against M1, the per-axis cost checklist and the 
 4. **Shield design** — what is a weapon that wins like this? It CUTS on touch like every other weapon, so the
 question is what it is FOR, not what it does. Current state is a placeholder that stalls mirrors;
 the balance pass decides (damage-on-parry? shove-only win condition? cut it?).
+**The trait's design rules are in `docs/RECIPES.md` §The rule every weapon trait follows**: a verb that belongs to the
+weapon, visible in one frame, with the potential to be ridiculous.
 **MEASURED** (first sanctioned `measure.mjs` run, COMPLETE at 484 of 484 cells):
 the shield holder won **0 of 569 rounds in either hand** — 308 rounds as Speedy's weapon across 21 cells,
 261 as Heavy's across 21 cells (the partial figure was Heavy 0 of 229),

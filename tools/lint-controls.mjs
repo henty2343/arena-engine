@@ -125,6 +125,16 @@ const CONTROLS = [
       '## Battle structure\n\nThe round timer was (owner word: "i want it slower") set to 5s.'),
   },
   {
+    name: 'a designed trait must not wear the placeholder label',
+    file: 'previews/spinclash-preview.html',
+    expect: 'carries a designed trait but its line is still the generic placeholder',
+    /* The membership is decided by the TRAIT, and the line is the label the audience reads. A weapon
+     * whose trait is designed but whose line is still the generic placeholder sentence is invisible on
+     * screen. The control strips the spear's line back to the generic one - its trait stays designed,
+     * so the membership is unchanged - and the lint must catch the label. */
+    mutate: (s) => s.replace("line: 'grows 9.6% longer per damaging hit'", "line: 'gains damage per damaging hit'"),
+  },
+  {
     name: 'a retired rule must not be quoted as a live count',
     file: 'docs/GAMES.md',
     expect: 'quotes a stale count',

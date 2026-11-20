@@ -1,6 +1,6 @@
 # RECIPES — add a weapon trait / fighter skill / bot
 
-Contains: the recipes for adding a weapon trait, a fighter skill, or a bot, plus stamp discipline.
+Contains: the rule every weapon trait follows, the recipes for adding a weapon trait, a fighter skill, or a bot, and stamp discipline.
 Read when: you are adding a trait / skill / bot (task tier). Token cost: see STATE.md §Documentation cost.
 Canonical for: the landing recipes. The mechanics they must respect are in `docs/LAWS.md`.
 
@@ -8,16 +8,39 @@ Canonical for: the landing recipes. The mechanics they must respect are in `docs
 
 ## Which weapons still need a trait
 
-The roster is a work in progress. These weapons are not designed yet — their on-screen line still carries the
-generic placeholder, so their trait is a plain damage-growth or spin-growth default:
+The roster is a work in progress. These weapons are not designed yet: their trait is still the plain
+placeholder — no spin growth, the usual +0.7 damage growth and no other axis — so the audience is told
+nothing that tells them apart.
 
 <!-- WEAPON-TRAIT-MEMBERSHIP -->
-**Weapons that still need a designed trait (8 of 22):** `hammer`, `axe`, `sword`, `mace`, `nunchaku`, `scythe`, `katana`, `orb`
+**Weapons that still need a designed trait (9 of 22):** `hammer`, `axe`, `sword`, `mace`, `shield`, `nunchaku`, `scythe`, `katana`, `orb`
 <!-- /WEAPON-TRAIT-MEMBERSHIP -->
 
 The list is DERIVED, not typed: `tools/lib/weapon-traits.mjs` reads the canonical's weapon rows and counts a weapon as
-designed when its `line` says something specific about its trait. `tools/lint-docs.mjs` checks this list against that
-derivation on every run, so the moment you design one of these, the lint tells you to move it here.
+designed when its trait is not the placeholder. The trait decides, not the line — the line is only the label, and a
+bespoke line proves nothing (the Shield's line reads like a design while its trait is still the placeholder).
+`tools/lint-docs.mjs` checks this list against that derivation on every run, so the moment you design one of these,
+the lint tells you to move it here.
+
+## The rule every weapon trait follows
+
+One rule, four tests. It applies to every weapon on the roster, so it is stated once, here.
+
+1. **A trait is a VERB, and the verb belongs to that weapon.** The audience has to understand it without knowing the
+   game: a spear grows longer, a dagger spins faster, a flail adds a chain, a javelin pins. If the verb could belong to
+   any weapon, it belongs to none.
+2. **It has to be visible in one frame.** A trait that only shows as a number — a damage readout, a hidden multiplier —
+   fails. It has to be visible from the stands: the bow shoots faster, the spear grows, the flail gains links, the
+   javelin pins.
+3. **It has to have the potential to be ridiculous.** The spear becomes super long, the dagger spins super fast — funny,
+   exciting, worth watching again. A trait that is merely efficient is a miss.
+4. **It has to match the weapon's role as the audience understands it.** A shield is a defensive weapon — everyone
+   expects that — so its trait is about what it does to itself, not about disabling the opponent.
+
+## Balance comes after the traits
+
+The roster is not balanced and is not meant to be yet. A trait is judged on whether it reads and whether it belongs to
+its weapon — not on whether it fixes a win rate. The balance pass owns every number afterwards.
 
 ## Adding a weapon trait (or a fighter skill)
 
@@ -33,6 +56,8 @@ against its stretched art. Only the spear's `len` is expensive so far. Expensive
 2. Add **ONE** consumer line at the site that already handles that moment. No such site = a new seam: add it there, no framework.
 3. Add a boot guard if the value could break something silently (a division, an index past the baked rows, an unauthored label).
 4. Author `brief` (weapon) / `short` (fighter) if the axis is not plain spin/dmg; the guard throws without it.
+   Author the weapon's `line` in the same landing: the line is the label the audience reads next to the trait, so a
+   designed trait wearing the generic placeholder label is invisible on screen.
 5. Add an assertion to `.qa/seam-proof.mjs`, **including one that proves the guard FIRES** by injecting a bad row.
 6. Update the REGISTRY block.
 
