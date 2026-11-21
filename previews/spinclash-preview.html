@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>spinclash preview — build links-r88</title>
+<title>spinclash preview — build links-r90</title>
 <style>
 /* ---------------------------------------------------------------
    Design tokens — sumo-war UI language (light/dark page chrome).
@@ -78,7 +78,7 @@ body {
 <body>
 <h2 class="sr-only">Two weaponized bots bounce inside a ring of shot, best of three rounds; a dice roll picks each bot's weapon every round, every damaging hit makes the attacker stronger, and a round ends only on a knockout.</h2>
 <div id="tw">
-<p class="sub">Best of 3 · first to 2 round wins · <b id="build">build links-r87</b></p>
+<p class="sub">Best of 3 · first to 2 round wins · <b id="build">build links-r90</b></p>
 <button class="chip" id="pz">Pause</button><button class="chip" id="sl">Slow motion</button><button class="chip" id="ff">Fast forward</button><button class="chip" id="rs">Restart</button><button class="chip" id="ns">New seed</button><button class="chip" id="hb">Hitboxes</button>
 <div class="seed"><label for="sd">Seed</label><input id="sd" type="text" inputmode="numeric" autocomplete="off" spellcheck="false"><button class="chip" id="ld">Load seed</button></div>
 <p class="sub" id="st"></p>
@@ -635,14 +635,14 @@ body {
     spear:  { ...WDEF, name: 'Spear',  len: LT, trait: { spin: 0.0, dmg: 0.3, len: 0.0959 }, lenJ: 69.23 / 113.38, brief: '+DMG +LEN / Hit', line: 'grows 9.6% longer per damaging hit', poly: INGR_SPEAR },
     mace:   { ...WDEF, name: 'Mace',   len: LT, trait: { spin: 0.0, dmg: 0.7 }, line: 'gains damage per damaging hit', poly: INGR_MACE },
     shield: { ...WDEF, name: 'Shield', len: 110, hold: 'tangential',
-      trait: { spin: 0.0, dmg: 0.7, plate: 1, plateN: 3 },
+      trait: { spin: 0.0, dmg: 0.7, plate: 1, plateN: 12 },
       brief: '+PLATE / Hit',
-      line: 'each blow it lands plates its wielder · a plate eats one hit · three seal the ring, then it hardens to steel',
+      line: 'each blow it lands plates its wielder · a plate eats one hit · twelve seal the ring, then it hardens to steel',
       /* BULWARK — THE SHIELD'S TRAIT: the shield PLATES ITS WIELDER. Every blow it lands adds a
-       * plate around its wielder's body; a plate eats one enemy blow instead of HP. N = 3 arcs of
-       * 120°, WORLD-FIXED, so the wall grows where the fight is. Three plates seal the ring;
+       * plate around its wielder's body; a plate eats one enemy blow instead of HP. N = 12 arcs of
+       * 30°, WORLD-FIXED, so the wall grows where the fight is. Twelve plates seal the ring;
        * later blows harden the nearest wood plate to steel (steel eats two), so the ceiling is
-       * 2N = 6 absorbs. The ring clears every round (the LAW). The plate is BODY ARMOUR, never a
+       * 2N = 24 absorbs. The ring clears every round (the LAW). The plate is BODY ARMOUR, never a
        * parry: an absorbed blow denies the attacker's growth and every rider, keeps the knock.*/
       poly: INGR_SHIELD },
     staff:  { ...WDEF, name: 'Staff',  len: 100, lead: -1,

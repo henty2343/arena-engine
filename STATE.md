@@ -6,22 +6,22 @@ Read when: every session, alongside AGENTS.md. Approx token cost: ~1.0k (compute
 
 ## Canonical (the one live game)
 - File: `previews/spinclash-preview.html`
-- md5: `2349ae332994cfe41b8ef6d27ff2c1da`
+- md5: `1820fad22c0e66d0e41d572caa2bb1d5`
 - Lines: 4,963
-- Build stamp (`<title>`): `links-r88`
-- Token cost: **104,618** (chars/4 ESTIMATE — the measured value is in docs/token-costs.json)
+- Build stamp (`<title>`): `links-r90`
+- Token cost: **104,619** (chars/4 ESTIMATE — the measured value is in docs/token-costs.json)
 
 ## Fingerprint baseline
-- Pointer: `.qa/BASELINE` → `fp-flailfix-r88.json`
+- Pointer: `.qa/BASELINE` → `fp-bulwark12-r90.json`
 - Judge: `node .qa/fingerprint.mjs --compare` (8/8 = behaviour-identical, exit 0).
-- Recorded on: canonical md5 `5de162de46eb4fa3204e3ee636f2aff3`, stamp `links-r87` (the baseline file's label is a checkpoint name, not a build stamp).
+- Recorded on: canonical md5 `1820fad22c0e66d0e41d572caa2bb1d5`, stamp `links-r90` (the baseline file's label is a checkpoint name, not a build stamp).
 ## Tooling inventory
 - Root tools (3): `chromecheck.mjs` · `ingest.mjs` · `measure.mjs`
 - scripts/ (1): `run-battery.mjs`
 - tools/ (17, incl. doc/ and lib/): `canon-comments.mjs` · `docs-archaeology.mjs` · `gen-codemap.mjs` · `gen-state.mjs` · `gen-tree.mjs` · `lint-controls.mjs` · `lint-docs.mjs` · `lint-markers.mjs` · `verify.mjs` · `doc/docreflow.mjs` · `doc/navgen.mjs` · `lib/archaeology.mjs` · `lib/load-sim.mjs` · `lib/manifest.mjs` · `lib/reflow.mjs` · `lib/strip-comments.mjs` · `lib/weapon-traits.mjs`
 - scratch/: gitignored RUNTIME temp dir (bake/gate temp copies, battery logs) — not source; nothing in it is tracked except `.gitkeep`.
 - .qa/ proofs (20): `bake-rows.mjs` · `bloom-proof.mjs` · `contact-proof.mjs` · `fingerprint.mjs` · `flip-seeds.mjs` · `flipproof.mjs` · `frame-proof.mjs` · `inscribe.mjs` · `law-proof.mjs` · `leadproof.mjs` · `lengrow-bake.mjs` · `lengrow-build-proof.mjs` · `lengrow-gate.mjs` · `lenstep-proof.mjs` · `pair-proof.mjs` · `seam-proof.mjs` · `shot-proof.mjs` · `stride-proof.mjs` · `strip-hash.mjs` · `verdict-proof.mjs`
-- .qa/ baselines (1): `fp-flailfix-r88.json`
+- .qa/ baselines (1): `fp-bulwark12-r90.json`
 - Probe registry: `tools/manifest.json` — every proof and tool in one list: what it asserts, whether the battery runs it, whether a law row may cite it, whether an agent may run it. Read it before running anything; `tools/lib/manifest.mjs` loads it and checks it is complete.
 
 ## Documentation cost
@@ -37,7 +37,7 @@ estimate, so a stale figure is never presented as fact.
 | docs/CODEMAP.md | 1,729 | estimate | before opening the canonical |
 | docs/LAWS.md | 3,996 | estimate | before any sim/doc edit |
 | docs/RECIPES.md | 1,874 | estimate | adding a trait/skill/bot |
-| docs/GAMES.md | 33,043 | estimate | GREP ONLY — never load whole |
+| docs/GAMES.md | 33,044 | estimate | GREP ONLY — never load whole |
 | docs/planned/INDEX.md | 598 | measured | PLANNED engine work only — the island's entry point |
 | docs/planned/SPEC.md | 9,416 | measured | PLANNED engine work only |
 | docs/planned/CONTRACT.md | 4,040 | measured | PLANNED engine work only |

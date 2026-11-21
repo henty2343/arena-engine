@@ -4,10 +4,10 @@
 Contains: region map, top-level symbol index and no-read data ranges for `previews/spinclash-preview.html`.
 Read when: before opening the canonical. Token cost: see STATE.md §Documentation cost.
 
-Built from md5 `2349ae332994cfe41b8ef6d27ff2c1da` · stamp `links-r88` · 4,963 lines.
+Built from md5 `1820fad22c0e66d0e41d572caa2bb1d5` · stamp `links-r90` · 4,963 lines.
 **Line numbers are valid only at that md5.** Symbol names are the durable handle — grep the name.
 
-Canonical ≈ 104,618 tokens; script block 0 carries 924 comment spans ≈ 46,663 tokens.
+Canonical ≈ 104,619 tokens; script block 0 carries 924 comment spans ≈ 46,663 tokens.
 
 ## Regions
 
@@ -18,7 +18,7 @@ Every line of the file belongs to exactly one region — the generator asserts i
 | head/shell | 1–92 | 1,538 | 1,538 |
 | core/consts | 93–199 | 4,007 | 1,738 |
 | core/poly-builder | 200–531 | 11,069 | 8,150 |
-| data/registry | 532–821 | 6,984 | 2,103 |
+| data/registry | 532–821 | 6,985 | 2,104 |
 | data/circles-v2 | 822–855 | 4,685 | 4,544 |
 | data/flail-chain | 856–928 | 1,509 | 895 |
 | core/weapon-geometry | 929–998 | 1,171 | 397 |
